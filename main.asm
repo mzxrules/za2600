@@ -20,7 +20,8 @@ enSpr       ds 2
 plSprOff    ds 1
 enSprOff    ds 1
 bgColor     ds 1
-bgDY        ds 1
+pfRoom      ds 1
+pfSpr       ds 2
 plLastDir   ds 1
 
     
@@ -28,7 +29,13 @@ plLastDir   ds 1
 ; * Constants                            *
 ; ****************************************
 
-BOARD_HEIGHT    = [192/2]
+PLAY_HEIGHT         = [(192-16-2)/2] ; Screen visible height of play
+ROOM_PX_HEIGHT      = 22 ; height of room in pixels
+
+BoardXL = $10
+BoardXR = $8A
+BoardYU = $58
+BoardYD = $05
 
 	echo "-RAM-",$80,(.)
 
@@ -39,12 +46,17 @@ ENTRY:
     CLEAN_START
     
 INIT:
+    ; set player colors
     lda #$C4 
     sta COLUP0
+    lda #$74
+    sta COLUP1
     
+    ; set bgColor
     lda #$00
-    sta COLUBK;bgColor
+    sta bgColor 
     
+    ; set playfield
     lda #$0E
     sta COLUPF
     
@@ -54,11 +66,10 @@ INIT:
     lda #$20
     sta plX
     sta plY
+    sta enX
+    sta enY
     
-    
-;40 192 30
-
-;TOP_FRAME
+;TOP_FRAME ;3 37 192 30
 VERTICAL_SYNC: ; 3 SCANLINES
     lda #2
     ldx #49
@@ -88,7 +99,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     
 .NoDelayP0
     ; player draw height
-    lda #(BOARD_HEIGHT+8)
+    lda #(PLAY_HEIGHT+8)
     sec
     sbc plY
     sta plDY
@@ -105,15 +116,99 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sbc #0
     sta plSpr+1
     
-    lda #[BOARD_HEIGHT / 4]
-    sta bgDY
-    
-    
-    
     lda plX
     ldx #0
     
     jsr PosObject
+    
+    lda Frame
+    and #8
+    sta enSprOff
+    lda Frame
+    and #$10
+    ;bne .enTestmove
+    ;inc enX
+    ;.byte 0x2C
+;.enTestmove:    
+    inc enX
+    lda enX
+    cmp #BoardXR
+    bne .enMoveReset
+    lda #BoardXL
+    sta enX
+.enMoveReset
+    
+; test player board bounds
+    lda plX
+    ldy plY
+    cmp #BoardXR
+    bne .plXRSkip
+    ldx #BoardXL+1
+    stx plX
+.plXRSkip
+    cmp #BoardXL
+    bne .plXLSkip
+    ldx #BoardXR-1
+    stx plX
+.plXLSkip
+    cpy #BoardYU
+    bne .plYUSkip
+    ldx #BoardYD+1
+    stx plY
+.plYUSkip
+    cpy #BoardYD
+    bne .plYDSkip
+    ldx #BoardYU-1
+    stx plY
+.plYDSkip
+    
+    ; enemy draw height
+    lda #(PLAY_HEIGHT+8)
+    sec
+    sbc enY
+    sta enDY
+    
+    ; enemy sprite setup
+    lda #<(SprE0 + 7)
+    clc
+    adc enSprOff
+    sec
+    sbc enY
+    sta enSpr
+    
+    lda #>(SprE0 + 7)
+    sbc #0
+    sta enSpr+1
+    lda enX
+    ldx #1
+    jsr PosObject
+    
+    ; room setup
+    /*
+    lda Frame
+    lsr
+    lsr
+    lsr
+    lsr
+    lsr
+    lda #3
+    sta pfRoom
+    */
+    
+    ldy pfRoom
+    lda #0
+.pfSprLoop
+    cpy #0
+    beq .pfSprLoopEnd
+    clc
+    adc #ROOM_PX_HEIGHT
+    dey
+    jmp .pfSprLoop
+.pfSprLoopEnd
+    sta pfSpr
+    
+    lda bgColor
+    sta COLUBK
     
     sta WSYNC
     sta HMOVE
@@ -125,10 +220,10 @@ KERNEL_MAIN:  ; 192 scanlines
     bne KERNEL_MAIN
     sta VBLANK
     
-    ldy #BOARD_HEIGHT
+    ldy #PLAY_HEIGHT 
     
-KERNEL_LOOP: SUBROUTINE
-; Player
+KERNEL_LOOP: SUBROUTINE ;-59
+; Player 1
     lda #7 ;player height
     dcp plDY
     bcs .DrawP0
@@ -138,21 +233,53 @@ KERNEL_LOOP: SUBROUTINE
 .DrawP0:
     lda (plSpr),y
     sta GRP0
-    sta WSYNC
+    ;sta WSYNC
+
+; Enemy 1
+    lda #7 ; enemy height
+    dcp enDY
+    bcs .DrawE0
+    lda #0
+    .byte $2C ; BIT compare hack to skip 2 byte op
+
+.DrawE0:
+    lda (enSpr),y
+    
+    
 ; Playfield
+    sta GRP1
     tya
     lsr
     lsr
+    clc
+    adc pfSpr
     tax
+    sta WSYNC
     
-    lda PF1Entrance3,x
+    
+    lda PF1Room0,x
     sta PF1
-    lda PF2Entrance3,x
+    lda PF2Room0,x
     sta PF2
 
-    dey
     sta WSYNC
-    bne KERNEL_LOOP
+    
+    dey
+    bpl KERNEL_LOOP
+    
+KERNEL_PAD: SUBROUTINE
+    lda #0
+    sta PF1
+    sta PF2
+    sta GRP0
+    sta GRP1
+    lda #2
+    sta COLUBK
+    ldy #16
+.loop:
+    sta WSYNC
+    dey
+    bpl .loop
     
 OVERSCAN: ; 30 scanlines
     sta WSYNC
@@ -161,9 +288,9 @@ OVERSCAN: ; 30 scanlines
     lda #32
     sta TIM64T ; 27 scanline timer
     
-    lda #0
-    sta PF1
-    sta PF2
+    ;lda #0
+    ;sta PF1
+    ;sta PF2
 
 OVERSCAN_WAIT:
     sta WSYNC
@@ -171,11 +298,6 @@ OVERSCAN_WAIT:
     bne OVERSCAN_WAIT
     
     jmp VERTICAL_SYNC
-    
-BoardXL = $10
-BoardXR = $8A
-BoardYU = $50
-BoardYD = $08
 
 ProcessInput:
 _ = .
@@ -290,9 +412,9 @@ KERNEL_SIMPLE: SUBROUTINE
     lsr
     tax
     
-    lda PF1Entrance3,x
+    lda PF1Room0,x
     sta PF1
-    lda PF2Entrance3,x
+    lda PF2Room0,x
     sta PF2
 
     dey
