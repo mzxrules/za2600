@@ -10,8 +10,10 @@
     ORG $80
 Frame       ds 1
 plX         ds 1
+plXL        ds 1
 enX         ds 1
 plY         ds 1
+plYL        ds 1
 enY         ds 1
 plDY        ds 1
 enDY        ds 1    
@@ -29,8 +31,9 @@ plLastDir   ds 1
 ; * Constants                            *
 ; ****************************************
 
-PLAY_HEIGHT         = [(192-16-2)/2] ; Screen visible height of play
 ROOM_PX_HEIGHT      = 22 ; height of room in pixels
+PLAY_HEIGHT         = [(8*ROOM_PX_HEIGHT)/2-1] ; Screen visible height of play
+GRID_STEP           = 4 ; unit grid that the player should snap to
 
 BoardXL = $10
 BoardXR = $8A
@@ -66,6 +69,8 @@ INIT:
     lda #$20
     sta plX
     sta plY
+    sta plXL
+    sta plYL
     sta enX
     sta enY
     
@@ -83,19 +88,22 @@ VERTICAL_SYNC: ; 3 SCANLINES
     ;sta PF0     ; blank the playfield
     sta PF1     
     sta PF2     
-    sta GRP0    ; blanks player0 if VDELP0 was off
-    sta GRP1    ; blanks player0 if VDELP0 was on, player1 if VDELP1 was off 
-    sta GRP0    ; blanks                           player1 if VDELP1 was on
+    ;sta GRP0    ; blanks player0 if VDELP0 was off
+    ;sta GRP1    ; blanks player0 if VDELP0 was on, player1 if VDELP1 was off 
+    ;sta GRP0    ; blanks                           player1 if VDELP1 was on
     sta WSYNC
     sta VSYNC
     
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     jsr ProcessInput
-    
-    ;ldx #1
-    ;lda plY
-    ;bcs .NoDelayP0
-    ;stx VDELP0
+    lda plX
+    sta enX
+    lda plY
+    sta enY
+    sta CXCLR
+    lda #1
+    ;sta VDELP0
+    sta VDELP1
     
 .NoDelayP0
     ; player draw height
@@ -105,7 +113,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta plDY
     
     ; player sprite setup
-    lda #<(SprP0 + 7)
+    lda #<(SprP0 + 7) ; Sprite + height-1
     clc
     adc plSprOff
     sec ; set Carry
@@ -130,7 +138,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     ;inc enX
     ;.byte 0x2C
 ;.enTestmove:    
-    inc enX
+    ;inc enX
     lda enX
     cmp #BoardXR
     bne .enMoveReset
@@ -184,19 +192,8 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     jsr PosObject
     
     ; room setup
-    /*
-    lda Frame
-    lsr
-    lsr
-    lsr
-    lsr
-    lsr
-    lda #3
-    sta pfRoom
-    */
-    
     ldy pfRoom
-    lda #0
+    lda #ROOM_PX_HEIGHT-1
 .pfSprLoop
     cpy #0
     beq .pfSprLoopEnd
@@ -213,54 +210,66 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta WSYNC
     sta HMOVE
     
+    ldx #0
     
-KERNEL_MAIN:  ; 192 scanlines
+KERNEL_MAIN: SUBROUTINE ; 192 scanlines
     sta WSYNC
     lda INTIM
     bne KERNEL_MAIN
     sta VBLANK
     
-    ldy #PLAY_HEIGHT 
+    ldy #PLAY_HEIGHT
+    sta WSYNC
     
-KERNEL_LOOP: SUBROUTINE ;-59
-; Player 1
+; prep Player    
+/*    
     lda #7 ;player height
     dcp plDY
-    bcs .DrawP0
+    bcs .DrawP0_pre
     lda #0
     .byte $2C ; BIT compare hack to skip 2 byte op
     
-.DrawP0:
+.DrawP0_pre:
     lda (plSpr),y
-    sta GRP0
-    ;sta WSYNC
+*/
+    
+KERNEL_LOOP: SUBROUTINE
+    stx GRP0        ; 3
+    
+    ldx pfSpr       ; 3
+    lda PF1Room0,x  ; 4
+    sta PF1         ; 3
+    lda PF2Room0,x  ; 4
+    sta PF2         ; 3
 
-; Enemy 1
+; Enemy
     lda #7 ; enemy height
     dcp enDY
     bcs .DrawE0
     lda #0
     .byte $2C ; BIT compare hack to skip 2 byte op
-
 .DrawE0:
     lda (enSpr),y
-    
+    sta WSYNC
+    sta GRP1
+
+; Player  
+    lda #7 ;player height
+    dcp plDY
+    bcs .DrawP0
+    lda #0
+    .byte $2C ; BIT compare hack to skip 2 byte op
+.DrawP0:
+    lda (plSpr),y
+    tax
     
 ; Playfield
-    sta GRP1
     tya
-    lsr
-    lsr
-    clc
-    adc pfSpr
-    tax
-    sta WSYNC
-    
-    
-    lda PF1Room0,x
-    sta PF1
-    lda PF2Room0,x
-    sta PF2
+    and #3
+    beq .skipPFDec
+    .byte $2C
+.skipPFDec
+    dec pfSpr
 
     sta WSYNC
     
@@ -288,9 +297,25 @@ OVERSCAN: ; 30 scanlines
     lda #32
     sta TIM64T ; 27 scanline timer
     
-    ;lda #0
-    ;sta PF1
-    ;sta PF2
+    lda CXPPMM
+    and #$80
+    beq SkipPlayerEnemyCollision
+    ;lda #$30
+    ;sta plX
+    ;sta plY
+SkipPlayerEnemyCollision:
+    lda CXP0FB
+    and #$80
+    beq SkipPlayerPFCollision
+    lda plXL
+    sta plX
+    lda plYL
+    sta plY
+SkipPlayerPFCollision
+    lda plX
+    sta plXL
+    lda plY
+    sta plYL
 
 OVERSCAN_WAIT:
     sta WSYNC
@@ -303,60 +328,71 @@ ProcessInput:
 _ = .
     lda SWCHA
     and #$F0
-    pha
-    cmp #$F0
-    bne Move
-    lda #$F0
-    sta plLastDir
-    jmp ContFin
-Move:
-
+    
 ContRight:
     asl
     bcs ContLeft
+    lda plY
+    and #(GRID_STEP - 1)
+    beq MovePlayerRight
+    and #(GRID_STEP / 2)
+    beq MovePlayerDown
+    jmp MovePlayerUp
+    
+MovePlayerRight:
     lda #$00
     sta plSprOff
-    lda #$1
-    bit plLastDir
-    beq ContFin
     inc plX
     jmp ContFin
+    
 ContLeft:
     asl
     bcs ContDown
+    lda plY
+    and #(GRID_STEP - 1)
+    beq MovePlayerLeft
+    and #(GRID_STEP / 2)
+    beq MovePlayerDown
+    jmp MovePlayerUp
+    
+MovePlayerLeft:
     lda #$08
     sta plSprOff
-    lda #$1
-    bit plLastDir
-    beq ContFin
     dec plX
     jmp ContFin
+    
 ContDown:
     asl
     bcs ContUp
+    lda plX
+    and #(GRID_STEP - 1)
+    beq MovePlayerDown
+    and #(GRID_STEP / 2)
+    beq MovePlayerLeft
+    jmp MovePlayerRight
+    
+MovePlayerDown:
     lda #$10
     sta plSprOff
-    lda #$1
-    bit plLastDir
-    beq ContFin
     dec plY
     jmp ContFin
+    
 ContUp:
     asl
     bcs ContFin
+    lda plX
+    and #(GRID_STEP - 1)
+    beq MovePlayerUp
+    and #(GRID_STEP / 2)
+    beq MovePlayerLeft
+    jmp MovePlayerRight
+    
+MovePlayerUp:
     lda #$18
     sta plSprOff
-    lda #$1
-    bit plLastDir
-    beq ContFin
     inc plY
     
 ContFin:
-    lda plLastDir
-    sec
-    ror
-    sta plLastDir
-    pla
     rts
     echo "Input Size ",(.-_)
     

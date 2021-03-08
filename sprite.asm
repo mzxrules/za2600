@@ -80,25 +80,25 @@ SprN9:
     .byte $24 ; |..X..X..|
     .byte $18 ; |...XX...|
 SprP0:
-    .byte $01 ; |.......X|
+    .byte $00 ; |........|
     .byte $01 ; |.......X|
     .byte $19 ; |...XX..X|
-    .byte $3C ; |..XXXX..|
-    .byte $3C ; |..XXXX..|
-    .byte $18 ; |...XX...|
-    .byte $00 ; |........|
+    .byte $3D ; |..XXXX.X|
+    .byte $3D ; |..XXXX.X|
+    .byte $19 ; |...XX..X|
+    .byte $01 ; |.......X|
     .byte $00 ; |........|
 SprP1:
     .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $18 ; |...XX...|
-    .byte $3C ; |..XXXX..|
-    .byte $3C ; |..XXXX..|
+    .byte $80 ; |X.......|
+    .byte $98 ; |X..XX...|
+    .byte $BC ; |X.XXXX..|
+    .byte $BC ; |X.XXXX..|
     .byte $98 ; |X..XX...|
     .byte $80 ; |X.......|
-    .byte $80 ; |X.......|
+    .byte $00 ; |........|
 SprP2:
-    .byte $70 ; |.XXX....|
+    .byte $7E ; |.XXXXXX.|
     .byte $00 ; |........|
     .byte $18 ; |...XX...|
     .byte $3C ; |..XXXX..|
@@ -114,7 +114,7 @@ SprP3:
     .byte $3C ; |..XXXX..|
     .byte $18 ; |...XX...|
     .byte $00 ; |........|
-    .byte $0E ; |....XXX.|
+    .byte $7E ; |.XXXXXX.|
 SprE0:
     .byte $3E ; |..XXXXX.|
     .byte $54 ; |.X.X.X..|
@@ -192,7 +192,7 @@ PF1Room0:
     .byte $E0 ; |XXX.....|
     .byte $70 ; |.XXX....|
     .byte $38 ; |..XXX...|
-    .byte $1E ; |...XXXX.|
+    .byte $1F ; |...XXXXX|
 PF1Room1:
     .byte $FF ; |XXXXXXXX|
     .byte $FF ; |XXXXXXXX|
@@ -285,11 +285,32 @@ PF1Room4:
     .byte $40 ; |.X......|
     .byte $40 ; |.X......|
     .byte $7F ; |.XXXXXXX|
+PF1Room5:
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
+    .byte $CC ; |XX..XX..|
+    .byte $CC ; |XX..XX..|
+    .byte $C3 ; |XX....XX|
+    .byte $C3 ; |XX....XX|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
+    .byte $F0 ; |XXXX....|
+    .byte $F0 ; |XXXX....|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
     align 256
 PF2Room0:
     .byte $1F ; |XXXXX...| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
@@ -309,6 +330,8 @@ PF2Room0:
     .byte $CE ; |.XXX..XX| mirrored
     .byte $C0 ; |......XX| mirrored
     .byte $F8 ; |...XXXXX| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $FF ; |XXXXXXXX| mirrored
 PF2Room1:
     .byte $FF ; |XXXXXXXX| mirrored
     .byte $FF ; |XXXXXXXX| mirrored
@@ -400,5 +423,28 @@ PF2Room4:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
+    .byte $FF ; |XXXXXXXX| mirrored
+PF2Room5:
+    .byte $FF ; |XXXXXXXX| mirrored
+    .byte $FF ; |XXXXXXXX| mirrored
+    .byte $03 ; |XX......| mirrored
+    .byte $03 ; |XX......| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $03 ; |XX......| mirrored
+    .byte $03 ; |XX......| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $0C ; |..XX....| mirrored
+    .byte $0C ; |..XX....| mirrored
+    .byte $3C ; |..XXXX..| mirrored
+    .byte $3C ; |..XXXX..| mirrored
+    .byte $CC ; |..XX..XX| mirrored
+    .byte $0C ; |..XX....| mirrored
+    .byte $F0 ; |....XXXX| mirrored
+    .byte $F0 ; |....XXXX| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $FF ; |XXXXXXXX| mirrored
     .byte $FF ; |XXXXXXXX| mirrored
 
