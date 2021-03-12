@@ -1,0 +1,48 @@
+Darknut Logic:
+
+Directions RLDU
+States:
+Stun        ds 1 (non-zero = can't take damage)
+Recoil      ds 1 (non-zero = recoiling)
+BlockDir    ds 1 UDLR
+
+
+if collided with pf, 
+    reset x,y
+    if recoil == 0,
+        pick new direction
+
+if collided with weapon && stun == 0,
+    dec health
+    stun = -16
+    recoil = -8
+    x &= 0xFE //stay on grid
+    y &= 0xFE //stay on grid
+    //move func handles recoil opposing facing direction  
+        
+if x & (gridstep-1) != 0 && y & (gridstep-1) != 0, 
+    continue direction
+    
+else if Frame & 0x10
+    pick new direction
+
+Move()
+
+Pick Direction:
+a = rand()
+50% seek player
+50% rand dir
+
+
+
+
+
+Pre:
+
+
+
+
+
+Post:
+
+if Health = 0, spawn item

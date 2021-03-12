@@ -9,22 +9,28 @@
     SEG.U VARS
     ORG $80
 Frame       ds 1
+Rand8       ds 1
 plX         ds 1
-plXL        ds 1
 enX         ds 1
+plXL        ds 1
+enXL        ds 1
 plY         ds 1
-plYL        ds 1
 enY         ds 1
+plYL        ds 1
+enYL        ds 1
 plDY        ds 1
 enDY        ds 1    
-plSpr       ds 2
-enSpr       ds 2
-plSprOff    ds 1
-enSprOff    ds 1
+plSpr       ds 2 ; plSprOff
+enSpr       ds 2 ; enSprOff
+plDir       ds 1
+enDir       ds 1
+enType      ds 1
+enStun      ds 1
+enRecoil    ds 1
+enBlockDir  ds 1
 bgColor     ds 1
 pfRoom      ds 1
 pfSpr       ds 2
-plLastDir   ds 1
 
     
 ; ****************************************
@@ -39,6 +45,11 @@ BoardXL = $10
 BoardXR = $8A
 BoardYU = $58
 BoardYD = $05
+EnBoardXR = $80
+EnBoardXL = $18
+EnBoardYD = $0C
+EnBoardYU = $54
+
 
 	echo "-RAM-",$80,(.)
 
@@ -66,13 +77,18 @@ INIT:
     lda #%00000001
     sta CTRLPF
     
-    lda #$20
+    lda #2
+    sta pfRoom
+    lda #$28
+    sta Rand8
     sta plX
     sta plY
     sta plXL
     sta plYL
     sta enX
     sta enY
+    sta enXL
+    sta enYL
     
 ;TOP_FRAME ;3 37 192 30
 VERTICAL_SYNC: ; 3 SCANLINES
@@ -96,16 +112,14 @@ VERTICAL_SYNC: ; 3 SCANLINES
     
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     jsr ProcessInput
-    lda plX
-    sta enX
-    lda plY
-    sta enY
-    sta CXCLR
+    jsr Random
     lda #1
     ;sta VDELP0
     sta VDELP1
     
-.NoDelayP0
+    jsr EnemyAIDel
+    
+__EnemyAIReturn:    
     ; player draw height
     lda #(PLAY_HEIGHT+8)
     sec
@@ -115,7 +129,8 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     ; player sprite setup
     lda #<(SprP0 + 7) ; Sprite + height-1
     clc
-    adc plSprOff
+    ldx plDir
+    adc Mul8,x
     sec ; set Carry
     sbc plY
     sta plSpr
@@ -130,20 +145,12 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     jsr PosObject
     
     lda Frame
-    and #8
-    sta enSprOff
-    lda Frame
     and #$10
-    ;bne .enTestmove
-    ;inc enX
-    ;.byte 0x2C
-;.enTestmove:    
-    ;inc enX
-    lda enX
-    cmp #BoardXR
-    bne .enMoveReset
-    lda #BoardXL
-    sta enX
+    ;lda enX
+    ;cmp #BoardXR
+    ;bne .enMoveReset
+    ;lda #BoardXL
+    ;sta enX
 .enMoveReset
     
 ; test player board bounds
@@ -177,14 +184,14 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta enDY
     
     ; enemy sprite setup
-    lda #<(SprE0 + 7)
+    lda #<(SprP0 + 7)
     clc
-    adc enSprOff
+    adc enSpr
     sec
     sbc enY
     sta enSpr
     
-    lda #>(SprE0 + 7)
+    lda #>(SprP0 + 7)
     sbc #0
     sta enSpr+1
     lda enX
@@ -209,6 +216,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     
     sta WSYNC
     sta HMOVE
+    sta CXCLR
     
     ldx #0
     
@@ -290,32 +298,29 @@ KERNEL_PAD: SUBROUTINE
     dey
     bpl .loop
     
-OVERSCAN: ; 30 scanlines
+OVERSCAN: SUBROUTINE ; 30 scanlines
     sta WSYNC
     lda #2
     sta VBLANK
     lda #32
     sta TIM64T ; 27 scanline timer
     
-    lda CXPPMM
-    and #$80
-    beq SkipPlayerEnemyCollision
-    ;lda #$30
-    ;sta plX
-    ;sta plY
-SkipPlayerEnemyCollision:
-    lda CXP0FB
-    and #$80
-    beq SkipPlayerPFCollision
-    lda plXL
-    sta plX
-    lda plYL
-    sta plY
-SkipPlayerPFCollision
-    lda plX
-    sta plXL
-    lda plY
-    sta plYL
+    
+    ldx #1
+.posResetLoop
+    lda CXP0FB,x
+    bpl .SkipPFCollision
+    lda plXL,x
+    sta plX,x
+    lda plYL,x
+    sta plY,x
+.SkipPFCollision:
+    lda plX,x
+    sta plXL,x
+    lda plY,x
+    sta plYL,x
+    dex
+    bpl .posResetLoop
 
 OVERSCAN_WAIT:
     sta WSYNC
@@ -341,7 +346,7 @@ ContRight:
     
 MovePlayerRight:
     lda #$00
-    sta plSprOff
+    sta plDir
     inc plX
     jmp ContFin
     
@@ -356,8 +361,8 @@ ContLeft:
     jmp MovePlayerUp
     
 MovePlayerLeft:
-    lda #$08
-    sta plSprOff
+    lda #$01
+    sta plDir
     dec plX
     jmp ContFin
     
@@ -372,8 +377,8 @@ ContDown:
     jmp MovePlayerRight
     
 MovePlayerDown:
-    lda #$10
-    sta plSprOff
+    lda #$2
+    sta plDir
     dec plY
     jmp ContFin
     
@@ -388,8 +393,8 @@ ContUp:
     jmp MovePlayerRight
     
 MovePlayerUp:
-    lda #$18
-    sta plSprOff
+    lda #$3
+    sta plDir
     inc plY
     
 ContFin:
@@ -425,39 +430,181 @@ DivideLoop
         sta.wx HMP0,X  ; 5 19 - store fine tuning of X
         sta RESP0,X    ; 4 23 - set coarse X position of object
         rts            ; 6 29    
-    
-    
-	echo "-CODE-",$F000,(.)
-    
-KERNEL_SIMPLE: SUBROUTINE
-; y = boardHeight
-; Player
-    lda #7 ;player height
-    dcp plDY
-    bcs .DrawP0
-    lda #0
-    .byte $2C ; BIT compare hack to skip 2 byte op
-    
-.DrawP0:
-    lda (plSpr),y
-    sta GRP0
-    sta WSYNC
-; Playfield
-    tya
-    lsr
-    lsr
-    tax
-    
-    lda PF1Room0,x
-    sta PF1
-    lda PF2Room0,x
-    sta PF2
 
-    dey
-    sta WSYNC
-    bne KERNEL_SIMPLE    
+;===============================================================================
+; Generate Random Number
+;-----------------------
+;   A - returns the randomly generated value   
+;===============================================================================
+Random:
+        lda Rand8
+        lsr
+        bcc noeor
+        eor #$B4
+noeor:
+        sta Rand8
+RTS_OP:
+        rts   
+        
+  
+EnemyAIDel:
+    ldx enType
+    lda EnemyAIH,x
+    pha
+    lda EnemyAIL,x
+    pha
+    rts
     
+NextDir: SUBROUTINE
+    jsr Random
+    and #3
+    tax
+.nextLoop
+    lda enBlockDir
+    and Lazy8,x
+    beq .end
+    inx
+    bpl .nextLoop
+.end
+    txa
+    and #3
+    sta enDir
+    rts
     
+DarknutAI: SUBROUTINE
+; update stun/recoil timers
+    lda enRecoil
+    cmp #1
+    adc #0
+    sta enRecoil
+    lda enStun
+    cmp #1
+    adc #0
+    sta enStun
+    
+.setBlockedDir
+    lda enBlockDir
+    and #$F0
+    ldx enX
+    cpx #EnBoardXR
+    bne .setBlockedL
+    ora #1
+.setBlockedL
+    cpx #EnBoardXL
+    bne .setBlockedD
+    ora #2
+.setBlockedD
+    ldx enY
+    cpx #EnBoardYD
+    bne .setBlockedU
+    ora #4
+.setBlockedU
+    cpx #EnBoardYU
+    bne .setBlockedEnd
+    ora #8
+.setBlockedEnd
+    sta enBlockDir
+    
+.checkPFHit    
+    lda enRecoil
+    bne .endCheckPFHit
+    lda CXP1FB
+    bpl .endCheckPFHit
+    ; set blocked dir
+    ldx enDir
+    lda enBlockDir
+    ora Bit8,x
+    sta enBlockDir
+.endCheckPFHit
+    
+.checkHit
+; if collided with weapon && stun == 0,   
+    lda CXPPMM
+    bpl .endCheckHit
+    lda enStun
+    bne .endCheckHit
+    lda #-16
+    sta enStun
+    lda #-8
+    sta enRecoil
+.endCheckHit
+
+.checkBlocked
+    lda enBlockDir
+    ldx enDir
+    and Lazy8,x
+    beq .endCheckBlocked
+    jsr NextDir
+    jmp .move
+.endCheckBlocked
+
+.randDir
+    lda enX
+    and #3
+    bne .move
+    lda enY
+    and #3
+    bne .move
+    lda Frame
+    eor enBlockDir
+    and #$20
+    beq .move
+    eor enBlockDir
+    sta enBlockDir
+    jsr NextDir
+
+.move
+    lda enDir
+    tax
+    ldy Mul8,x
+    sty enSpr
+    
+    lda Frame
+    and #1
+    beq .return
+    txa
+    
+    cmp #0
+    beq DarknutRightAI
+    cmp #1
+    beq DarknutLeftAI
+    cmp #2
+    beq DarknutDownAI
+    cmp #3
+    beq DarknutUpAI
+.return
+    rts
+
+
+DarknutRightAI: SUBROUTINE
+    inc enX
+    rts
+
+DarknutLeftAI: SUBROUTINE
+    dec enX
+    rts
+    
+DarknutDownAI: SUBROUTINE
+    dec enY
+    rts
+    
+DarknutUpAI: SUBROUTINE
+    inc enY
+    rts
+    
+    INCLUDE "ptr.asm"
+
+    echo "-CODE-",$F000,(.)
+    
+    align 16
+Mul8:
+    .byte 0x00, 0x08, 0x10, 0x18
+Lazy8:
+    .byte 0x01, 0x02, 0x04, 0x08
+Bit8:
+    .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
+;EnBoardBounds:
+;    .byte EnBoardXR, EnBoardXL, EnBoardYD, EnBoardYU
     align 256
 SpriteStart = (.)
     INCLUDE "sprite.asm"
