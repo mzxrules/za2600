@@ -1,57 +1,7 @@
     processor 6502
     INCLUDE "vcs.h"
     INCLUDE "macro.h"
-    
-; ****************************************
-; * Variables                            *
-; ****************************************
-
-    SEG.U VARS
-    ORG $80
-Frame       ds 1
-Rand8       ds 1
-plX         ds 1
-enX         ds 1
-plXL        ds 1
-enXL        ds 1
-plY         ds 1
-enY         ds 1
-plYL        ds 1
-enYL        ds 1
-plDY        ds 1
-enDY        ds 1    
-plSpr       ds 2 ; plSprOff
-enSpr       ds 2 ; enSprOff
-plDir       ds 1
-enDir       ds 1
-enType      ds 1
-enStun      ds 1
-enRecoil    ds 1
-enBlockDir  ds 1
-bgColor     ds 1
-pfRoom      ds 1
-pfSpr       ds 2
-
-    
-; ****************************************
-; * Constants                            *
-; ****************************************
-
-ROOM_PX_HEIGHT      = 22 ; height of room in pixels
-PLAY_HEIGHT         = [(8*ROOM_PX_HEIGHT)/2-1] ; Screen visible height of play
-GRID_STEP           = 4 ; unit grid that the player should snap to
-
-BoardXL = $10
-BoardXR = $8A
-BoardYU = $58
-BoardYD = $05
-EnBoardXR = $80
-EnBoardXL = $18
-EnBoardYD = $0C
-EnBoardYU = $54
-
-
-	echo "-RAM-",$80,(.)
+    INCLUDE "vars.asm"
 
     SEG CODE
     ORG $F000
@@ -78,17 +28,15 @@ INIT:
     sta CTRLPF
     
     lda #2
-    sta pfRoom
-    lda #$28
+    sta roomId
+    lda #$2C
     sta Rand8
-    sta plX
-    sta plY
-    sta plXL
-    sta plYL
-    sta enX
-    sta enY
-    sta enXL
-    sta enYL
+    
+    ldx #10-1
+INIT_POS:
+    sta plX,x
+    dex
+    bpl INIT_POS
     
 ;TOP_FRAME ;3 37 192 30
 VERTICAL_SYNC: ; 3 SCANLINES
@@ -119,40 +67,8 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     
     jsr EnemyAIDel
     
-__EnemyAIReturn:    
-    ; player draw height
-    lda #(PLAY_HEIGHT+8)
-    sec
-    sbc plY
-    sta plDY
-    
-    ; player sprite setup
-    lda #<(SprP0 + 7) ; Sprite + height-1
-    clc
-    ldx plDir
-    adc Mul8,x
-    sec ; set Carry
-    sbc plY
-    sta plSpr
-    
-    lda #>(SprP0 + 7)
-    sbc #0
-    sta plSpr+1
-    
-    lda plX
-    ldx #0
-    
-    jsr PosObject
-    
-    lda Frame
-    and #$10
-    ;lda enX
-    ;cmp #BoardXR
-    ;bne .enMoveReset
-    ;lda #BoardXL
-    ;sta enX
-.enMoveReset
-    
+__EnemyAIReturn:
+
 ; test player board bounds
     lda plX
     ldy plY
@@ -176,6 +92,82 @@ __EnemyAIReturn:
     ldx #BoardYU-1
     stx plY
 .plYDSkip
+
+; Sword 
+    bit plState
+    bvc .skipSetItemTimer
+; If Item Button, stab sword
+    lda #ItemTimerSword
+    sta plItemTimer
+.skipSetItemTimer
+    ldy plItemTimer
+    bne .drawSword
+    lda #$80
+    sta m0X
+    sta m0Y
+    bmi .endSword
+    
+.drawSword
+    lda #0
+    cpy #-7
+    bmi .endSword
+    cpy #-1
+    beq .drawSword4
+    lda #4
+.drawSword4
+    clc
+    adc plDir
+    tay
+    lda SwordWidth4,y
+    sta NUSIZ0
+    lda SwordHeight4,y
+    sta m0H
+    lda SwordOff4X,y
+    clc
+    adc plX
+    sta m0X
+    lda SwordOff4Y,y
+    clc
+    adc plY
+    sta m0Y
+.endSword
+    
+; Position Sprites
+
+    ; player draw height
+    lda #(PLAY_HEIGHT+8)
+    sec
+    sbc plY
+    sta plDY
+    
+    ; player body draw height
+    lda #(PLAY_HEIGHT+8)
+    sec
+    sbc m0Y
+    adc #1
+    sta m0DY
+    
+    ; player sprite setup
+    lda #<(SprP0 + 7) ; Sprite + height-1
+    clc
+    ldx plDir
+    adc Mul8,x
+    sec ; set Carry
+    sbc plY
+    sta plSpr
+    
+    lda #>(SprP0 + 7)
+    sbc #0
+    sta plSpr+1
+    
+    lda plX
+    ldx #0
+    jsr PosObject
+    
+    ; player body setup
+    lda m0X
+    ldx #2
+    jsr PosObject
     
     ; enemy draw height
     lda #(PLAY_HEIGHT+8)
@@ -184,14 +176,14 @@ __EnemyAIReturn:
     sta enDY
     
     ; enemy sprite setup
-    lda #<(SprP0 + 7)
+    lda #<(SprE6 + 7)
     clc
     adc enSpr
     sec
     sbc enY
     sta enSpr
     
-    lda #>(SprP0 + 7)
+    lda #>(SprE6 + 7)
     sbc #0
     sta enSpr+1
     lda enX
@@ -199,17 +191,17 @@ __EnemyAIReturn:
     jsr PosObject
     
     ; room setup
-    ldy pfRoom
+    ldy roomId
     lda #ROOM_PX_HEIGHT-1
-.pfSprLoop
+.roomSprLoop
     cpy #0
-    beq .pfSprLoopEnd
+    beq .roomSprLoopEnd
     clc
     adc #ROOM_PX_HEIGHT
     dey
-    jmp .pfSprLoop
-.pfSprLoopEnd
-    sta pfSpr
+    jmp .roomSprLoop
+.roomSprLoopEnd
+    sta roomSpr
     
     lda bgColor
     sta COLUBK
@@ -219,7 +211,9 @@ __EnemyAIReturn:
     sta CXCLR
     
     ldx #0
-    
+; ===================================================
+; Kernel Main
+; ===================================================    
 KERNEL_MAIN: SUBROUTINE ; 192 scanlines
     sta WSYNC
     lda INTIM
@@ -241,43 +235,50 @@ KERNEL_MAIN: SUBROUTINE ; 192 scanlines
     lda (plSpr),y
 */
     
-KERNEL_LOOP: SUBROUTINE
+KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
+    sta ENAM0       ; 3
     stx GRP0        ; 3
     
-    ldx pfSpr       ; 3
+    ldx roomSpr     ; 3
     lda PF1Room0,x  ; 4
     sta PF1         ; 3
     lda PF2Room0,x  ; 4
     sta PF2         ; 3
 
 ; Enemy
-    lda #7 ; enemy height
-    dcp enDY
-    bcs .DrawE0
-    lda #0
-    .byte $2C ; BIT compare hack to skip 2 byte op
+    lda #7          ; 2     enemy height
+    dcp enDY        ; 5
+    bcs .DrawE0     ; 2/3
+    lda #0          ; 2
+    .byte $2C       ; 4-5   BIT compare hack to skip 2 byte op
 .DrawE0:
-    lda (enSpr),y
-    sta WSYNC
-    sta GRP1
+    lda (enSpr),y   ; 5
+    sta WSYNC       ; 3  34-35 cycles, not counting WSYNC (can save cycle by fixing bcs)
+    sta GRP1        ; 3
 
 ; Player  
-    lda #7 ;player height
-    dcp plDY
-    bcs .DrawP0
-    lda #0
-    .byte $2C ; BIT compare hack to skip 2 byte op
+    lda #7          ; 2 player height
+    dcp plDY        ; 5
+    bcs .DrawP0     ; 2/3
+    lda #0          ; 2
+    .byte $2C       ; 4-5 BIT compare hack to skip 2 byte op
 .DrawP0:
-    lda (plSpr),y
-    tax
+    lda (plSpr),y   ; 5
+    tax             ; 2
     
 ; Playfield
-    tya
-    and #3
-    beq .skipPFDec
-    .byte $2C
+    tya             ; 2
+    and #3          ; 2
+    beq .skipPFDec  ; 2/3
+    .byte $2C       ; 4-5
 .skipPFDec
-    dec pfSpr
+    dec roomSpr     ; 5
+    
+; Player Missle 
+    lda m0H         ; 3 player height
+    dcp m0DY        ; 5
+    lda #1          ; 2
+    adc #0
 
     sta WSYNC
     
@@ -329,8 +330,37 @@ OVERSCAN_WAIT:
     
     jmp VERTICAL_SYNC
 
-ProcessInput:
+ProcessInput: SUBROUTINE
 _ = .
+
+    lda plState
+    and #$BF
+    sta plState
+    bpl .FireNotHit
+    lda INPT4
+    bmi .FireNotHit
+    lda plItemTimer
+    bne .FireNotHit
+    lda plState
+    ora #$40
+    sta plState
+.FireNotHit
+    lda plState
+    and #$7F
+    bit INPT4
+    bpl .skipLastFire
+    ora #$80
+.skipLastFire
+    sta plState
+
+    lda plItemTimer
+    cmp #1
+    adc #0
+    sta plItemTimer
+    
+    bmi .skipItemInput
+    
+.skipItemInput
     lda SWCHA
     and #$F0
     
@@ -401,6 +431,8 @@ ContFin:
     rts
     echo "Input Size ",(.-_)
     
+    
+    align 16 ; FIXME: Page rollover issue   
 ;===============================================================================
 ; PosObject
 ;----------
@@ -443,7 +475,6 @@ Random:
         eor #$B4
 noeor:
         sta Rand8
-RTS_OP:
         rts   
         
   
@@ -481,6 +512,10 @@ DarknutAI: SUBROUTINE
     cmp #1
     adc #0
     sta enStun
+    asl
+    asl
+    adc #$2C ;#$74
+    sta COLUP1
     
 .setBlockedDir
     lda enBlockDir
@@ -519,13 +554,13 @@ DarknutAI: SUBROUTINE
     
 .checkHit
 ; if collided with weapon && stun == 0,   
-    lda CXPPMM
+    lda CXM0P
     bpl .endCheckHit
     lda enStun
     bne .endCheckHit
-    lda #-16
+    lda #-32
     sta enStun
-    lda #-8
+    lda #-16
     sta enRecoil
 .endCheckHit
 
@@ -603,6 +638,23 @@ Lazy8:
     .byte 0x01, 0x02, 0x04, 0x08
 Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
+    
+SwordWidth4:
+    .byte $20, $20, $00, $00
+SwordWidth8:
+    .byte $30, $30, $00, $00
+SwordHeight4:
+    .byte 0, 0, 3, 3
+SwordHeight8:
+    .byte 0, 0, 7, 7
+SwordOff4X:
+    .byte 7, -1, 5, 4
+SwordOff8X:
+    .byte 7, -5, 5, 4
+SwordOff4Y:
+    .byte 5, 5, 0, 8
+SwordOff8Y:
+    .byte 5, 5, -4, 8
 ;EnBoardBounds:
 ;    .byte EnBoardXR, EnBoardXL, EnBoardYD, EnBoardYU
     align 256

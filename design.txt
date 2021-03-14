@@ -34,15 +34,32 @@ a = rand()
 50% rand dir
 
 
-
-
-
 Pre:
-
-
-
 
 
 Post:
 
 if Health = 0, spawn item
+
+
+Input repeat prevention:
+
+INPT4 == $00 ; button pressed 
+INPT4 == $80 ; button not pressed 
+
+if last button == not pressed && button == pressed && ItemTimer == 0
+    ItemButton
+    
+    1 && 0 && 0
+    
+    
+1111 0111 -9    
+1111 1000 -8
+1111 1001 -7
+1111 1010 -6
+1111 1011 -5
+1111 1100 -4   
+1111 1101 -3
+1111 1110 -2
+1111 1111 -1
+0000 0000  0
