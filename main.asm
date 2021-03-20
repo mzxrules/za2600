@@ -14,20 +14,20 @@ INIT:
     lda #$C4 
     sta COLUP0
     lda #$74
-    sta COLUP1
+    sta enColor
     
     ; set bgColor
-    lda #$00
+    lda #COLOR_PATH
     sta bgColor 
     
     ; set playfield
-    lda #$0E
-    sta COLUPF
+    lda #$10
+    sta fgColor
     
     lda #%00000001
     sta CTRLPF
     
-    lda #2
+    lda #0
     sta roomId
     lda #$2C
     sta Rand8
@@ -64,7 +64,6 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda #1
     ;sta VDELP0
     sta VDELP1
-    
     jsr EnemyAIDel
     
 __EnemyAIReturn:
@@ -76,21 +75,31 @@ __EnemyAIReturn:
     bne .plXRSkip
     ldx #BoardXL+1
     stx plX
+    inc roomId
 .plXRSkip
     cmp #BoardXL
     bne .plXLSkip
     ldx #BoardXR-1
     stx plX
+    dec roomId
 .plXLSkip
     cpy #BoardYU
     bne .plYUSkip
     ldx #BoardYD+1
     stx plY
+    clc
+    lda roomId
+    adc #$F8
+    sta roomId
 .plYUSkip
     cpy #BoardYD
     bne .plYDSkip
     ldx #BoardYU-1
     stx plY
+    clc
+    lda roomId
+    adc #$8
+    sta roomId
 .plYDSkip
 
 ; Sword 
@@ -103,7 +112,6 @@ __EnemyAIReturn:
     ldy plItemTimer
     bne .drawSword
     lda #$80
-    sta m0X
     sta m0Y
     bmi .endSword
     
@@ -132,22 +140,23 @@ __EnemyAIReturn:
     sta m0Y
 .endSword
     
-; Position Sprites
+;===============================================================================
+; Pre-Position Sprites
+;===============================================================================
 
-    ; player draw height
-    lda #(PLAY_HEIGHT+8)
+; player draw height
+    lda #(ROOM_HEIGHT+8)
     sec
     sbc plY
     sta plDY
     
-    ; player body draw height
-    lda #(PLAY_HEIGHT+8)
+; player sword draw height
+    lda #(ROOM_HEIGHT+8)
     sec
     sbc m0Y
-    adc #1
     sta m0DY
     
-    ; player sprite setup
+; player sprite setup
     lda #<(SprP0 + 7) ; Sprite + height-1
     clc
     ldx plDir
@@ -160,38 +169,27 @@ __EnemyAIReturn:
     sbc #0
     sta plSpr+1
     
-    lda plX
-    ldx #0
-    jsr PosObject
-    
-    ; player body setup
-    lda m0X
-    ldx #2
-    jsr PosObject
-    
-    ; enemy draw height
-    lda #(PLAY_HEIGHT+8)
+; enemy draw height
+    lda #(ROOM_HEIGHT+8)
     sec
     sbc enY
     sta enDY
     
-    ; enemy sprite setup
-    lda #<(SprE6 + 7)
+; enemy sprite setup
+    lda #<(SprE0 + 7)
     clc
     adc enSpr
     sec
     sbc enY
     sta enSpr
     
-    lda #>(SprE6 + 7)
+    lda #>(SprE0 + 7)
     sbc #0
-    sta enSpr+1
-    lda enX
-    ldx #1
-    jsr PosObject
+    sta enSpr + 1
     
-    ; room setup
-    ldy roomId
+; room setup
+    ;ldy roomId
+    ldy #6
     lda #ROOM_PX_HEIGHT-1
 .roomSprLoop
     cpy #0
@@ -202,15 +200,27 @@ __EnemyAIReturn:
     jmp .roomSprLoop
 .roomSprLoopEnd
     sta roomSpr
-    
     lda bgColor
     sta COLUBK
+    lda fgColor
+    sta COLUPF
     
+; mini-map setup
+    ldx #1
+    stx COLUBK
+    lda #$18
+    jsr PosObject ; minimap
+    lda #8
+    sta worldId
+    lda roomId
+    and #7
+    clc
+    adc #$18
+    ldx #0
+    jsr PosObject ; location
     sta WSYNC
     sta HMOVE
-    sta CXCLR
     
-    ldx #0
 ; ===================================================
 ; Kernel Main
 ; ===================================================    
@@ -220,21 +230,71 @@ KERNEL_MAIN: SUBROUTINE ; 192 scanlines
     bne KERNEL_MAIN
     sta VBLANK
     
-    ldy #PLAY_HEIGHT
+KERNEL_HUD: SUBROUTINE
+    ldy #7
+    lda #$84
+    sta COLUP1
+    ;sta WSYNC
+    lda roomId
+    lsr
+    lsr
+    lsr
+    and #$7
+    tax
+.loop:
+    lda SprMap1,y
+    sta GRP1
+    sta WSYNC
+    lda #$80
+    cpx #0
+    beq .skip
+    lda #0
+.skip
+    sta GRP0
+    sta WSYNC
+    dex
+    dey
+    bpl .loop
+    lda #76
+    sta TIM8T
+    sta WSYNC
+    lda #0
+    sta GRP1
+    sta GRP0
+; HMOVE setup
+    lda enX
+    ldx #1
+    jsr PosObject
+    lda plX
+    ldx #0
+    jsr PosObject
+    lda m0X
+    ldx #2
+    jsr PosObject
+    sta WSYNC
+    sta HMOVE
+    
+.waitTimerLoop
+    lda INTIM
+    bne .waitTimerLoop
     sta WSYNC
     
-; prep Player    
-/*    
-    lda #7 ;player height
-    dcp plDY
-    bcs .DrawP0_pre
+    lda #$FF
+    sta PF0
+    sta PF1
+    sta PF2
+    
+    ldy #ROOM_HEIGHT
+    lda bgColor
+    sta COLUBK
+    lda enColor
+    sta COLUP1
+    
     lda #0
-    .byte $2C ; BIT compare hack to skip 2 byte op
-    
-.DrawP0_pre:
-    lda (plSpr),y
-*/
-    
+    ldx #0
+    sta WSYNC
+    sta CXCLR
+   
 KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     sta ENAM0       ; 3
     stx GRP0        ; 3
@@ -285,19 +345,7 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     dey
     bpl KERNEL_LOOP
     
-KERNEL_PAD: SUBROUTINE
-    lda #0
-    sta PF1
-    sta PF2
-    sta GRP0
-    sta GRP1
-    lda #2
-    sta COLUBK
-    ldy #16
-.loop:
-    sta WSYNC
-    dey
-    bpl .loop
+    echo "-KERNEL-",KERNEL_LOOP,(.)
     
 OVERSCAN: SUBROUTINE ; 30 scanlines
     sta WSYNC
@@ -306,6 +354,13 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     lda #32
     sta TIM64T ; 27 scanline timer
     
+    lda #0
+    sta PF1
+    sta PF2
+    sta GRP0
+    sta GRP1
+    sta ENAM0
+    sta PF0
     
     ldx #1
 .posResetLoop
@@ -432,7 +487,6 @@ ContFin:
     echo "Input Size ",(.-_)
     
     
-    align 16 ; FIXME: Page rollover issue   
 ;===============================================================================
 ; PosObject
 ;----------
@@ -448,6 +502,7 @@ ContFin:
 ; the routine will set the coarse X position of the object, as well as the
 ; fine-tune register that will be used when HMOVE is used.
 ;===============================================================================
+    align 16 ; FIXME: Page rollover issue   
 PosObject:
         sec
         sta WSYNC
@@ -514,8 +569,8 @@ DarknutAI: SUBROUTINE
     sta enStun
     asl
     asl
-    adc #$2C ;#$74
-    sta COLUP1
+    adc #COLOR_DARKNUT_RED
+    sta enColor
     
 .setBlockedDir
     lda enBlockDir
@@ -627,9 +682,10 @@ DarknutUpAI: SUBROUTINE
     inc enY
     rts
     
+    echo "-CODE-",$F000,(.)
+DataStart = (.)
     INCLUDE "ptr.asm"
 
-    echo "-CODE-",$F000,(.)
     
     align 16
 Mul8:
@@ -640,26 +696,44 @@ Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
     
 SwordWidth4:
-    .byte $20, $20, $00, $00
+    .byte $20, $20, $10, $10
 SwordWidth8:
-    .byte $30, $30, $00, $00
+    .byte $30, $30, $10, $10
 SwordHeight4:
-    .byte 0, 0, 3, 3
+    .byte 1, 1, 3, 3
 SwordHeight8:
-    .byte 0, 0, 7, 7
+    .byte 1, 1, 7, 7
 SwordOff4X:
-    .byte 7, -1, 5, 4
+    .byte 7, -1, 4, 4
 SwordOff8X:
-    .byte 7, -5, 5, 4
+    .byte 7, -5, 4, 4
 SwordOff4Y:
-    .byte 5, 5, 0, 8
+    .byte 3, 3, -2, 6
 SwordOff8Y:
-    .byte 5, 5, -4, 8
+    .byte 3, 3, -6, 6
 ;EnBoardBounds:
 ;    .byte EnBoardXR, EnBoardXL, EnBoardYD, EnBoardYU
-    align 256
+
+Overworld:
+    repeat 256
+    .byte 0
+    repend
+Dungeon:
+    repeat 256
+    .byte 0
+    repend
+    echo "-DATA-",DataStart,(.)
+    
 SpriteStart = (.)
-    INCLUDE "sprite.asm"
+    INCLUDE "spr_num.asm"
+    INCLUDE "spr_map.asm"
+    INCLUDE "spr_en.asm"
+    INCLUDE "spr_pl.asm"
+    INCLUDE "spr_item.asm"
+    INCLUDE "spr_world_pf1.asm"
+    INCLUDE "spr_dung_pf1.asm"
+    INCLUDE "spr_world_pf2.asm"
+    INCLUDE "spr_dung_pf2.asm"
     
 	echo "-SPRITE-",SpriteStart,(.)
 
