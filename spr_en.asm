@@ -271,12 +271,12 @@ SprE29:
 SprE30:
     .byte $00 ; |........|
     .byte $00 ; |........|
-    .byte $20 ; |..X.....|
-    .byte $67 ; |.XX..XXX|
-    .byte $21 ; |..X....X|
+    .byte $00 ; |........|
+    .byte $65 ; |.XX..X.X|
+    .byte $25 ; |..X..X.X|
     .byte $77 ; |.XXX.XXX|
     .byte $55 ; |.X.X.X.X|
-    .byte $77 ; |.XXX.XXX|
+    .byte $72 ; |.XXX..X.|
 SprE31:
     .byte $00 ; |........|
     .byte $00 ; |........|

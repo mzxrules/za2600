@@ -37,7 +37,6 @@ worldId     ds 1
 roomId      ds 1
 roomSpr     ds 2
 roomDoors   ds 1
-roomPFDat   ds 4 * 6
 roomLocks   ds 3
 roomItems   ds 6
 m0H         ds 1
@@ -48,13 +47,43 @@ itemBombs   ds 1
 itemRupees  ds 1
 itemTri     ds 1
 
+Temp1       ds 1
+Temp2       ds 1
+
 	echo "-RAM-",$80,(.)
+    
+    ORG $F000    
+WORLD_PF1       ds ROOM_SPR_HEIGHT * ROOM_SPR_SHEET
+WORLD_PF2       ds ROOM_SPR_HEIGHT * ROOM_SPR_SHEET
+MINIMAPA        ds 8
+MINIMAPB        ds 8
+KERNEL_SCRIPT   ds (4 * 2)
+    align 256
+WORLDA          ds ROOM_MAX
+WORLDB          ds ROOM_MAX
+DOORA           ds ROOM_MAX
+DOORB           ds ROOM_MAX
+ROOM_SCRIPT     ds $20 * 2
+
+    ORG $F800
+wPF1RoomL   ds ROOM_PX_HEIGHT
+wPF2Room    ds ROOM_PX_HEIGHT
+wPF1RoomR   ds ROOM_PX_HEIGHT
+
+    ORG $F900
+rPF1RoomL   ds ROOM_PX_HEIGHT
+rPF2RoomL   ds ROOM_PX_HEIGHT
+rPF1RoomR   ds ROOM_PX_HEIGHT
+    
     
 ; ****************************************
 ; * Constants                            *
 ; ****************************************
 
+ROOM_MAX            = 64 ; maximum number of rooms per "world"
 ROOM_PX_HEIGHT      = 20 ; height of room in pixels
+ROOM_SPR_HEIGHT     = 16 ; height of room sprite sheet
+ROOM_SPR_SHEET      = 16 ; width of room sprite sheet in 8 bit sprites
 ROOM_HEIGHT         = [(8*ROOM_PX_HEIGHT)/2-1] ; Screen visible height of play
 GRID_STEP           = 4 ; unit grid that the player should snap to
 
@@ -77,3 +106,8 @@ COLOR_DARKNUT_RED = $42
 COLOR_DARKNUT_BLUE = $74
 COLOR_PATH = $3C
 COLOR_LIGHT_WATER = $AE
+COLOR_PLAYER_00 = $C4
+
+    MACRO LOG_SIZE
+        echo .- {2}+$8000,{2},(.),{1}
+    ENDM

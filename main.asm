@@ -4,21 +4,146 @@
     INCLUDE "vars.asm"
 
     SEG CODE
-    ORG $F000
     
-ENTRY:
+    ORG $0000
+    RORG $F000
+BANK_0
+;WORLD_PF1:
+
+    INCLUDE "spr_world_pf1.asm"
+    INCLUDE "spr_world_pf2.asm"
+;MINIMAPA ;ds 8
+    .byte $FF,$FF,$2C,94,65,102,210,49
+;MINIMAPB 
+    ds 8
+;KERNEL_SCRIPT 
+    ds (4 * 2)
+    align 256
+;WORLDA
+    .byte $02, $03, $02, $03, $00, $01, $02, $03
+    .byte $04, $05, $06, $07, $08, $09, $0A, $0B
+    ds ROOM_MAX -$10
+;WORLDB 
+    ds ROOM_MAX
+;DOORA 
+    ds ROOM_MAX
+;DOORB 
+    ds ROOM_MAX
+;ROOM_SCRIPT 
+    ds $20 * 2
+ 
+    LOG_SIZE "-BANK 0-", BANK_0
+    
+    
+    ORG $0800
+    RORG $F000
+BANK_1
+    
+    INCLUDE "spr_dung_pf1.asm"
+    INCLUDE "spr_dung_pf2.asm"
+    
+    .byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+;MINIMAPB 
+    ds 8
+    ds (4 * 2)
+    align 256
+    
+;WORLDA
+    .byte $02, $03, $02, $03, $00, $01, $02, $03
+    .byte $04, $05, $06, $07, $08, $09, $0A, $0B
+    .byte $02, $03, $02, $03, $00, $01, $02, $03
+    .byte $04, $05, $06, $07, $08, $09, $0A, $0B
+    .byte $02, $03, $02, $03, $00, $01, $02, $03
+    .byte $04, $05, $06, $07, $08, $09, $0A, $0B
+    .byte $02, $03, $02, $03, $00, $01, $02, $03
+    .byte $04, $05, $06, $07, $08, $09, $0A, $0B
+    ;ds ROOM_MAX -$10
+    
+;WORLDB 
+    ds ROOM_MAX
+;DOORA 
+    ds ROOM_MAX
+;DOORB 
+    ds ROOM_MAX
+;ROOM_SCRIPT 
+    ds $20 * 2
+    
+    LOG_SIZE "-BANK 1-", BANK_1
+    
+    ORG $1000
+    RORG $F000
+BANK_2
+    
+    INCLUDE "spr_dung_pf1.asm"
+    INCLUDE "spr_dung_pf2.asm"
+    
+    LOG_SIZE "-BANK 2-", BANK_2
+    
+    ORG $1800
+    RORG $F000
+BANK_3
+
+    INCLUDE "spr_world_pf1.asm"
+    INCLUDE "spr_world_pf2.asm"
+    
+    LOG_SIZE "-BANK 3-", BANK_3
+    
+    ORG $2000
+    RORG $F000
+BANK_4
+    
+    INCLUDE "spr_world_pf1.asm"
+    INCLUDE "spr_world_pf2.asm"
+    
+    LOG_SIZE "-BANK 4-", BANK_4
+    
+    ORG $2800
+    RORG $F000
+BANK_5
+    
+    INCLUDE "spr_dung_pf1.asm"
+    INCLUDE "spr_dung_pf2.asm"
+    
+    LOG_SIZE "-BANK 5-", BANK_5
+    
+    ORG $3000
+    RORG $F000
+BANK_6
+    
+    INCLUDE "spr_world_pf1.asm"
+    INCLUDE "spr_world_pf2.asm"
+    
+    LOG_SIZE "-BANK 6-", BANK_6
+        
+    ORG $3800
+    RORG $F800
+    
+	repeat 512
+	.byte $00
+	repend
+    
+ENTRY: SUBROUTINE
     CLEAN_START
-    
+.wipeRam1
+    dex
+    sta $f800,x
+    bne .wipeRam1
+    lda $1FE7
+.wipeRam2
+    lda $00
+    dex
+    sta $f400,x
+    bne .wipeRam2
+    lda $1FE0
 INIT:
+    
     ; set player colors
-    lda #$C4 
+    lda #COLOR_PLAYER_00
     sta COLUP0
-    lda #$74
-    sta enColor
     
     ; set bgColor
     lda #COLOR_PATH
-    sta bgColor 
+    sta bgColor
     
     ; set playfield
     lda #$10
@@ -27,8 +152,6 @@ INIT:
     lda #%00000001
     sta CTRLPF
     
-    lda #0
-    sta roomId
     lda #$2C
     sta Rand8
     
@@ -37,6 +160,8 @@ INIT_POS:
     sta plX,x
     dex
     bpl INIT_POS
+    jsr LoadRoom
+    
     
 ;TOP_FRAME ;3 37 192 30
 VERTICAL_SYNC: ; 3 SCANLINES
@@ -69,8 +194,8 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
 __EnemyAIReturn:
 
 ; test player board bounds
+    ldy roomId
     lda plX
-    ldy plY
     cmp #BoardXR
     bne .plXRSkip
     ldx #BoardXL+1
@@ -83,7 +208,8 @@ __EnemyAIReturn:
     stx plX
     dec roomId
 .plXLSkip
-    cpy #BoardYU
+    lda plY
+    cmp #BoardYU
     bne .plYUSkip
     ldx #BoardYD+1
     stx plY
@@ -91,8 +217,9 @@ __EnemyAIReturn:
     lda roomId
     adc #$F8
     sta roomId
+    lda plY
 .plYUSkip
-    cpy #BoardYD
+    cmp #BoardYD
     bne .plYDSkip
     ldx #BoardYU-1
     stx plY
@@ -101,6 +228,14 @@ __EnemyAIReturn:
     adc #$8
     sta roomId
 .plYDSkip
+    cpy roomId
+    beq .skipSwapRoom
+; room setup
+    jsr LoadRoom
+.skipSwapRoom
+    jsr UpdateDoors
+    lda #ROOM_PX_HEIGHT-1
+    sta roomSpr
 
 ; Sword 
     bit plState
@@ -176,34 +311,16 @@ __EnemyAIReturn:
     sta enDY
     
 ; enemy sprite setup
-    lda #<(SprE0 + 7)
+    lda #<(SprP0 + 7)
     clc
     adc enSpr
     sec
     sbc enY
     sta enSpr
     
-    lda #>(SprE0 + 7)
+    lda #>(SprP0 + 7)
     sbc #0
     sta enSpr + 1
-    
-; room setup
-    ;ldy roomId
-    ldy #6
-    lda #ROOM_PX_HEIGHT-1
-.roomSprLoop
-    cpy #0
-    beq .roomSprLoopEnd
-    clc
-    adc #ROOM_PX_HEIGHT
-    dey
-    jmp .roomSprLoop
-.roomSprLoopEnd
-    sta roomSpr
-    lda bgColor
-    sta COLUBK
-    lda fgColor
-    sta COLUPF
     
 ; mini-map setup
     ldx #1
@@ -242,7 +359,7 @@ KERNEL_HUD: SUBROUTINE
     and #$7
     tax
 .loop:
-    lda SprMap1,y
+    lda MINIMAPA,y
     sta GRP1
     sta WSYNC
     lda #$80
@@ -294,17 +411,18 @@ KERNEL_HUD: SUBROUTINE
     ldx #0
     sta WSYNC
     sta CXCLR
+    LOG_SIZE "-KERNEL HUD-", KERNEL_HUD
    
 KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     sta ENAM0       ; 3
     stx GRP0        ; 3
     
     ldx roomSpr     ; 3
-    lda PF1Room0,x  ; 4
+    lda rPF1RoomL,x ; 4
     sta PF1         ; 3
-    lda PF2Room0,x  ; 4
+    lda rPF2RoomL,x ; 4
     sta PF2         ; 3
-
+    
 ; Enemy
     lda #7          ; 2     enemy height
     dcp enDY        ; 5
@@ -313,8 +431,18 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     .byte $2C       ; 4-5   BIT compare hack to skip 2 byte op
 .DrawE0:
     lda (enSpr),y   ; 5
+    pha
+    lda rPF1RoomR,x
+    sta PF1
+    pla
     sta WSYNC       ; 3  34-35 cycles, not counting WSYNC (can save cycle by fixing bcs)
     sta GRP1        ; 3
+    
+    ldx roomSpr     ; 3
+    lda rPF1RoomL,x ; 4
+    sta PF1         ; 3
+    lda rPF2RoomL,x ; 4
+    sta PF2         ; 3
 
 ; Player  
     lda #7          ; 2 player height
@@ -324,6 +452,11 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     .byte $2C       ; 4-5 BIT compare hack to skip 2 byte op
 .DrawP0:
     lda (plSpr),y   ; 5
+    pha
+    ldx roomSpr     ; 3
+    lda rPF1RoomR,x ; 4
+    sta PF1         ; 3
+    pla
     tax             ; 2
     
 ; Playfield
@@ -340,12 +473,14 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     lda #1          ; 2
     adc #0
 
-    sta WSYNC
+    ;sta WSYNC
     
     dey
     bpl KERNEL_LOOP
+    lda fgColor
+    sta COLUBK
     
-    echo "-KERNEL-",KERNEL_LOOP,(.)
+    LOG_SIZE "-KERNEL WORLD-", KERNEL_LOOP
     
 OVERSCAN: SUBROUTINE ; 30 scanlines
     sta WSYNC
@@ -386,7 +521,6 @@ OVERSCAN_WAIT:
     jmp VERTICAL_SYNC
 
 ProcessInput: SUBROUTINE
-_ = .
 
     lda plState
     and #$BF
@@ -484,8 +618,105 @@ MovePlayerUp:
     
 ContFin:
     rts
-    echo "Input Size ",(.-_)
+    LOG_SIZE "Input", ProcessInput
+
+LoadRoom: SUBROUTINE
+    ldy roomId
+    lda WORLDA,y
+    tay
+    lda #ROOM_SPR_HEIGHT-1
+    tax
+.roomSprOffLoop
+    cpy #0
+    beq .roomSprOffLoopEnd
+    clc
+    adc #ROOM_SPR_HEIGHT
+    dey
+    jmp .roomSprOffLoop
+.roomSprOffLoopEnd
+    tay
+.roomInitMem
+.roomInitMemLoop
+    lda.wy WORLD_PF1,y
+    ora #$C0
+    sta wPF1RoomL+2,x
+    sta wPF1RoomR+2,x
+    lda.wy WORLD_PF2,y
+    sta wPF2Room+2,x
+    dey
+    dex
+    bpl .roomInitMemLoop
+      
+    lda #$FF
+    ldy #1
+.roomUpDownBorder
+    sta wPF1RoomL,y
+    sta wPF2Room,y
+    sta wPF1RoomR,y
+    sta wPF1RoomL+ROOM_PX_HEIGHT-2,y
+    sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
+    sta wPF2Room+ROOM_PX_HEIGHT-2,y
+    dey
+    bpl .roomUpDownBorder
+
+    lda bgColor
+    sta COLUBK
+    lda fgColor
+    sta COLUPF
     
+UpdateDoors: SUBROUTINE
+    ldy #$3F
+    ldx #$FF
+    lda roomDoors
+    
+    lsr
+    sty wPF2Room+1
+    bcc .skipDown0
+    stx wPF2Room+1
+    
+.skipDown0
+    lsr
+    sty wPF2Room+0
+    bcc .skipDown1
+    stx wPF2Room+0
+    
+.skipDown1
+    lsr
+    sty wPF2Room+ROOM_PX_HEIGHT-2
+    bcc .skipUp0
+    stx wPF2Room+ROOM_PX_HEIGHT-2
+    
+.skipUp0
+    lsr
+    sty wPF2Room+ROOM_PX_HEIGHT-1
+    bcc .skipUp1
+    stx wPF2Room+ROOM_PX_HEIGHT-1
+    
+.skipUp1
+    lda roomDoors
+    and #$C0
+    sta Temp1
+    lda roomDoors
+    asl
+    asl
+    and #$C0
+    sta Temp2
+    
+    ldy #3
+.lrLoop
+    lda rPF1RoomL+(ROOM_PX_HEIGHT/2)-2,y
+    and #$3F
+    ora Temp1
+    sta wPF1RoomL+(ROOM_PX_HEIGHT/2)-2,y
+    lda rPF1RoomR+(ROOM_PX_HEIGHT/2)-2,y
+    and #$3F
+    ora Temp2
+    sta wPF1RoomR+(ROOM_PX_HEIGHT/2)-2,y
+    dey
+    bpl .lrLoop
+    rts
+    
+    LOG_SIZE "Room Load", LoadRoom
     
 ;===============================================================================
 ; PosObject
@@ -682,10 +913,12 @@ DarknutUpAI: SUBROUTINE
     inc enY
     rts
     
-    echo "-CODE-",$F000,(.)
-DataStart = (.)
+    LOG_SIZE "EnemyAI", EnemyAIDel
+    
+    LOG_SIZE "-CODE-", ENTRY
+    
+DataStart
     INCLUDE "ptr.asm"
-
     
     align 16
 Mul8:
@@ -711,48 +944,21 @@ SwordOff4Y:
     .byte 3, 3, -2, 6
 SwordOff8Y:
     .byte 3, 3, -6, 6
-;EnBoardBounds:
-;    .byte EnBoardXR, EnBoardXL, EnBoardYD, EnBoardYU
-
-Overworld:
-    repeat 256
-    .byte 0
-    repend
-Dungeon:
-    repeat 256
-    .byte 0
-    repend
-    echo "-DATA-",DataStart,(.)
     
-SpriteStart = (.)
-    INCLUDE "spr_num.asm"
-    INCLUDE "spr_map.asm"
-    INCLUDE "spr_en.asm"
+    LOG_SIZE "-DATA-", DataStart
+    
+SpriteStart
+    ;INCLUDE "spr_num.asm"
+    ;INCLUDE "spr_map.asm"
+    align 32
     INCLUDE "spr_pl.asm"
-    INCLUDE "spr_item.asm"
-    INCLUDE "spr_world_pf1.asm"
-    INCLUDE "spr_dung_pf1.asm"
-    INCLUDE "spr_world_pf2.asm"
-    INCLUDE "spr_dung_pf2.asm"
+    ;INCLUDE "spr_en.asm"
+    ;INCLUDE "spr_item.asm"
     
-	echo "-SPRITE-",SpriteStart,(.)
+	LOG_SIZE "-SPRITE-", SpriteStart
 
-    
-    ORG $FFFA             ; Cart config (so 6507 can start it up).
-                          ;
-                          ; This address will make DASM build a 4K cart image.
-                          ; Since the code actually takes < 300 bytes, you can
-                          ; replace with ORG $F7FA to build a 2K image. Such
-                          ; carts are wired to mirror their contents, so the
-                          ; CPU will pick up the config at the same address.
-                          ; 
-                          ; You can even make it 1K with ORG $F3FA, but I'm
-                          ; not sure 1K carts were ever manufactured. Stella
-                          ; plays them fine, but YMMV on Supercharger and
-                          ; other hardware/emulators.
-
-    .WORD ENTRY ; NMI
-    .WORD ENTRY ; RESET
-    .WORD ENTRY ; IRQ
-
+	ORG $3FFC
+	RORG $FFFC
+	.word ENTRY
+	.byte "07"
     END
