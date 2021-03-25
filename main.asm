@@ -8,46 +8,25 @@
     ORG $0000
     RORG $F000
 BANK_0
-;WORLD_PF1:
-
+WORLD_PF1
     INCLUDE "spr_world_pf1.asm"
+    INCLUDE "spr_dung_pf1.asm"
+WORLD_PF2
     INCLUDE "spr_world_pf2.asm"
-;MINIMAPA ;ds 8
-    .byte $FF,$FF,$2C,94,65,102,210,49
-;MINIMAPB 
-    ds 8
-;KERNEL_SCRIPT 
-    ds (4 * 2)
-    align 256
-;WORLDA
-    .byte $02, $03, $02, $03, $00, $01, $02, $03
-    .byte $04, $05, $06, $07, $08, $09, $0A, $0B
-    ds ROOM_MAX -$10
-;WORLDB 
-    ds ROOM_MAX
-;DOORA 
-    ds ROOM_MAX
-;DOORB 
-    ds ROOM_MAX
-;ROOM_SCRIPT 
-    ds $20 * 2
- 
-    LOG_SIZE "-BANK 0-", BANK_0
+    INCLUDE "spr_dung_pf2.asm"
+    INCLUDE "spr_en.asm"
+    INCLUDE "spr_item.asm"
+    ;INCLUDE "spr_num.asm"
+MINIMAP
+    INCLUDE "spr_map.asm"
+    INCLUDE "spr_pl.asm"
+    
+    LOG_SIZE "-BANK 0- Sprites", BANK_0
     
     
     ORG $0800
     RORG $F000
-BANK_1
-    
-    INCLUDE "spr_dung_pf1.asm"
-    INCLUDE "spr_dung_pf2.asm"
-    
-    .byte $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-;MINIMAPB 
-    ds 8
-    ds (4 * 2)
-    align 256
-    
+BANK_1 
 ;WORLDA
     .byte $02, $03, $02, $03, $00, $01, $02, $03
     .byte $04, $05, $06, $07, $08, $09, $0A, $0B
@@ -59,32 +38,28 @@ BANK_1
     .byte $04, $05, $06, $07, $08, $09, $0A, $0B
     ;ds ROOM_MAX -$10
     
-;WORLDB 
-    ds ROOM_MAX
+;WORLDB
+    .byte $02, $03, $02, $03, $00, $01, $02, $03
+    .byte $04, $05, $06, $07, $08, $09, $0A, $0B
+    ds ROOM_MAX -$10
+    
 ;DOORA 
     ds ROOM_MAX
 ;DOORB 
     ds ROOM_MAX
 ;ROOM_SCRIPT 
     ds $20 * 2
-    
     LOG_SIZE "-BANK 1-", BANK_1
     
     ORG $1000
     RORG $F000
 BANK_2
     
-    INCLUDE "spr_dung_pf1.asm"
-    INCLUDE "spr_dung_pf2.asm"
-    
     LOG_SIZE "-BANK 2-", BANK_2
     
     ORG $1800
     RORG $F000
 BANK_3
-
-    INCLUDE "spr_world_pf1.asm"
-    INCLUDE "spr_world_pf2.asm"
     
     LOG_SIZE "-BANK 3-", BANK_3
     
@@ -92,27 +67,17 @@ BANK_3
     RORG $F000
 BANK_4
     
-    INCLUDE "spr_world_pf1.asm"
-    INCLUDE "spr_world_pf2.asm"
-    
     LOG_SIZE "-BANK 4-", BANK_4
     
     ORG $2800
     RORG $F000
 BANK_5
-    
-    INCLUDE "spr_dung_pf1.asm"
-    INCLUDE "spr_dung_pf2.asm"
-    
+
     LOG_SIZE "-BANK 5-", BANK_5
     
     ORG $3000
     RORG $F000
 BANK_6
-    
-    INCLUDE "spr_world_pf1.asm"
-    INCLUDE "spr_world_pf2.asm"
-    
     LOG_SIZE "-BANK 6-", BANK_6
         
     ORG $3800
@@ -134,7 +99,6 @@ ENTRY: SUBROUTINE
     dex
     sta $f400,x
     bne .wipeRam2
-    lda $1FE0
 INIT:
     
     ; set player colors
@@ -146,7 +110,7 @@ INIT:
     sta bgColor
     
     ; set playfield
-    lda #$10
+    lda #COLOR_GREEN_ROCK
     sta fgColor
     
     lda #%00000001
@@ -184,6 +148,7 @@ VERTICAL_SYNC: ; 3 SCANLINES
     sta VSYNC
     
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
+    lda $1FE1
     jsr ProcessInput
     jsr Random
     lda #1
@@ -236,6 +201,11 @@ __EnemyAIReturn:
     jsr UpdateDoors
     lda #ROOM_PX_HEIGHT-1
     sta roomSpr
+    
+    lda bgColor
+    sta COLUBK
+    lda fgColor
+    sta COLUPF
 
 ; Sword 
     bit plState
@@ -335,6 +305,8 @@ __EnemyAIReturn:
     adc #$18
     ldx #0
     jsr PosObject ; location
+    
+    lda $1FE0
     sta WSYNC
     sta HMOVE
     
@@ -359,7 +331,7 @@ KERNEL_HUD: SUBROUTINE
     and #$7
     tax
 .loop:
-    lda MINIMAPA,y
+    lda MINIMAP,y
     sta GRP1
     sta WSYNC
     lda #$80
@@ -621,6 +593,7 @@ ContFin:
     LOG_SIZE "Input", ProcessInput
 
 LoadRoom: SUBROUTINE
+    lda $1FE1
     ldy roomId
     lda WORLDA,y
     tay
@@ -636,6 +609,7 @@ LoadRoom: SUBROUTINE
 .roomSprOffLoopEnd
     tay
 .roomInitMem
+    lda $1FE0
 .roomInitMemLoop
     lda.wy WORLD_PF1,y
     ora #$C0
@@ -658,11 +632,6 @@ LoadRoom: SUBROUTINE
     sta wPF2Room+ROOM_PX_HEIGHT-2,y
     dey
     bpl .roomUpDownBorder
-
-    lda bgColor
-    sta COLUBK
-    lda fgColor
-    sta COLUPF
     
 UpdateDoors: SUBROUTINE
     ldy #$3F
@@ -946,17 +915,7 @@ SwordOff8Y:
     .byte 3, 3, -6, 6
     
     LOG_SIZE "-DATA-", DataStart
-    
-SpriteStart
-    ;INCLUDE "spr_num.asm"
-    ;INCLUDE "spr_map.asm"
-    align 32
-    INCLUDE "spr_pl.asm"
-    ;INCLUDE "spr_en.asm"
-    ;INCLUDE "spr_item.asm"
-    
-	LOG_SIZE "-SPRITE-", SpriteStart
-
+  
 	ORG $3FFC
 	RORG $FFFC
 	.word ENTRY
