@@ -16,50 +16,41 @@ WORLD_PF2
     INCLUDE "spr_dung_pf2.asm"
     INCLUDE "spr_en.asm"
     INCLUDE "spr_item.asm"
-    ;INCLUDE "spr_num.asm"
 MINIMAP
     INCLUDE "spr_map.asm"
+    align $20
     INCLUDE "spr_pl.asm"
+    INCLUDE "spr_num.asm"
     
     LOG_SIZE "-BANK 0- Sprites", BANK_0
-    
     
     ORG $0800
     RORG $F000
 BANK_1 
-;WORLDA
-    .byte $02, $03, $02, $03, $00, $01, $02, $03
-    .byte $04, $05, $06, $07, $08, $09, $0A, $0B
-    .byte $02, $03, $02, $03, $00, $01, $02, $03
-    .byte $04, $05, $06, $07, $08, $09, $0A, $0B
-    .byte $02, $03, $02, $03, $00, $01, $02, $03
-    .byte $04, $05, $06, $07, $08, $09, $0A, $0B
-    .byte $02, $03, $02, $03, $00, $01, $02, $03
-    .byte $04, $05, $06, $07, $08, $09, $0A, $0B
-    ;ds ROOM_MAX -$10
+    INCLUDE "world/w0_w0.asm"
+    INCLUDE "world/w1_w2.asm"
+    INCLUDE "world/w0_w0do.asm"
+    INCLUDE "world/w1_w2do.asm"
     
-;WORLDB
-    .byte $02, $03, $02, $03, $00, $01, $02, $03
-    .byte $04, $05, $06, $07, $08, $09, $0A, $0B
-    ds ROOM_MAX -$10
-    
-;DOORA 
-    ds ROOM_MAX
-;DOORB 
-    ds ROOM_MAX
-;ROOM_SCRIPT 
-    ds $20 * 2
     LOG_SIZE "-BANK 1-", BANK_1
     
     ORG $1000
     RORG $F000
 BANK_2
+    INCLUDE "world/w3_w4.asm"
+    INCLUDE "world/w5_w6.asm"
+    INCLUDE "world/w3_w4do.asm"
+    INCLUDE "world/w5_w6do.asm"
     
     LOG_SIZE "-BANK 2-", BANK_2
     
     ORG $1800
     RORG $F000
 BANK_3
+    INCLUDE "world/w7_w8.asm"
+    INCLUDE "world/w9_w9.asm"
+    INCLUDE "world/w7_w8do.asm"
+    INCLUDE "world/w9_w9do.asm"
     
     LOG_SIZE "-BANK 3-", BANK_3
     
@@ -148,7 +139,6 @@ VERTICAL_SYNC: ; 3 SCANLINES
     sta VSYNC
     
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
-    lda $1FE1
     jsr ProcessInput
     jsr Random
     lda #1
@@ -180,7 +170,7 @@ __EnemyAIReturn:
     stx plY
     clc
     lda roomId
-    adc #$F8
+    adc #$F0
     sta roomId
     lda plY
 .plYUSkip
@@ -190,7 +180,7 @@ __EnemyAIReturn:
     stx plY
     clc
     lda roomId
-    adc #$8
+    adc #$10
     sta roomId
 .plYDSkip
     cpy roomId
@@ -261,7 +251,7 @@ __EnemyAIReturn:
     sbc m0Y
     sta m0DY
     
-; player sprite setup
+.player_sprite_setup
     lda #<(SprP0 + 7) ; Sprite + height-1
     clc
     ldx plDir
@@ -280,7 +270,7 @@ __EnemyAIReturn:
     sbc enY
     sta enDY
     
-; enemy sprite setup
+.enemy_sprite_setup
     lda #<(SprP0 + 7)
     clc
     adc enSpr
@@ -292,17 +282,34 @@ __EnemyAIReturn:
     sbc #0
     sta enSpr + 1
     
-; mini-map setup
+.minimap_setup
+; sprite setup
+    lda #<(MINIMAP) ; Sprite + height-1
+    clc
+    ldx worldId
+    adc Mul8,x
+    sta mapSpr
+    
+    lda #>(MINIMAP)
+    sta mapSpr+1
+
+
     ldx #1
     stx COLUBK
     lda #$18
     jsr PosObject ; minimap
-    lda #8
-    sta worldId
-    lda roomId
-    and #7
+    sec
+    ldx #5
+    lda #$F
+    bit worldId
+    beq .minimap_16
+    ldx #$00
+    lda #$7
     clc
+.minimap_16
+    and roomId
     adc #$18
+    stx NUSIZ1
     ldx #0
     jsr PosObject ; location
     
@@ -328,10 +335,11 @@ KERNEL_HUD: SUBROUTINE
     lsr
     lsr
     lsr
+    lsr 
     and #$7
     tax
 .loop:
-    lda MINIMAP,y
+    lda (mapSpr),y
     sta GRP1
     sta WSYNC
     lda #$80
@@ -356,6 +364,7 @@ KERNEL_HUD: SUBROUTINE
     jsr PosObject
     lda plX
     ldx #0
+    stx NUSIZ1
     jsr PosObject
     lda m0X
     ldx #2
@@ -593,32 +602,43 @@ ContFin:
     LOG_SIZE "Input", ProcessInput
 
 LoadRoom: SUBROUTINE
-    lda $1FE1
+    ;calculate world bank
+    ldy worldId
+    iny
+    tya
+    lsr
+    lsr
+    tay
+    lda $1FE1,y
+    
     ldy roomId
-    lda WORLDA,y
-    tay
-    lda #ROOM_SPR_HEIGHT-1
-    tax
-.roomSprOffLoop
-    cpy #0
-    beq .roomSprOffLoopEnd
-    clc
-    adc #ROOM_SPR_HEIGHT
-    dey
-    jmp .roomSprOffLoop
-.roomSprOffLoopEnd
-    tay
+    lda DOOR,y
+    sta roomDoors
+    lda WORLD,y
+    asl
+    asl
+    asl
+    asl
+    sta Temp0
+    sta Temp2
+    lda #0
+    adc #$F0
+    sta Temp1
+    adc #2
+    sta Temp3
+    
+    ldy #ROOM_SPR_HEIGHT-1
+    
 .roomInitMem
     lda $1FE0
 .roomInitMemLoop
-    lda.wy WORLD_PF1,y
+    lda (Temp0),y ; WORLD_PF1
     ora #$C0
-    sta wPF1RoomL+2,x
-    sta wPF1RoomR+2,x
-    lda.wy WORLD_PF2,y
-    sta wPF2Room+2,x
+    sta wPF1RoomL+2,y
+    sta wPF1RoomR+2,y
+    lda (Temp2),y ; WORLD_PF2
+    sta wPF2Room+2,y
     dey
-    dex
     bpl .roomInitMemLoop
       
     lda #$FF
@@ -639,47 +659,47 @@ UpdateDoors: SUBROUTINE
     lda roomDoors
     
     lsr
-    sty wPF2Room+1
+    sty wPF2Room+ROOM_PX_HEIGHT-2
     bcc .skipDown0
-    stx wPF2Room+1
+    stx wPF2Room+ROOM_PX_HEIGHT-2
     
 .skipDown0
     lsr
-    sty wPF2Room+0
+    sty wPF2Room+ROOM_PX_HEIGHT-1
     bcc .skipDown1
-    stx wPF2Room+0
+    stx wPF2Room+ROOM_PX_HEIGHT-1
     
 .skipDown1
     lsr
-    sty wPF2Room+ROOM_PX_HEIGHT-2
+    sty wPF2Room+1
     bcc .skipUp0
-    stx wPF2Room+ROOM_PX_HEIGHT-2
+    stx wPF2Room+1
     
 .skipUp0
     lsr
-    sty wPF2Room+ROOM_PX_HEIGHT-1
+    sty wPF2Room+0
     bcc .skipUp1
-    stx wPF2Room+ROOM_PX_HEIGHT-1
+    stx wPF2Room+0
     
 .skipUp1
     lda roomDoors
     and #$C0
-    sta Temp1
+    sta Temp0
     lda roomDoors
     asl
     asl
     and #$C0
-    sta Temp2
+    sta Temp1
     
     ldy #3
 .lrLoop
     lda rPF1RoomL+(ROOM_PX_HEIGHT/2)-2,y
     and #$3F
-    ora Temp1
+    ora Temp0
     sta wPF1RoomL+(ROOM_PX_HEIGHT/2)-2,y
     lda rPF1RoomR+(ROOM_PX_HEIGHT/2)-2,y
     and #$3F
-    ora Temp2
+    ora Temp1
     sta wPF1RoomR+(ROOM_PX_HEIGHT/2)-2,y
     dey
     bpl .lrLoop
@@ -891,7 +911,7 @@ DataStart
     
     align 16
 Mul8:
-    .byte 0x00, 0x08, 0x10, 0x18
+    .byte 0x00, 0x08, 0x10, 0x18, 0x20, 0x28, 0x30, 0x38, 0x40, 0x48
 Lazy8:
     .byte 0x01, 0x02, 0x04, 0x08
 Bit8:

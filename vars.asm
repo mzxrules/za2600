@@ -47,16 +47,17 @@ itemBombs   ds 1
 itemRupees  ds 1
 itemTri     ds 1
 
+mapSpr      ds 2
+Temp0       ds 1
 Temp1       ds 1
 Temp2       ds 1
+Temp3       ds 1    
 
 	echo "-RAM-",$80,(.)
     
     ORG $F000
-WORLDA          ds ROOM_MAX
-WORLDB          ds ROOM_MAX
-DOORA           ds ROOM_MAX
-DOORB           ds ROOM_MAX
+WORLD           ds 256
+DOOR            ds 256
 KERNEL_SCRIPT   ds (4 * 2)
 ROOM_SCRIPT     ds $20 * 2
 
