@@ -16,52 +16,52 @@ PF1Room16:
     .byte $C0 ; |XX......|
     .byte $C0 ; |XX......|
 PF1Room17:
-    .byte $C0 ; |XX......|
-    .byte $C0 ; |XX......|
-    .byte $C0 ; |XX......|
-    .byte $C3 ; |XX....XX|
-    .byte $C7 ; |XX...XXX|
-    .byte $C7 ; |XX...XXX|
-    .byte $07 ; |.....XXX|
-    .byte $07 ; |.....XXX|
-    .byte $07 ; |.....XXX|
-    .byte $07 ; |.....XXX|
-    .byte $C7 ; |XX...XXX|
-    .byte $C7 ; |XX...XXX|
-    .byte $C3 ; |XX....XX|
-    .byte $C0 ; |XX......|
-    .byte $C0 ; |XX......|
-    .byte $C0 ; |XX......|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
 PF1Room18:
-    .byte $20 ; |..X.....|
-    .byte $20 ; |..X.....|
-    .byte $20 ; |..X.....|
-    .byte $20 ; |..X.....|
-    .byte $20 ; |..X.....|
-    .byte $3F ; |..XXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
-    .byte $3F ; |..XXXXXX|
-    .byte $20 ; |..X.....|
-    .byte $20 ; |..X.....|
-    .byte $20 ; |..X.....|
-    .byte $20 ; |..X.....|
-    .byte $20 ; |..X.....|
+    .byte $00 ; |........|
+    .byte $01 ; |.......X|
+    .byte $03 ; |......XX|
+    .byte $07 ; |.....XXX|
+    .byte $07 ; |.....XXX|
+    .byte $07 ; |.....XXX|
 PF1Room19:
     .byte $80 ; |X.......|
     .byte $80 ; |X.......|
     .byte $80 ; |X.......|
     .byte $80 ; |X.......|
-    .byte $81 ; |X......X|
-    .byte $81 ; |X......X|
-    .byte $01 ; |.......X|
-    .byte $01 ; |.......X|
-    .byte $01 ; |.......X|
-    .byte $01 ; |.......X|
-    .byte $81 ; |X......X|
-    .byte $81 ; |X......X|
+    .byte $80 ; |X.......|
+    .byte $80 ; |X.......|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $80 ; |X.......|
+    .byte $80 ; |X.......|
     .byte $80 ; |X.......|
     .byte $80 ; |X.......|
     .byte $80 ; |X.......|
@@ -104,16 +104,16 @@ PF1Room22:
     .byte $80 ; |X.......|
     .byte $80 ; |X.......|
     .byte $8C ; |X...XX..|
-    .byte $80 ; |X.......|
-    .byte $80 ; |X.......|
-    .byte $8C ; |X...XX..|
-    .byte $0C ; |....XX..|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $0C ; |....XX..|
     .byte $8C ; |X...XX..|
     .byte $80 ; |X.......|
     .byte $80 ; |X.......|
+    .byte $00 ; |........|
+    .byte $0C ; |....XX..|
+    .byte $0C ; |....XX..|
+    .byte $00 ; |........|
+    .byte $80 ; |X.......|
+    .byte $80 ; |X.......|
+    .byte $8C ; |X...XX..|
     .byte $8C ; |X...XX..|
     .byte $80 ; |X.......|
     .byte $80 ; |X.......|

@@ -3,17 +3,17 @@ SprP0:
     .byte $24 ; |..X..X..|
     .byte $19 ; |...XX..X|
     .byte $99 ; |X..XX..X|
-    .byte $F9 ; |XXXXX..X|
+    .byte $D9 ; |XX.XX..X|
     .byte $FD ; |XXXXXX.X|
     .byte $68 ; |.XX.X...|
     .byte $3C ; |..XXXX..|
 SprP1:
     .byte $6C ; |.XX.XX..|
     .byte $24 ; |..X..X..|
-    .byte $99 ; |X..XX..X|
+    .byte $98 ; |X..XX...|
     .byte $99 ; |X..XX..X|
     .byte $9B ; |X..XX.XX|
-    .byte $BE ; |X.XXXXX.|
+    .byte $BF ; |X.XXXXXX|
     .byte $16 ; |...X.XX.|
     .byte $3C ; |..XXXX..|
 SprP2:

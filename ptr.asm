@@ -1,4 +1,4 @@
 EnemyAIL:
-    .byte <(DarknutAI-1), 
+    .byte <(NoAI-1), <(DarknutAI-1), <(StairAI-1), <(BlockStairAI-1), <(SpectacleOpenAI-1), <(TriforceAI-1)
 EnemyAIH:
-    .byte >(DarknutAI-1), 
+    .byte >(NoAI-1), >(DarknutAI-1), >(StairAI-1), >(BlockStairAI-1), >(SpectacleOpenAI-1), >(TriforceAI-1) 

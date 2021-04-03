@@ -4,7 +4,10 @@
     INCLUDE "vars.asm"
 
     SEG CODE
-    
+
+; ****************************************
+; *               BANK 0                 *
+; ****************************************
     ORG $0000
     RORG $F000
 BANK_0
@@ -21,19 +24,22 @@ MINIMAP
     align $20
     INCLUDE "spr_pl.asm"
     INCLUDE "spr_num.asm"
-    
+
     LOG_SIZE "-BANK 0- Sprites", BANK_0
-    
+
     ORG $0800
     RORG $F000
-BANK_1 
+BANK_1
     INCLUDE "world/w0_w0.asm"
     INCLUDE "world/w1_w2.asm"
     INCLUDE "world/w0_w0do.asm"
     INCLUDE "world/w1_w2do.asm"
-    
-    LOG_SIZE "-BANK 1-", BANK_1
-    
+    INCLUDE "world/w0_w0co.asm"
+    INCLUDE "world/w1_w2co.asm"
+    INCLUDE "world/b1lock.asm"
+
+    LOG_SIZE "-BANK 1- World | Level 1 2", BANK_1
+
     ORG $1000
     RORG $F000
 BANK_2
@@ -41,9 +47,16 @@ BANK_2
     INCLUDE "world/w5_w6.asm"
     INCLUDE "world/w3_w4do.asm"
     INCLUDE "world/w5_w6do.asm"
-    
-    LOG_SIZE "-BANK 2-", BANK_2
-    
+    INCLUDE "world/w3_w4co.asm"
+    INCLUDE "world/w5_w6co.asm"
+    INCLUDE "world/b2lock.asm"
+
+    LOG_SIZE "-BANK 2- Level 3 4 5 6", BANK_2
+
+; ****************************************
+; *               BANK 3                 *
+; ****************************************
+
     ORG $1800
     RORG $F000
 BANK_3
@@ -51,33 +64,291 @@ BANK_3
     INCLUDE "world/w9_w9.asm"
     INCLUDE "world/w7_w8do.asm"
     INCLUDE "world/w9_w9do.asm"
-    
-    LOG_SIZE "-BANK 3-", BANK_3
-    
+    INCLUDE "world/w7_w8co.asm"
+    INCLUDE "world/w9_w9co.asm"
+    INCLUDE "world/b3lock.asm"
+
+    LOG_SIZE "-BANK 3- Level 7 8 9", BANK_3
+
+; ****************************************
+; *               BANK 4                 *
+; ****************************************
+
     ORG $2000
     RORG $F000
 BANK_4
-    
-    LOG_SIZE "-BANK 4-", BANK_4
-    
+    INCLUDE "ptr.asm"
+NextDir: SUBROUTINE
+    jsr Random
+    and #3
+    tax
+.nextLoop
+    lda enBlockDir
+    and Lazy8,x
+    beq .end
+    inx
+    bpl .nextLoop
+.end
+    txa
+    and #3
+    sta enDir
+    rts
+NoAI:
+    lda #$F0
+    sta enSpr+1
+    sta enY
+    rts
+
+TriforceAI: SUBROUTINE
+    lda #>SprItem6
+    sta enSpr+1
+    lda #<SprItem6
+    sta enSpr
+    lda #$4C
+    sta enX
+    lda #$2C
+    sta enY
+    lda Frame
+    and #$10
+    bne .TriforceBlue
+
+    lda #$2A
+    .byte $2C
+.TriforceBlue
+    lda #$88
+    sta enColor
+    rts
+
+
+SpectacleOpenAI: SUBROUTINE
+
+    ldy #$6
+    lda rPF2Room,y
+    and #$F9
+    sta wPF2Room,y
+    sta wPF2Room+1,y
+    lda #$64
+    sta enX
+    lda #$20
+    sta enY
+    lda fgColor
+    sta enColor
+    lda #(30*8)
+    sta enSpr
+    rts
+
+BlockStairAI: SUBROUTINE
+; diamond room
+    ldy #$D
+    lda rPF2Room,y
+    and #$7F
+    sta wPF2Room,y
+    sta wPF2Room+1,y
+    lda #$4C
+    sta enX
+    lda #$3C
+    sta enY
+    lda fgColor
+    sta enColor
+    lda #(30*8)
+    sta enSpr
+    rts
+
+StairAI: SUBROUTINE
+    lda #$4C
+    sta enX
+    lda #$2C
+    sta enY
+    lda fgColor
+    sta enColor
+    lda #<SprItem7
+    sta enSpr
+    lda #>SprItem7
+    sta enSpr+1
+
+    lda enX
+    cmp plX
+    bne .playerNotOnStairs
+    lda enY
+    cmp plY
+    bne .playerNotOnStairs
+    lda #01
+    sta worldId
+    lda #$F3
+    sta roomId
+    lda #0
+    sta enType
+    lda roomFlags
+    ora #$80
+    sta roomFlags
+
+.playerNotOnStairs
+    rts
+
+DarknutAI: SUBROUTINE
+    lda #>SprE0
+    sta enSpr+1
+; update stun/recoil timers
+    lda enRecoil
+    cmp #1
+    adc #0
+    sta enRecoil
+    lda enStun
+    cmp #1
+    adc #0
+    sta enStun
+    asl
+    asl
+    adc #COLOR_DARKNUT_RED
+    sta enColor
+
+.setBlockedDir
+    lda enBlockDir
+    and #$F0
+    ldx enX
+    cpx #EnBoardXR
+    bne .setBlockedL
+    ora #1
+.setBlockedL
+    cpx #EnBoardXL
+    bne .setBlockedD
+    ora #2
+.setBlockedD
+    ldx enY
+    cpx #EnBoardYD
+    bne .setBlockedU
+    ora #4
+.setBlockedU
+    cpx #EnBoardYU
+    bne .setBlockedEnd
+    ora #8
+.setBlockedEnd
+    sta enBlockDir
+
+.checkPFHit
+    lda enRecoil
+    bne .endCheckPFHit
+    lda CXP1FB
+    bpl .endCheckPFHit
+    ; set blocked dir
+    ldx enDir
+    lda enBlockDir
+    ora Bit8,x
+    sta enBlockDir
+.endCheckPFHit
+
+.checkHit
+; if collided with weapon && stun == 0,
+    lda CXM0P
+    bpl .endCheckHit
+    lda enStun
+    bne .endCheckHit
+    lda #-32
+    sta enStun
+    lda #-16
+    sta enRecoil
+.endCheckHit
+
+.checkBlocked
+    lda enBlockDir
+    ldx enDir
+    and Lazy8,x
+    beq .endCheckBlocked
+    jsr NextDir
+    jmp .move
+.endCheckBlocked
+
+.randDir
+    lda enX
+    and #3
+    bne .move
+    lda enY
+    and #3
+    bne .move
+    lda Frame
+    eor enBlockDir
+    and #$20
+    beq .move
+    eor enBlockDir
+    sta enBlockDir
+    jsr NextDir
+
+.move
+
+    ldx enDir
+    ldy Mul8,x
+    sty enSpr
+
+    lda Frame
+    and #1
+    beq .return
+    txa
+
+    cmp #0
+    beq EnMoveRight
+    cmp #1
+    beq EnMoveLeft
+    cmp #2
+    beq EnMoveDown
+    cmp #3
+    beq EnMoveUp
+.return
+    rts
+
+
+EnMoveRight: SUBROUTINE
+    inc enX
+    rts
+
+EnMoveLeft: SUBROUTINE
+    dec enX
+    rts
+
+EnMoveDown: SUBROUTINE
+    dec enY
+    rts
+
+EnMoveUp: SUBROUTINE
+    inc enY
+    rts
+
+    LOG_SIZE "-BANK 4- EnemyAI", BANK_4
+
+
+; ****************************************
+; *               BANK 5                 *
+; ****************************************
+
     ORG $2800
     RORG $F000
 BANK_5
 
     LOG_SIZE "-BANK 5-", BANK_5
-    
+
     ORG $3000
     RORG $F000
+
+
+; ****************************************
+; *               BANK 6                 *
+; ****************************************
+
 BANK_6
     LOG_SIZE "-BANK 6-", BANK_6
-        
+
+
+
+; ****************************************
+; *               BANK 7                 *
+; ****************************************
+
     ORG $3800
     RORG $F800
-    
+
 	repeat 512
 	.byte $00
 	repend
-    
+
 ENTRY: SUBROUTINE
     CLEAN_START
 .wipeRam1
@@ -91,33 +362,33 @@ ENTRY: SUBROUTINE
     sta $f400,x
     bne .wipeRam2
 INIT:
-    
+
     ; set player colors
     lda #COLOR_PLAYER_00
     sta COLUP0
-    
+
     ; set bgColor
     lda #COLOR_PATH
     sta bgColor
-    
+
     ; set playfield
     lda #COLOR_GREEN_ROCK
     sta fgColor
-    
+
     lda #%00000001
     sta CTRLPF
-    
+
     lda #$2C
     sta Rand8
-    
+
     ldx #10-1
 INIT_POS:
     sta plX,x
     dex
     bpl INIT_POS
     jsr LoadRoom
-    
-    
+
+
 ;TOP_FRAME ;3 37 192 30
 VERTICAL_SYNC: ; 3 SCANLINES
     lda #2
@@ -130,14 +401,14 @@ VERTICAL_SYNC: ; 3 SCANLINES
     sta WSYNC
     lda #0      ; LoaD Accumulator with 0 so D1=0
     ;sta PF0     ; blank the playfield
-    sta PF1     
-    sta PF2     
+    sta PF1
+    sta PF2
     ;sta GRP0    ; blanks player0 if VDELP0 was off
-    ;sta GRP1    ; blanks player0 if VDELP0 was on, player1 if VDELP1 was off 
+    ;sta GRP1    ; blanks player0 if VDELP0 was on, player1 if VDELP1 was off
     ;sta GRP0    ; blanks                           player1 if VDELP1 was on
     sta WSYNC
     sta VSYNC
-    
+
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     jsr ProcessInput
     jsr Random
@@ -145,9 +416,10 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     ;sta VDELP0
     sta VDELP1
     jsr EnemyAIDel
-    
-__EnemyAIReturn:
 
+__EnemyAIReturn:
+    bit roomFlags
+    bmi .LoadRoom
 ; test player board bounds
     ldy roomId
     lda plX
@@ -186,18 +458,19 @@ __EnemyAIReturn:
     cpy roomId
     beq .skipSwapRoom
 ; room setup
+.LoadRoom
     jsr LoadRoom
 .skipSwapRoom
     jsr UpdateDoors
     lda #ROOM_PX_HEIGHT-1
     sta roomSpr
-    
+
     lda bgColor
     sta COLUBK
     lda fgColor
     sta COLUPF
 
-; Sword 
+; Sword
     bit plState
     bvc .skipSetItemTimer
 ; If Item Button, stab sword
@@ -209,7 +482,7 @@ __EnemyAIReturn:
     lda #$80
     sta m0Y
     bmi .endSword
-    
+
 .drawSword
     lda #0
     cpy #-7
@@ -234,7 +507,7 @@ __EnemyAIReturn:
     adc plY
     sta m0Y
 .endSword
-    
+
 ;===============================================================================
 ; Pre-Position Sprites
 ;===============================================================================
@@ -244,13 +517,13 @@ __EnemyAIReturn:
     sec
     sbc plY
     sta plDY
-    
+
 ; player sword draw height
     lda #(ROOM_HEIGHT+8)
     sec
     sbc m0Y
     sta m0DY
-    
+
 .player_sprite_setup
     lda #<(SprP0 + 7) ; Sprite + height-1
     clc
@@ -259,29 +532,29 @@ __EnemyAIReturn:
     sec ; set Carry
     sbc plY
     sta plSpr
-    
+
     lda #>(SprP0 + 7)
     sbc #0
     sta plSpr+1
-    
+
 ; enemy draw height
     lda #(ROOM_HEIGHT+8)
     sec
     sbc enY
     sta enDY
-    
+
 .enemy_sprite_setup
-    lda #<(SprP0 + 7)
+    lda enSpr; #<(SprE0 + 7)
     clc
-    adc enSpr
+    adc #7;enSpr
     sec
     sbc enY
     sta enSpr
-    
-    lda #>(SprP0 + 7)
+
+    lda enSpr + 1;#>(SprE0 + 7)
     sbc #0
     sta enSpr + 1
-    
+
 .minimap_setup
 ; sprite setup
     lda #<(MINIMAP) ; Sprite + height-1
@@ -289,7 +562,7 @@ __EnemyAIReturn:
     ldx worldId
     adc Mul8,x
     sta mapSpr
-    
+
     lda #>(MINIMAP)
     sta mapSpr+1
 
@@ -312,30 +585,30 @@ __EnemyAIReturn:
     stx NUSIZ1
     ldx #0
     jsr PosObject ; location
-    
+
     lda $1FE0
     sta WSYNC
     sta HMOVE
-    
+
 ; ===================================================
 ; Kernel Main
-; ===================================================    
+; ===================================================
 KERNEL_MAIN: SUBROUTINE ; 192 scanlines
     sta WSYNC
     lda INTIM
     bne KERNEL_MAIN
     sta VBLANK
-    
+
 KERNEL_HUD: SUBROUTINE
     ldy #7
-    lda #$84
+    lda #COLOR_MINIMAP
     sta COLUP1
     ;sta WSYNC
     lda roomId
     lsr
     lsr
     lsr
-    lsr 
+    lsr
     and #$7
     tax
 .loop:
@@ -371,39 +644,39 @@ KERNEL_HUD: SUBROUTINE
     jsr PosObject
     sta WSYNC
     sta HMOVE
-    
+
 .waitTimerLoop
     lda INTIM
     bne .waitTimerLoop
     sta WSYNC
-    
+
     lda #$FF
     sta PF0
     sta PF1
     sta PF2
-    
+
     ldy #ROOM_HEIGHT
     lda bgColor
     sta COLUBK
     lda enColor
     sta COLUP1
-    
+
     lda #0
     ldx #0
     sta WSYNC
     sta CXCLR
     LOG_SIZE "-KERNEL HUD-", KERNEL_HUD
-   
+
 KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     sta ENAM0       ; 3
     stx GRP0        ; 3
-    
+
     ldx roomSpr     ; 3
     lda rPF1RoomL,x ; 4
     sta PF1         ; 3
-    lda rPF2RoomL,x ; 4
+    lda rPF2Room,x  ; 4
     sta PF2         ; 3
-    
+
 ; Enemy
     lda #7          ; 2     enemy height
     dcp enDY        ; 5
@@ -418,14 +691,14 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     pla
     sta WSYNC       ; 3  34-35 cycles, not counting WSYNC (can save cycle by fixing bcs)
     sta GRP1        ; 3
-    
+
     ldx roomSpr     ; 3
     lda rPF1RoomL,x ; 4
     sta PF1         ; 3
-    lda rPF2RoomL,x ; 4
+    lda rPF2Room,x  ; 4
     sta PF2         ; 3
 
-; Player  
+; Player
     lda #7          ; 2 player height
     dcp plDY        ; 5
     bcs .DrawP0     ; 2/3
@@ -439,7 +712,7 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     sta PF1         ; 3
     pla
     tax             ; 2
-    
+
 ; Playfield
     tya             ; 2
     and #3          ; 2
@@ -447,29 +720,29 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     .byte $2C       ; 4-5
 .skipPFDec
     dec roomSpr     ; 5
-    
-; Player Missle 
+
+; Player Missle
     lda m0H         ; 3 player height
     dcp m0DY        ; 5
     lda #1          ; 2
     adc #0
 
     ;sta WSYNC
-    
+
     dey
     bpl KERNEL_LOOP
     lda fgColor
     sta COLUBK
-    
+
     LOG_SIZE "-KERNEL WORLD-", KERNEL_LOOP
-    
+
 OVERSCAN: SUBROUTINE ; 30 scanlines
     sta WSYNC
     lda #2
     sta VBLANK
     lda #32
     sta TIM64T ; 27 scanline timer
-    
+
     lda #0
     sta PF1
     sta PF2
@@ -477,10 +750,28 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     sta GRP1
     sta ENAM0
     sta PF0
-    
+
     ldx #1
 .posResetLoop
     lda CXP0FB,x
+    jsr TestCollisionReset
+    dex
+    bpl .posResetLoop
+
+OVERSCAN_WAIT:
+    sta WSYNC
+    lda INTIM
+    bne OVERSCAN_WAIT
+
+    jmp VERTICAL_SYNC
+
+
+;===============================================================================
+; CollisionReset
+;----------
+; N = reset collision
+; x = Player (0), Enemy (1)
+TestCollisionReset:
     bpl .SkipPFCollision
     lda plXL,x
     sta plX,x
@@ -491,18 +782,16 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     sta plXL,x
     lda plY,x
     sta plYL,x
-    dex
-    bpl .posResetLoop
+    rts
 
-OVERSCAN_WAIT:
-    sta WSYNC
-    lda INTIM
-    bne OVERSCAN_WAIT
-    
-    jmp VERTICAL_SYNC
 
 ProcessInput: SUBROUTINE
-
+    ; test if player locked
+    lda #02
+    bit plState
+    beq .InputContinue
+    rts
+.InputContinue
     lda plState
     and #$BF
     sta plState
@@ -527,13 +816,13 @@ ProcessInput: SUBROUTINE
     cmp #1
     adc #0
     sta plItemTimer
-    
+
     bmi .skipItemInput
-    
+
 .skipItemInput
     lda SWCHA
     and #$F0
-    
+
 ContRight:
     asl
     bcs ContLeft
@@ -543,13 +832,21 @@ ContRight:
     and #(GRID_STEP / 2)
     beq MovePlayerDown
     jmp MovePlayerUp
-    
+
 MovePlayerRight:
+    lda plState
+    lsr
+    bcc .MovePlayerRightFr
+    lda #2
+    bit plDir
+    bne .rts
+.MovePlayerRightFr
     lda #$00
     sta plDir
     inc plX
-    jmp ContFin
-    
+.rts
+    rts ;jmp ContFin
+
 ContLeft:
     asl
     bcs ContDown
@@ -559,13 +856,20 @@ ContLeft:
     and #(GRID_STEP / 2)
     beq MovePlayerDown
     jmp MovePlayerUp
-    
+
 MovePlayerLeft:
+    lda plState
+    lsr
+    bcc .MovePlayerLeftFr
+    lda #2
+    bit plDir
+    bne .rts
+.MovePlayerLeftFr
     lda #$01
     sta plDir
     dec plX
-    jmp ContFin
-    
+    rts ;jmp ContFin
+
 ContDown:
     asl
     bcs ContUp
@@ -575,13 +879,20 @@ ContDown:
     and #(GRID_STEP / 2)
     beq MovePlayerLeft
     jmp MovePlayerRight
-    
+
 MovePlayerDown:
+    lda plState
+    lsr
+    bcc .MovePlayerDownFr
+    lda #2
+    bit plDir
+    beq .rts
+.MovePlayerDownFr
     lda #$2
     sta plDir
     dec plY
-    jmp ContFin
-    
+    rts ;jmp ContFin
+
 ContUp:
     asl
     bcs ContFin
@@ -591,18 +902,30 @@ ContUp:
     and #(GRID_STEP / 2)
     beq MovePlayerLeft
     jmp MovePlayerRight
-    
+
 MovePlayerUp:
+    lda plState
+    lsr
+    bcc .MovePlayerUpFr
+    lda #2
+    bit plDir
+    beq .rts
+.MovePlayerUpFr
     lda #$3
     sta plDir
     inc plY
-    
+
 ContFin:
     rts
     LOG_SIZE "Input", ProcessInput
 
 LoadRoom: SUBROUTINE
-    ;calculate world bank
+    ; flush loadroom flag
+    lda roomFlags
+    and #$7F
+    sta roomFlags
+
+    ; calculate world bank
     ldy worldId
     iny
     tya
@@ -610,11 +933,26 @@ LoadRoom: SUBROUTINE
     lsr
     tay
     lda $1FE1,y
-    
+
     ldy roomId
-    lda DOOR,y
+    ; set fg/bg color
+    lda WORLD_COLOR,y
+    and #$0F
+    tax
+    lda WorldColors,x
+    sta fgColor
+    lda WORLD_COLOR,y
+    lsr
+    lsr
+    lsr
+    lsr
+    tax
+    lda WorldColors,x
+    sta bgColor
+
+    lda WORLD_DOOR,y
     sta roomDoors
-    lda WORLD,y
+    lda WORLD_TILE,y
     asl
     asl
     asl
@@ -626,9 +964,9 @@ LoadRoom: SUBROUTINE
     sta Temp1
     adc #2
     sta Temp3
-    
+
     ldy #ROOM_SPR_HEIGHT-1
-    
+
 .roomInitMem
     lda $1FE0
 .roomInitMemLoop
@@ -640,7 +978,7 @@ LoadRoom: SUBROUTINE
     sta wPF2Room+2,y
     dey
     bpl .roomInitMemLoop
-      
+
     lda #$FF
     ldy #1
 .roomUpDownBorder
@@ -652,35 +990,35 @@ LoadRoom: SUBROUTINE
     sta wPF2Room+ROOM_PX_HEIGHT-2,y
     dey
     bpl .roomUpDownBorder
-    
+
 UpdateDoors: SUBROUTINE
     ldy #$3F
     ldx #$FF
     lda roomDoors
-    
+
     lsr
     sty wPF2Room+ROOM_PX_HEIGHT-2
     bcc .skipDown0
     stx wPF2Room+ROOM_PX_HEIGHT-2
-    
+
 .skipDown0
     lsr
     sty wPF2Room+ROOM_PX_HEIGHT-1
     bcc .skipDown1
     stx wPF2Room+ROOM_PX_HEIGHT-1
-    
+
 .skipDown1
     lsr
     sty wPF2Room+1
     bcc .skipUp0
     stx wPF2Room+1
-    
+
 .skipUp0
     lsr
     sty wPF2Room+0
     bcc .skipUp1
     stx wPF2Room+0
-    
+
 .skipUp1
     lda roomDoors
     and #$C0
@@ -690,7 +1028,7 @@ UpdateDoors: SUBROUTINE
     asl
     and #$C0
     sta Temp1
-    
+
     ldy #3
 .lrLoop
     lda rPF1RoomL+(ROOM_PX_HEIGHT/2)-2,y
@@ -704,9 +1042,9 @@ UpdateDoors: SUBROUTINE
     dey
     bpl .lrLoop
     rts
-    
+
     LOG_SIZE "Room Load", LoadRoom
-    
+
 ;===============================================================================
 ; PosObject
 ;----------
@@ -722,12 +1060,12 @@ UpdateDoors: SUBROUTINE
 ; the routine will set the coarse X position of the object, as well as the
 ; fine-tune register that will be used when HMOVE is used.
 ;===============================================================================
-    align 16 ; FIXME: Page rollover issue   
+    align 16 ; FIXME: Page rollover issue
 PosObject:
         sec
         sta WSYNC
 DivideLoop
-        sbc #15        ; 2  2 - each time thru this loop takes 5 cycles, which is 
+        sbc #15        ; 2  2 - each time thru this loop takes 5 cycles, which is
         bcs DivideLoop ; 2  4 - the same amount of time it takes to draw 15 pixels
         eor #7         ; 2  6 - The EOR & ASL statements convert the remainder
         asl            ; 2  8 - of position/15 to the value needed to fine tune
@@ -736,12 +1074,12 @@ DivideLoop
         asl            ; 2 14
         sta.wx HMP0,X  ; 5 19 - store fine tuning of X
         sta RESP0,X    ; 4 23 - set coarse X position of object
-        rts            ; 6 29    
+        rts            ; 6 29
 
 ;===============================================================================
 ; Generate Random Number
 ;-----------------------
-;   A - returns the randomly generated value   
+;   A - returns the randomly generated value
 ;===============================================================================
 Random:
         lda Rand8
@@ -750,165 +1088,22 @@ Random:
         eor #$B4
 noeor:
         sta Rand8
-        rts   
-        
-  
+        rts
+
+
 EnemyAIDel:
+    lda $1FE4
     ldx enType
     lda EnemyAIH,x
     pha
     lda EnemyAIL,x
     pha
     rts
-    
-NextDir: SUBROUTINE
-    jsr Random
-    and #3
-    tax
-.nextLoop
-    lda enBlockDir
-    and Lazy8,x
-    beq .end
-    inx
-    bpl .nextLoop
-.end
-    txa
-    and #3
-    sta enDir
-    rts
-    
-DarknutAI: SUBROUTINE
-; update stun/recoil timers
-    lda enRecoil
-    cmp #1
-    adc #0
-    sta enRecoil
-    lda enStun
-    cmp #1
-    adc #0
-    sta enStun
-    asl
-    asl
-    adc #COLOR_DARKNUT_RED
-    sta enColor
-    
-.setBlockedDir
-    lda enBlockDir
-    and #$F0
-    ldx enX
-    cpx #EnBoardXR
-    bne .setBlockedL
-    ora #1
-.setBlockedL
-    cpx #EnBoardXL
-    bne .setBlockedD
-    ora #2
-.setBlockedD
-    ldx enY
-    cpx #EnBoardYD
-    bne .setBlockedU
-    ora #4
-.setBlockedU
-    cpx #EnBoardYU
-    bne .setBlockedEnd
-    ora #8
-.setBlockedEnd
-    sta enBlockDir
-    
-.checkPFHit    
-    lda enRecoil
-    bne .endCheckPFHit
-    lda CXP1FB
-    bpl .endCheckPFHit
-    ; set blocked dir
-    ldx enDir
-    lda enBlockDir
-    ora Bit8,x
-    sta enBlockDir
-.endCheckPFHit
-    
-.checkHit
-; if collided with weapon && stun == 0,   
-    lda CXM0P
-    bpl .endCheckHit
-    lda enStun
-    bne .endCheckHit
-    lda #-32
-    sta enStun
-    lda #-16
-    sta enRecoil
-.endCheckHit
 
-.checkBlocked
-    lda enBlockDir
-    ldx enDir
-    and Lazy8,x
-    beq .endCheckBlocked
-    jsr NextDir
-    jmp .move
-.endCheckBlocked
-
-.randDir
-    lda enX
-    and #3
-    bne .move
-    lda enY
-    and #3
-    bne .move
-    lda Frame
-    eor enBlockDir
-    and #$20
-    beq .move
-    eor enBlockDir
-    sta enBlockDir
-    jsr NextDir
-
-.move
-    lda enDir
-    tax
-    ldy Mul8,x
-    sty enSpr
-    
-    lda Frame
-    and #1
-    beq .return
-    txa
-    
-    cmp #0
-    beq DarknutRightAI
-    cmp #1
-    beq DarknutLeftAI
-    cmp #2
-    beq DarknutDownAI
-    cmp #3
-    beq DarknutUpAI
-.return
-    rts
-
-
-DarknutRightAI: SUBROUTINE
-    inc enX
-    rts
-
-DarknutLeftAI: SUBROUTINE
-    dec enX
-    rts
-    
-DarknutDownAI: SUBROUTINE
-    dec enY
-    rts
-    
-DarknutUpAI: SUBROUTINE
-    inc enY
-    rts
-    
-    LOG_SIZE "EnemyAI", EnemyAIDel
-    
     LOG_SIZE "-CODE-", ENTRY
-    
+
 DataStart
-    INCLUDE "ptr.asm"
-    
+
     align 16
 Mul8:
     .byte 0x00, 0x08, 0x10, 0x18, 0x20, 0x28, 0x30, 0x38, 0x40, 0x48
@@ -916,7 +1111,7 @@ Lazy8:
     .byte 0x01, 0x02, 0x04, 0x08
 Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
-    
+
 SwordWidth4:
     .byte $20, $20, $10, $10
 SwordWidth8:
@@ -933,9 +1128,12 @@ SwordOff4Y:
     .byte 3, 3, -2, 6
 SwordOff8Y:
     .byte 3, 3, -6, 6
-    
+    align 16
+WorldColors:
+    .byte $00, COLOR_DARK_BLUE, $00, $00, $42, $00, COLOR_PATH, $06, $02, COLOR_LIGHT_BLUE, COLOR_GREEN_ROCK, COLOR_LIGHT_WATER, $00, COLOR_CHOCOLATE, COLOR_GOLDEN, $FE
+
     LOG_SIZE "-DATA-", DataStart
-  
+
 	ORG $3FFC
 	RORG $FFFC
 	.word ENTRY

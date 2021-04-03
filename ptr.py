@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 tbl = [
     ( "EnemyAI", [
-        "DarknutAI"
-        #"DarknutRightAI",
-        #"DarknutLeftAI",
-        #"DarknutDownAI",
-        #"DarknutUpAI"
+        "NoAI",
+        "DarknutAI",
+        "StairAI",
+        "BlockStairAI",
+        "SpectacleOpenAI",
+        "TriforceAI"
     ])
 ]
 out = ""
@@ -20,3 +21,5 @@ for name, list in tbl:
     
 with open('ptr.asm', "w") as file:
     file.write(out)
+    
+print("Update Ptr Tables")

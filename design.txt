@@ -63,3 +63,16 @@ if last button == not pressed && button == pressed && ItemTimer == 0
 1111 1110 -2
 1111 1111 -1
 0000 0000  0
+
+
+== Door Flags ==
+Generic flags:
+00 = open
+01 = locked door
+03 = wall
+
+  Zero Capture Shift Masks
+N 0xFC  0x03     0
+S 0xF3  0x0C     2    
+E 0xCF  0x30     4
+W 0x3F  0xC0     6
