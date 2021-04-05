@@ -11,12 +11,8 @@
     ORG $0000
     RORG $F000
 BANK_0
-WORLD_PF1
-    INCLUDE "spr_world_pf1.asm"
-    INCLUDE "spr_dung_pf1.asm"
-WORLD_PF2
-    INCLUDE "spr_world_pf2.asm"
-    INCLUDE "spr_dung_pf2.asm"
+    INCLUDE "spr_room_pf1.asm"
+    INCLUDE "spr_room_pf2.asm"
     INCLUDE "spr_en.asm"
     INCLUDE "spr_item.asm"
 MINIMAP
@@ -30,10 +26,7 @@ MINIMAP
     ORG $0800
     RORG $F000
 BANK_1
-    INCLUDE "world/w0_w0.asm"
-    INCLUDE "world/w1_w2.asm"
-    INCLUDE "world/w0_w0do.asm"
-    INCLUDE "world/w1_w2do.asm"
+    INCLUDE "world/b1world.asm"
     INCLUDE "world/w0_w0co.asm"
     INCLUDE "world/w1_w2co.asm"
     INCLUDE "world/b1lock.asm"
@@ -43,10 +36,7 @@ BANK_1
     ORG $1000
     RORG $F000
 BANK_2
-    INCLUDE "world/w3_w4.asm"
-    INCLUDE "world/w5_w6.asm"
-    INCLUDE "world/w3_w4do.asm"
-    INCLUDE "world/w5_w6do.asm"
+    INCLUDE "world/b2world.asm"
     INCLUDE "world/w3_w4co.asm"
     INCLUDE "world/w5_w6co.asm"
     INCLUDE "world/b2lock.asm"
@@ -60,10 +50,7 @@ BANK_2
     ORG $1800
     RORG $F000
 BANK_3
-    INCLUDE "world/w7_w8.asm"
-    INCLUDE "world/w9_w9.asm"
-    INCLUDE "world/w7_w8do.asm"
-    INCLUDE "world/w9_w9do.asm"
+    INCLUDE "world/b3world.asm"
     INCLUDE "world/w7_w8co.asm"
     INCLUDE "world/w9_w9co.asm"
     INCLUDE "world/b3lock.asm"
@@ -949,32 +936,69 @@ LoadRoom: SUBROUTINE
     tax
     lda WorldColors,x
     sta bgColor
-
-    lda WORLD_DOOR,y
+    
+    ; PF1 Right
+    lda WORLD_T_PF1R,y
+    tax
+    and #$F0
+    sta Temp4
+    txa
+    and #$01
+    clc
+    adc #$F0
+    sta Temp5
+    txa
+    and #$0E
+    asl
+    asl
+    asl
+    asl
     sta roomDoors
-    lda WORLD_TILE,y
-    asl
-    asl
-    asl
-    asl
+    
+    ; PF1 Left
+    lda WORLD_T_PF1L,y
+    tax
+    and #$F0
     sta Temp0
-    sta Temp2
-    lda #0
+    txa
+    and #$01
+    clc
     adc #$F0
     sta Temp1
-    adc #2
+    txa
+    and #$0E
+    lsr
+    ora roomDoors
+    sta roomDoors
+    
+    ; PF2
+    lda WORLD_T_PF2,y
+    tax
+    and #$F0
+    sta Temp2
+    txa
+    and #$03
+    clc
+    adc #$F0
     sta Temp3
+    txa
+    and #$0C
+    asl
+    ora roomDoors
+    sta roomDoors
 
     ldy #ROOM_SPR_HEIGHT-1
 
 .roomInitMem
     lda $1FE0
 .roomInitMemLoop
-    lda (Temp0),y ; WORLD_PF1
+    lda (Temp0),y ; PF1L
     ora #$C0
     sta wPF1RoomL+2,y
+    lda (Temp4),y ; PF1R
+    ora #$C0
     sta wPF1RoomR+2,y
-    lda (Temp2),y ; WORLD_PF2
+    lda (Temp2),y ; PF2
     sta wPF2Room+2,y
     dey
     bpl .roomInitMemLoop

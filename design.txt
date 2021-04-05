@@ -65,6 +65,21 @@ if last button == not pressed && button == pressed && ItemTimer == 0
 0000 0000  0
 
 
+== World Tiles ==
+The overworld seems to need more PF2 strips than PF1
+Due to the 2 char overlap, PF1 for full 4x2 room sprites tend to be all 0s
+Thus to better utilize the room sprite sheet, double the room tile budget to 16 bits, over 3 bytes
+
+           LSB!  MSB
+PF1 Left:  1111 0001
+PF1 Right: 1111 0001
+PF2        1111 0011
+                      unpack algo
+Door Flags: 0000 1110  >> 1
+            0000 1110  << 4
+            0000 1100  << 1
+
+
 == Door Flags ==
 Generic flags:
 00 = open

@@ -1,0 +1,173 @@
+set "commands" to "(40000)"
+set "fread_delimiter" to 10
+set "fwrite_delimiter" to 10
+
+loop start
+set "$hexStr.&loopcount&" to "('loopcount'+48)"
+loop for 9
+inc "$hexStr" by "ABCDEF"
+
+: "q"
+set "CHAR" to 4
+loop start
+inc "$" by "SprItem&loopcount&:\n"
+set "sp&sp&" to 8
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 17
+set "$sht" to "spr_item.asm"
+goto "#dumpsht"
+
+goto "skip_quest"
+loop start
+inc "$" by "SprQuest&loopcount&:\n"
+set "sp&sp&" to 8
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 3
+: "skip_quest"
+
+set "CHAR" to 48
+loop start
+inc "$" by "SprN&loopcount&:\n"
+set "sp&sp&" to 7
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 9
+set "$sht" to "spr_num.asm"
+goto "#dumpsht"
+
+set "CHAR" to 22
+loop start
+inc "$" by "SprMap&loopcount&:\n"
+set "sp&sp&" to 8
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 9
+set "$sht" to "spr_map.asm"
+goto "#dumpsht"
+
+
+set "CHAR" to 0
+loop start
+inc "$" by "SprP&loopcount&:\n"
+set "sp&sp&" to 8
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 3
+set "$sht" to "spr_pl.asm"
+goto "#dumpsht"
+
+set "CHAR" to 96
+loop start
+inc "$" by "SprE&loopcount&:\n"
+set "$s&s&" to "SprE&loopcount&"
+set "sp&sp&" to 8
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 31
+set "$sht" to "spr_en.asm"
+goto "#dumpsht"
+
+set "$pf1" to ""
+set "$pf2" to ""
+
+. "PF1 Sheet"
+loop start
+set "mirror" 0
+set "CHAR" ('loopcount'+128+32)
+inc "$pf1" "PF1Room('loopcount'):\n"
+set "sp&sp&" 4
+goto "#dumpchr"
+inc "$pf1" "$dumpchr"
+set "CHAR" ('loopcount'+128)
+set "sp&sp&" 14
+set "yl_" 2
+goto "#dumpchr"
+inc "$pf1" "$dumpchr"
+loop 31
+
+. "PF2 Sheet"
+loop start
+set "mirror" 1
+set "CHAR" ('loopcount'+128+64+32)
+inc "$pf2" "PF2Room('loopcount'):\n"
+set "sp&sp&" 4
+goto "#dumpchr"
+inc "$pf2" "$dumpchr"
+set "CHAR" ('loopcount'+128+64)
+set "sp&sp&" 14
+set "yl_" 2
+goto "#dumpchr"
+inc "$pf2" "$dumpchr"
+loop 31
+
+set "$" to "$pf1"
+set "$sht" to "spr_room_pf1.asm"
+goto "#dumpsht"
+set "$" to "$pf2"
+set "$sht" to "spr_room_pf2.asm"
+goto "#dumpsht"
+
+set "$pf1" to ""
+set "$pf2" to ""
+
+end
+
+: "#dumpsht"
+set "&$sht&" to "fwrite_open"
+set "$" to "fwrite"
+set "" to "fwrite_open"
+set "$" to ""
+goto "#return"
+
+: "#dumpchr"
+set "$dumpchr" to ""
+inc "sp" by 2
+set "char_x" to "('CHAR'%32*8)"
+set "char_y" to "('CHAR'/32*14+'yl_')"
+set "yl" to "yl_"
+: "yloop"
+set "$lineb" to ""
+set "xl" to 0
+: "xloop"
+set "chr" to "(88-46*'pixel'+46)"
+set "$lineb.('xl')" to "chr"
+inc "char_x" by 1
+inc "xl" by 1
+if "xl" < 8 then "xloop"
+
+set "$lineb" to "|&$lineb&|"
+set "byte" to "yl"
+set "b" to "char_byte"
+if "mirror" != 1 then "skip_invchar"
+inc "$lineb" by " mirrored"
+set "b" to "(('b' a 0x55 << 1) o ('b' a 0xAA >> 1))"
+set "b" to "(('b' a 0x33 << 2) o ('b' a 0xCC >> 2))"
+set "b" to "(('b' a 0x0F << 4) o ('b' a 0xF0 >> 4))"
+: "skip_invchar"
+set "sp&sp&" to "b"
+goto "#hexbyte"
+set "$line&yl&" to "    .byte $&$hex& ; &$lineb&\n"
+dec "char_x" by 8
+inc "char_y" by 1
+inc "yl" by 1
+if "yl" < "sp('sp'-2)" then "yloop"
+: "flip_char"
+dec "yl" by 1
+inc "$dumpchr" by "$line&yl&"
+if "yl" > "yl_" then "flip_char"
+dec "sp" by 2
+set "yl_" to 0
+goto "#return"
+
+: "#hexbyte"
+set "$hex" to "&$hexStr+('sp&sp&'%256/16)#1&"
+inc "$hex" by "&$hexStr+('sp&sp&'%16)#1&"
+goto "#return"

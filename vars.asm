@@ -68,12 +68,15 @@ Temp0       ds 1
 Temp1       ds 1
 Temp2       ds 1
 Temp3       ds 1
+Temp4       ds 1
+Temp5       ds 1
 
 	echo "-RAM-",$80,(.)
     
     ORG $F000
-WORLD_TILE      ds 256
-WORLD_DOOR      ds 256
+WORLD_T_PF1L    ds 256
+WORLD_T_PF1R    ds 256
+WORLD_T_PF2     ds 256
 WORLD_COLOR     ds 256
 WORLD_LOCK      ds 16
 WORLD_LOCK_FLAG ds 16

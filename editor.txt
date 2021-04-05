@@ -1,0 +1,467 @@
+set "commands" to "(800000)"
+set "mzx_speed" to 8
+load char set "@48digits.chr"
+load char set "@65letters.chr"
+load char set "@97letters.chr"
+lockplayer
+set "SS_ROOM" (128)
+set "SS_UI" (256*2)
+set "SPR_UI" (256*2)
+set "SPR_WORK" (256*3)
+set "SPR_PF1" (256)
+set "SPR_PF2" (256+128)
+
+
+loop start
+put c00 CustomBlock "('loopcount'*2)" at "('loopcount'%64)" "('loopcount'/64*2)"
+put c00 CustomBlock "('loopcount'*2+1)" at "('loopcount'%64)" "('loopcount'/64*2+1)"
+loop for 127
+
+. "UI Sprite Init"
+loop start
+set "l" to 0
+: "loop"
+copy char "('loopcount'*8+'l'+'SS_UI')" to "('l'+'SPR_WORK')"
+inc "l" by 1
+if "l" < 8 then "loop"
+set "l" to 0
+: "loop2"
+copy char "('l'+'SPR_WORK')" to "('loopcount'*8+('l'*2)+'SPR_UI')"
+copy char "('l'+'SPR_WORK'+4)" to "('loopcount'*8+('l'*2)+1+'SPR_UI')"
+inc "l" by 1
+if "l" < 4 then "loop2"
+loop for 15
+zap "loop" 1
+zap "loop2" 1
+
+
+. "Room Sprite Sheet"
+loop start
+set "sx" to "('loopcount'%32)"
+set "sy" to "('loopcount'/32*64+'SS_ROOM')"
+set "tx" to "('loopcount'*2+'SPR_PF1')"
+
+copy char "('sx'+'sy')" to "('tx')"
+copy char "('sx'+'sy'+32)" to "('tx'+1)"
+loop 63
+
+loop start
+set "sx" to "('loopcount'%32)"
+set "sy" to "('loopcount'/32*64+'SS_ROOM')"
+set "tx" to "('loopcount'*2+'SPR_PF2')"
+
+copy char "('sx'+'sy')" to "('tx')"
+copy char "('sx'+'sy'+32)" to "('tx'+1)"
+loop 63
+
+loop start
+flip char "('SPR_PF1'+'loopcount'+64)" EAST
+loop 127
+
+loop start
+set "spr&loopcount&_unbound" to 1
+set "spr&loopcount&_offset" to "('loopcount'/32*256+'SPR_WORK')"
+set "spr&loopcount&_width" to 4
+set "spr&loopcount&_height" to 2
+set "spr&loopcount&_refx" to "('loopcount'%16*4)"
+set "spr&loopcount&_refy" to "('loopcount'/16%2*2)"
+set "spr&loopcount&_tcol" to -1
+loop for 127
+set "spr128_unbound" to 1
+set "spr128_offset" to "('SPR_UI'+8)"
+set "spr128_width" to 4
+set "spr128_height" to 2
+set "spr128_refx" to 0
+set "spr128_refy" to 0
+
+set "worldId" to 0
+goto "#load_data"
+. "#dummy_init"
+goto "#set_world"
+
+: "q"
+inc "frametimer" by 1
+wait for 1
+if leftpressed then "#left"
+if rightpressed then "#right"
+if uppressed then "#up"
+if downpressed then "#down"
+if spacepressed then "#space"
+if "key_pressed" = 127 then "#delete"
+
+loop start
+set "tilecolor" to "('$lvlco.&loopcount&')"
+put "('tilecolor')" Sprite "('loopcount')" at "('loopcount'%'lmod'*33+'lvlx')" "('loopcount'/'lmod'*21+56)"
+if "loopcount" != "roomId" then "sprite_draw_next"
+set "curcolor" to "('tilecolor' a 0x0F = 0x0F * -7+15)"
+set "curcolor" to "('frametimer'a0x4>0*'curcolor')"
+put "('curcolor')" Sprite p80 at "('loopcount'%'lmod'*33+'lvlx')" "('loopcount'/'lmod'*21+56)"
+: "sprite_draw_next"
+loop for "('lcell'-1)"
+goto "q"
+
+: "keyq"
+set "roomTyL" to "$lvl.('roomId'*3)"
+set "roomTyL" to "('roomTyL'+1%32)"
+set "$lvl.('roomId'*3)" to "roomTyL"
+goto "#update_room"
+goto "q"
+
+: "keyw"
+set "roomTyM" to "$lvl.('roomId'*3+2)"
+set "roomTyM" to "('roomTyM'+1%64)"
+set "$lvl.('roomId'*3+2)" to "roomTyM"
+goto "#update_room"
+goto "q"
+
+: "keye"
+set "roomTyR" to "$lvl.('roomId'*3+1)"
+set "roomTyR" to "('roomTyR'+1%32)"
+set "$lvl.('roomId'*3+1)" to "roomTyR"
+goto "#update_room"
+goto "q"
+
+: "keya"
+set "roomTyL" to "$lvl.('roomId'*3)"
+set "roomTyL" to "('roomTyL'+31%32)"
+set "$lvl.('roomId'*3)" to "roomTyL"
+goto "#update_room"
+goto "q"
+
+: "keys"
+set "roomTyM" to "$lvl.('roomId'*3+2)"
+set "roomTyM" to "('roomTyM'+63%64)"
+set "$lvl.('roomId'*3+2)" to "roomTyM"
+goto "#update_room"
+goto "q"
+
+: "keyd"
+set "roomTyR" to "$lvl.('roomId'*3+1)"
+set "roomTyR" to "('roomTyR'+31%32)"
+set "$lvl.('roomId'*3+1)" to "roomTyR"
+goto "#update_room"
+goto "q"
+
+: "keyp"
+ask "Save World Data?"
+: "NO"
+goto "q"
+
+: "YES"
+set "$w&worldId&" to "$lvl"
+set "$w&worldId&co" to "$lvlco"
+set "$w&worldId&door" to "$lvldoor"
+
+loop start
+set "world/w&loopcount&.bin" to "fwrite_open"
+set "$w&loopcount&" to "fwrite('$w&loopcount&.length')"
+set "" to "fwrite_open"
+set "world/w&loopcount&co.bin" to "fwrite_open"
+set "$w&loopcount&co" to "fwrite('$w&loopcount&co.length')"
+set "" to "fwrite_open"
+set "world/w&loopcount&door.bin" to "fwrite_open"
+set "$w&loopcount&door" to "fwrite('$w&loopcount&door.length')"
+set "" to "fwrite_open"
+goto "#create_lock_data"
+set "world/w&loopcount&lock.bin" to "fwrite_open"
+set "$w&loopcount&lock" to "fwrite('$w&loopcount&lock.length')"
+set "" to "fwrite_open"
+loop for 9
+* "~FSAVED"
+goto "q"
+
+: "#create_lock_data"
+if "loopcount" = 0 then "#return"
+set "l" to "loopcount"
+set "c" to 0
+loop start
+set "d" to "$w&l&door.&loopcount&"
+if "('d'>>2a3)" = 1 then "#create_lock_data_ns"
+if "('d'>>4a3)" = 1 then "#create_lock_data_ew"
+loop for 255
+set "loopcount" to "l"
+goto "#return"
+
+: "#create_lock_data_ns"
+set "$w&l&lock.('c'+0)" to "loopcount"
+set "$w&l&lock.('c'+1)" to "(0xF3)"
+set "$w&l&lock.('c'+2)" to "('loopcount'+8)"
+set "$w&l&lock.('c'+3)" to "(0xFC)"
+inc "c" by 4
+goto "#return"
+
+: "#create_lock_data_ew"
+set "$w&l&lock.('c'+0)" to "loopcount"
+set "$w&l&lock.('c'+1)" to "(0xCF)"
+set "$w&l&lock.('c'+2)" to "('loopcount'+1)"
+set "$w&l&lock.('c'+3)" to "(0x3F)"
+inc "c" by 4
+goto "#return"
+
+: "#load_data"
+loop start
+set "world/w&loopcount&.bin" to "fread_open"
+set "$w&loopcount&" to "fread('fread_length')"
+set "expectedLength" ('loopcount'=0*64+64*3)
+if "$w&loopcount&.length" < "expectedLength" "#load_data_resize_world"
+set "" to "fread_open"
+set "world/w&loopcount&co.bin" to "fread_open"
+set "$w&loopcount&co" to "fread('fread_length')"
+set "" to "fread_open"
+set "world/w&loopcount&door.bin" to "fread_open"
+set "$w&loopcount&door" to "fread('fread_length')"
+set "" to "fread_open"
+loop for 9
+goto "#return"
+
+: "#load_data_resize_world"
+set "$w&loopcount&.('expectedLength'-1)" 0
+goto "#return"
+
+: "keym"
+set "$w&worldId&" to "$lvl"
+set "$w&worldId&co" to "$lvlco"
+set "$w&worldId&door" to "$lvldoor"
+set "worldId" to "('worldId'+1%10)"
+goto "#set_world"
+goto "q"
+
+: "keyl"
+input string "Door Flags"
+set "$" to "input"
+set "doors" to 0
+loop start
+set "doors" to "('doors'<<2)"
+set "doors" to "('$.&loopcount&'-48 a 3 + 'doors')"
+loop for 3
+set "$lvldoor.&roomId&" to "('doors')"
+goto "#update_room"
+goto "q"
+
+: "keyz"
+* "~fCOPY"
+set "$copy_roomTy" to "$lvl+('roomId'*3)#3"
+set "copy_roomCo" to "('$lvlco.&roomId&')"
+set "copy_roomDoor" to "('$lvldoor.&roomId&')"
+goto "q"
+
+: "#space"
+* "~fPASTE"
+if "copy_roomCo" = 0 then "#return"
+set "$lvl+('roomId'*3)" to "$copy_roomTy#3"
+set "$lvlco.&roomId&" to "copy_roomCo"
+set "$lvldoor.&roomId&" to "copy_roomDoor"
+goto "#update_room"
+goto "#return"
+
+: "keyc"
+input string "Color"
+set "$" to "input"
+if "$.length" != 2 then "q"
+set "ascii" to "$.0"
+goto "#ascii_to_hex"
+set "co" to "('ascii'<<4)"
+set "ascii" to "$.1"
+goto "#ascii_to_hex"
+inc "co" by "ascii"
+set "$lvlco.&roomId&" to "co"
+goto "q"
+
+: "#delete"
+set "$lvlco.&roomId&" to 0
+goto "#return"
+
+: "#ascii_to_hex"
+if "ascii" < 48 then "ascii_to_hex_0"
+if "ascii" < 58 then "ascii_to_hex_n"
+if "ascii" < 65 then "ascii_to_hex_0"
+if "ascii" <= 70 then "ascii_to_hex_l"
+if "ascii" < 97 then "ascii_to_hex_0"
+if "ascii" < 103 then "ascii_to_hex_l"
+: "ascii_to_hex_0"
+set "ascii" to 0
+goto "#return"
+: "ascii_to_hex_n"
+dec "ascii" by 48
+goto "#return"
+: "ascii_to_hex_l"
+set "ascii" to "('ascii'-1%6+10)"
+goto "#return"
+
+
+: "key1"
+. "north door"
+set "doors" to "$lvldoor.&roomId&"
+set "prev" to "doors"
+set "doors" to "('doors' + 0x01 a 0x03 + ('doors' a 0xFC))"
+set "$lvldoor.&roomId&" to "doors"
+goto "#update_room"
+goto "q"
+
+: "key2"
+. "south door"
+set "doors" to "$lvldoor.&roomId&"
+set "doors" to "('doors'+ 0x04 a 0x0C + ('doors' a 0xF3))"
+set "$lvldoor.&roomId&" to "doors"
+goto "#update_room"
+goto "q"
+
+: "key4"
+. "east door"
+set "doors" to "$lvldoor.&roomId&"
+set "doors" to "('doors' + 0x10 a 0x30 + ('doors' a 0xCF))"
+set "$lvldoor.&roomId&" to "doors"
+goto "#update_room"
+goto "q"
+
+: "key3"
+. "west door"
+set "doors" to "$lvldoor.&roomId&"
+set "doors" to "('doors' + 0x40 a 0xC0 + ('doors' a 0x3F))"
+set "$lvldoor.&roomId&" to "doors"
+goto "#update_room"
+goto "q"
+
+
+
+: "#up"
+set "roomId" to "('roomId'+'lcell'-'lmod'%'lcell')"
+set "frametimer" to 4
+goto "#return"
+: "#down"
+set "roomId" to "('roomId'+'lmod'%'lcell')"
+set "frametimer" to 4
+goto "#return"
+: "#left"
+set "roomId" to "('roomId'/'lmod'*'lmod'+('roomId'+'lmod'-1%'lmod'))"
+set "frametimer" to 4
+goto "#return"
+: "#right"
+set "roomId" to "('roomId'/'lmod'*'lmod'+('roomId'+1%'lmod'))"
+set "frametimer" to 4
+goto "#return"
+
+
+: "#update_room"
+. "roomId"
+. "roomTy"
+set "roomTyL" to "('$lvl.('roomId'*3)' a 31)"
+loop start
+copy char "('roomTyL'*2+'loopcount'+'SPR_PF1')" to "('roomId'*8+'loopcount'+'SPR_WORK')"
+loop for 1
+set "roomTyR" to "('$lvl.('roomId'*3+1)'a0x1F)"
+loop start
+copy char "('roomTyR'*2+'loopcount'+'SPR_PF2')" to "('roomId'*8+'loopcount'+'SPR_WORK'+6)"
+loop for 1
+set "roomTyM" to "('$lvl.('roomId'*3+2)'a0x3F)"
+loop start
+copy char "('roomTyM'*2+'loopcount'+'SPR_PF2')" to "('roomId'*8+'loopcount'+'SPR_WORK'+2)"
+copy char "('roomTyM'*2+'loopcount'+'SPR_PF1')" to "('roomId'*8+'loopcount'+'SPR_WORK'+4)"
+loop for 1
+set "sprA" 0
+goto "#mask_spr"
+set "sprA" to 1
+goto "#compose_room_spr"
+
+set "lur" to 0
+set "doors" to "$lvldoor.&roomId&"
+: "update_room_doors"
+if "('doors' a 3)" = 0 then "update_room_doors_skip"
+set "sprA" to "('doors' a 3-1*4+'lur'+2)"
+goto "#compose_room_spr"
+: "update_room_doors_skip"
+set "doors" to "('doors'>>2)"
+inc "lur" by 1
+if "lur" < 4 then "update_room_doors"
+goto "#return"
+
+: "#mask_spr"
+set "compose_op" to 0
+set "sprA" to "('SPR_UI'/8+'sprA')"
+set "sprB" to "('SPR_WORK'/8+'roomId')"
+goto "compose_spr_imp"
+
+: "#compose_room_spr"
+set "compose_op" to 1
+set "sprA" to "('SPR_UI'/8+'sprA')"
+set "sprB" to "('SPR_WORK'/8+'roomId')"
+
+: "compose_spr_imp"
+. "combine sprA to sprB"
+
+loop start
+set "l" to 0
+: "compose"
+set "char" to "('sprA'*8+'loopcount')"
+set "byte" to "l"
+set "cpbyte" to "char_byte"
+set "char" to "('sprB'*8+'loopcount')"
+if "compose_op" = 0 then "#compose_xor_mask"
+if "compose_op" = 1 then "#compose_or"
+inc "l" by 1
+if "l" < 14 then "compose"
+loop for 7
+goto "#return"
+
+: "#compose_xor_mask"
+set "char_byte" to "('char_byte'a('cpbyte'x255))"
+goto "#return"
+
+: "#compose_or"
+set "char_byte" to "('char_byte'o'cpbyte')"
+goto "#return"
+
+: "#set_world"
+set "$lvl" to "$w&worldId&"
+set "$lvlco" to "$w&worldId&co"
+set "$lvldoor" to "$w&worldId&door"
+if "worldId" = 0 then "#draw_16x8"
+if "worldId" > 0 then "#draw_8x8"
+
+set "roomId" to 0
+: "init_room_spr"
+goto "#update_room"
+inc "roomId" by 1
+if "roomId" < "lcell" then "init_room_spr"
+set "roomId" to 0
+goto "#return"
+
+: "#dummy_init"
+loop start
+set "$w0.&loopcount&" to "('loopcount'a0x1F)"
+set "$w0co.&loopcount&" to 7
+set "$w0door.&loopcount&" to 0
+loop for 127
+
+set "l" to 1
+: "dummy_init"
+loop start
+set "$w&l&.&loopcount&" to "('loopcount'a0x1F)"
+set "$w&l&co.&loopcount&" to 7
+set "$w&l&door.&loopcount&" to 0
+loop for "('l'<1*64+63)"
+inc "l" by 1
+if "l" < 10 then "dummy_init"
+goto "#return"
+
+: "#draw_8x8"
+set "lmod" to 8
+set "lvlx" to "(6*33)"
+set "lcell" to 64
+loop start
+set "spr('loopcount'+64)_off" to 1
+loop for 63
+goto "#return"
+
+: "#draw_16x8"
+set "lmod" to 16
+set "lvlx" to "(2*33)"
+set "lcell" to 128
+goto "#return"
+
+: "#mirror_b"
+set "b" to "(('b' a 0x55 << 1) o ('b' a 0xAA >> 1))"
+set "b" to "(('b' a 0x33 << 2) o ('b' a 0xCC >> 2))"
+set "b" to "(('b' a 0x0F << 4) o ('b' a 0xF0 >> 4))"
+goto "#return"
+
