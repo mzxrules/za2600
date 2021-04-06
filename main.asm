@@ -373,6 +373,8 @@ INIT_POS:
     sta plX,x
     dex
     bpl INIT_POS
+    lda #$77
+    sta roomId
     jsr LoadRoom
 
 

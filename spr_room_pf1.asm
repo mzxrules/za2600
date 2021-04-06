@@ -179,19 +179,19 @@ PF1Room10:
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $F8 ; |XXXXX...|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
 PF1Room11:
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
+    .byte $F8 ; |XXXXX...|
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
@@ -203,22 +203,22 @@ PF1Room11:
     .byte $00 ; |........|
     .byte $00 ; |........|
 PF1Room12:
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
+    .byte $F8 ; |XXXXX...|
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $F8 ; |XXXXX...|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
+    .byte $FC ; |XXXXXX..|
 PF1Room13:
     .byte $00 ; |........|
     .byte $00 ; |........|
@@ -226,10 +226,10 @@ PF1Room13:
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
