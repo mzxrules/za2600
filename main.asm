@@ -649,7 +649,7 @@ KERNEL_HUD: SUBROUTINE
     sta COLUBK
     lda enColor
     sta COLUP1
-
+    
     lda #0
     ldx #0
     sta WSYNC
@@ -1016,8 +1016,98 @@ LoadRoom: SUBROUTINE
     sta wPF2Room+ROOM_PX_HEIGHT-2,y
     dey
     bpl .roomUpDownBorder
+    lda worldId
+    beq UpdateWorldDoors
+    rts
+    
+UpdateWorldDoors: SUBROUTINE
+    lda roomDoors
+    and #3
+    tax
+    ldy #1
+.Up
+    lda WorldDoorPF2,x
+    sta wPF2Room+ROOM_PX_HEIGHT-2,y
+    lda WorldDoorPF1Up,x
+    sta wPF1RoomL+ROOM_PX_HEIGHT-2,y
+    sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
+    dey
+    bpl .Up
+    
+    lda roomDoors
+    lsr
+    lsr
+    pha
+    and #3
+    tax
+    ldy #1
+.Down
+    lda WorldDoorPF2,x
+    sta wPF2Room,y
+    lda WorldDoorPF1Up,x
+    sta wPF1RoomL,y
+    sta wPF1RoomR,y
+    dey
+    bpl .Down
 
+.LeftRight
+    pla
+    lsr
+    lsr
+    tay
+    and #3
+    tax
+    lda WorldDoorPF1A,x
+    sta Temp1
+    lda WorldDoorPF1B,x
+    sta Temp3
+    tya
+    lsr
+    lsr
+    and #3
+    tax
+    lda WorldDoorPF1A,x
+    sta Temp0
+    lda WorldDoorPF1B,x
+    sta Temp2
+    
+    ldy #5
+.LeftRightWorldDoor
+    lda rPF1RoomL+2,y
+    and Temp0
+    sta wPF1RoomL+2,y
+    
+    lda rPF1RoomL+12,y
+    and Temp0
+    sta wPF1RoomL+12,y
+    
+    lda rPF1RoomR+2,y
+    and Temp1
+    sta wPF1RoomR+2,y
+    
+    lda rPF1RoomR+12,y
+    and Temp1
+    sta wPF1RoomR+12,y
+    dey
+    bpl .LeftRightWorldDoor
+    
+    ldy #3
+.LeftRightWorldDoor2
+    lda rPF1RoomL+8,y
+    and Temp2
+    sta wPF1RoomL+8,y
+    
+    lda rPF1RoomR+8,y
+    and Temp3
+    sta wPF1RoomR+8,y
+    dey
+    bpl .LeftRightWorldDoor2
+rts_UpdateDoors:
+    rts
+    
 UpdateDoors: SUBROUTINE
+    lda worldId
+    beq rts_UpdateDoors
     ldy #$3F
     ldx #$FF
     lda roomDoors
@@ -1137,6 +1227,20 @@ Lazy8:
     .byte 0x01, 0x02, 0x04, 0x08
 Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
+    
+    
+    align 4    
+WorldDoorPF1Up:
+    .byte $C0, $C0, $FF, $FF
+    
+WorldDoorPF1A:
+    .byte $3F, $3F, $FF, $FF
+    
+WorldDoorPF1B:
+    .byte $3F, $FF, $3F, $FF
+    
+WorldDoorPF2:
+    .byte $00, $FF, $3F, $FF
 
 SwordWidth4:
     .byte $20, $20, $10, $10
@@ -1156,7 +1260,7 @@ SwordOff8Y:
     .byte 3, 3, -6, 6
     align 16
 WorldColors:
-    .byte $00, COLOR_DARK_BLUE, $00, $00, $42, $00, COLOR_PATH, $06, $02, COLOR_LIGHT_BLUE, COLOR_GREEN_ROCK, COLOR_LIGHT_WATER, $00, COLOR_CHOCOLATE, COLOR_GOLDEN, $FE
+    .byte $00, COLOR_DARK_BLUE, $00, COLOR_LIGHT_BLUE, $42, $00, COLOR_PATH, $06, $02, COLOR_LIGHT_BLUE, COLOR_GREEN_ROCK, COLOR_LIGHT_WATER, $00, COLOR_CHOCOLATE, COLOR_GOLDEN, $0E
 
     LOG_SIZE "-DATA-", DataStart
 

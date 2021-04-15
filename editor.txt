@@ -30,7 +30,7 @@ copy char "('l'+'SPR_WORK')" to "('loopcount'*8+('l'*2)+'SPR_UI')"
 copy char "('l'+'SPR_WORK'+4)" to "('loopcount'*8+('l'*2)+1+'SPR_UI')"
 inc "l" by 1
 if "l" < 4 then "loop2"
-loop for 15
+loop for 31
 zap "loop" 1
 zap "loop2" 1
 
@@ -360,14 +360,15 @@ copy char "('roomTyM'*2+'loopcount'+'SPR_PF1')" to "('roomId'*8+'loopcount'+'SPR
 loop for 1
 set "sprA" 0
 goto "#mask_spr"
-set "sprA" to 1
+set "worldboarder" "('worldId'=0 * 13)"
+set "sprA" to "('worldboarder'+ 1)"
 goto "#compose_room_spr"
 
 set "lur" to 0
 set "doors" to "$lvldoor.&roomId&"
 : "update_room_doors"
 if "('doors' a 3)" = 0 then "update_room_doors_skip"
-set "sprA" to "('doors' a 3-1*4+'lur'+2)"
+set "sprA" to "('doors' a 3-1*4+'lur'+2+'worldboarder')"
 goto "#compose_room_spr"
 : "update_room_doors_skip"
 set "doors" to "('doors'>>2)"

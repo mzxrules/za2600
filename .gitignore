@@ -9,6 +9,7 @@ macro.h
 backup1.mzx
 backup2.mzx
 backup3.mzx
+__test.mzx
 
 world/*.asm
 !world/*.bin
