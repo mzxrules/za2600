@@ -91,3 +91,15 @@ N 0xFC  0x03     0
 S 0xF3  0x0C     2    
 E 0xCF  0x30     4
 W 0x3F  0xC0     6
+
+
+
+set "p_up" "('p_up'+1*('key_pressed'=273o'key72'))"
+
+Position ALL Objects
+need x range 0-136 ($88)
+10 x 15 gets 0-149
+9 x 15 gets 0-134
+10 * 5 -1 = 49 cycles, 68 cycles remain
+
+-8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7

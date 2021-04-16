@@ -7,20 +7,24 @@
 Frame       ds 1
 Rand8       ds 1
 plX         ds 1
-enX         ds 2
+enX         ds 1
 m0X         ds 1
 m1X         ds 1
+blX         ds 1
 plXL        ds 1
-enXL        ds 2
+enXL        ds 1
 plY         ds 1
-enY         ds 2
+enY         ds 1
 m0Y         ds 1
 m1Y         ds 1
+blY         ds 1
 plYL        ds 1
-enYL        ds 2
+enYL        ds 1
 plDY        ds 1
 enDY        ds 1
 m0DY        ds 1
+m1DY        ds 1
+blDY        ds 1
 plSpr       ds 2 ; plSprOff
 enSpr       ds 2 ; enSprOff
 plDir       ds 1
@@ -46,6 +50,8 @@ roomDoors   ds 1
 roomLocks   ds 10
 roomItems   ds 6
 m0H         ds 1
+m1H         ds 1
+blH         ds 1
 plState     ds 1
     ; 1000_0000 Fire Pressed Last Frame
     ; 0100_0000 Use Current Item
@@ -104,14 +110,14 @@ ROOM_SPR_SHEET      = 16 ; width of room sprite sheet in 8 bit sprites
 ROOM_HEIGHT         = [(8*ROOM_PX_HEIGHT)/2-1] ; Screen visible height of play
 GRID_STEP           = 4 ; unit grid that the player should snap to
 
-BoardXL = $0F
-BoardXR = $89
-BoardYU = $51
-BoardYD = $07
-EnBoardXR = $80
-EnBoardXL = $18
-EnBoardYD = $0C
-EnBoardYU = $4C
+BoardXL = $04
+BoardXR = $7C
+BoardYU = $50
+BoardYD = $08
+EnBoardXL = BoardXL+8
+EnBoardXR = BoardXR-8
+EnBoardYU = BoardYU-8
+EnBoardYD = BoardYD+8
 
 ItemTimerSword = -9 ; counts up to 0
 

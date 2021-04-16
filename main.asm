@@ -361,10 +361,16 @@ INIT:
     ; set playfield
     lda #COLOR_GREEN_ROCK
     sta fgColor
-
-    lda #%00000001
+    
+    lda #%00110001 ; ball size 8, reflect playfield
     sta CTRLPF
-
+    
+    ; set ball
+    lda #$40
+    sta blX
+    sta blY
+    
+    ; seed RNG
     lda #$2C
     sta Rand8
 
@@ -404,6 +410,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda #1
     ;sta VDELP0
     sta VDELP1
+    sta VDELBL
     jsr EnemyAIDel
 
 __EnemyAIReturn:
@@ -412,22 +419,22 @@ __EnemyAIReturn:
 ; test player board bounds
     ldy roomId
     lda plX
-    cmp #BoardXR
+    cmp #BoardXR+1
     bne .plXRSkip
-    ldx #BoardXL+1
+    ldx #BoardXL
     stx plX
     inc roomId
 .plXRSkip
-    cmp #BoardXL
+    cmp #BoardXL-1
     bne .plXLSkip
-    ldx #BoardXR-1
+    ldx #BoardXR
     stx plX
     dec roomId
 .plXLSkip
     lda plY
-    cmp #BoardYU
+    cmp #BoardYU+1
     bne .plYUSkip
-    ldx #BoardYD+1
+    ldx #BoardYD
     stx plY
     clc
     lda roomId
@@ -435,9 +442,9 @@ __EnemyAIReturn:
     sta roomId
     lda plY
 .plYUSkip
-    cmp #BoardYD
+    cmp #BoardYD-1
     bne .plYDSkip
-    ldx #BoardYU-1
+    ldx #BoardYU
     stx plY
     clc
     lda roomId
@@ -543,7 +550,16 @@ __EnemyAIReturn:
     lda enSpr + 1;#>(SprE0 + 7)
     sbc #0
     sta enSpr + 1
-
+    
+.ball_sprite_setup
+    lda #7
+    sta blH
+; ball draw height
+    lda #(ROOM_HEIGHT+1)
+    sec
+    sbc blY
+    sta blDY
+    
 .minimap_setup
 ; sprite setup
     lda #<(MINIMAP) ; Sprite + height-1
@@ -621,16 +637,9 @@ KERNEL_HUD: SUBROUTINE
     sta GRP1
     sta GRP0
 ; HMOVE setup
-    lda enX
-    ldx #1
-    jsr PosObject
-    lda plX
     ldx #0
     stx NUSIZ1
-    jsr PosObject
-    lda m0X
-    ldx #2
-    jsr PosObject
+    jsr PosWorldObjects
     sta WSYNC
     sta HMOVE
 
@@ -674,18 +683,21 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     .byte $2C       ; 4-5   BIT compare hack to skip 2 byte op
 .DrawE0:
     lda (enSpr),y   ; 5
-    pha
-    lda rPF1RoomR,x
-    sta PF1
-    pla
-    sta WSYNC       ; 3  34-35 cycles, not counting WSYNC (can save cycle by fixing bcs)
     sta GRP1        ; 3
+    lda rPF1RoomR,x ; 4
+    sta PF1         ; 3
+    
+; Ball
+    lda blH         ; 3 player height
+    dcp blDY        ; 5
+    lda #1          ; 2
+    adc #0          ; 2
+    sta WSYNC       ; 3  34-35 cycles, not counting WSYNC (can save cycle by fixing bcs)
+    sta ENABL
 
     ldx roomSpr     ; 3
     lda rPF1RoomL,x ; 4
     sta PF1         ; 3
-    lda rPF2Room,x  ; 4
-    sta PF2         ; 3
 
 ; Player
     lda #7          ; 2 player height
@@ -714,10 +726,9 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     lda m0H         ; 3 player height
     dcp m0DY        ; 5
     lda #1          ; 2
-    adc #0
+    adc #0          ; 2
 
-    ;sta WSYNC
-
+    sta WSYNC
     dey
     bpl KERNEL_LOOP
     lda fgColor
@@ -772,7 +783,6 @@ TestCollisionReset:
     lda plY,x
     sta plYL,x
     rts
-
 
 ProcessInput: SUBROUTINE
     ; test if player locked
@@ -1177,9 +1187,34 @@ UpdateDoors: SUBROUTINE
 ; fine-tune register that will be used when HMOVE is used.
 ;===============================================================================
     align 16 ; FIXME: Page rollover issue
-PosObject:
+PosObject: SUBROUTINE
         sec
         sta WSYNC
+.DivideLoop
+        sbc #15        ; 2  2 - each time thru this loop takes 5 cycles, which is
+        bcs .DivideLoop; 2  4 - the same amount of time it takes to draw 15 pixels
+        eor #7         ; 2  6 - The EOR & ASL statements convert the remainder
+        asl            ; 2  8 - of position/15 to the value needed to fine tune
+        asl            ; 2 10 - the X position
+        asl            ; 2 12
+        asl            ; 2 14
+        sta.wx HMP0,X  ; 5 19 - store fine tuning of X
+        sta RESP0,X    ; 4 23 - set coarse X position of object
+        rts            ; 6 29
+        
+;===============================================================================
+; PosWorldObjects
+;----------
+; Sets X position for all TIA objects
+; X position must be between 0-134 ($00 to $86)
+; Higher values will cause an extra cycle
+;===============================================================================
+PosWorldObjects: SUBROUTINE
+        sec            ; 2
+        ldx #4
+.Loop
+        sta WSYNC      ; 3
+        lda plX,x      ; 4
 DivideLoop
         sbc #15        ; 2  2 - each time thru this loop takes 5 cycles, which is
         bcs DivideLoop ; 2  4 - the same amount of time it takes to draw 15 pixels
@@ -1190,8 +1225,11 @@ DivideLoop
         asl            ; 2 14
         sta.wx HMP0,X  ; 5 19 - store fine tuning of X
         sta RESP0,X    ; 4 23 - set coarse X position of object
-        rts            ; 6 29
-
+; scn cycle 67
+        dex ; 69
+        bpl .Loop ; 72
+        rts
+        
 ;===============================================================================
 ; Generate Random Number
 ;-----------------------
@@ -1222,7 +1260,7 @@ DataStart
 
     align 16
 Mul8:
-    .byte 0x00, 0x08, 0x10, 0x18, 0x20, 0x28, 0x30, 0x38, 0x40, 0x48
+    .byte 0x00, 0x08, 0x10, 0x18, 0x20, 0x28, 0x30, 0x38, 0x40, 0x48, 0x50, 0x58
 Lazy8:
     .byte 0x01, 0x02, 0x04, 0x08
 Bit8:
