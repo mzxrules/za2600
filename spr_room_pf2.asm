@@ -167,7 +167,7 @@ PF2Room9:
     .byte $7E ; |.XXXXXX.| mirrored
     .byte $7E ; |.XXXXXX.| mirrored
     .byte $7E ; |.XXXXXX.| mirrored
-    .byte $7E ; |.XXXXXX.| mirrored
+    .byte $3E ; |.XXXXX..| mirrored
 PF2Room10:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored

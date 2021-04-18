@@ -12,6 +12,7 @@ set "SPR_PF1" (256)
 set "SPR_PF2" (256+128)
 
 
+. "mzx sprite reference"
 loop start
 put c00 CustomBlock "('loopcount'*2)" at "('loopcount'%64)" "('loopcount'/64*2)"
 put c00 CustomBlock "('loopcount'*2+1)" at "('loopcount'%64)" "('loopcount'/64*2+1)"
@@ -34,6 +35,26 @@ loop for 31
 zap "loop" 1
 zap "loop2" 1
 
+. "Extend Room Sprite Sheet Top/Bottom"
+loop start
+set "sx" "('loopcount'%32)"
+set "sy" "('loopcount'/32*64+'SS_ROOM')"
+
+set "char" ('sx'+'sy')
+set "byte" 2
+set "c_b" "char_byte"
+set "byte" 0
+set "char_byte" "c_b"
+set "byte" 1
+set "char_byte" "c_b"
+set "char" ('sx'+'sy'+32)
+set "byte" 3
+set "c_b" "char_byte"
+set "byte" 4
+set "char_byte" "c_b"
+set "byte" 5
+set "char_byte" "c_b"
+loop 63
 
 . "Room Sprite Sheet"
 loop start
@@ -358,8 +379,8 @@ loop start
 copy char "('roomTyM'*2+'loopcount'+'SPR_PF2')" to "('roomId'*8+'loopcount'+'SPR_WORK'+2)"
 copy char "('roomTyM'*2+'loopcount'+'SPR_PF1')" to "('roomId'*8+'loopcount'+'SPR_WORK'+4)"
 loop for 1
-set "sprA" 0
-goto "#mask_spr"
+set "sprA" "('worldId'=0*31)"
+goto "#mask_room_spr"
 set "worldboarder" "('worldId'=0 * 13)"
 set "sprA" to "('worldboarder'+ 1)"
 goto "#compose_room_spr"
@@ -376,19 +397,17 @@ inc "lur" by 1
 if "lur" < 4 then "update_room_doors"
 goto "#return"
 
-: "#mask_spr"
+: "#mask_room_spr"
 set "compose_op" to 0
-set "sprA" to "('SPR_UI'/8+'sprA')"
-set "sprB" to "('SPR_WORK'/8+'roomId')"
 goto "compose_spr_imp"
 
 : "#compose_room_spr"
 set "compose_op" to 1
-set "sprA" to "('SPR_UI'/8+'sprA')"
-set "sprB" to "('SPR_WORK'/8+'roomId')"
 
 : "compose_spr_imp"
 . "combine sprA to sprB"
+set "sprA" to "('SPR_UI'/8+'sprA')"
+set "sprB" to "('SPR_WORK'/8+'roomId')"
 
 loop start
 set "l" to 0

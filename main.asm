@@ -365,20 +365,21 @@ INIT:
     lda #%00110001 ; ball size 8, reflect playfield
     sta CTRLPF
     
-    ; set ball
-    lda #$40
-    sta blX
-    sta blY
-    
     ; seed RNG
     lda #$2C
     sta Rand8
-
+    lda #$20
     ldx #10-1
 INIT_POS:
     sta plX,x
     dex
     bpl INIT_POS
+    
+    ; set ball
+    lda #$60
+    sta blX
+    sta blY
+    
     lda #$77
     sta roomId
     jsr LoadRoom
@@ -688,7 +689,7 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     sta PF1         ; 3
     
 ; Ball
-    lda blH         ; 3 player height
+    lda blH         ; 3 ball height
     dcp blDY        ; 5
     lda #1          ; 2
     adc #0          ; 2
@@ -733,7 +734,13 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     bpl KERNEL_LOOP
     lda fgColor
     sta COLUBK
-
+    lda #0
+    sta PF1
+    sta PF2
+    sta GRP0
+    sta GRP1
+    sta ENAM0
+    sta PF0
     LOG_SIZE "-KERNEL WORLD-", KERNEL_LOOP
 
 OVERSCAN: SUBROUTINE ; 30 scanlines
@@ -742,14 +749,6 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     sta VBLANK
     lda #32
     sta TIM64T ; 27 scanline timer
-
-    lda #0
-    sta PF1
-    sta PF2
-    sta GRP0
-    sta GRP1
-    sta ENAM0
-    sta PF0
 
     ldx #1
 .posResetLoop
@@ -998,31 +997,64 @@ LoadRoom: SUBROUTINE
     asl
     ora roomDoors
     sta roomDoors
-
+    
+; set OR mask for the room sides    
+    lda worldId
+    beq .WorldRoomOrSides
+    lda #$C0
+    .byte $2C
+.WorldRoomOrSides
+    lda #$00
+    sta Temp6
+    
     ldy #ROOM_SPR_HEIGHT-1
-
 .roomInitMem
     lda $1FE0
 .roomInitMemLoop
     lda (Temp0),y ; PF1L
-    ora #$C0
+    ora Temp6
     sta wPF1RoomL+2,y
     lda (Temp4),y ; PF1R
-    ora #$C0
+    ora Temp6
     sta wPF1RoomR+2,y
     lda (Temp2),y ; PF2
     sta wPF2Room+2,y
     dey
     bpl .roomInitMemLoop
 
+; set OR mask for the room top/bottom
+    lda worldId
+    beq .WorldRoomOrTop
     lda #$FF
+    .byte $2C
+.WorldRoomOrTop
+    lda #$00
+    
+    sta Temp6
     ldy #1
 .roomUpDownBorder
+    lda rPF1RoomL+2
+    ora Temp6
     sta wPF1RoomL,y
+    
+    lda rPF2Room+2
+    ora Temp6
     sta wPF2Room,y
+    
+    lda rPF1RoomR+2
+    ora Temp6
     sta wPF1RoomR,y
+    
+    lda rPF1RoomL+ROOM_PX_HEIGHT-3
+    ora Temp6
     sta wPF1RoomL+ROOM_PX_HEIGHT-2,y
+    
+    lda rPF1RoomR+ROOM_PX_HEIGHT-3
+    ora Temp6
     sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
+    
+    lda rPF2Room+ROOM_PX_HEIGHT-3
+    ora Temp6
     sta wPF2Room+ROOM_PX_HEIGHT-2,y
     dey
     bpl .roomUpDownBorder
@@ -1037,9 +1069,13 @@ UpdateWorldDoors: SUBROUTINE
     ldy #1
 .Up
     lda WorldDoorPF2,x
+    ora rPF2Room+ROOM_PX_HEIGHT-2,y
     sta wPF2Room+ROOM_PX_HEIGHT-2,y
     lda WorldDoorPF1Up,x
+    ora rPF1RoomL+ROOM_PX_HEIGHT-2,y
     sta wPF1RoomL+ROOM_PX_HEIGHT-2,y
+    lda WorldDoorPF1Up,x
+    ora rPF1RoomR+ROOM_PX_HEIGHT-2,y
     sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
     dey
     bpl .Up
@@ -1053,9 +1089,13 @@ UpdateWorldDoors: SUBROUTINE
     ldy #1
 .Down
     lda WorldDoorPF2,x
+    ora rPF2Room,y
     sta wPF2Room,y
     lda WorldDoorPF1Up,x
+    ora rPF1RoomL,y
     sta wPF1RoomL,y
+    lda WorldDoorPF1Up,x
+    ora rPF1RoomR,y
     sta wPF1RoomR,y
     dey
     bpl .Down
@@ -1084,19 +1124,19 @@ UpdateWorldDoors: SUBROUTINE
     ldy #5
 .LeftRightWorldDoor
     lda rPF1RoomL+2,y
-    and Temp0
+    ora Temp0
     sta wPF1RoomL+2,y
     
     lda rPF1RoomL+12,y
-    and Temp0
+    ora Temp0
     sta wPF1RoomL+12,y
     
     lda rPF1RoomR+2,y
-    and Temp1
+    ora Temp1
     sta wPF1RoomR+2,y
     
     lda rPF1RoomR+12,y
-    and Temp1
+    ora Temp1
     sta wPF1RoomR+12,y
     dey
     bpl .LeftRightWorldDoor
@@ -1104,11 +1144,11 @@ UpdateWorldDoors: SUBROUTINE
     ldy #3
 .LeftRightWorldDoor2
     lda rPF1RoomL+8,y
-    and Temp2
+    ora Temp2
     sta wPF1RoomL+8,y
     
     lda rPF1RoomR+8,y
-    and Temp3
+    ora Temp3
     sta wPF1RoomR+8,y
     dey
     bpl .LeftRightWorldDoor2
@@ -1272,10 +1312,10 @@ WorldDoorPF1Up:
     .byte $C0, $C0, $FF, $FF
     
 WorldDoorPF1A:
-    .byte $3F, $3F, $FF, $FF
+    .byte $00, $00, $C0, $C0
     
 WorldDoorPF1B:
-    .byte $3F, $FF, $3F, $FF
+    .byte $00, $C0, $00, $C0
     
 WorldDoorPF2:
     .byte $00, $FF, $3F, $FF

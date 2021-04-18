@@ -167,7 +167,7 @@ PF1Room9:
     .byte $38 ; |..XXX...|
     .byte $7C ; |.XXXXX..|
     .byte $7C ; |.XXXXX..|
-    .byte $7C ; |.XXXXX..|
+    .byte $3C ; |..XXXX..|
 PF1Room10:
     .byte $00 ; |........|
     .byte $00 ; |........|
@@ -247,19 +247,19 @@ PF1Room14:
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
-    .byte $43 ; |.X....XX|
-    .byte $43 ; |.X....XX|
+    .byte $C3 ; |XX....XX|
+    .byte $C3 ; |XX....XX|
     .byte $00 ; |........|
-    .byte $58 ; |.X.XX...|
-    .byte $58 ; |.X.XX...|
+    .byte $D8 ; |XX.XX...|
+    .byte $D8 ; |XX.XX...|
     .byte $00 ; |........|
 PF1Room15:
     .byte $00 ; |........|
-    .byte $58 ; |.X.XX...|
-    .byte $58 ; |.X.XX...|
+    .byte $D8 ; |XX.XX...|
+    .byte $D8 ; |XX.XX...|
     .byte $00 ; |........|
-    .byte $43 ; |.X....XX|
-    .byte $43 ; |.X....XX|
+    .byte $C3 ; |XX....XX|
+    .byte $C3 ; |XX....XX|
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
@@ -281,19 +281,19 @@ PF1Room16:
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
-    .byte $5B ; |.X.XX.XX|
-    .byte $5B ; |.X.XX.XX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $DB ; |XX.XX.XX|
     .byte $00 ; |........|
-    .byte $5B ; |.X.XX.XX|
-    .byte $5B ; |.X.XX.XX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $DB ; |XX.XX.XX|
     .byte $00 ; |........|
 PF1Room17:
     .byte $00 ; |........|
-    .byte $5B ; |.X.XX.XX|
-    .byte $5B ; |.X.XX.XX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $DB ; |XX.XX.XX|
     .byte $00 ; |........|
-    .byte $5B ; |.X.XX.XX|
-    .byte $5B ; |.X.XX.XX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $DB ; |XX.XX.XX|
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
@@ -527,19 +527,19 @@ PF1Room30:
     .byte $C0 ; |XX......|
 PF1Room31:
     .byte $00 ; |........|
-    .byte $5B ; |.X.XX.XX|
-    .byte $5B ; |.X.XX.XX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $DB ; |XX.XX.XX|
     .byte $00 ; |........|
-    .byte $5B ; |.X.XX.XX|
-    .byte $5B ; |.X.XX.XX|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $DB ; |XX.XX.XX|
+    .byte $DB ; |XX.XX.XX|
     .byte $00 ; |........|
     .byte $00 ; |........|
-    .byte $5B ; |.X.XX.XX|
-    .byte $5B ; |.X.XX.XX|
     .byte $00 ; |........|
-    .byte $5B ; |.X.XX.XX|
-    .byte $5B ; |.X.XX.XX|
+    .byte $00 ; |........|
+    .byte $DB ; |XX.XX.XX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $00 ; |........|
+    .byte $DB ; |XX.XX.XX|
+    .byte $DB ; |XX.XX.XX|
     .byte $00 ; |........|
 

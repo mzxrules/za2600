@@ -11,20 +11,25 @@ enX         ds 1
 m0X         ds 1
 m1X         ds 1
 blX         ds 1
-plXL        ds 1
-enXL        ds 1
 plY         ds 1
 enY         ds 1
 m0Y         ds 1
 m1Y         ds 1
 blY         ds 1
-plYL        ds 1
-enYL        ds 1
 plDY        ds 1
 enDY        ds 1
 m0DY        ds 1
 m1DY        ds 1
 blDY        ds 1
+
+m0H         ds 1
+m1H         ds 1
+blH         ds 1
+
+plXL        ds 1
+enXL        ds 1
+plYL        ds 1
+enYL        ds 1
 plSpr       ds 2 ; plSprOff
 enSpr       ds 2 ; enSprOff
 plDir       ds 1
@@ -49,9 +54,6 @@ roomDoors   ds 1
     ; 11xx_xxxx W
 roomLocks   ds 10
 roomItems   ds 6
-m0H         ds 1
-m1H         ds 1
-blH         ds 1
 plState     ds 1
     ; 1000_0000 Fire Pressed Last Frame
     ; 0100_0000 Use Current Item
@@ -76,6 +78,7 @@ Temp2       ds 1
 Temp3       ds 1
 Temp4       ds 1
 Temp5       ds 1
+Temp6       ds 1
 
 	echo "-RAM-",$80,(.)
     
@@ -89,16 +92,19 @@ WORLD_LOCK_FLAG ds 16
 KERNEL_SCRIPT   ds (4 * 2)
 ROOM_SCRIPT     ds $20 * 2
 
+    
+    SEG.U VARS_RAM
     ORG $F800
 wPF1RoomL   ds ROOM_PX_HEIGHT
 wPF2Room    ds ROOM_PX_HEIGHT
 wPF1RoomR   ds ROOM_PX_HEIGHT
+wRoomClear  ds 256/8
 
     ORG $F900
 rPF1RoomL   ds ROOM_PX_HEIGHT
 rPF2Room    ds ROOM_PX_HEIGHT
 rPF1RoomR   ds ROOM_PX_HEIGHT
-    
+rRoomClear  ds 256/8
     
 ; ****************************************
 ; * Constants                            *
