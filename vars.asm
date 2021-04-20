@@ -32,6 +32,7 @@ plYL        ds 1
 enYL        ds 1
 plSpr       ds 2 ; plSprOff
 enSpr       ds 2 ; enSprOff
+hudSpr      ds 2 ; hudSprOff
 plDir       ds 1
 enDir       ds 2
 enType      ds 2
@@ -61,6 +62,8 @@ plState     ds 1
     ; 0000_0100 Playfield Ignore
     ; 0000_0010 Lock Player
     ; 0000_0001 Lock Player Axis
+plHealthMax ds 1
+plHealth    ds 1
     
 enState     ds 1
     
@@ -79,6 +82,7 @@ Temp3       ds 1
 Temp4       ds 1
 Temp5       ds 1
 Temp6       ds 1
+NUSIZ0_T    ds 1
 
 	echo "-RAM-",$80,(.)
     

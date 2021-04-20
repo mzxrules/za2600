@@ -1,7 +1,10 @@
+/__pycache__
 /.vs
+/gen
 /ignore
 *.sym
 *.bin
+
 vcs.h
 macro.h
 

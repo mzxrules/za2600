@@ -12,6 +12,10 @@ Frame       ds 1
 Tone        ds 1
 Freq        ds 1
 Vol         ds 1
+songLen     ds 1
+songCur     ds 1
+songTFrame  ds 1
+
 
     
 ; ****************************************
@@ -45,6 +49,11 @@ INIT:
     sta CTRLPF
     lda #8
     sta Vol
+    lda SO_head
+    sta songLen
+    lda #10
+    sta songTFrame
+    dec songCur
     
     
 ;TOP_FRAME ;3 37 192 30
@@ -72,21 +81,10 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     
     
     lda Frame
-    cmp 0
-    bne .skipInc
-    ;inc Tone
-.skipInc:
-    lsr
-    lsr
-    lsr
-    ;sta Freq
-    
-    ;lda Freq
-    ldx Tone
-    ldy Vol
-    sta AUDF0
-    stx AUDC0
-    sty AUDV0
+    cmp songTFrame
+    bne .skipNoteChange
+    jsr UpdateSong
+.skipNoteChange
     
     
 KERNEL_MAIN:  ; 192 scanlines
@@ -94,16 +92,15 @@ KERNEL_MAIN:  ; 192 scanlines
     lda INTIM
     bne KERNEL_MAIN
     sta VBLANK
-    
-    lda #0
-    ldx #7
-    ldy #(192/2)
-KERNEL_LOOP: SUBROUTINE ;-59
-    ;sta WSYNC
-    sta AUDV0
-    stx AUDV1
-    ;eor #$08
+
+    ;lda #7
     ;sta AUDV0
+    
+    
+    ;lda #0
+    ;ldx #7
+    ;ldy #(192/2)
+KERNEL_LOOP: SUBROUTINE ;-59
     dey
     bpl KERNEL_LOOP
     
@@ -156,8 +153,54 @@ DivideLoop
         sta.wx HMP0,X  ; 5 19 - store fine tuning of X
         sta RESP0,X    ; 4 23 - set coarse X position of object
         rts            ; 6 29    
+        
+        
+UpdateSong: SUBROUTINE
+    lda #3
+    sta AUDV0
+    inc songCur
+    lda songCur
+    cmp SO_head
+    bne .skipResetSongCur
+    lda #0
+    sta songCur
+.skipResetSongCur
+    tax
+    lda SO_note,x
+    sta AUDF0
+    lda SO_tone,x
+    sta AUDC0
+    lda SO_dur,x
+    clc
+    adc Frame
+    sta songTFrame
+    rts
     
+AUDTEST: SUBROUTINE
+    and #1
+    beq .Tone12
+    lda #4
+    sta AUDC0
+    lda #5
+    sta AUDF0
+    rts
+.Tone12
+    lda #12
+    sta AUDC0
+    lda #1
+    sta AUDF0
+    rts
     
+    ;lda Freq
+    ;ldx Tone
+    ;ldy Vol
+    ;sta AUDF0
+    ;stx AUDC0
+    ;sty AUDV0
+    
+  
+    align 256
+    include "gen/dung_song.asm"
 	echo "-CODE-",$F000,(.)
     
     

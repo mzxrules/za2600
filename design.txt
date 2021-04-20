@@ -1,3 +1,19 @@
+List of todos, ordered by importance
+
+Status Hud
+Event System
+Door Unlock System
+Ganon Fight Kernel
+Exits
+Raft System
+Enemy Spawns
+Wizrobes
+Stalfos
+Bubbles
+Keese
+Bosses
+
+
 Darknut Logic:
 
 Directions RLDU
@@ -103,3 +119,17 @@ need x range 0-136 ($88)
 10 * 5 -1 = 49 cycles, 68 cycles remain
 
 -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7
+
+
+  7,   6,   5,   4,   3,   2,   1,   0
+111, 110, 101, 100, 011, 010, 001, 000
+000, 001, 010, 011, 100, 101, 110, 111 
+
+
+Health Display
+1-8 = 1 heart
+9-16 = 2 hearts
+17-24 = 3 hearts
+  -64 = 8 hearts
+65-72 = 9 hearts
+73-80 = 10 hearts

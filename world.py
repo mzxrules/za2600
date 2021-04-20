@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from asmgen import *
+
 files = [
     'world/w{}.bin',
     'world/w{}door.bin',
@@ -63,15 +65,6 @@ def ConvertLocalToWorldRoomId(lvl, id):
         return id
         
     return id//8 * 16 + (id % 8) + lock_flags_room_shift[(lvl + 2)%4]
-    
-def ToAsm(data, n):
-    result = ""
-    for j in range(len(data)//n):
-        b = []
-        for i in range(n):
-            b.append('${:02X}'.format(int(data[j*n+i])))
-        result += "    .byte " + ", ".join(b) + "\n"
-    return result
     
 def PackRoomAndDoorData(bankId, levels):
     def PackStep(room, doors, type):

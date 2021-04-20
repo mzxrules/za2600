@@ -321,7 +321,205 @@ BANK_5
 ; ****************************************
 
 BANK_6
-    LOG_SIZE "-BANK 6-", BANK_6
+LoadRoom_B6: SUBROUTINE
+; set OR mask for the room top/bottom
+    lda worldId
+    beq .WorldRoomOrTop
+    lda #$FF
+    .byte $2C
+.WorldRoomOrTop
+    lda #$00
+    
+    sta Temp6
+    ldy #1
+.roomUpDownBorder
+    lda rPF1RoomL+2
+    ora Temp6
+    sta wPF1RoomL,y
+    
+    lda rPF2Room+2
+    ora Temp6
+    sta wPF2Room,y
+    
+    lda rPF1RoomR+2
+    ora Temp6
+    sta wPF1RoomR,y
+    
+    lda rPF1RoomL+ROOM_PX_HEIGHT-3
+    ora Temp6
+    sta wPF1RoomL+ROOM_PX_HEIGHT-2,y
+    
+    lda rPF1RoomR+ROOM_PX_HEIGHT-3
+    ora Temp6
+    sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
+    
+    lda rPF2Room+ROOM_PX_HEIGHT-3
+    ora Temp6
+    sta wPF2Room+ROOM_PX_HEIGHT-2,y
+    dey
+    bpl .roomUpDownBorder
+
+UpdateWorldDoors: SUBROUTINE
+    lda roomDoors
+    and #3
+    tax
+    ldy #1
+.Up
+    lda WorldDoorPF2,x
+    ora rPF2Room+ROOM_PX_HEIGHT-2,y
+    sta wPF2Room+ROOM_PX_HEIGHT-2,y
+    lda WorldDoorPF1Up,x
+    ora rPF1RoomL+ROOM_PX_HEIGHT-2,y
+    sta wPF1RoomL+ROOM_PX_HEIGHT-2,y
+    lda WorldDoorPF1Up,x
+    ora rPF1RoomR+ROOM_PX_HEIGHT-2,y
+    sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
+    dey
+    bpl .Up
+    
+    lda roomDoors
+    lsr
+    lsr
+    pha
+    and #3
+    tax
+    ldy #1
+.Down
+    lda WorldDoorPF2,x
+    ora rPF2Room,y
+    sta wPF2Room,y
+    lda WorldDoorPF1Up,x
+    ora rPF1RoomL,y
+    sta wPF1RoomL,y
+    lda WorldDoorPF1Up,x
+    ora rPF1RoomR,y
+    sta wPF1RoomR,y
+    dey
+    bpl .Down
+
+.LeftRight
+    pla
+    lsr
+    lsr
+    tay
+    and #3
+    tax
+    lda WorldDoorPF1A,x
+    sta Temp1
+    lda WorldDoorPF1B,x
+    sta Temp3
+    tya
+    lsr
+    lsr
+    and #3
+    tax
+    lda WorldDoorPF1A,x
+    sta Temp0
+    lda WorldDoorPF1B,x
+    sta Temp2
+    
+    ldy #5
+.LeftRightWorldDoor
+    lda rPF1RoomL+2,y
+    ora Temp0
+    sta wPF1RoomL+2,y
+    
+    lda rPF1RoomL+12,y
+    ora Temp0
+    sta wPF1RoomL+12,y
+    
+    lda rPF1RoomR+2,y
+    ora Temp1
+    sta wPF1RoomR+2,y
+    
+    lda rPF1RoomR+12,y
+    ora Temp1
+    sta wPF1RoomR+12,y
+    dey
+    bpl .LeftRightWorldDoor
+    
+    ldy #3
+.LeftRightWorldDoor2
+    lda rPF1RoomL+8,y
+    ora Temp2
+    sta wPF1RoomL+8,y
+    
+    lda rPF1RoomR+8,y
+    ora Temp3
+    sta wPF1RoomR+8,y
+    dey
+    bpl .LeftRightWorldDoor2
+rts_UpdateDoors:
+    rts
+    
+UpdateDoors: SUBROUTINE
+    lda worldId
+    beq rts_UpdateDoors
+    ldy #$3F
+    ldx #$FF
+    lda roomDoors
+
+    lsr
+    sty wPF2Room+ROOM_PX_HEIGHT-2
+    bcc .skipDown0
+    stx wPF2Room+ROOM_PX_HEIGHT-2
+
+.skipDown0
+    lsr
+    sty wPF2Room+ROOM_PX_HEIGHT-1
+    bcc .skipDown1
+    stx wPF2Room+ROOM_PX_HEIGHT-1
+
+.skipDown1
+    lsr
+    sty wPF2Room+1
+    bcc .skipUp0
+    stx wPF2Room+1
+
+.skipUp0
+    lsr
+    sty wPF2Room+0
+    bcc .skipUp1
+    stx wPF2Room+0
+
+.skipUp1
+    lda roomDoors
+    and #$C0
+    sta Temp0
+    lda roomDoors
+    asl
+    asl
+    and #$C0
+    sta Temp1
+
+    ldy #3
+.lrLoop
+    lda rPF1RoomL+(ROOM_PX_HEIGHT/2)-2,y
+    and #$3F
+    ora Temp0
+    sta wPF1RoomL+(ROOM_PX_HEIGHT/2)-2,y
+    lda rPF1RoomR+(ROOM_PX_HEIGHT/2)-2,y
+    and #$3F
+    ora Temp1
+    sta wPF1RoomR+(ROOM_PX_HEIGHT/2)-2,y
+    dey
+    bpl .lrLoop
+    rts
+   
+   align 4
+WorldDoorPF1Up:
+    .byte $C0, $C0, $FF, $FF
+    
+WorldDoorPF1A:
+    .byte $00, $00, $C0, $C0
+    
+WorldDoorPF1B:
+    .byte $00, $C0, $00, $C0
+    
+WorldDoorPF2:
+    .byte $00, $FF, $3F, $FF
+
+    LOG_SIZE "-BANK 6- Engine", BANK_6
 
 
 
@@ -379,6 +577,11 @@ INIT_POS:
     lda #$60
     sta blX
     sta blY
+    
+    ; set player stats
+    lda #24
+    sta plHealth
+    sta plHealthMax
     
     lda #$77
     sta roomId
@@ -458,14 +661,10 @@ __EnemyAIReturn:
 .LoadRoom
     jsr LoadRoom
 .skipSwapRoom
+    lda $1FE6
     jsr UpdateDoors
     lda #ROOM_PX_HEIGHT-1
     sta roomSpr
-
-    lda bgColor
-    sta COLUBK
-    lda fgColor
-    sta COLUPF
 
 ; Sword
     bit plState
@@ -492,7 +691,7 @@ __EnemyAIReturn:
     adc plDir
     tay
     lda SwordWidth4,y
-    sta NUSIZ0
+    sta NUSIZ0_T
     lda SwordHeight4,y
     sta m0H
     lda SwordOff4X,y
@@ -568,10 +767,8 @@ __EnemyAIReturn:
     ldx worldId
     adc Mul8,x
     sta mapSpr
-
     lda #>(MINIMAP)
     sta mapSpr+1
-
 
     ldx #1
     stx COLUBK
@@ -587,10 +784,32 @@ __EnemyAIReturn:
     clc
 .minimap_16
     and roomId
-    adc #$18
+    adc #$18+1
     stx NUSIZ1
+    ldx #2
+    jsr PosObject
+    lda #0
+    sta NUSIZ0
+    
+.hud_sprite_setup
+    lda #<(SprP0)-7
+    sta hudSpr
+    lda #>(SprP0)
+    sta hudSpr+1
+    lda hudSpr; #<(SprE0 + 7)
+    clc
+    adc #7 ;hudSpr
+    sec
+    sbc #0
+    sta hudSpr
+
+    lda hudSpr + 1;#>(SprE0 + 7)
+    sbc #0
+    sta hudSpr + 1
+    
+    lda #$50
     ldx #0
-    jsr PosObject ; location
+    jsr PosObject
 
     lda $1FE0
     sta WSYNC
@@ -600,46 +819,91 @@ __EnemyAIReturn:
 ; Kernel Main
 ; ===================================================
 KERNEL_MAIN: SUBROUTINE ; 192 scanlines
+; pre hud
+    lda roomId
+    lsr
+    lsr
+    lsr
+    lsr
+    eor #$7
+    and #$7
+    sta Temp0
+    lda plHealth
+    clc
+    adc #7
+    lsr
+    lsr
+    lsr
+    sta Temp1
+    sec
+    sbc #8
+    bcs .skipHealthHighClampMin
+    lda #0
+.skipHealthHighClampMin
+    tax
+    lda HealthPattern,x
+    sta Temp2
+    beq .skipHealthClamp
+    lda #8
+    sta Temp1
+.skipHealthClamp
+    ldx Temp1
+    lda HealthPattern,x
+    sta Temp1
+    lda #0
+    
+.KERNEL_MAIN_WAIT    
     sta WSYNC
     lda INTIM
-    bne KERNEL_MAIN
+    bne .KERNEL_MAIN_WAIT
     sta VBLANK
 
 KERNEL_HUD: SUBROUTINE
     ldy #7
     lda #COLOR_MINIMAP
     sta COLUP1
-    ;sta WSYNC
-    lda roomId
-    lsr
-    lsr
-    lsr
-    lsr
-    and #$7
-    tax
+    lda #COLOR_PLAYER_02
+    sta COLUPF
 .loop:
     lda (mapSpr),y
     sta GRP1
+    tya
+    lsr
+    lsr
+    tax
+    lda Temp1,x
+    sta PF1
     sta WSYNC
-    lda #$80
-    cpx #0
+    lda #0
+    sta PF0
+    lda #$2
+    cpy Temp0
     beq .skip
     lda #0
 .skip
+    sta ENAM0
+    lda (hudSpr),y
     sta GRP0
+    lda Temp1,x
+    sta PF1
     sta WSYNC
-    dex
+    lda #0
+    sta PF1
     dey
     bpl .loop
+; HUD END
     lda #76
     sta TIM8T
     sta WSYNC
     lda #0
     sta GRP1
+    sta ENAM0
     sta GRP0
 ; HMOVE setup
     ldx #0
     stx NUSIZ1
+    lda NUSIZ0_T
+    sta NUSIZ0
     jsr PosWorldObjects
     sta WSYNC
     sta HMOVE
@@ -657,6 +921,8 @@ KERNEL_HUD: SUBROUTINE
     ldy #ROOM_HEIGHT
     lda bgColor
     sta COLUBK
+    lda fgColor
+    sta COLUPF
     lda enColor
     sta COLUP1
     
@@ -1022,193 +1288,10 @@ LoadRoom: SUBROUTINE
     dey
     bpl .roomInitMemLoop
 
-; set OR mask for the room top/bottom
-    lda worldId
-    beq .WorldRoomOrTop
-    lda #$FF
-    .byte $2C
-.WorldRoomOrTop
-    lda #$00
-    
-    sta Temp6
-    ldy #1
-.roomUpDownBorder
-    lda rPF1RoomL+2
-    ora Temp6
-    sta wPF1RoomL,y
-    
-    lda rPF2Room+2
-    ora Temp6
-    sta wPF2Room,y
-    
-    lda rPF1RoomR+2
-    ora Temp6
-    sta wPF1RoomR,y
-    
-    lda rPF1RoomL+ROOM_PX_HEIGHT-3
-    ora Temp6
-    sta wPF1RoomL+ROOM_PX_HEIGHT-2,y
-    
-    lda rPF1RoomR+ROOM_PX_HEIGHT-3
-    ora Temp6
-    sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
-    
-    lda rPF2Room+ROOM_PX_HEIGHT-3
-    ora Temp6
-    sta wPF2Room+ROOM_PX_HEIGHT-2,y
-    dey
-    bpl .roomUpDownBorder
-    lda worldId
-    beq UpdateWorldDoors
-    rts
-    
-UpdateWorldDoors: SUBROUTINE
-    lda roomDoors
-    and #3
-    tax
-    ldy #1
-.Up
-    lda WorldDoorPF2,x
-    ora rPF2Room+ROOM_PX_HEIGHT-2,y
-    sta wPF2Room+ROOM_PX_HEIGHT-2,y
-    lda WorldDoorPF1Up,x
-    ora rPF1RoomL+ROOM_PX_HEIGHT-2,y
-    sta wPF1RoomL+ROOM_PX_HEIGHT-2,y
-    lda WorldDoorPF1Up,x
-    ora rPF1RoomR+ROOM_PX_HEIGHT-2,y
-    sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
-    dey
-    bpl .Up
-    
-    lda roomDoors
-    lsr
-    lsr
-    pha
-    and #3
-    tax
-    ldy #1
-.Down
-    lda WorldDoorPF2,x
-    ora rPF2Room,y
-    sta wPF2Room,y
-    lda WorldDoorPF1Up,x
-    ora rPF1RoomL,y
-    sta wPF1RoomL,y
-    lda WorldDoorPF1Up,x
-    ora rPF1RoomR,y
-    sta wPF1RoomR,y
-    dey
-    bpl .Down
-
-.LeftRight
-    pla
-    lsr
-    lsr
-    tay
-    and #3
-    tax
-    lda WorldDoorPF1A,x
-    sta Temp1
-    lda WorldDoorPF1B,x
-    sta Temp3
-    tya
-    lsr
-    lsr
-    and #3
-    tax
-    lda WorldDoorPF1A,x
-    sta Temp0
-    lda WorldDoorPF1B,x
-    sta Temp2
-    
-    ldy #5
-.LeftRightWorldDoor
-    lda rPF1RoomL+2,y
-    ora Temp0
-    sta wPF1RoomL+2,y
-    
-    lda rPF1RoomL+12,y
-    ora Temp0
-    sta wPF1RoomL+12,y
-    
-    lda rPF1RoomR+2,y
-    ora Temp1
-    sta wPF1RoomR+2,y
-    
-    lda rPF1RoomR+12,y
-    ora Temp1
-    sta wPF1RoomR+12,y
-    dey
-    bpl .LeftRightWorldDoor
-    
-    ldy #3
-.LeftRightWorldDoor2
-    lda rPF1RoomL+8,y
-    ora Temp2
-    sta wPF1RoomL+8,y
-    
-    lda rPF1RoomR+8,y
-    ora Temp3
-    sta wPF1RoomR+8,y
-    dey
-    bpl .LeftRightWorldDoor2
-rts_UpdateDoors:
-    rts
-    
-UpdateDoors: SUBROUTINE
-    lda worldId
-    beq rts_UpdateDoors
-    ldy #$3F
-    ldx #$FF
-    lda roomDoors
-
-    lsr
-    sty wPF2Room+ROOM_PX_HEIGHT-2
-    bcc .skipDown0
-    stx wPF2Room+ROOM_PX_HEIGHT-2
-
-.skipDown0
-    lsr
-    sty wPF2Room+ROOM_PX_HEIGHT-1
-    bcc .skipDown1
-    stx wPF2Room+ROOM_PX_HEIGHT-1
-
-.skipDown1
-    lsr
-    sty wPF2Room+1
-    bcc .skipUp0
-    stx wPF2Room+1
-
-.skipUp0
-    lsr
-    sty wPF2Room+0
-    bcc .skipUp1
-    stx wPF2Room+0
-
-.skipUp1
-    lda roomDoors
-    and #$C0
-    sta Temp0
-    lda roomDoors
-    asl
-    asl
-    and #$C0
-    sta Temp1
-
-    ldy #3
-.lrLoop
-    lda rPF1RoomL+(ROOM_PX_HEIGHT/2)-2,y
-    and #$3F
-    ora Temp0
-    sta wPF1RoomL+(ROOM_PX_HEIGHT/2)-2,y
-    lda rPF1RoomR+(ROOM_PX_HEIGHT/2)-2,y
-    and #$3F
-    ora Temp1
-    sta wPF1RoomR+(ROOM_PX_HEIGHT/2)-2,y
-    dey
-    bpl .lrLoop
-    rts
-
+; All room sprite data has been read, we can now switch banks to
+; conserve Bank 7 space
+    lda $1FE6
+    jmp LoadRoom_B6
     LOG_SIZE "Room Load", LoadRoom
 
 ;===============================================================================
@@ -1307,18 +1390,7 @@ Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
     
     
-    align 4    
-WorldDoorPF1Up:
-    .byte $C0, $C0, $FF, $FF
-    
-WorldDoorPF1A:
-    .byte $00, $00, $C0, $C0
-    
-WorldDoorPF1B:
-    .byte $00, $C0, $00, $C0
-    
-WorldDoorPF2:
-    .byte $00, $FF, $3F, $FF
+    align 4 
 
 SwordWidth4:
     .byte $20, $20, $10, $10
@@ -1339,9 +1411,15 @@ SwordOff8Y:
     align 16
 WorldColors:
     .byte $00, COLOR_DARK_BLUE, $00, COLOR_LIGHT_BLUE, $42, $00, COLOR_PATH, $06, $02, COLOR_LIGHT_BLUE, COLOR_GREEN_ROCK, COLOR_LIGHT_WATER, $00, COLOR_CHOCOLATE, COLOR_GOLDEN, $0E
-
+HealthPattern:
+    .byte $00, $01, $03, $07, $0F, $1F, $3F, $7F, $FF 
     LOG_SIZE "-DATA-", DataStart
 
+    ORG $3FE0
+    ; This space is reserved to prevent unintentional bank swaps
+    .byte $0, $1, $2, $3, $4, $5, $6, $7, $8, $9, $A, $B, $C, $D, $E, $F
+    .byte $0, $1, $2, $3, $4, $5, $6, $7, $8, $9, $A, $B
+    
 	ORG $3FFC
 	RORG $FFFC
 	.word ENTRY
