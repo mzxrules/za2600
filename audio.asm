@@ -12,9 +12,9 @@ Frame       ds 1
 Tone        ds 1
 Freq        ds 1
 Vol         ds 1
-songLen     ds 1
-songCur     ds 1
-songTFrame  ds 1
+songLen     ds 2
+songCur     ds 2
+songTFrame  ds 2
 
 
     
@@ -49,11 +49,15 @@ INIT:
     sta CTRLPF
     lda #8
     sta Vol
-    lda SO_head
+    lda s0_dung_head
     sta songLen
+    lda s1_dung_head
+    sta songLen+1
     lda #10
     sta songTFrame
+    sta songTFrame+1
     dec songCur
+    dec songCur+1
     
     
 ;TOP_FRAME ;3 37 192 30
@@ -76,23 +80,27 @@ VERTICAL_SYNC: ; 3 SCANLINES
     sta WSYNC
     sta VSYNC
     
+    jsr WobbleB
+    
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     jsr ProcessInput
     
-    
     lda Frame
     cmp songTFrame
-    bne .skipNoteChange
-    jsr UpdateSong
-.skipNoteChange
-    
+    bne .skipNoteChange0
+    jsr UpdateSong0
+.skipNoteChange0
+    lda Frame
+    cmp songTFrame+1
+    bne .skipNoteChange1
+    jsr UpdateSong1
+.skipNoteChange1
     
 KERNEL_MAIN:  ; 192 scanlines
     sta WSYNC
     lda INTIM
     bne KERNEL_MAIN
     sta VBLANK
-
     ;lda #7
     ;sta AUDV0
     
@@ -153,27 +161,48 @@ DivideLoop
         sta.wx HMP0,X  ; 5 19 - store fine tuning of X
         sta RESP0,X    ; 4 23 - set coarse X position of object
         rts            ; 6 29    
-        
-        
-UpdateSong: SUBROUTINE
-    lda #3
+      
+      
+UpdateSong0: SUBROUTINE
+    lda #2
     sta AUDV0
     inc songCur
     lda songCur
-    cmp SO_head
+    cmp s0_dung_head
     bne .skipResetSongCur
     lda #0
     sta songCur
 .skipResetSongCur
     tax
-    lda SO_note,x
+    lda s0_dung_note,x
     sta AUDF0
-    lda SO_tone,x
+    lda s0_dung_tone,x
     sta AUDC0
-    lda SO_dur,x
+    lda s0_dung_dur,x
     clc
     adc Frame
     sta songTFrame
+    rts
+    
+UpdateSong1: SUBROUTINE
+    lda #3
+    sta AUDV0+1
+    inc songCur+1
+    lda songCur+1
+    cmp s1_dung_head
+    bne .skipResetSongCur
+    lda #0
+    sta songCur+1
+.skipResetSongCur
+    tax
+    lda s1_dung_note,x
+    sta AUDF0+1
+    lda s1_dung_tone,x
+    sta AUDC0+1
+    lda s1_dung_dur,x
+    clc
+    adc Frame
+    sta songTFrame+1
     rts
     
 AUDTEST: SUBROUTINE
@@ -200,7 +229,9 @@ AUDTEST: SUBROUTINE
     
   
     align 256
-    include "gen/dung_song.asm"
+    include "gen/s0_dung.asm"
+    align 256
+    include "gen/s1_dung.asm"
 	echo "-CODE-",$F000,(.)
     
     
