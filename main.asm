@@ -11,35 +11,35 @@
     ORG $0000
     RORG $F000
 BANK_0
-    INCLUDE "spr_room_pf1.asm"
-    INCLUDE "spr_room_pf2.asm"
-    INCLUDE "spr_en.asm"
-    INCLUDE "spr_item.asm"
+    INCLUDE "spr/spr_room_pf1.asm"
+    INCLUDE "spr/spr_room_pf2.asm"
+    INCLUDE "spr/spr_en.asm"
+    INCLUDE "spr/spr_item.asm"
 MINIMAP
-    INCLUDE "spr_map.asm"
+    INCLUDE "spr/spr_map.asm"
     align $20
-    INCLUDE "spr_pl.asm"
-    INCLUDE "spr_num.asm"
+    INCLUDE "spr/spr_pl.asm"
+    INCLUDE "spr/spr_num.asm"
 
     LOG_SIZE "-BANK 0- Sprites", BANK_0
 
     ORG $0800
     RORG $F000
 BANK_1
-    INCLUDE "world/b1world.asm"
-    INCLUDE "world/w0_w0co.asm"
-    INCLUDE "world/w1_w2co.asm"
-    INCLUDE "world/b1lock.asm"
+    INCLUDE "gen/world/b1world.asm"
+    INCLUDE "gen/world/w0_w0co.asm"
+    INCLUDE "gen/world/w1_w2co.asm"
+    INCLUDE "gen/world/b1lock.asm"
 
     LOG_SIZE "-BANK 1- World | Level 1 2", BANK_1
 
     ORG $1000
     RORG $F000
 BANK_2
-    INCLUDE "world/b2world.asm"
-    INCLUDE "world/w3_w4co.asm"
-    INCLUDE "world/w5_w6co.asm"
-    INCLUDE "world/b2lock.asm"
+    INCLUDE "gen/world/b2world.asm"
+    INCLUDE "gen/world/w3_w4co.asm"
+    INCLUDE "gen/world/w5_w6co.asm"
+    INCLUDE "gen/world/b2lock.asm"
 
     LOG_SIZE "-BANK 2- Level 3 4 5 6", BANK_2
 
@@ -50,10 +50,10 @@ BANK_2
     ORG $1800
     RORG $F000
 BANK_3
-    INCLUDE "world/b3world.asm"
-    INCLUDE "world/w7_w8co.asm"
-    INCLUDE "world/w9_w9co.asm"
-    INCLUDE "world/b3lock.asm"
+    INCLUDE "gen/world/b3world.asm"
+    INCLUDE "gen/world/w7_w8co.asm"
+    INCLUDE "gen/world/w9_w9co.asm"
+    INCLUDE "gen/world/b3lock.asm"
 
     LOG_SIZE "-BANK 3- Level 7 8 9", BANK_3
 
@@ -64,7 +64,7 @@ BANK_3
     ORG $2000
     RORG $F000
 BANK_4
-    INCLUDE "ptr.asm"
+    INCLUDE "gen/ptr.asm"
 NextDir: SUBROUTINE
     jsr Random
     and #3

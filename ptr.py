@@ -19,7 +19,7 @@ for name, list in tbl:
         
     out = tL + '\n' + tH
     
-with open('ptr.asm', "w") as file:
+with open('gen/ptr.asm', "w") as file:
     file.write(out)
     
 print("Update Ptr Tables")

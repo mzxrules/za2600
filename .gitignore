@@ -5,9 +5,6 @@
 *.sym
 *.bin
 
-vcs.h
-macro.h
-
 # mzx files
 backup1.mzx
 backup2.mzx

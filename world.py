@@ -11,8 +11,8 @@ files = [
 outfiles = [
     None,
     None,
-    'world/w{}_w{}co.asm',
-    'world/w{}_w{}lock.asm',
+    'gen/world/w{}_w{}co.asm',
+    'gen/world/w{}_w{}lock.asm',
 ]
 
 
@@ -103,7 +103,7 @@ def PackRoomAndDoorData(bankId, levels):
             worldstrip[j].append(PackStep(world[i*3+j], doors[i], j))
         
     names = ["PF1L", "PF1R", "PF2"]
-    with open("world/b{}world.asm".format(bankId), "w") as file:
+    with open("gen/world/b{}world.asm".format(bankId), "w") as file:
         for i in range(3):
             file.write("; {}\n".format(names[i]))
             file.write(ToAsm(worldstrip[i],16))
@@ -144,7 +144,7 @@ for i in range(3):
     
     data = SortDungLockEvent(events)
     
-    with open("world/b{}lock.asm".format(i+1), "w") as file:
+    with open("gen/world/b{}lock.asm".format(i+1), "w") as file:
         file.write(ToAsm(data,16))
     
 print("WORLD DATA REBUILT")

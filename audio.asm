@@ -80,8 +80,6 @@ VERTICAL_SYNC: ; 3 SCANLINES
     sta WSYNC
     sta VSYNC
     
-    jsr WobbleB
-    
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     jsr ProcessInput
     

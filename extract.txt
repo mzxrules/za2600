@@ -16,7 +16,7 @@ goto "#dumpchr"
 inc "$" by "$dumpchr"
 inc "CHAR" by 1
 loop for 17
-set "$sht" to "spr_item.asm"
+set "$sht" to "spr/spr_item.asm"
 goto "#dumpsht"
 
 goto "skip_quest"
@@ -37,7 +37,7 @@ goto "#dumpchr"
 inc "$" by "$dumpchr"
 inc "CHAR" by 1
 loop for 9
-set "$sht" to "spr_num.asm"
+set "$sht" to "spr/spr_num.asm"
 goto "#dumpsht"
 
 set "CHAR" to 22
@@ -48,7 +48,7 @@ goto "#dumpchr"
 inc "$" by "$dumpchr"
 inc "CHAR" by 1
 loop for 9
-set "$sht" to "spr_map.asm"
+set "$sht" to "spr/spr_map.asm"
 goto "#dumpsht"
 
 
@@ -60,7 +60,7 @@ goto "#dumpchr"
 inc "$" by "$dumpchr"
 inc "CHAR" by 1
 loop for 3
-set "$sht" to "spr_pl.asm"
+set "$sht" to "spr/spr_pl.asm"
 goto "#dumpsht"
 
 set "CHAR" to 96
@@ -72,7 +72,7 @@ goto "#dumpchr"
 inc "$" by "$dumpchr"
 inc "CHAR" by 1
 loop for 31
-set "$sht" to "spr_en.asm"
+set "$sht" to "spr/spr_en.asm"
 goto "#dumpsht"
 
 set "$pf1" to ""
@@ -109,10 +109,10 @@ inc "$pf2" "$dumpchr"
 loop 31
 
 set "$" to "$pf1"
-set "$sht" to "spr_room_pf1.asm"
+set "$sht" to "spr/spr_room_pf1.asm"
 goto "#dumpsht"
 set "$" to "$pf2"
-set "$sht" to "spr_room_pf2.asm"
+set "$sht" to "spr/spr_room_pf2.asm"
 goto "#dumpsht"
 
 set "$pf1" to ""
