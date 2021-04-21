@@ -13,5 +13,5 @@ gen/ptr.asm: ptr.py
 gen/s0_dung.asm: sound.py
 	python3 sound.py
 
-gen/world/b1world.asm: world/w0.bin
+gen/world/b1world.asm: world/w0.bin world.py
 	python3 world.py

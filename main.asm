@@ -114,7 +114,7 @@ SpectacleOpenAI: SUBROUTINE
     and #$F9
     sta wPF2Room,y
     sta wPF2Room+1,y
-    lda #$64
+    lda #$58
     sta enX
     lda #$20
     sta enY
@@ -131,7 +131,7 @@ BlockStairAI: SUBROUTINE
     and #$7F
     sta wPF2Room,y
     sta wPF2Room+1,y
-    lda #$4C
+    lda #$40
     sta enX
     lda #$3C
     sta enY
@@ -142,7 +142,7 @@ BlockStairAI: SUBROUTINE
     rts
 
 StairAI: SUBROUTINE
-    lda #$4C
+    lda #$40
     sta enX
     lda #$2C
     sta enY
@@ -506,7 +506,98 @@ UpdateDoors: SUBROUTINE
     bpl .lrLoop
     rts
    
-   align 4
+KeydoorCheck_B6: SUBROUTINE
+    lda worldId
+    beq .rts1
+    lda itemKeys
+    beq .rts1
+    
+; Up/Down check    
+    lda plX
+    sec
+    sbc #BoardKeydoorUDA
+    ; continue if positive
+    bmi .LRCheck
+    sbc #$8+1
+    bpl .LRCheck
+    
+    ldx #0
+    lda plY
+    cmp #BoardKeydoorUY
+    beq .UnlockUp
+    cmp #BoardKeydoorDY
+    beq .UnlockDown
+    
+.LRCheck
+    lda plY
+    sec
+    sbc #BoardKeydoorLRA
+    bmi .rts1
+    sbc #$8+1
+    bpl .rts1
+    
+    ldx #2
+    lda plX
+    cmp #BoardKeydoorRX
+    beq .UnlockRight
+    cmp #BoardKeydoorLX
+    beq .UnlockLeft
+.rts1
+    rts
+.UnlockUp
+.UnlockLeft
+    inx
+.UnlockDown
+.UnlockRight
+    lda roomDoors
+    eor #%01010101
+    and KeydoorMask,x
+    bne .rts1
+    lda KeydoorMask,x
+    eor #$FF
+    and roomDoors
+    sta roomDoors
+    dec itemKeys
+    
+    ; x = door dir, S/N/E/W
+    
+    ; load world bank (RAM)
+    ldy worldId
+    iny
+    tya
+    lsr
+    lsr
+    tay
+    lda BANK_RAM + 1,y
+    
+    ;jmp SetRoomLockFlag
+    ldy roomId
+    lda KeydoorFlagA,x
+    ora rRoomFlag,y
+    sta wRoomFlag,y
+    tya
+    clc
+    adc KeydoorRoomOff,x
+    tay
+    lda KeydoorFlagB,x
+    ora rRoomFlag,y
+    sta wRoomFlag,y
+    lda BANK_RAM + 0
+    rts
+    
+    
+    align 4
+KeydoorMask:
+    ; S/N/E/W
+    .byte $0C, $03, $30, $C0
+KeydoorFlagA:
+    .byte $04, $01, $10, $40
+KeydoorFlagB:
+    .byte $01, $04, $40, $10
+KeydoorRoomOff:
+    .byte $10, $F0, $01, $FF
+   
+    align 4
 WorldDoorPF1Up:
     .byte $C0, $C0, $FF, $FF
     
@@ -536,16 +627,27 @@ WorldDoorPF2:
 
 ENTRY: SUBROUTINE
     CLEAN_START
+    
+    lda BANK_RAM7 ; MUST exist as LDA $1FE7 to pass E7 detection
+    tya
+.wipeRam2
+    dex
+    sta $f000,x
+    bne .wipeRam2
+    
+    ; all registers 0
+    ldy #3
+.loRamLoop
+    lda BANK_RAM,y
+    txa
 .wipeRam1
     dex
-    sta $f800,x
+    sta wRAM_SEG,x
     bne .wipeRam1
-    lda $1FE7
-.wipeRam2
-    lda $00
-    dex
-    sta $f400,x
-    bne .wipeRam2
+    dey
+    bpl .loRamLoop
+    ; loRamBank = 0
+    
 INIT:
 
     ; set player colors
@@ -661,7 +763,9 @@ __EnemyAIReturn:
 .LoadRoom
     jsr LoadRoom
 .skipSwapRoom
-    lda $1FE6
+    lda BANK_ROM + 6
+    jsr KeydoorCheck_B6
+    lda BANK_ROM + 6
     jsr UpdateDoors
     lda #ROOM_PX_HEIGHT-1
     sta roomSpr
@@ -811,7 +915,7 @@ __EnemyAIReturn:
     ldx #0
     jsr PosObject
 
-    lda $1FE0
+    lda BANK_ROM + 0
     sta WSYNC
     sta HMOVE
 
@@ -1189,14 +1293,15 @@ LoadRoom: SUBROUTINE
     and #$7F
     sta roomFlags
 
-    ; calculate world bank
+    ; load world bank
     ldy worldId
     iny
     tya
     lsr
     lsr
+    sta worldBank
     tay
-    lda $1FE1,y
+    lda BANK_ROM + 1,y
 
     ldy roomId
     ; set fg/bg color
@@ -1267,6 +1372,21 @@ LoadRoom: SUBROUTINE
 ; set OR mask for the room sides    
     lda worldId
     beq .WorldRoomOrSides
+; sneak in opportunity to update roomDoors
+    ldx worldBank
+    lda BANK_RAM + 1,x
+    ldy roomId
+    lda rRoomFlag,y
+    and #%01010101
+    sta Temp6
+    asl
+    clc
+    adc Temp6
+    eor #$FF
+    and roomDoors
+    sta roomDoors
+    lda BANK_RAM
+    
     lda #$C0
     .byte $2C
 .WorldRoomOrSides
@@ -1275,7 +1395,7 @@ LoadRoom: SUBROUTINE
     
     ldy #ROOM_SPR_HEIGHT-1
 .roomInitMem
-    lda $1FE0
+    lda BANK_ROM + 0
 .roomInitMemLoop
     lda (Temp0),y ; PF1L
     ora Temp6
@@ -1290,9 +1410,52 @@ LoadRoom: SUBROUTINE
 
 ; All room sprite data has been read, we can now switch banks to
 ; conserve Bank 7 space
-    lda $1FE6
+    lda BANK_ROM + 6
     jmp LoadRoom_B6
     LOG_SIZE "Room Load", LoadRoom
+
+/*
+;===============================================================================
+; SetRoomLockFlag
+;----------
+;   Y - holds Keydoor mask value, needed to id record
+;===============================================================================    
+SetRoomLockFlag: SUBROUTINE; compute roomLocks offset
+
+    ldx worldBank
+    lda BANK_ROM + 1,x
+
+; Get roomLock flag id
+    ldx #0
+.loop ;flag loop
+    lda roomId
+    cmp WORLD_LOCK_ROOM,x
+    bne .contLoop
+    tya ;mask
+    cmp WORLD_LOCK_FLAG,x
+    beq .foundFlag
+.contLoop
+    inx
+    jmp .loop ; FIXME optimize as branch
+.foundFlag
+    ; x = flagId
+    lda worldBank
+    asl ; bank * 2
+    tay
+    txa
+    and #$10
+    beq .skipIncOffset
+    iny
+.skipIncOffset
+    ; y = roomLocks offset
+    txa
+    and #$0F
+    tax
+    lda Bit8,x
+    ora roomLocks,y
+    sta roomLocks,y
+    rts
+*/    
 
 ;===============================================================================
 ; PosObject
@@ -1369,7 +1532,7 @@ noeor:
 
 
 EnemyAIDel:
-    lda $1FE4
+    lda BANK_ROM + 4
     ldx enType
     lda EnemyAIH,x
     pha

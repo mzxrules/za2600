@@ -204,16 +204,20 @@ set "loopcount" to "l"
 goto "#return"
 
 : "#create_lock_data_ns"
+. "south"
 set "$w&l&lock.('c'+0)" to "loopcount"
 set "$w&l&lock.('c'+1)" to "(0xF3)"
+. "north"
 set "$w&l&lock.('c'+2)" to "('loopcount'+8)"
 set "$w&l&lock.('c'+3)" to "(0xFC)"
 inc "c" by 4
 goto "#return"
 
 : "#create_lock_data_ew"
+. "east"
 set "$w&l&lock.('c'+0)" to "loopcount"
 set "$w&l&lock.('c'+1)" to "(0xCF)"
+. "west"
 set "$w&l&lock.('c'+2)" to "('loopcount'+1)"
 set "$w&l&lock.('c'+3)" to "(0x3F)"
 inc "c" by 4

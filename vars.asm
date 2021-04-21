@@ -44,6 +44,7 @@ enRecoil    ds 1
 bgColor     ds 1
 fgColor     ds 1
 worldId     ds 1
+worldBank   ds 1
 roomId      ds 1
 roomSpr     ds 1
 roomFlags   ds 1
@@ -53,7 +54,7 @@ roomDoors   ds 1
     ; xxxx_11xx S
     ; xx11_xxxx E
     ; 11xx_xxxx W
-roomLocks   ds 10
+roomLocks   ds 1
 roomItems   ds 6
 plState     ds 1
     ; 1000_0000 Fire Pressed Last Frame
@@ -91,8 +92,8 @@ WORLD_T_PF1L    ds 256
 WORLD_T_PF1R    ds 256
 WORLD_T_PF2     ds 256
 WORLD_COLOR     ds 256
-WORLD_LOCK      ds 16
-WORLD_LOCK_FLAG ds 16
+WORLD_LOCK_ROOM ds MAX_LOCKS * 2
+WORLD_LOCK_FLAG ds MAX_LOCKS * 2
 KERNEL_SCRIPT   ds (4 * 2)
 ROOM_SCRIPT     ds $20 * 2
 
@@ -109,6 +110,23 @@ rPF1RoomL   ds ROOM_PX_HEIGHT
 rPF2Room    ds ROOM_PX_HEIGHT
 rPF1RoomR   ds ROOM_PX_HEIGHT
 rRoomClear  ds 256/8
+
+    SEG.U VARS_ROOM
+    ORG $F800
+wRAM_SEG
+wRoomFlag   ds 256
+rRAM_SEG
+rRoomFlag   ds 256
+    ; dungeons only
+    ; xxxx_xxx1 N open
+    ; xxxx_x1xx S open
+    ; xxx1_xxxx E open
+    ; x1xx_xxxx W open
+    ; 1xxx_xxxx Got Item
+    
+BANK_ROM    equ $1FE0
+BANK_RAM7   equ $1FE7
+BANK_RAM    equ $1FE8
     
 ; ****************************************
 ; * Constants                            *
@@ -119,6 +137,7 @@ ROOM_SPR_HEIGHT     = 16 ; height of room sprite sheet
 ROOM_SPR_SHEET      = 16 ; width of room sprite sheet in 8 bit sprites
 ROOM_HEIGHT         = [(8*ROOM_PX_HEIGHT)/2-1] ; Screen visible height of play
 GRID_STEP           = 4 ; unit grid that the player should snap to
+MAX_LOCKS           = 16
 
 BoardXL = $04
 BoardXR = $7C
@@ -128,6 +147,16 @@ EnBoardXL = BoardXL+8
 EnBoardXR = BoardXR-8
 EnBoardYU = BoardYU-8
 EnBoardYD = BoardYD+8
+
+; U/D, pX $3C-$44
+; L/R, pY $28-$30
+BoardKeydoorUDA = $3C
+BoardKeydoorLRA = $28
+BoardKeydoorUY = $48+1
+BoardKeydoorDY = $10-1
+BoardKeydoorLX = $0C-1
+BoardKeydoorRX = $74+1
+
 
 ItemTimerSword = -9 ; counts up to 0
 

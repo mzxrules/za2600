@@ -390,22 +390,22 @@ PF2Room22:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
 PF2Room23:
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
+    .byte $3C ; |..XXXX..| mirrored
+    .byte $3C ; |..XXXX..| mirrored
+    .byte $0C ; |..XX....| mirrored
+    .byte $0C ; |..XX....| mirrored
+    .byte $CC ; |..XX..XX| mirrored
+    .byte $CC ; |..XX..XX| mirrored
+    .byte $4C ; |..XX..X.| mirrored
+    .byte $40 ; |......X.| mirrored
+    .byte $40 ; |......X.| mirrored
+    .byte $4C ; |..XX..X.| mirrored
+    .byte $CC ; |..XX..XX| mirrored
+    .byte $CC ; |..XX..XX| mirrored
+    .byte $0C ; |..XX....| mirrored
+    .byte $0C ; |..XX....| mirrored
+    .byte $3C ; |..XXXX..| mirrored
+    .byte $3C ; |..XXXX..| mirrored
 PF2Room24:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored

@@ -99,8 +99,9 @@ Door Flags: 0000 1110  >> 1
 == Door Flags ==
 Generic flags:
 00 = open
-01 = locked door
-03 = wall
+01 = keydoor
+10 = shutter door 
+11 = wall
 
   Zero Capture Shift Masks
 N 0xFC  0x03     0
@@ -108,6 +109,15 @@ S 0xF3  0x0C     2
 E 0xCF  0x30     4
 W 0x3F  0xC0     6
 
+Zero mask used to ID keydoor unlocked flag
+Unlock flag lookup table:
+RoomA, RoomB, MaskA, MaskB
+
+RoomA is south or east only
+RoomB is north or west only
+
+The above is rather complex. Gonna scrap that for keydoors at least
+Instead, RAM banks 1-3 store room flags
 
 
 set "p_up" "('p_up'+1*('key_pressed'=273o'key72'))"

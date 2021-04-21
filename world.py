@@ -64,7 +64,7 @@ def ConvertLocalToWorldRoomId(lvl, id):
     if lvl == 0:
         return id
         
-    return id//8 * 16 + (id % 8) + lock_flags_room_shift[(lvl + 2)%4]
+    return id//8 * 16 + (id % 8) + lock_flags_room_shift[(lvl + 1)%4]
     
 def PackRoomAndDoorData(bankId, levels):
     def PackStep(room, doors, type):
