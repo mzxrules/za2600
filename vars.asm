@@ -32,6 +32,7 @@ plYL        ds 1
 enYL        ds 1
 plSpr       ds 2 ; plSprOff
 enSpr       ds 2 ; enSprOff
+hudDigit    ds 6
 plDir       ds 1
 enDir       ds 2
 enType      ds 2

@@ -684,7 +684,7 @@ INIT_POS:
     sta blY
     
     ; set player stats
-    lda #24
+    lda #$80
     sta plHealth
     sta plHealthMax
     
@@ -716,7 +716,7 @@ VERTICAL_SYNC: ; 3 SCANLINES
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     jsr ProcessInput
     jsr Random
-    lda #1
+    lda #0
     ;sta VDELP0
     sta VDELP1
     sta VDELBL
@@ -885,21 +885,19 @@ __EnemyAIReturn:
     asl
     clc
     adc #7
-    tax
-    ldy #4
-.hud_test_loop
-    lda SprN0,x         ; 4
-    and #$0F            ; 2 6
-    sta Temp0           ; 3 9
-    lda SprN10+3,y      ; 4 13
-    and #$F0            ; 2 15
-    ora Temp0           ; 3 18
-    sta wHudSprDat+3,y  ; 5 23
-    dex                 ; 2 25
-    dey
-    bpl .hud_test_loop
+    sta hudDigit+3
+    lda #<SprN10 - #<SprN0 +7
+    sta hudDigit+2
     
-    lda #$50
+    lda #<SprN4 - #<SprN0 +7
+    sta hudDigit+0
+    sta hudDigit+1
+    lda #<SprN8 - #<SprN0 +7
+    sta hudDigit+4
+    sta hudDigit+5
+  
+  
+    lda #$60
     ldx #0
     jsr PosObject
 
@@ -923,7 +921,7 @@ __EnemyAIReturn:
     lsr
     lsr
     lsr
-    sta Temp1
+    sta Temp1 ; Health LOW
     sec
     sbc #8
     bcs .skipHealthHighClampMin
@@ -931,7 +929,7 @@ __EnemyAIReturn:
 .skipHealthHighClampMin
     tax
     lda HealthPattern,x
-    sta Temp2
+    sta Temp2 ; Health HIGH
     beq .skipHealthClamp
     lda #8
     sta Temp1
@@ -957,41 +955,108 @@ KERNEL_MAIN: SUBROUTINE ; 192 scanlines
 
 KERNEL_HUD: SUBROUTINE
     ldy #7
-.loop:
-    lda (mapSpr),y
-    sta GRP1
-    tya
-    lsr
-    lsr
-    tax
-    lda Temp1,x
-    sta PF1
-    sta WSYNC
-    lda #$2
-    cpy Temp0
-    beq .skip
     lda #0
-.skip
-    sta ENAM0
-    lda rHudSprDat,y
+    sta WSYNC
+    beq .loop
+;=========== Scanline 1A ==============
+.hudScanline1A
+    sta WSYNC
+    lda #0
     sta GRP0
-    lda Temp1,x
     sta PF1
-    sta WSYNC
-    lda #0
-    sta PF1
+    lda hudDigit+2
+    ldx hudDigit+3
+    sta hudDigit
+    stx hudDigit+1
+    lda hudDigit+4
+    ldx hudDigit+5
+    sta hudDigit+2
+    stx hudDigit+3
+    lda Temp1
+    sta Temp2
     dey
+    lda #0
+    sta Temp1
+    sta WSYNC
+KERNEL_HUD_LOOP:
+.loop:
+
+;=========== Scanline 0 ==============
+    cpy Temp0 ; 3
+    bne .skip ; 2/3
+    lda #2    ; 2
+.skip
+    sta ENAM0 ; 3
+    lda (mapSpr),y ; 5
+    sta GRP1 ; 3
+    
+    ldx hudDigit ; 3
+    lda SprN0,x  ; 4
+    and #$F0     ; 2
+    sta Temp3    ; 3 
+    ldx hudDigit+1; 3
+    lda SprN0,x ; 4
+    and #$0F  ; 2
+    ora Temp3 ; 3
+    sta GRP0 ; 3
+    lda Temp2
+    sta PF1
+    cpy #5
+    beq .hudScanline1A
+    cpy #2
+    beq .hudScanline1A
+    lda #0
+    sta WSYNC
+    sta PF1
+;=========== Scanline 1 ==============
+    dec hudDigit ; 5
+    dec hudDigit+1 ; 5
+    
+    ldx hudDigit ; 3
+    lda SprN0,x  ; 4
+    and #$F0     ; 2
+    sta Temp3    ; 3 
+    ldx hudDigit+1; 3
+    lda SprN0,x ; 4
+    and #$0F  ; 2
+    ora Temp3 ; 3
+    sta GRP0 ; 3
+    lda Temp2
+    sta PF1
+    dec hudDigit
+    dec hudDigit+1
+    lda #0
+    dey
+    sta WSYNC
+    sta PF1
+;=========== Scanline 0 ==============
     bpl .loop
+    LOG_SIZE "-HUD LOOP-", KERNEL_HUD_LOOP
 ; HUD END
     lda #76
     sta TIM8T
-    sta WSYNC
     lda #0
-    sta GRP1
     sta ENAM0
-    sta GRP0
+    sta GRP1
+    
+    ldx hudDigit ; 3
+    lda SprN0,x  ; 4
+    and #$F0     ; 2
+    sta Temp3    ; 3 
+    ldx hudDigit+1; 3
+    lda SprN0,x ; 4
+    and #$0F  ; 2
+    ora Temp3 ; 3
+    sta GRP0 ; 3
+    lda fgColor
+    sta COLUPF
+    lda #1
+    sta VDELP1
+    
+    sta WSYNC
 ; HMOVE setup
     ldx #0
+    stx GRP0
     stx NUSIZ1
     lda NUSIZ0_T
     sta NUSIZ0
