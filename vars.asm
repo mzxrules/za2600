@@ -32,7 +32,6 @@ plYL        ds 1
 enYL        ds 1
 plSpr       ds 2 ; plSprOff
 enSpr       ds 2 ; enSprOff
-hudSpr      ds 2 ; hudSprOff
 plDir       ds 1
 enDir       ds 2
 enType      ds 2
@@ -49,13 +48,13 @@ roomId      ds 1
 roomSpr     ds 1
 roomFlags   ds 1
     ; 1000_0000 Force Load Room
+    ; 0100_0000 Room Load happened this frame
 roomDoors   ds 1
     ; xxxx_xx11 N
     ; xxxx_11xx S
     ; xx11_xxxx E
     ; 11xx_xxxx W
 roomLocks   ds 1
-roomItems   ds 6
 plState     ds 1
     ; 1000_0000 Fire Pressed Last Frame
     ; 0100_0000 Use Current Item
@@ -74,6 +73,7 @@ itemKeys    ds 1
 itemBombs   ds 1
 itemRupees  ds 1
 itemTri     ds 1
+itemFlags   ds 2
 
 mapSpr      ds 2
 Temp0       ds 1
@@ -84,6 +84,11 @@ Temp4       ds 1
 Temp5       ds 1
 Temp6       ds 1
 NUSIZ0_T    ds 1
+AudioFlags  ds 1
+    ; xxxx_x111 Sequence
+    ; 1xxx_xxxx Mute Seq Secondary
+SeqTFrame   ds 2
+SeqCur      ds 2
 
 	echo "-RAM-",$80,(.)
     
@@ -104,12 +109,14 @@ wPF1RoomL   ds ROOM_PX_HEIGHT
 wPF2Room    ds ROOM_PX_HEIGHT
 wPF1RoomR   ds ROOM_PX_HEIGHT
 wRoomClear  ds 256/8
+wHudSprDat  ds 12
 
     ORG $F900
 rPF1RoomL   ds ROOM_PX_HEIGHT
 rPF2Room    ds ROOM_PX_HEIGHT
 rPF1RoomR   ds ROOM_PX_HEIGHT
 rRoomClear  ds 256/8
+rHudSprDat  ds 12
 
     SEG.U VARS_ROOM
     ORG $F800

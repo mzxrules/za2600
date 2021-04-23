@@ -32,11 +32,11 @@ loop for 3
 set "CHAR" to 48
 loop start
 inc "$" by "SprN&loopcount&:\n"
-set "sp&sp&" to 7
+set "sp&sp&" to 8
 goto "#dumpchr"
 inc "$" by "$dumpchr"
 inc "CHAR" by 1
-loop for 9
+loop for 10
 set "$sht" to "spr/spr_num.asm"
 goto "#dumpsht"
 

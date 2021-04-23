@@ -143,3 +143,11 @@ Health Display
   -64 = 8 hearts
 65-72 = 9 hearts
 73-80 = 10 hearts
+
+LoadRoom is running out of scanlines
+Overworld timing: 
+start  3.0
+end   25.44
+Dungeon timing:
+start 3.15
+end  26.27

@@ -358,7 +358,10 @@ LoadRoom_B6: SUBROUTINE
     sta wPF2Room+ROOM_PX_HEIGHT-2,y
     dey
     bpl .roomUpDownBorder
-
+    lda worldId
+    beq UpdateWorldDoors
+    rts
+    
 UpdateWorldDoors: SUBROUTINE
     lda roomDoors
     and #3
@@ -452,7 +455,7 @@ UpdateWorldDoors: SUBROUTINE
 rts_UpdateDoors:
     rts
     
-UpdateDoors: SUBROUTINE
+UpdateDoors_B6: SUBROUTINE
     lda worldId
     beq rts_UpdateDoors
     ldy #$3F
@@ -717,58 +720,27 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     ;sta VDELP0
     sta VDELP1
     sta VDELBL
+    
+    lda roomFlags
+    and #$BF
+    sta roomFlags
+    bpl .skipLoadRoom
+    ora #$40
+    sta roomFlags
+    jsr LoadRoom
+    lda #0
+    sta enType
+.skipLoadRoom
+; room setup
+    lda BANK_ROM + 6
+    jsr KeydoorCheck_B6
+    jsr UpdateDoors_B6
+    lda #ROOM_PX_HEIGHT-1
+    sta roomSpr
+    
     jsr EnemyAIDel
 
 __EnemyAIReturn:
-    bit roomFlags
-    bmi .LoadRoom
-; test player board bounds
-    ldy roomId
-    lda plX
-    cmp #BoardXR+1
-    bne .plXRSkip
-    ldx #BoardXL
-    stx plX
-    inc roomId
-.plXRSkip
-    cmp #BoardXL-1
-    bne .plXLSkip
-    ldx #BoardXR
-    stx plX
-    dec roomId
-.plXLSkip
-    lda plY
-    cmp #BoardYU+1
-    bne .plYUSkip
-    ldx #BoardYD
-    stx plY
-    clc
-    lda roomId
-    adc #$F0
-    sta roomId
-    lda plY
-.plYUSkip
-    cmp #BoardYD-1
-    bne .plYDSkip
-    ldx #BoardYU
-    stx plY
-    clc
-    lda roomId
-    adc #$10
-    sta roomId
-.plYDSkip
-    cpy roomId
-    beq .skipSwapRoom
-; room setup
-.LoadRoom
-    jsr LoadRoom
-.skipSwapRoom
-    lda BANK_ROM + 6
-    jsr KeydoorCheck_B6
-    lda BANK_ROM + 6
-    jsr UpdateDoors
-    lda #ROOM_PX_HEIGHT-1
-    sta roomSpr
 
 ; Sword
     bit plState
@@ -895,35 +867,48 @@ __EnemyAIReturn:
     lda #0
     sta NUSIZ0
     
+    lda BANK_ROM + 0
 .hud_sprite_setup
-    lda #<(SprP0)-7
-    sta hudSpr
-    lda #>(SprP0)
-    sta hudSpr+1
-    lda hudSpr; #<(SprE0 + 7)
+; key display
+    ldx itemKeys
+    bmi .hud_all_keys
+    cpx #9
+    bmi .hud_key_digit
+    ldx #9
+    .byte $2C
+.hud_all_keys
+    ldx #10
+.hud_key_digit
+    txa
+    asl
+    asl
+    asl
     clc
-    adc #7 ;hudSpr
-    sec
-    sbc #0
-    sta hudSpr
-
-    lda hudSpr + 1;#>(SprE0 + 7)
-    sbc #0
-    sta hudSpr + 1
+    adc #7
+    tax
+    ldy #4
+.hud_test_loop
+    lda SprN0,x         ; 4
+    and #$0F            ; 2 6
+    sta Temp0           ; 3 9
+    lda SprN10+3,y      ; 4 13
+    and #$F0            ; 2 15
+    ora Temp0           ; 3 18
+    sta wHudSprDat+3,y  ; 5 23
+    dex                 ; 2 25
+    dey
+    bpl .hud_test_loop
     
     lda #$50
     ldx #0
     jsr PosObject
 
-    lda BANK_ROM + 0
     sta WSYNC
     sta HMOVE
-
+    
+; ===================================================    
+;    Pre HUD
 ; ===================================================
-; Kernel Main
-; ===================================================
-KERNEL_MAIN: SUBROUTINE ; 192 scanlines
-; pre hud
     lda roomId
     lsr
     lsr
@@ -956,18 +941,22 @@ KERNEL_MAIN: SUBROUTINE ; 192 scanlines
     sta Temp1
     lda #0
     
-.KERNEL_MAIN_WAIT    
-    sta WSYNC
-    lda INTIM
-    bne .KERNEL_MAIN_WAIT
-    sta VBLANK
-
-KERNEL_HUD: SUBROUTINE
-    ldy #7
     lda #COLOR_MINIMAP
     sta COLUP1
     lda #COLOR_PLAYER_02
     sta COLUPF
+
+; ===================================================
+; Kernel Main
+; ===================================================
+KERNEL_MAIN: SUBROUTINE ; 192 scanlines
+    sta WSYNC
+    lda INTIM
+    bne KERNEL_MAIN
+    sta VBLANK
+
+KERNEL_HUD: SUBROUTINE
+    ldy #7
 .loop:
     lda (mapSpr),y
     sta GRP1
@@ -978,15 +967,13 @@ KERNEL_HUD: SUBROUTINE
     lda Temp1,x
     sta PF1
     sta WSYNC
-    lda #0
-    sta PF0
     lda #$2
     cpy Temp0
     beq .skip
     lda #0
 .skip
     sta ENAM0
-    lda (hudSpr),y
+    lda rHudSprDat,y
     sta GRP0
     lda Temp1,x
     sta PF1
@@ -1119,13 +1106,58 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     sta VBLANK
     lda #32
     sta TIM64T ; 27 scanline timer
-
+    
+; test player board bounds
+    ldy roomId
+    lda plX
+    cmp #BoardXR+1
+    bne .plXRSkip
+    ldx #BoardXL
+    stx plX
+    inc roomId
+.plXRSkip
+    cmp #BoardXL-1
+    bne .plXLSkip
+    ldx #BoardXR
+    stx plX
+    dec roomId
+.plXLSkip
+    lda plY
+    cmp #BoardYU+1
+    bne .plYUSkip
+    ldx #BoardYD
+    stx plY
+    clc
+    lda roomId
+    adc #$F0
+    sta roomId
+    lda plY
+.plYUSkip
+    cmp #BoardYD-1
+    bne .plYDSkip
+    ldx #BoardYU
+    stx plY
+    clc
+    lda roomId
+    adc #$10
+    sta roomId
+.plYDSkip
+    cpy roomId
+    beq .skipSwapRoom
+    lda #$80
+    ora roomFlags
+    sta roomFlags
+.skipSwapRoom
+    bit roomFlags
+    bmi .skipCollisionPosReset
     ldx #1
 .posResetLoop
     lda CXP0FB,x
     jsr TestCollisionReset
     dex
     bpl .posResetLoop
+.skipCollisionPosReset
+    
 
 OVERSCAN_WAIT:
     sta WSYNC
@@ -1140,6 +1172,7 @@ OVERSCAN_WAIT:
 ;----------
 ; N = reset collision
 ; x = Player (0), Enemy (1)
+;===============================================================================
 TestCollisionReset:
     bpl .SkipPFCollision
     lda plXL,x
