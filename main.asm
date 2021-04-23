@@ -869,6 +869,21 @@ __EnemyAIReturn:
     
     lda BANK_ROM + 0
 .hud_sprite_setup
+; rupee display
+    lda itemRupees
+    and #$0F
+    asl
+    asl
+    asl
+    clc
+    adc #7
+    sta hudDigit+5
+    lda itemRupees
+    and #$F0
+    lsr
+    clc
+    adc #7
+    sta hudDigit+4
 ; key display
     ldx itemKeys
     bmi .hud_all_keys
@@ -888,13 +903,23 @@ __EnemyAIReturn:
     sta hudDigit+3
     lda #<SprN10 - #<SprN0 +7
     sta hudDigit+2
-    
-    lda #<SprN4 - #<SprN0 +7
-    sta hudDigit+0
+; bomb display    
+    lda itemBombs
+    cmp #10
+    bpl .hud_bomb_digit
+    lda #<SprN11 - #<SprN0 +7
+    .byte $2C
+.hud_bomb_digit
+    lda #<SprN1+7
+    sta hudDigit+0 
+    lda itemBombs
+    and #$0F
+    asl
+    asl
+    asl
+    clc
+    adc #7
     sta hudDigit+1
-    lda #<SprN8 - #<SprN0 +7
-    sta hudDigit+4
-    sta hudDigit+5
   
   
     lda #$60
@@ -964,14 +989,12 @@ KERNEL_HUD: SUBROUTINE
     lda #0
     sta GRP0
     sta PF1
-    lda hudDigit+2
-    ldx hudDigit+3
-    sta hudDigit
-    stx hudDigit+1
-    lda hudDigit+4
-    ldx hudDigit+5
-    sta hudDigit+2
-    stx hudDigit+3
+    ldx #3
+.hudShiftDigitLoop
+    lda hudDigit,x
+    sta hudDigit+2,x
+    dex
+    bpl .hudShiftDigitLoop
     lda Temp1
     sta Temp2
     dey
@@ -990,11 +1013,11 @@ KERNEL_HUD_LOOP:
     lda (mapSpr),y ; 5
     sta GRP1 ; 3
     
-    ldx hudDigit ; 3
+    ldx hudDigit+4 ; 3
     lda SprN0,x  ; 4
     and #$F0     ; 2
     sta Temp3    ; 3 
-    ldx hudDigit+1; 3
+    ldx hudDigit+5; 3
     lda SprN0,x ; 4
     and #$0F  ; 2
     ora Temp3 ; 3
@@ -1009,22 +1032,22 @@ KERNEL_HUD_LOOP:
     sta WSYNC
     sta PF1
 ;=========== Scanline 1 ==============
-    dec hudDigit ; 5
-    dec hudDigit+1 ; 5
+    dec hudDigit+4 ; 5
+    dec hudDigit+5 ; 5
     
-    ldx hudDigit ; 3
+    ldx hudDigit+4 ; 3
     lda SprN0,x  ; 4
     and #$F0     ; 2
     sta Temp3    ; 3 
-    ldx hudDigit+1; 3
+    ldx hudDigit+5; 3
     lda SprN0,x ; 4
     and #$0F  ; 2
     ora Temp3 ; 3
     sta GRP0 ; 3
     lda Temp2
     sta PF1
-    dec hudDigit
-    dec hudDigit+1
+    dec hudDigit+4
+    dec hudDigit+5
     lda #0
     dey
     sta WSYNC
@@ -1039,11 +1062,11 @@ KERNEL_HUD_LOOP:
     sta ENAM0
     sta GRP1
     
-    ldx hudDigit ; 3
+    ldx hudDigit+4 ; 3
     lda SprN0,x  ; 4
     and #$F0     ; 2
     sta Temp3    ; 3 
-    ldx hudDigit+1; 3
+    ldx hudDigit+5; 3
     lda SprN0,x ; 4
     and #$0F  ; 2
     ora Temp3 ; 3

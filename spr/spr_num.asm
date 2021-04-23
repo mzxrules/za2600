@@ -92,9 +92,54 @@ SprN10:
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
-    .byte $65 ; |.XX..X.X|
     .byte $25 ; |..X..X.X|
-    .byte $77 ; |.XXX.XXX|
+    .byte $65 ; |.XX..X.X|
+    .byte $27 ; |..X..XXX|
     .byte $55 ; |.X.X.X.X|
     .byte $72 ; |.XXX..X.|
+SprN11:
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $26 ; |..X..XX.|
+    .byte $75 ; |.XXX.X.X|
+    .byte $26 ; |..X..XX.|
+    .byte $15 ; |...X.X.X|
+    .byte $26 ; |..X..XX.|
+SprN12:
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $F3 ; |XXXX..XX|
+    .byte $74 ; |.XXX.X..|
+    .byte $74 ; |.XXX.X..|
+    .byte $24 ; |..X..X..|
+    .byte $23 ; |..X...XX|
+SprN13:
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $26 ; |..X..XX.|
+    .byte $65 ; |.XX..X.X|
+    .byte $25 ; |..X..X.X|
+    .byte $55 ; |.X.X.X.X|
+    .byte $76 ; |.XXX.XX.|
+SprN14:
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $27 ; |..X..XXX|
+    .byte $64 ; |.XX..X..|
+    .byte $26 ; |..X..XX.|
+    .byte $54 ; |.X.X.X..|
+    .byte $77 ; |.XXX.XXX|
+SprN15:
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $24 ; |..X..X..|
+    .byte $64 ; |.XX..X..|
+    .byte $26 ; |..X..XX.|
+    .byte $54 ; |.X.X.X..|
+    .byte $77 ; |.XXX.XXX|
 

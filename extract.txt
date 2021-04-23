@@ -36,7 +36,7 @@ set "sp&sp&" to 8
 goto "#dumpchr"
 inc "$" by "$dumpchr"
 inc "CHAR" by 1
-loop for 10
+loop for 15
 set "$sht" to "spr/spr_num.asm"
 goto "#dumpsht"
 

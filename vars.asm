@@ -36,6 +36,7 @@ hudDigit    ds 6
 plDir       ds 1
 enDir       ds 2
 enType      ds 2
+enState     ds 1
 enColor     ds 2
 enBlockDir  ds 1
 enStun      ds 1
@@ -66,13 +67,11 @@ plState     ds 1
 plHealthMax ds 1
 plHealth    ds 1
     
-enState     ds 1
-    
     
 plItemTimer ds 1
+itemRupees  ds 1
 itemKeys    ds 1
 itemBombs   ds 1
-itemRupees  ds 1
 itemTri     ds 1
 itemFlags   ds 2
 
@@ -110,14 +109,12 @@ wPF1RoomL   ds ROOM_PX_HEIGHT
 wPF2Room    ds ROOM_PX_HEIGHT
 wPF1RoomR   ds ROOM_PX_HEIGHT
 wRoomClear  ds 256/8
-wHudSprDat  ds 12
 
     ORG $F900
 rPF1RoomL   ds ROOM_PX_HEIGHT
 rPF2Room    ds ROOM_PX_HEIGHT
 rPF1RoomR   ds ROOM_PX_HEIGHT
 rRoomClear  ds 256/8
-rHudSprDat  ds 12
 
     SEG.U VARS_ROOM
     ORG $F800
