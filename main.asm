@@ -64,7 +64,8 @@ BANK_3
     ORG $2000
     RORG $F000
 BANK_4
-    INCLUDE "gen/ptr.asm"
+    INCLUDE "gen/EnemyAI.asm"
+    INCLUDE "gen/RoomScript.asm"
 NextDir: SUBROUTINE
     jsr Random
     and #3
@@ -84,6 +85,11 @@ NoAI:
     lda #$F0
     sta enSpr+1
     sta enY
+RSNone:
+RSMiddleEnt:
+RSSouthExit:
+RSRaftSpot:
+RSNeedTriforce:
     rts
 
 TriforceAI: SUBROUTINE
@@ -99,10 +105,10 @@ TriforceAI: SUBROUTINE
     and #$10
     bne .TriforceBlue
 
-    lda #$2A
+    lda #COLOR_TRIFORCE
     .byte $2C
 .TriforceBlue
-    lda #$88
+    lda #COLOR_LIGHT_BLUE
     sta enColor
     rts
 
@@ -309,8 +315,109 @@ EnMoveUp: SUBROUTINE
     ORG $2800
     RORG $F000
 BANK_5
+    INCLUDE "gen/ms_dung0_note.asm"
+    INCLUDE "gen/ms_dung0_tone.asm"
+    INCLUDE "gen/ms_dung0_dur.asm"
+    INCLUDE "gen/ms_dung1_note.asm"
+    INCLUDE "gen/ms_dung1_tone.asm"
+    ;INCLUDE "gen/ms_dung1_dur.asm"
+    align 16
+    INCLUDE "gen/ms_header.asm"
+    INCLUDE "gen/MusicSeq.asm"
 
-    LOG_SIZE "-BANK 5-", BANK_5
+UpdateAudio: SUBROUTINE
+    lda AudioFlags
+    bpl .continueSequence
+    and #$7F
+    sta AudioFlags
+    lda #$FF
+    ldx Frame
+    inx
+    sta SeqCur
+    sta SeqCur + 1
+    stx SeqTFrame
+    stx SeqTFrame + 1
+.continueSequence
+
+    ldx Frame
+    cpx SeqTFrame+0
+    bne .skipChannel0
+    lda AudioFlags
+    and #$07
+    jsr AudioDel
+
+.skipChannel0
+    ldx SeqTFrame+1
+    cpx Frame
+    bne .skipChannel1
+    lda AudioFlags
+    and #$07
+    ora #$04
+    jsr AudioDel
+
+.skipChannel1
+    rts
+    
+AudioDel:
+    tax
+    lda MusicSeqH,x
+    pha
+    lda MusicSeqL,x
+    pha
+    rts
+    
+MSNone: SUBROUTINE
+    lda #0
+    ldy #1
+.loop
+    sta AUDC0,y
+    sta AUDF0,y
+    sta AUDV0,y
+    dey
+    bpl .loop
+    rts
+    
+MSDung0: SUBROUTINE
+    inc SeqCur
+    ldx SeqCur
+    cpx ms_header + 0
+    bne .skipRoll
+    ldx #0
+    stx SeqCur
+.skipRoll
+    lda ms_dung0_note,x
+    sta AUDF0
+    lda ms_dung0_tone,x
+    sta AUDC0
+    lda #2
+    sta AUDV0
+    lda ms_dung0_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame
+    rts
+    
+MSDung1: SUBROUTINE
+    inc SeqCur + 1
+    ldx SeqCur + 1
+    cpx ms_header + 1
+    bne .skipRoll
+    ldx #0
+    stx SeqCur + 1
+.skipRoll
+    lda ms_dung1_note,x
+    sta AUDF1
+    lda ms_dung1_tone,x
+    sta AUDC1
+    lda #2
+    sta AUDV1
+    lda #$0A ;ms_dung1_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame + 1
+    rts
+    
+    LOG_SIZE "-BANK 5- Audio", BANK_5
 
     ORG $3000
     RORG $F000
@@ -565,12 +672,7 @@ KeydoorCheck_B6: SUBROUTINE
     ; x = door dir, S/N/E/W
     
     ; load world bank (RAM)
-    ldy worldId
-    iny
-    tya
-    lsr
-    lsr
-    tay
+    ldy worldBank
     lda BANK_RAM + 1,y
     
     ;jmp SetRoomLockFlag
@@ -587,7 +689,46 @@ KeydoorCheck_B6: SUBROUTINE
     sta wRoomFlag,y
     lda BANK_RAM + 0
     rts
-    
+
+PlayerItem_B6: SUBROUTINE
+; Sword
+    bit plState
+    bvc .skipSetItemTimer
+; If Item Button, stab sword
+    lda #ItemTimerSword
+    sta plItemTimer
+.skipSetItemTimer
+    ldy plItemTimer
+    bne .drawSword
+    lda #$80
+    sta m0Y
+    bmi .endSword
+
+.drawSword
+    lda #0
+    cpy #-7
+    bmi .endSword
+    cpy #-1
+    beq .drawSword4
+    lda #4
+.drawSword4
+    clc
+    adc plDir
+    tay
+    lda SwordWidth4,y
+    sta NUSIZ0_T
+    lda SwordHeight4,y
+    sta m0H
+    lda SwordOff4X,y
+    clc
+    adc plX
+    sta m0X
+    lda SwordOff4Y,y
+    clc
+    adc plY
+    sta m0Y
+.endSword
+    rts
     
     align 4
 KeydoorMask:
@@ -737,48 +878,11 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     jsr UpdateDoors_B6
     lda #ROOM_PX_HEIGHT-1
     sta roomSpr
-    
+    lda BANK_ROM + 5
+    jsr UpdateAudio
     jsr EnemyAIDel
-
-__EnemyAIReturn:
-
-; Sword
-    bit plState
-    bvc .skipSetItemTimer
-; If Item Button, stab sword
-    lda #ItemTimerSword
-    sta plItemTimer
-.skipSetItemTimer
-    ldy plItemTimer
-    bne .drawSword
-    lda #$80
-    sta m0Y
-    bmi .endSword
-
-.drawSword
-    lda #0
-    cpy #-7
-    bmi .endSword
-    cpy #-1
-    beq .drawSword4
-    lda #4
-.drawSword4
-    clc
-    adc plDir
-    tay
-    lda SwordWidth4,y
-    sta NUSIZ0_T
-    lda SwordHeight4,y
-    sta m0H
-    lda SwordOff4X,y
-    clc
-    adc plX
-    sta m0X
-    lda SwordOff4Y,y
-    clc
-    adc plY
-    sta m0Y
-.endSword
+    lda BANK_ROM + 6
+    jsr PlayerItem_B6
 
 ;===============================================================================
 ; Pre-Position Sprites
@@ -863,7 +967,7 @@ __EnemyAIReturn:
     adc #$18+1
     stx NUSIZ1
     ldx #2
-    jsr PosObject
+    jsr PosObject ; minimap dot
     lda #0
     sta NUSIZ0
     
@@ -925,6 +1029,8 @@ __EnemyAIReturn:
     lda #$60
     ldx #0
     jsr PosObject
+
+    ;jsr PosHudObjects
 
     sta WSYNC
     sta HMOVE
@@ -1000,7 +1106,7 @@ KERNEL_HUD: SUBROUTINE
     dey
     lda #0
     sta Temp1
-    sta WSYNC
+    nop ;sta WSYNC
 KERNEL_HUD_LOOP:
 .loop:
 
@@ -1576,66 +1682,7 @@ SetRoomLockFlag: SUBROUTINE; compute roomLocks offset
     ora roomLocks,y
     sta roomLocks,y
     rts
-*/    
-
-;===============================================================================
-; PosObject
-;----------
-; subroutine for setting the X position of any TIA object
-; when called, set the following registers:
-;   A - holds the X position of the object
-;   X - holds which object to position
-;       0 = player0
-;       1 = player1
-;       2 = missile0
-;       3 = missile1
-;       4 = ball
-; the routine will set the coarse X position of the object, as well as the
-; fine-tune register that will be used when HMOVE is used.
-;===============================================================================
-    align 16 ; FIXME: Page rollover issue
-PosObject: SUBROUTINE
-        sec
-        sta WSYNC
-.DivideLoop
-        sbc #15        ; 2  2 - each time thru this loop takes 5 cycles, which is
-        bcs .DivideLoop; 2  4 - the same amount of time it takes to draw 15 pixels
-        eor #7         ; 2  6 - The EOR & ASL statements convert the remainder
-        asl            ; 2  8 - of position/15 to the value needed to fine tune
-        asl            ; 2 10 - the X position
-        asl            ; 2 12
-        asl            ; 2 14
-        sta.wx HMP0,X  ; 5 19 - store fine tuning of X
-        sta RESP0,X    ; 4 23 - set coarse X position of object
-        rts            ; 6 29
-        
-;===============================================================================
-; PosWorldObjects
-;----------
-; Sets X position for all TIA objects
-; X position must be between 0-134 ($00 to $86)
-; Higher values will cause an extra cycle
-;===============================================================================
-PosWorldObjects: SUBROUTINE
-        sec            ; 2
-        ldx #4
-.Loop
-        sta WSYNC      ; 3
-        lda plX,x      ; 4
-DivideLoop
-        sbc #15        ; 2  2 - each time thru this loop takes 5 cycles, which is
-        bcs DivideLoop ; 2  4 - the same amount of time it takes to draw 15 pixels
-        eor #7         ; 2  6 - The EOR & ASL statements convert the remainder
-        asl            ; 2  8 - of position/15 to the value needed to fine tune
-        asl            ; 2 10 - the X position
-        asl            ; 2 12
-        asl            ; 2 14
-        sta.wx HMP0,X  ; 5 19 - store fine tuning of X
-        sta RESP0,X    ; 4 23 - set coarse X position of object
-; scn cycle 67
-        dex ; 69
-        bpl .Loop ; 72
-        rts
+*/ 
         
 ;===============================================================================
 ; Generate Random Number
@@ -1699,6 +1746,78 @@ HealthPattern:
     .byte $00, $01, $03, $07, $0F, $1F, $3F, $7F, $FF 
     LOG_SIZE "-DATA-", DataStart
 
+;===============================================================================
+; PosObject
+;----------
+; subroutine for setting the X position of any TIA object
+; when called, set the following registers:
+;   A - holds the X position of the object
+;   X - holds which object to position
+;       0 = player0
+;       1 = player1
+;       2 = missile0
+;       3 = missile1
+;       4 = ball
+; the routine will set the coarse X position of the object, as well as the
+; fine-tune register that will be used when HMOVE is used.
+;===============================================================================
+    align 16 ; FIXME: Page rollover issue
+PosObject: SUBROUTINE
+        sec
+        sta WSYNC
+.DivideLoop
+        sbc #15        ; 2  2 - each time thru this loop takes 5 cycles, which is
+        bcs .DivideLoop; 2  4 - the same amount of time it takes to draw 15 pixels
+        eor #7         ; 2  6 - The EOR & ASL statements convert the remainder
+        asl            ; 2  8 - of position/15 to the value needed to fine tune
+        asl            ; 2 10 - the X position
+        asl            ; 2 12
+        asl            ; 2 14
+        sta.wx HMP0,X  ; 5 19 - store fine tuning of X
+        sta RESP0,X    ; 4 23 - set coarse X position of object
+        rts            ; 6 29
+
+PosHudObjects: SUBROUTINE
+    sta WSYNC
+    lda #0
+    sta HMP0
+    sta HMM0
+    sta HMP1
+    sta RESP0
+    sta RESM0
+    sta RESP1
+    rts
+
+;===============================================================================
+; PosWorldObjects
+;----------
+; Sets X position for all TIA objects
+; X position must be between 0-134 ($00 to $86)
+; Higher values will cause an extra cycle
+;===============================================================================
+PosWorldObjects: SUBROUTINE
+        sec            ; 2
+        ldx #4
+.Loop
+        sta WSYNC      ; 3
+        lda plX,x      ; 4
+DivideLoop
+        sbc #15        ; 2  2 - each time thru this loop takes 5 cycles, which is
+        bcs DivideLoop ; 2  4 - the same amount of time it takes to draw 15 pixels
+        eor #7         ; 2  6 - The EOR & ASL statements convert the remainder
+        asl            ; 2  8 - of position/15 to the value needed to fine tune
+        asl            ; 2 10 - the X position
+        asl            ; 2 12
+        asl            ; 2 14
+        sta.wx HMP0,X  ; 5 19 - store fine tuning of X
+        sta RESP0,X    ; 4 23 - set coarse X position of object
+; scn cycle 67
+        dex ; 69
+        bpl .Loop ; 72
+        rts
+        
+        LOG_SIZE "-PosWorldObjects-", PosWorldObjects
+        
     ORG $3FE0
     ; This space is reserved to prevent unintentional bank swaps
     .byte $0, $1, $2, $3, $4, $5, $6, $7, $8, $9, $A, $B, $C, $D, $E, $F

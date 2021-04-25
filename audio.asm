@@ -15,6 +15,7 @@ Vol         ds 1
 songLen     ds 2
 songCur     ds 2
 songTFrame  ds 2
+Cool        ds 1
 
 
     
@@ -40,6 +41,8 @@ INIT:
     ; set bgColor
     lda #$00
     sta COLUBK 
+    lda #%0001001
+    sta Cool
     
     ; set playfield
     lda #$0E
@@ -49,9 +52,9 @@ INIT:
     sta CTRLPF
     lda #8
     sta Vol
-    lda s0_dung_head
+    lda ms_header
     sta songLen
-    lda s1_dung_head
+    lda ms_header+1
     sta songLen+1
     lda #10
     sta songTFrame
@@ -82,6 +85,11 @@ VERTICAL_SYNC: ; 3 SCANLINES
     
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     jsr ProcessInput
+    lda Cool
+    sta COLUPF
+    ;rol
+    adc #0
+    sta Cool
     
     lda Frame
     cmp songTFrame
@@ -105,10 +113,14 @@ KERNEL_MAIN:  ; 192 scanlines
     
     ;lda #0
     ;ldx #7
-    ;ldy #(192/2)
+    ldy #192
 KERNEL_LOOP: SUBROUTINE ;-59
+    
+    lda Cool
+    sta PF1
+    sta WSYNC
     dey
-    bpl KERNEL_LOOP
+    bne KERNEL_LOOP
     
 OVERSCAN: ; 30 scanlines
     sta WSYNC
@@ -166,17 +178,17 @@ UpdateSong0: SUBROUTINE
     sta AUDV0
     inc songCur
     lda songCur
-    cmp s0_dung_head
+    cmp ms_header+0
     bne .skipResetSongCur
     lda #0
     sta songCur
 .skipResetSongCur
     tax
-    lda s0_dung_note,x
+    lda ms_dung0_note,x
     sta AUDF0
-    lda s0_dung_tone,x
+    lda ms_dung0_tone,x
     sta AUDC0
-    lda s0_dung_dur,x
+    lda ms_dung0_dur,x
     clc
     adc Frame
     sta songTFrame
@@ -187,17 +199,17 @@ UpdateSong1: SUBROUTINE
     sta AUDV0+1
     inc songCur+1
     lda songCur+1
-    cmp s1_dung_head
+    cmp ms_header+1
     bne .skipResetSongCur
     lda #0
     sta songCur+1
 .skipResetSongCur
     tax
-    lda s1_dung_note,x
+    lda ms_dung1_note,x
     sta AUDF0+1
-    lda s1_dung_tone,x
+    lda ms_dung1_tone,x
     sta AUDC0+1
-    lda s1_dung_dur,x
+    lda ms_dung1_dur,x
     clc
     adc Frame
     sta songTFrame+1
@@ -227,9 +239,13 @@ AUDTEST: SUBROUTINE
     
   
     align 256
-    include "gen/s0_dung.asm"
-    align 256
-    include "gen/s1_dung.asm"
+    include "gen/ms_dung0_note.asm"
+    include "gen/ms_dung0_tone.asm"
+    include "gen/ms_dung0_dur.asm"
+    include "gen/ms_dung1_note.asm"
+    include "gen/ms_dung1_tone.asm"
+    include "gen/ms_dung1_dur.asm"
+    include "gen/ms_header.asm"
 	echo "-CODE-",$F000,(.)
     
     

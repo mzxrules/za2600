@@ -56,7 +56,7 @@ roomDoors   ds 1
     ; xxxx_11xx S
     ; xx11_xxxx E
     ; 11xx_xxxx W
-roomLocks   ds 1
+roomScript  ds 1
 plState     ds 1
     ; 1000_0000 Fire Pressed Last Frame
     ; 0100_0000 Use Current Item
@@ -74,6 +74,12 @@ itemKeys    ds 1
 itemBombs   ds 1
 itemTri     ds 1
 itemFlags   ds 2
+AudioFlags  ds 1
+    ; xxxx_x111 Sequence
+    ; 1xxx_xxxx New Sequence
+    ; x1xx_xxxx Mute Seq Secondary
+SeqTFrame   ds 2
+SeqCur      ds 2
 
 mapSpr      ds 2
 Temp0       ds 1
@@ -84,11 +90,6 @@ Temp4       ds 1
 Temp5       ds 1
 Temp6       ds 1
 NUSIZ0_T    ds 1
-AudioFlags  ds 1
-    ; xxxx_x111 Sequence
-    ; 1xxx_xxxx Mute Seq Secondary
-SeqTFrame   ds 2
-SeqCur      ds 2
 
 	echo "-RAM-",$80,(.)
     
@@ -179,6 +180,7 @@ COLOR_LIGHT_WATER   = $A4
 COLOR_LIGHT_BLUE    = $88
 COLOR_DARK_BLUE     = $90
 COLOR_GOLDEN        = $1E
+COLOR_TRIFORCE      = $2A
 
 COLOR_PLAYER_00 = $C6
 COLOR_PLAYER_01 = $08

@@ -60,9 +60,9 @@ NBdic = {
     "E7"  : 1
 }
 
-def DumpSong(name, channelNotes, beat):
+def DumpSongChannel(name, channelNotes, beat):
     time = 0
-    header = []
+    totalNotes = 0
     notes = []
     durs = []
     tones = []
@@ -97,19 +97,8 @@ def DumpSong(name, channelNotes, beat):
         durs.append((d//1)%256)
         tones.append(tone)
         
-    header.append(len(notes))
-    outstr = f"{name}_note:\n"
-    outstr += ToAsm(notes)
-    outstr += "    align 256\n"
-    outstr += f"{name}_dur:\n"
-    outstr += ToAsm(durs)
-    outstr += "    align 256\n"
-    outstr += f"{name}_tone:\n"
-    outstr += ToAsm(tones)
-    outstr += f"{name}_head:\n"
-    outstr += ToAsm(header)
-    print(header)
-    return outstr
+    totalNotes = len(notes)
+    return [name, totalNotes, notes, tones, durs]
 
 def ListToND(list, dim):
     r = []
@@ -134,7 +123,7 @@ def ConvertMusic(a0, a1, bars=None):
 # Dungeon Theme
 # 90 BPM 4/4 time signature
 
-dungeon_beat = 3600/90 
+dungeon_beat = 3600/90/4
 
 dungeon_baseline = [
     #G4, everything is shifted up an octave
@@ -269,8 +258,23 @@ for note, dir in a0:
         test.append((note,dir))
 a0 = test
 
-with open("gen/s0_dung.asm", "w") as file:
-    file.write(DumpSong("s0_dung", a0, dungeon_beat))
+dungSq = [DumpSongChannel("ms_dung0", a0, dungeon_beat), DumpSongChannel("ms_dung1", a1, dungeon_beat)]
+header = [dungSq[0][1], dungSq[1][1]]
+
+fl = [
+    ("{}_note",2),
+    ("{}_tone",3),
+    ("{}_dur", 4)
+]
+
+for chan in dungSq:
+    for np, index in fl:
+        n = np.format(chan[0])
+        str = f"{n}:\n" + ToAsm(chan[index])
+        with open(f"gen/{n}.asm", "w") as file:
+            file.write(str)
+            
+str = "ms_header:\n" + ToAsm(header)
+with open("gen/ms_header.asm", "w") as file:
+    file.write(str)
     
-with open("gen/s1_dung.asm", "w") as file:
-    file.write(DumpSong("s1_dung", a1, dungeon_beat))
