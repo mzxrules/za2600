@@ -314,6 +314,12 @@ BANK_5
     INCLUDE "gen/ms_dung1_note.asm"
     INCLUDE "gen/ms_dung1_tone.asm"
     ;INCLUDE "gen/ms_dung1_dur.asm"
+    INCLUDE "gen/ms_gi0_note.asm"
+    INCLUDE "gen/ms_gi0_tone.asm"
+    INCLUDE "gen/ms_gi0_dur.asm"
+    INCLUDE "gen/ms_gi1_note.asm"
+    INCLUDE "gen/ms_gi1_tone.asm"
+    INCLUDE "gen/ms_gi1_dur.asm"
     align 16
     INCLUDE "gen/ms_header.asm"
     INCLUDE "gen/MusicSeq.asm"
@@ -405,6 +411,46 @@ MSDung1: SUBROUTINE
     lda #2
     sta AUDV1
     lda #$0A ;ms_dung1_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame + 1
+    rts
+    
+MSGI0: SUBROUTINE
+    inc SeqCur
+    ldx SeqCur
+    cpx ms_header + 2
+    bne .skipRoll
+    ldx #4
+    stx SeqCur
+.skipRoll
+    lda ms_gi0_note,x
+    sta AUDF0
+    lda ms_gi0_tone,x
+    sta AUDC0
+    lda #2
+    sta AUDV0
+    lda ms_gi0_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame
+    rts
+    
+MSGI1: SUBROUTINE
+    inc SeqCur + 1
+    ldx SeqCur + 1
+    cpx ms_header + 3
+    bne .skipRoll
+    ldx #4
+    stx SeqCur + 1
+.skipRoll
+    lda ms_gi1_note,x
+    sta AUDF0 + 1
+    lda ms_gi1_tone,x
+    sta AUDC0 + 1
+    lda #2
+    sta AUDV0 + 1
+    lda ms_gi1_dur,x
     clc
     adc Frame
     sta SeqTFrame + 1

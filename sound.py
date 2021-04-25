@@ -246,8 +246,29 @@ dungeon_highline = [
     "C6",1
     ]
 ]
-    
+
+get_item_highline = [
+    [
+    "A5", 1,
+    "A#5", 1,
+    "B5", 1,
+    "C6", 3,
+    "_", 4,
+    ]
+]
+
+get_item_baseline = [
+    [
+    "C5", 1,
+    "C#5", 1,
+    "D5", 1,
+    "D#5", 3,
+    "_", 4,
+    ]
+]
+
 a0, a1 = ConvertMusic(dungeon_baseline, dungeon_highline,10)
+gi0, gi1 = ConvertMusic(get_item_highline, get_item_baseline)
 
 test = []
 for note, dir in a0:
@@ -258,8 +279,11 @@ for note, dir in a0:
         test.append((note,dir))
 a0 = test
 
+print("dung")
 dungSq = [DumpSongChannel("ms_dung0", a0, dungeon_beat), DumpSongChannel("ms_dung1", a1, dungeon_beat)]
-header = [dungSq[0][1], dungSq[1][1]]
+print("gi")
+giSq = [DumpSongChannel("ms_gi0", gi0, dungeon_beat), DumpSongChannel("ms_gi1", gi1, dungeon_beat)]
+header = [dungSq[0][1], dungSq[1][1], giSq[0][1], giSq[1][1]]
 
 fl = [
     ("{}_note",2),
@@ -267,12 +291,15 @@ fl = [
     ("{}_dur", 4)
 ]
 
-for chan in dungSq:
-    for np, index in fl:
-        n = np.format(chan[0])
-        str = f"{n}:\n" + ToAsm(chan[index])
-        with open(f"gen/{n}.asm", "w") as file:
-            file.write(str)
+sequences = [dungSq, giSq]
+
+for seq in sequences:
+    for chan in seq:
+        for np, index in fl:
+            n = np.format(chan[0])
+            str = f"{n}:\n" + ToAsm(chan[index])
+            with open(f"gen/{n}.asm", "w") as file:
+                file.write(str)
             
 str = "ms_header:\n" + ToAsm(header)
 with open("gen/ms_header.asm", "w") as file:

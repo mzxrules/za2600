@@ -29,12 +29,12 @@ tbl = [
     ( "MusicSeq", [
         "MSNone",
         "MSDung0",
-        "MSNone",
+        "MSGI0",
         "MSNone",
         
         "MSNone",
         "MSDung1",
-        "MSNone",
+        "MSGI1",
         "MSNone"
     ])
 ]
