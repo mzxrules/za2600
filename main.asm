@@ -27,21 +27,19 @@ MINIMAP
     RORG $F000
 BANK_1
     INCLUDE "gen/world/b1world.asm"
-    INCLUDE "gen/world/w0_w0co.asm"
-    INCLUDE "gen/world/w1_w2co.asm"
-    INCLUDE "gen/world/b1lock.asm"
-
-    LOG_SIZE "-BANK 1- World | Level 1 2", BANK_1
+    INCBIN "world/w0co.bin"
+    INCBIN "world/w0co.bin"
+    
+    LOG_SIZE "-BANK 1- World", BANK_1
 
     ORG $1000
     RORG $F000
 BANK_2
     INCLUDE "gen/world/b2world.asm"
-    INCLUDE "gen/world/w3_w4co.asm"
-    INCLUDE "gen/world/w5_w6co.asm"
-    INCLUDE "gen/world/b2lock.asm"
-
-    LOG_SIZE "-BANK 2- Level 3 4 5 6", BANK_2
+    INCBIN "world/w1co.bin"
+    INCBIN "world/w2co.bin"
+    
+    LOG_SIZE "-BANK 2- Dungeons", BANK_2
 
 ; ****************************************
 ; *               BANK 3                 *
@@ -50,12 +48,7 @@ BANK_2
     ORG $1800
     RORG $F000
 BANK_3
-    INCLUDE "gen/world/b3world.asm"
-    INCLUDE "gen/world/w7_w8co.asm"
-    INCLUDE "gen/world/w9_w9co.asm"
-    INCLUDE "gen/world/b3lock.asm"
-
-    LOG_SIZE "-BANK 3- Level 7 8 9", BANK_3
+    LOG_SIZE "-BANK 3-", BANK_3
 
 ; ****************************************
 ; *               BANK 4                 *
@@ -675,7 +668,6 @@ KeydoorCheck_B6: SUBROUTINE
     ldy worldBank
     lda BANK_RAM + 1,y
     
-    ;jmp SetRoomLockFlag
     ldy roomId
     lda KeydoorFlagA,x
     ora rRoomFlag,y
@@ -1522,12 +1514,10 @@ LoadRoom: SUBROUTINE
 
     ; load world bank
     ldy worldId
-    iny
-    tya
-    lsr
-    lsr
-    sta worldBank
-    tay
+    beq .worldBankSet
+    ldy #1
+.worldBankSet
+    sty worldBank
     lda BANK_ROM + 1,y
 
     ldy roomId
@@ -1640,49 +1630,6 @@ LoadRoom: SUBROUTINE
     lda BANK_ROM + 6
     jmp LoadRoom_B6
     LOG_SIZE "Room Load", LoadRoom
-
-/*
-;===============================================================================
-; SetRoomLockFlag
-;----------
-;   Y - holds Keydoor mask value, needed to id record
-;===============================================================================    
-SetRoomLockFlag: SUBROUTINE; compute roomLocks offset
-
-    ldx worldBank
-    lda BANK_ROM + 1,x
-
-; Get roomLock flag id
-    ldx #0
-.loop ;flag loop
-    lda roomId
-    cmp WORLD_LOCK_ROOM,x
-    bne .contLoop
-    tya ;mask
-    cmp WORLD_LOCK_FLAG,x
-    beq .foundFlag
-.contLoop
-    inx
-    jmp .loop ; FIXME optimize as branch
-.foundFlag
-    ; x = flagId
-    lda worldBank
-    asl ; bank * 2
-    tay
-    txa
-    and #$10
-    beq .skipIncOffset
-    iny
-.skipIncOffset
-    ; y = roomLocks offset
-    txa
-    and #$0F
-    tax
-    lda Bit8,x
-    ora roomLocks,y
-    sta roomLocks,y
-    rts
-*/ 
         
 ;===============================================================================
 ; Generate Random Number
