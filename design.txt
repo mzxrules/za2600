@@ -155,3 +155,34 @@ end  26.27
 KeydoorCheck -> Kernel Main loop
      1.63
     14.06
+    
+    
+Text: 
+load text into ram via loop
+ 36.48
+ 40.55
+unroll once
+ 36.48
+ 39.71
+    
+Items:
+Rupees 1x, 5x
+R. Heart
+Fairy
+Bombs
+-- End of Random Drops --
+Key
+Triforce
+Sword, White Sword
+Master Sword
+Candle (Red Blue?)
+Rock Sirloin
+Pegasus Boots (ladder)
+Red Ring, Blue Ring
+Potion
+Raft
+Magic Key
+Bow
+Arrow, Silver Arrow
+
+Recorder?

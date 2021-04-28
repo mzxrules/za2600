@@ -46,6 +46,9 @@ bgColor     ds 1
 fgColor     ds 1
 worldId     ds 1
 worldBank   ds 1
+worldSX     ds 1
+worldSY     ds 1
+worldSR     ds 1
 roomId      ds 1
 roomSpr     ds 1
 roomFlags   ds 1
@@ -56,7 +59,11 @@ roomDoors   ds 1
     ; xxxx_11xx S
     ; xx11_xxxx E
     ; 11xx_xxxx W
-roomScript  ds 1
+roomRS      ds 1
+roomEN      ds 1
+roomENCount ds 1
+roomEX      ds 1
+roomWA      ds 1
 plState     ds 1
     ; 1000_0000 Fire Pressed Last Frame
     ; 0100_0000 Use Current Item
@@ -75,13 +82,15 @@ itemBombs   ds 1
 itemTri     ds 1
 itemFlags   ds 2
 AudioFlags  ds 1
-    ; xxxx_x111 Sequence
     ; 1xxx_xxxx New Sequence
-    ; x1xx_xxxx Mute Seq Secondary
+    ; x1xx_xxxx Mute Seq Channel 1
+    ; xxxx_1xxx Sequence Channel 1
+    ; xxxx_x111 Sequence
 SeqTFrame   ds 2
 SeqCur      ds 2
 
 mapSpr      ds 2
+NUSIZ0_T    ds 1
 Temp0       ds 1
 Temp1       ds 1
 Temp2       ds 1
@@ -89,7 +98,13 @@ Temp3       ds 1
 Temp4       ds 1
 Temp5       ds 1
 Temp6       ds 1
-NUSIZ0_T    ds 1
+
+
+    SEG.U VARS_ZERO2
+    ORG Temp0
+Temp        ds 1
+Letter      ds 24
+
 
 	echo "-RAM-",$80,(.)
     
@@ -98,12 +113,12 @@ WORLD_T_PF1L    ds 256
 WORLD_T_PF1R    ds 256
 WORLD_T_PF2     ds 256
 WORLD_COLOR     ds 256
-WORLD_LOCK_ROOM ds MAX_LOCKS * 2
-WORLD_LOCK_FLAG ds MAX_LOCKS * 2
-KERNEL_SCRIPT   ds (4 * 2)
-ROOM_SCRIPT     ds $20 * 2
+WORLD_RS        ds 256 ; Room Script
+WORLD_EX        ds 256 ; Extra Data (Exits, Items)
+WORLD_EN        ds 256 ; Enemy Encounter
+WORLD_WA        ds 256 ; Bombable walls
 
-    
+
     SEG.U VARS_RAM
     ORG $F800
 wPF1RoomL   ds ROOM_PX_HEIGHT
@@ -130,9 +145,9 @@ rRoomFlag   ds 256
     ; x1xx_xxxx W open
     ; 1xxx_xxxx Got Item
     
-BANK_ROM    equ $1FE0
-BANK_RAM7   equ $1FE7
-BANK_RAM    equ $1FE8
+BANK_ROM    = $1FE0
+BANK_RAM7   = $1FE7
+BANK_RAM    = $1FE8
     
 ; ****************************************
 ; * Constants                            *
@@ -164,11 +179,11 @@ BoardKeydoorLX = $0C-1
 BoardKeydoorRX = $74+1
 
 
-ItemTimerSword = -9 ; counts up to 0
+ItemTimerSword  = -9 ; counts up to 0
 
-PlState_ItemButtonRepeat = $80
-PlState_ItemButton = $40
-PlState_Stab = $20
+PlState_ItemButtonRepeat    = $80
+PlState_ItemButton          = $40
+PlState_Stab                = $20
 
 COLOR_DARKNUT_RED   = $42
 COLOR_DARKNUT_BLUE  = $74
@@ -186,7 +201,13 @@ COLOR_PLAYER_00 = $C6
 COLOR_PLAYER_01 = $08
 COLOR_PLAYER_02 = $46
 
-COLOR_MINIMAP = $84
+COLOR_MINIMAP   = $84
+
+MS_PLAY_NONE    = $80
+MS_PLAY_DUNG    = $81
+MS_PLAY_GI      = $82
+MS_PLAY_OVER    = $83
+MS_PLAY_THEME   = $84
 
     MACRO LOG_SIZE
         echo .- {2}+$8000,{2},(.),{1}

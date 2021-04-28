@@ -267,9 +267,27 @@ get_item_baseline = [
     ]
 ]
 
+game_over_highline = [
+    [
+     "G5", 1,
+     "G4", 1,
+     "C5", 1,
+     "E5", 1,
+    ],
+    [
+     "D#5", 1,
+     "G4", 1,
+     "B4", 1,
+     "A5", 1,
+    ]
+]
+empty_channel = [
+    [ "_", 1 ]
+]
+
 a0, a1 = ConvertMusic(dungeon_baseline, dungeon_highline,10)
 gi0, gi1 = ConvertMusic(get_item_highline, get_item_baseline)
-
+ov0, ov1 = ConvertMusic(game_over_highline, empty_channel)
 test = []
 for note, dir in a0:
     if dir > 2:
@@ -279,11 +297,19 @@ for note, dir in a0:
         test.append((note,dir))
 a0 = test
 
+test = []
+for item in ov0:
+    test.append(item)
+    test.append(("_",1))
+ov0 = test
+
 print("dung")
 dungSq = [DumpSongChannel("ms_dung0", a0, dungeon_beat), DumpSongChannel("ms_dung1", a1, dungeon_beat)]
 print("gi")
 giSq = [DumpSongChannel("ms_gi0", gi0, dungeon_beat), DumpSongChannel("ms_gi1", gi1, dungeon_beat)]
-header = [dungSq[0][1], dungSq[1][1], giSq[0][1], giSq[1][1]]
+print("over")
+overSq = [DumpSongChannel("ms_over0", ov0, dungeon_beat), DumpSongChannel("ms_over1", ov1, dungeon_beat)]
+header = []
 
 fl = [
     ("{}_note",2),
@@ -291,10 +317,11 @@ fl = [
     ("{}_dur", 4)
 ]
 
-sequences = [dungSq, giSq]
+sequences = [dungSq, giSq, overSq]
 
 for seq in sequences:
     for chan in seq:
+        header.append(chan[1])
         for np, index in fl:
             n = np.format(chan[0])
             str = f"{n}:\n" + ToAsm(chan[index])

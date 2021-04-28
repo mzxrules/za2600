@@ -1,16 +1,23 @@
-set "commands" to "(800000)"
-set "mzx_speed" to 8
+set "commands" to "(8000000)"
+set "fread_delimiter" to 10
+set "fwrite_delimiter" to 10
 load char set "@48digits.chr"
 load char set "@65letters.chr"
-load char set "@97letters.chr"
+load char set "@96lowcase.chr"
 lockplayer
+wait 1
+. "init ex data"
+loop start
+set "zz&loopcount&" "loopcount"
+loop 255
+
+set "mzx_speed" to 8
 set "SS_ROOM" (128)
 set "SS_UI" (256*2)
 set "SPR_UI" (256*2)
 set "SPR_WORK" (256*3)
 set "SPR_PF1" (256)
 set "SPR_PF2" (256+128)
-
 
 . "mzx sprite reference"
 loop start
@@ -163,6 +170,22 @@ set "$lvl.('roomId'*3+1)" to "roomTyR"
 goto "#update_room"
 goto "q"
 
+: "keyr"
+set "$lvlrs.&roomId&" "('$lvlrs.&roomId&'+1%'RsCount')"
+goto "q"
+
+: "keyt"
+set "$lvlrs.&roomId&" "('$lvlrs.&roomId&'+('RsCount'-1)%'RsCount')"
+goto "q"
+
+: "keyf"
+set "$lvlex.&roomId&" "('$lvlex.&roomId&'+1%256)"
+goto "q"
+
+: "keyg"
+set "$lvlex.&roomId&" "('$lvlex.&roomId&'+255%256)"
+goto "q"
+
 : "keyp"
 ask "Save World Data?"
 : "NO"
@@ -172,6 +195,8 @@ goto "q"
 set "$w&worldId&" to "$lvl"
 set "$w&worldId&co" to "$lvlco"
 set "$w&worldId&door" to "$lvldoor"
+set "$w&worldId&rs" to "$lvlrs"
+set "$w&worldId&ex" to "$lvlex"
 
 loop start
 set "world/w&loopcount&.bin" to "fwrite_open"
@@ -183,9 +208,63 @@ set "" to "fwrite_open"
 set "world/w&loopcount&door.bin" to "fwrite_open"
 set "$w&loopcount&door" to "fwrite('$w&loopcount&door.length')"
 set "" to "fwrite_open"
+set "world/w&loopcount&rs.bin" to "fwrite_open"
+set "$w&loopcount&rs" to "fwrite('$w&loopcount&rs.length')"
+set "" to "fwrite_open"
+set "world/w&loopcount&ex.bin" to "fwrite_open"
+set "$w&loopcount&ex" to "fwrite('$w&loopcount&ex.length')"
+set "" to "fwrite_open"
+goto "#write_rsex"
 loop for 2
 * "~FSAVED"
 goto "q"
+
+: "#write_rsex"
+set "l" 0
+set "world/w&loopcount&rsex.txt" "fwrite_open"
+: "write_rsex_loop"
+set "d1" "$w&loopcount&rs.&l&"
+set "d2" "$w&loopcount&ex.&l&"
+if "d1" >= "RsCount" "#write_rsex_default"
+set "$" "$Rs&d1&"
+set "$" "fwrite"
+set "$" "zz&d2&"
+set "$" "fwrite"
+inc "l" 1
+if "l" < 128 "write_rsex_loop"
+set "" "fwrite_open"
+goto "#return"
+
+: "#write_rsex_default"
+set "d1" 0
+goto "#return"
+
+: "#load_rsex"
+set "world/w&loopcount&rsex.txt" to "fread_open"
+set "l" 0
+: "load_rsex_loop"
+set "$" to "fread"
+goto "#load_rsex_rscheck"
+set "$w&loopcount&rs.&l&" ('&$&')
+set "$" to "fread"
+set "$w&loopcount&ex.&l&" ('&$&')
+inc "l" 1
+if "l" < 128 "load_rsex_loop"
+set "" to "fread_open"
+goto "#return"
+
+: "#load_rsex_rscheck"
+set "l1" 0
+: "load_rsex_rscheck"
+if "$" === "$Rs&l1&" then "load_rsex_rscheck_pass"
+inc "l1" 1
+if "l1" < "RsCount" "load_rsex_rscheck"
+zap "keyp" 1
+* "~f&$& IS UNDEFINED"
+set "" to "fread_open"
+die
+: "load_rsex_rscheck_pass"
+goto "#return"
 
 : "#create_lock_data"
 if "loopcount" = 0 then "#return"
@@ -223,7 +302,7 @@ goto "#return"
 loop start
 set "world/w&loopcount&.bin" to "fread_open"
 set "$w&loopcount&" to "fread('fread_length')"
-set "expectedLength" (64+64*3)
+set "expectedLength" (128*3)
 if "$w&loopcount&.length" < "expectedLength" "#load_data_resize_world"
 set "" to "fread_open"
 set "world/w&loopcount&co.bin" to "fread_open"
@@ -232,6 +311,7 @@ set "" to "fread_open"
 set "world/w&loopcount&door.bin" to "fread_open"
 set "$w&loopcount&door" to "fread('fread_length')"
 set "" to "fread_open"
+goto "#load_rsex"
 loop for 2
 goto "#return"
 
@@ -243,6 +323,8 @@ goto "#return"
 set "$w&worldId&" to "$lvl"
 set "$w&worldId&co" to "$lvlco"
 set "$w&worldId&door" to "$lvldoor"
+set "$w&worldId&rs" "$lvlrs"
+set "$w&worldId&ex" "$lvlex"
 set "worldId" to "('worldId'+1%3)"
 goto "#set_world"
 goto "q"
@@ -435,6 +517,8 @@ goto "#return"
 set "$lvl" to "$w&worldId&"
 set "$lvlco" to "$w&worldId&co"
 set "$lvldoor" to "$w&worldId&door"
+set "$lvlrs" to "$w&worldId&rs"
+set "$lvlex" to "$w&worldId&ex"
 if "worldId" = 0 then "#draw_16x8"
 if "worldId" > 0 then "#draw_16x8"
 

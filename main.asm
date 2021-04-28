@@ -3,11 +3,10 @@
     INCLUDE "macro.h"
     INCLUDE "vars.asm"
 
-    SEG CODE
-
 ; ****************************************
 ; *               BANK 0                 *
 ; ****************************************
+    SEG Bank0
     ORG $0000
     RORG $F000
 BANK_0
@@ -23,21 +22,31 @@ MINIMAP
 
     LOG_SIZE "-BANK 0- Sprites", BANK_0
 
+    SEG Bank1
     ORG $0800
     RORG $F000
 BANK_1
     INCLUDE "gen/world/b1world.asm"
     INCBIN "world/w0co.bin"
     INCBIN "world/w0co.bin"
+    INCBIN "world/w0rs.bin"
+    INCBIN "world/w0rs.bin"
+    INCBIN "world/w0ex.bin"
+    INCBIN "world/w0ex.bin"
     
     LOG_SIZE "-BANK 1- World", BANK_1
 
+    SEG Bank2
     ORG $1000
     RORG $F000
 BANK_2
     INCLUDE "gen/world/b2world.asm"
     INCBIN "world/w1co.bin"
     INCBIN "world/w2co.bin"
+    INCBIN "world/w1rs.bin"
+    INCBIN "world/w2rs.bin"
+    INCBIN "world/w1ex.bin"
+    INCBIN "world/w2ex.bin"
     
     LOG_SIZE "-BANK 2- Dungeons", BANK_2
 
@@ -45,6 +54,7 @@ BANK_2
 ; *               BANK 3                 *
 ; ****************************************
 
+    SEG Bank3
     ORG $1800
     RORG $F000
 BANK_3
@@ -54,6 +64,7 @@ BANK_3
 ; *               BANK 4                 *
 ; ****************************************
 
+    SEG Bank4
     ORG $2000
     RORG $F000
 BANK_4
@@ -78,11 +89,74 @@ NoAI:
     lda #$F0
     sta enSpr+1
     sta enY
-RSNone:
-RSMiddleEnt:
-RSSouthExit:
-RSRaftSpot:
-RSNeedTriforce:
+RsNone:
+RsWorldMidEnt:
+RsStairs:
+RsRaftSpot:
+RsNeedTriforce:
+RsFairyFountain:
+    rts
+    
+RsItem: SUBROUTINE
+    lda roomENCount
+    bne .rts
+    ldx roomId
+    lda rRoomFlag,x
+    bmi .rts
+    ora #$80
+    sta wRoomFlag,x
+    inc itemKeys
+    
+.rts
+    rts
+    
+RsDungMidEnt: SUBROUTINE
+    lda plX
+    cmp #$40
+    bne .rts
+    lda plY
+    cmp #$28
+    bne .rts
+    lda #$40
+    sta worldSX
+    lda #$20
+    sta worldSY
+    lda #$10
+    sta plY
+    lda roomId
+    sta worldSR
+    lda #01
+    sta worldId
+    lda roomFlags
+    ora #$80
+    sta roomFlags
+    lda #$73;lda roomEX
+    sta roomId
+    lda #MS_PLAY_DUNG
+    sta AudioFlags
+.rts
+    rts
+    
+RsDungExit: SUBROUTINE
+    bit roomFlags
+    bmi .rts
+    lda plY
+    cmp #BoardYD
+    bne .rts
+    lda worldSX
+    sta plX
+    lda worldSY
+    sta plY
+    lda worldSR
+    sta roomId
+    lda #0
+    sta worldId
+    lda roomFlags
+    ora #$80
+    sta roomFlags
+    lda #MS_PLAY_THEME
+    sta AudioFlags
+.rts
     rts
 
 TriforceAI: SUBROUTINE
@@ -160,7 +234,7 @@ StairAI: SUBROUTINE
     bne .playerNotOnStairs
     lda #01
     sta worldId
-    lda #$F3
+    lda #$73
     sta roomId
     lda #0
     sta enType
@@ -305,6 +379,7 @@ EnMoveUp: SUBROUTINE
 ; *               BANK 5                 *
 ; ****************************************
 
+    SEG Bank5
     ORG $2800
     RORG $F000
 BANK_5
@@ -320,6 +395,13 @@ BANK_5
     INCLUDE "gen/ms_gi1_note.asm"
     INCLUDE "gen/ms_gi1_tone.asm"
     INCLUDE "gen/ms_gi1_dur.asm"
+    align 256
+    INCLUDE "gen/ms_over0_note.asm"
+    INCLUDE "gen/ms_over0_tone.asm"
+    INCLUDE "gen/ms_over0_dur.asm"
+    INCLUDE "gen/ms_over1_note.asm"
+    INCLUDE "gen/ms_over1_tone.asm"
+    INCLUDE "gen/ms_over1_dur.asm"
     align 16
     INCLUDE "gen/ms_header.asm"
     INCLUDE "gen/MusicSeq.asm"
@@ -351,7 +433,7 @@ UpdateAudio: SUBROUTINE
     bne .skipChannel1
     lda AudioFlags
     and #$07
-    ora #$04
+    ora #$08
     jsr AudioDel
 
 .skipChannel1
@@ -365,7 +447,7 @@ AudioDel:
     pha
     rts
     
-MSNone: SUBROUTINE
+MsNone: SUBROUTINE
     lda #0
     ldy #1
 .loop
@@ -376,7 +458,7 @@ MSNone: SUBROUTINE
     bpl .loop
     rts
     
-MSDung0: SUBROUTINE
+MsDung0: SUBROUTINE
     inc SeqCur
     ldx SeqCur
     cpx ms_header + 0
@@ -396,7 +478,7 @@ MSDung0: SUBROUTINE
     sta SeqTFrame
     rts
     
-MSDung1: SUBROUTINE
+MsDung1: SUBROUTINE
     inc SeqCur + 1
     ldx SeqCur + 1
     cpx ms_header + 1
@@ -416,7 +498,7 @@ MSDung1: SUBROUTINE
     sta SeqTFrame + 1
     rts
     
-MSGI0: SUBROUTINE
+MsGI0: SUBROUTINE
     inc SeqCur
     ldx SeqCur
     cpx ms_header + 2
@@ -436,7 +518,7 @@ MSGI0: SUBROUTINE
     sta SeqTFrame
     rts
     
-MSGI1: SUBROUTINE
+MsGI1: SUBROUTINE
     inc SeqCur + 1
     ldx SeqCur + 1
     cpx ms_header + 3
@@ -456,8 +538,49 @@ MSGI1: SUBROUTINE
     sta SeqTFrame + 1
     rts
     
+MsOver0: SUBROUTINE
+    inc SeqCur
+    ldx SeqCur
+    cpx ms_header + 4
+    bne .skipRoll
+    ldx #0
+    stx SeqCur
+.skipRoll
+    lda ms_over0_note,x
+    sta AUDF0
+    lda ms_over0_tone,x
+    sta AUDC0
+    lda #2
+    sta AUDV0
+    lda ms_over0_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame
+    rts
+    
+MsOver1: SUBROUTINE
+    inc SeqCur + 1
+    ldx SeqCur + 1
+    cpx ms_header + 5
+    bne .skipRoll
+    ldx #0
+    stx SeqCur + 1
+.skipRoll
+    lda ms_over1_note,x
+    sta AUDF0 + 1
+    lda ms_over1_tone,x
+    sta AUDC0 + 1
+    lda #2
+    sta AUDV0 + 1
+    lda ms_over1_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame + 1
+    rts
+    
     LOG_SIZE "-BANK 5- Audio", BANK_5
 
+    SEG Bank6
     ORG $3000
     RORG $F000
 
@@ -767,6 +890,14 @@ PlayerItem_B6: SUBROUTINE
     sta m0Y
 .endSword
     rts
+ 
+Encounters:
+    align 256
+    .byte $00
+    align 256
+    .byte $00
+    align 256
+    .byte $00
     
     align 4
 KeydoorMask:
@@ -800,6 +931,7 @@ WorldDoorPF2:
 ; *               BANK 7                 *
 ; ****************************************
 
+    SEG Bank7
     ORG $3800
     RORG $F800
 
@@ -866,6 +998,9 @@ INIT_POS:
     lda #$80
     sta plHealth
     sta plHealthMax
+    
+    ;lda #$83
+    ;sta AudioFlags
     
     lda #$77
     sta roomId
@@ -1036,10 +1171,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
 .hud_all_keys
     ldx #10
 .hud_key_digit
-    txa
-    asl
-    asl
-    asl
+    lda Mul8,x
     clc
     adc #7
     sta hudDigit+3
@@ -1389,7 +1521,9 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     dex
     bpl .posResetLoop
 .skipCollisionPosReset
-    
+   
+.RoomScript:   
+    jsr RoomScriptDel
 
 OVERSCAN_WAIT:
     sta WSYNC
@@ -1567,6 +1701,15 @@ LoadRoom: SUBROUTINE
     lda BANK_ROM + 1,y
 
     ldy roomId
+    lda WORLD_RS,y
+    sta roomRS
+    lda WORLD_EX,y
+    sta roomEX
+    lda WORLD_EN,y
+    sta roomEN
+    lda WORLD_WA,y
+    sta roomWA
+    
     ; set fg/bg color
     lda WORLD_COLOR,y
     and #$0F
@@ -1691,6 +1834,14 @@ noeor:
         sta Rand8
         rts
 
+RoomScriptDel:
+    lda BANK_ROM + 4
+    ldx roomRS
+    lda RoomScriptH,x
+    pha
+    lda RoomScriptL,x
+    pha
+    rts
 
 EnemyAIDel:
     lda BANK_ROM + 4
@@ -1788,6 +1939,8 @@ PosHudObjects: SUBROUTINE
 ; X position must be between 0-134 ($00 to $86)
 ; Higher values will cause an extra cycle
 ;===============================================================================
+	ORG $3FC6
+	RORG $FFC6
 PosWorldObjects: SUBROUTINE
         sec            ; 2
         ldx #4
