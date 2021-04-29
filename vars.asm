@@ -103,7 +103,18 @@ Temp6       ds 1
     SEG.U VARS_ZERO2
     ORG Temp0
 Temp        ds 1
-Letter      ds 24
+Text0       ds 1
+Text1       ds 1
+Text2       ds 1
+Text3       ds 1
+Text4       ds 1
+Text5       ds 1
+Text6       ds 1
+Text7       ds 1
+Text8       ds 1
+Text9       ds 1
+Text10      ds 1
+Text11      ds 1
 
 
 	echo "-RAM-",$80,(.)
@@ -145,13 +156,13 @@ rRoomFlag   ds 256
     ; x1xx_xxxx W open
     ; 1xxx_xxxx Got Item
     
-BANK_ROM    = $1FE0
-BANK_RAM7   = $1FE7
-BANK_RAM    = $1FE8
-    
 ; ****************************************
 ; * Constants                            *
 ; ****************************************
+
+BANK_ROM    = $1FE0
+BANK_RAM7   = $1FE7
+BANK_RAM    = $1FE8
 
 ROOM_PX_HEIGHT      = 20 ; height of room in pixels
 ROOM_SPR_HEIGHT     = 16 ; height of room sprite sheet
@@ -211,4 +222,11 @@ MS_PLAY_THEME   = $84
 
     MACRO LOG_SIZE
         echo .- {2}+$8000,{2},(.),{1}
+    ENDM
+
+    MACRO VSLEEP
+    bvs .j0
+.j0
+    bvs .j1
+.j1
     ENDM
