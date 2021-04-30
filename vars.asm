@@ -32,7 +32,6 @@ plYL        ds 1
 enYL        ds 1
 plSpr       ds 2 ; plSprOff
 enSpr       ds 2 ; enSprOff
-hudDigit    ds 6
 plDir       ds 1
 enDir       ds 2
 enType      ds 2
@@ -107,6 +106,14 @@ Temp6       ds 1
 AUDCT       ds 1
 AUDFT       ds 1
 AUDVT       ds 1
+
+    SEG.U VARS_HUD_ZERO
+    ORG Temp0
+TMapPosY    ds 1
+THudHealthL ds 1
+THudHealthH ds 1
+THudTemp    ds 1
+THudDigits  ds 6
 
     SEG.U VARS_TEXT_ZERO
     ORG Temp0

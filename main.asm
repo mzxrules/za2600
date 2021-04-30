@@ -1567,13 +1567,13 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     asl
     clc
     adc #7
-    sta hudDigit+5
+    sta THudDigits+5
     lda itemRupees
     and #$F0
     lsr
     clc
     adc #7
-    sta hudDigit+4
+    sta THudDigits+4
 ; key display
     ldx itemKeys
     bmi .hud_all_keys
@@ -1587,9 +1587,9 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda Mul8,x
     clc
     adc #7
-    sta hudDigit+3
+    sta THudDigits+3
     lda #<SprN10 - #<SprN0 +7
-    sta hudDigit+2
+    sta THudDigits+2
 ; bomb display    
     lda itemBombs
     cmp #10
@@ -1598,7 +1598,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     .byte $2C
 .hud_bomb_digit
     lda #<SprN1+7
-    sta hudDigit+0 
+    sta THudDigits+0 
     lda itemBombs
     and #$0F
     asl
@@ -1606,7 +1606,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     asl
     clc
     adc #7
-    sta hudDigit+1
+    sta THudDigits+1
 
     jsr PosHudObjects
     
@@ -1620,14 +1620,14 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lsr
     eor #$7
     and #$7
-    sta Temp0
+    sta TMapPosY
     lda plHealth
     clc
     adc #7
     lsr
     lsr
     lsr
-    sta Temp1 ; Health LOW
+    sta THudHealthL
     sec
     sbc #8
     bcs .skipHealthHighClampMin
@@ -1635,14 +1635,14 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
 .skipHealthHighClampMin
     tax
     lda HealthPattern,x
-    sta Temp2 ; Health HIGH
+    sta THudHealthH
     beq .skipHealthClamp
     lda #8
-    sta Temp1
+    sta THudHealthL
 .skipHealthClamp
-    ldx Temp1
+    ldx THudHealthL
     lda HealthPattern,x
-    sta Temp1
+    sta THudHealthL
     lda #0
     
     lda #COLOR_MINIMAP
@@ -1672,21 +1672,21 @@ KERNEL_HUD: SUBROUTINE
     sta PF1
     ldx #3
 .hudShiftDigitLoop
-    lda hudDigit,x
-    sta hudDigit+2,x
+    lda THudDigits,x
+    sta THudDigits+2,x
     dex
     bpl .hudShiftDigitLoop
-    lda Temp1
-    sta Temp2
+    lda THudHealthL
+    sta THudHealthH
     dey
     lda #0
-    sta Temp1
+    sta THudHealthL
     nop ;sta WSYNC
 KERNEL_HUD_LOOP:
 .loop:
 
 ;=========== Scanline 0 ==============
-    cpy Temp0 ; 3
+    cpy TMapPosY ; 3
     bne .skip ; 2/3
     lda #2    ; 2
 .skip
@@ -1694,16 +1694,16 @@ KERNEL_HUD_LOOP:
     lda (mapSpr),y ; 5
     sta GRP1 ; 3
     
-    ldx hudDigit+4 ; 3
+    ldx THudDigits+4 ; 3
     lda SprN0,x  ; 4
     and #$F0     ; 2
-    sta Temp3    ; 3 
-    ldx hudDigit+5; 3
+    sta THudTemp    ; 3 
+    ldx THudDigits+5; 3
     lda SprN0,x ; 4
     and #$0F  ; 2
-    ora Temp3 ; 3
+    ora THudTemp ; 3
     sta GRP0 ; 3
-    lda Temp2
+    lda THudHealthH
     sta PF1
     cpy #5
     beq .hudScanline1A
@@ -1713,22 +1713,22 @@ KERNEL_HUD_LOOP:
     sta WSYNC
     sta PF1
 ;=========== Scanline 1 ==============
-    dec hudDigit+4 ; 5
-    dec hudDigit+5 ; 5
+    dec THudDigits+4 ; 5
+    dec THudDigits+5 ; 5
     
-    ldx hudDigit+4 ; 3
+    ldx THudDigits+4 ; 3
     lda SprN0,x  ; 4
     and #$F0     ; 2
-    sta Temp3    ; 3 
-    ldx hudDigit+5; 3
+    sta THudTemp    ; 3 
+    ldx THudDigits+5; 3
     lda SprN0,x ; 4
     and #$0F  ; 2
-    ora Temp3 ; 3
+    ora THudTemp ; 3
     sta GRP0 ; 3
-    lda Temp2
+    lda THudHealthH
     sta PF1
-    dec hudDigit+4
-    dec hudDigit+5
+    dec THudDigits+4
+    dec THudDigits+5
     lda #0
     dey
     sta WSYNC
@@ -1743,14 +1743,14 @@ KERNEL_HUD_LOOP:
     sta ENAM0
     sta GRP1
     
-    ldx hudDigit+4 ; 3
+    ldx THudDigits+4 ; 3
     lda SprN0,x  ; 4
     and #$F0     ; 2
-    sta Temp3    ; 3 
-    ldx hudDigit+5; 3
+    sta THudTemp    ; 3 
+    ldx THudDigits+5; 3
     lda SprN0,x ; 4
     and #$0F  ; 2
-    ora Temp3 ; 3
+    ora THudTemp ; 3
     sta GRP0 ; 3
     lda fgColor
     sta COLUPF
