@@ -1448,12 +1448,9 @@ VERTICAL_SYNC: ; 3 SCANLINES
     sta VSYNC
 
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
-    jsr ProcessInput
-    jsr Random
     lda #0
     ;sta VDELP0
     sta VDELP1
-    sta VDELBL
     
     lda roomFlags
     and #$BF
@@ -1465,6 +1462,15 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda #0
     sta enType
 .skipLoadRoom
+
+    bit roomFlags
+    bvs .roomLoadCpuSkip
+    jsr ProcessInput
+    jsr Random
+    lda BANK_ROM + 6
+    jsr PlayerItem_B6
+.roomLoadCpuSkip
+
 ; room setup
     lda BANK_ROM + 6
     jsr KeydoorCheck_B6
@@ -1474,9 +1480,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda BANK_ROM + 5
     jsr UpdateAudio
     jsr EnemyAIDel
-    lda BANK_ROM + 6
-    jsr PlayerItem_B6
-
+    
 ;===============================================================================
 ; Pre-Position Sprites
 ;===============================================================================
@@ -1542,27 +1546,16 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta mapSpr
     lda #>(MINIMAP)
     sta mapSpr+1
-
-    ldx #1
-    stx COLUBK
-    lda #$18
-    jsr PosObject ; minimap
-    sec
+; double width map if on overworld
     ldx #5
-    lda #$F
     bit worldId
     beq .minimap_16
     ldx #$00
-    lda #$7
-    clc
 .minimap_16
-    and roomId
-    adc #$18+1
-    stx NUSIZ1
-    ldx #2
-    jsr PosObject ; minimap dot
+    stx NUSIZ1 ; double minimap size if world 0
     lda #0
-    sta NUSIZ0
+    sta COLUBK
+    sta NUSIZ0 ; clean sword from previous frame
     
     lda BANK_ROM + 0
 .hud_sprite_setup
@@ -1614,16 +1607,8 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     clc
     adc #7
     sta hudDigit+1
-  
-  
-    lda #$60
-    ldx #0
-    jsr PosObject
 
-    ;jsr PosHudObjects
-
-    sta WSYNC
-    sta HMOVE
+    jsr PosHudObjects
     
 ; ===================================================    
 ;    Pre HUD
@@ -2276,7 +2261,7 @@ EnemyAIDel:
 
 DataStart
 
-    align 16
+    ;align 16
 Mul8:
     .byte 0x00, 0x08, 0x10, 0x18, 0x20, 0x28, 0x30, 0x38, 0x40, 0x48, 0x50, 0x58
 Lazy8:
@@ -2285,7 +2270,7 @@ Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
     
     
-    align 4 
+    ;align 4 
 
 SwordWidth4:
     .byte $20, $20, $10, $10
@@ -2325,7 +2310,7 @@ HealthPattern:
 ; the routine will set the coarse X position of the object, as well as the
 ; fine-tune register that will be used when HMOVE is used.
 ;===============================================================================
-    align 16 ; FIXME: Page rollover issue
+/*
 PosObject: SUBROUTINE
         sec
         sta WSYNC
@@ -2340,18 +2325,57 @@ PosObject: SUBROUTINE
         sta.wx HMP0,X  ; 5 19 - store fine tuning of X
         sta RESP0,X    ; 4 23 - set coarse X position of object
         rts            ; 6 29
+*/
 
+; $18 2 iter (9) + 15 = 24
+; $18
+; $60 7 iter (34) + 15 = 49
 PosHudObjects: SUBROUTINE
     sta WSYNC
-    lda #0
-    sta HMP0
-    sta HMM0
-    sta HMP1
-    sta RESP0
-    sta RESM0
-    sta RESP1
+    ; 26 cycles start
+    
+    lda worldId         ; 3
+    ; 7 cycle start
+    bne .dungeon        ; 2/3
+    lda #$F             ; 2
+    bne .roomIdMask     ; 3
+.dungeon
+    lda #$7             ; 2
+    nop                 ; 2
+.roomIdMask
+    ; 7 cycle end
+    
+    and roomId          ; 3
+    eor #7              ; 2
+    asl                 ; 2
+    asl                 ; 2
+    asl                 ; 2
+    asl                 ; 2
+    sta HMM0            ; 3
+    ; 26 cycles end
+    sta RESP1           ; 3 - Map Sprite
+    sta RESM0           ; 3 - Player Dot
+    ; 18 cycles start
+    lda worldId         ; 3
+    bne .MapShift       ; 2/3
+    lda #0              ; 2
+    beq .SetMapShift    ; 3
+.MapShift
+    lda #$F0            ; 2
+    nop                 ; 2
+.SetMapShift
+    sta HMP1            ; 3
+    lda #0              ; 2
+    sta HMP0            ; 3
+    ; 18 cycles end
+    sta RESP0           ;  - Inventory Sprites
+    
+    sta WSYNC
+    sta HMOVE
     rts
 
+    LOG_SIZE "-BANK 7-", ENTRY
+        
 ;===============================================================================
 ; PosWorldObjects
 ;----------
