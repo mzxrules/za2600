@@ -105,26 +105,26 @@ Frame0Text
     sty COLUP1              ; 3     (6)
     sta GRP0                ; 3     (9)
 
-    ldx Text2            ; 4     (13)
+    ldx Text2               ; 4     (13)
     lda left_text,x         ; 4     (17)
-    ldx Text3            ; 4     (21)
+    ldx Text3               ; 4     (21)
     ora right_text,x        ; 4     (25*)
     sleep 2
     sta GRP1                ; 3     (28)
     
-    ldx Text4            ; 4     (32)
+    ldx Text4               ; 4     (32)
     lda left_text,x         ; 4     (36)
-    ldx Text5            ; 4     (40)
+    ldx Text5               ; 4     (40)
     ora right_text,x        ; 4     (44)
     sleep 2
     sta GRP0                ; 3     (47)
     
-    ldx Text6           ; 4     (51)
+    ldx Text6               ; 4     (51)
     lda left_text,x         ; 4     (55)
-    ldx Text7           ; 4     (59)
+    ldx Text7               ; 4     (59)
     ora right_text,x        ; 4     (63)
     
-    ldy #$0F          ; 2     (65)
+    ldy #$0F                ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
@@ -132,15 +132,15 @@ Frame0Text
     ;line 2
     sta WSYNC               ; 3     (0)
 
-    ldx Text8           ; 4     (4)
+    ldx Text8               ; 4     (4)
     lda left_text,x         ; 4     (8)
-    ldx Text9           ; 4     (12)
+    ldx Text9               ; 4     (12)
     ora right_text,x        ; 4     (16)
     sta Temp                ; 3     (19)
 
-    ldx Text10           ; 4     (23*)
+    ldx Text10              ; 4     (23*)
     lda left_text,x         ; 4     (27)
-    ldx Text11           ; 4     (31)
+    ldx Text11              ; 4     (31)
     ora right_text,x        ; 4     (35)
     
     ldx Temp                ; 3     (38)
@@ -152,9 +152,9 @@ Frame0Text
     sta GRP0                ; 3     (53)
 
     ldy #0                  ; 2     (55)
-    ldx Text0            ; 3     (58)
+    ldx Text0               ; 3     (58)
     lda left_text+1,x       ; 4     (62)
-    ldx Text1            ; 3     (65)
+    ldx Text1               ; 3     (65)
     ora right_text+1,x      ; 4     (69)
 
     ; Text line 2 / 5
@@ -165,26 +165,26 @@ Frame0Text
     sty COLUP1              ; 3     (6)
     sta GRP0                ; 3     (9)
 
-    ldx Text2            ; 4     (13)
-    lda left_text+1,x         ; 4     (17)
-    ldx Text3            ; 4     (21)
-    ora right_text+1,x        ; 4     (25*)
+    ldx Text2               ; 4     (13)
+    lda left_text+1,x       ; 4     (17)
+    ldx Text3               ; 4     (21)
+    ora right_text+1,x      ; 4     (25*)
     sleep 2
     sta GRP1                ; 3     (28)
     
-    ldx Text4            ; 4     (32)
-    lda left_text+1,x         ; 4     (36)
-    ldx Text5            ; 4     (40)
-    ora right_text+1,x        ; 4     (44)
+    ldx Text4               ; 4     (32)
+    lda left_text+1,x       ; 4     (36)
+    ldx Text5               ; 4     (40)
+    ora right_text+1,x      ; 4     (44)
     sleep 2
     sta GRP0                ; 3     (47)
     
-    ldx Text6           ; 4     (51)
-    lda left_text+1,x         ; 4     (55)
-    ldx Text7           ; 4     (59)
-    ora right_text+1,x        ; 4     (63)
+    ldx Text6               ; 4     (51)
+    lda left_text+1,x       ; 4     (55)
+    ldx Text7               ; 4     (59)
+    ora right_text+1,x      ; 4     (63)
     
-    ldy #$0F          ; 2     (65)
+    ldy #$0F                ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
@@ -192,16 +192,16 @@ Frame0Text
     ;line 2
     sta WSYNC               ; 3     (0)
 
-    ldx Text8           ; 4     (4)
-    lda left_text+1,x         ; 4     (8)
-    ldx Text9           ; 4     (12)
-    ora right_text+1,x        ; 4     (16)
+    ldx Text8               ; 4     (4)
+    lda left_text+1,x       ; 4     (8)
+    ldx Text9               ; 4     (12)
+    ora right_text+1,x      ; 4     (16)
     sta Temp                ; 3     (19)
 
-    ldx Text10           ; 4     (23*)
-    lda left_text+1,x         ; 4     (27)
-    ldx Text11           ; 4     (31)
-    ora right_text+1,x        ; 4     (35)
+    ldx Text10              ; 4     (23*)
+    lda left_text+1,x       ; 4     (27)
+    ldx Text11              ; 4     (31)
+    ora right_text+1,x      ; 4     (35)
     
     ldx Temp                ; 3     (38)
     VSLEEP;sleep 4
@@ -212,9 +212,9 @@ Frame0Text
     sta GRP0                ; 3     (53)
 
     ldy #0                  ; 2     (55)
-    ldx Text0            ; 3     (58)
+    ldx Text0               ; 3     (58)
     lda left_text+2,x       ; 4     (62)
-    ldx Text1            ; 3     (65)
+    ldx Text1               ; 3     (65)
     ora right_text+2,x      ; 4     (69)
 
     ; Text line 3 / 5
@@ -225,26 +225,26 @@ Frame0Text
     sty COLUP1              ; 3     (6)
     sta GRP0                ; 3     (9)
 
-    ldx Text2            ; 4     (13)
-    lda left_text+2,x         ; 4     (17)
-    ldx Text3            ; 4     (21)
-    ora right_text+2,x        ; 4     (25*)
+    ldx Text2               ; 4     (13)
+    lda left_text+2,x       ; 4     (17)
+    ldx Text3               ; 4     (21)
+    ora right_text+2,x      ; 4     (25*)
     sleep 2
     sta GRP1                ; 3     (28)
     
-    ldx Text4            ; 4     (32)
-    lda left_text+2,x         ; 4     (36)
-    ldx Text5            ; 4     (40)
-    ora right_text+2,x        ; 4     (44)
+    ldx Text4               ; 4     (32)
+    lda left_text+2,x       ; 4     (36)
+    ldx Text5               ; 4     (40)
+    ora right_text+2,x      ; 4     (44)
     sleep 2
     sta GRP0                ; 3     (47)
     
-    ldx Text6           ; 4     (51)
-    lda left_text+2,x         ; 4     (55)
-    ldx Text7           ; 4     (59)
-    ora right_text+2,x        ; 4     (63)
+    ldx Text6               ; 4     (51)
+    lda left_text+2,x       ; 4     (55)
+    ldx Text7               ; 4     (59)
+    ora right_text+2,x      ; 4     (63)
     
-    ldy #$0F          ; 2     (65)
+    ldy #$0F                ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
@@ -252,16 +252,16 @@ Frame0Text
     ;line 2
     sta WSYNC               ; 3     (0)
 
-    ldx Text8           ; 4     (4)
-    lda left_text+2,x         ; 4     (8)
-    ldx Text9           ; 4     (12)
-    ora right_text+2,x        ; 4     (16)
+    ldx Text8               ; 4     (4)
+    lda left_text+2,x       ; 4     (8)
+    ldx Text9               ; 4     (12)
+    ora right_text+2,x      ; 4     (16)
     sta Temp                ; 3     (19)
 
-    ldx Text10           ; 4     (23*)
-    lda left_text+2,x         ; 4     (27)
-    ldx Text11           ; 4     (31)
-    ora right_text+2,x        ; 4     (35)
+    ldx Text10              ; 4     (23*)
+    lda left_text+2,x       ; 4     (27)
+    ldx Text11              ; 4     (31)
+    ora right_text+2,x      ; 4     (35)
     
     ldx Temp                ; 3     (38)
     VSLEEP; sleep 4
@@ -272,9 +272,9 @@ Frame0Text
     sta GRP0                ; 3     (53)
 
     ldy #0                  ; 2     (55)
-    ldx Text0            ; 3     (58)
+    ldx Text0               ; 3     (58)
     lda left_text+3,x       ; 4     (62)
-    ldx Text1            ; 3     (65)
+    ldx Text1               ; 3     (65)
     ora right_text+3,x      ; 4     (69)
 
     ; Text line 4 / 5
@@ -285,26 +285,26 @@ Frame0Text
     sty COLUP1              ; 3     (6)
     sta GRP0                ; 3     (9)
 
-    ldx Text2            ; 4     (13)
-    lda left_text+3,x         ; 4     (17)
-    ldx Text3            ; 4     (21)
-    ora right_text+3,x        ; 4     (25*)
+    ldx Text2               ; 4     (13)
+    lda left_text+3,x       ; 4     (17)
+    ldx Text3               ; 4     (21)
+    ora right_text+3,x      ; 4     (25*)
     sleep 2
     sta GRP1                ; 3     (28)
     
-    ldx Text4            ; 4     (32)
-    lda left_text+3,x         ; 4     (36)
-    ldx Text5            ; 4     (40)
-    ora right_text+3,x        ; 4     (44)
+    ldx Text4               ; 4     (32)
+    lda left_text+3,x       ; 4     (36)
+    ldx Text5               ; 4     (40)
+    ora right_text+3,x      ; 4     (44)
     sleep 2
     sta GRP0                ; 3     (47)
     
-    ldx Text6           ; 4     (51)
-    lda left_text+3,x         ; 4     (55)
-    ldx Text7           ; 4     (59)
-    ora right_text+3,x        ; 4     (63)
+    ldx Text6               ; 4     (51)
+    lda left_text+3,x       ; 4     (55)
+    ldx Text7               ; 4     (59)
+    ora right_text+3,x      ; 4     (63)
     
-    ldy #$0F          ; 2     (65)
+    ldy #$0F                ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
@@ -312,16 +312,16 @@ Frame0Text
     ;line 2
     sta WSYNC               ; 3     (0)
 
-    ldx Text8           ; 4     (4)
-    lda left_text+3,x         ; 4     (8)
-    ldx Text9           ; 4     (12)
-    ora right_text+3,x        ; 4     (16)
+    ldx Text8               ; 4     (4)
+    lda left_text+3,x       ; 4     (8)
+    ldx Text9               ; 4     (12)
+    ora right_text+3,x      ; 4     (16)
     sta Temp                ; 3     (19)
 
-    ldx Text10           ; 4     (23*)
-    lda left_text+3,x         ; 4     (27)
-    ldx Text11           ; 4     (31)
-    ora right_text+3,x        ; 4     (35)
+    ldx Text10              ; 4     (23*)
+    lda left_text+3,x       ; 4     (27)
+    ldx Text11              ; 4     (31)
+    ora right_text+3,x      ; 4     (35)
     
     ldx Temp                ; 3     (38)
     VSLEEP; sleep 4
@@ -332,9 +332,9 @@ Frame0Text
     sta GRP0                ; 3     (53)
 
     ldy #0                  ; 2     (55)
-    ldx Text0            ; 3     (58)
+    ldx Text0               ; 3     (58)
     lda left_text+4,x       ; 4     (62)
-    ldx Text1            ; 3     (65)
+    ldx Text1               ; 3     (65)
     ora right_text+4,x      ; 4     (69)
 
     ; Text line 5 / 5
@@ -345,26 +345,26 @@ Frame0Text
     sty COLUP1              ; 3     (6)
     sta GRP0                ; 3     (9)
 
-    ldx Text2            ; 4     (13)
-    lda left_text+4,x         ; 4     (17)
-    ldx Text3            ; 4     (21)
-    ora right_text+4,x        ; 4     (25*)
+    ldx Text2               ; 4     (13)
+    lda left_text+4,x       ; 4     (17)
+    ldx Text3               ; 4     (21)
+    ora right_text+4,x      ; 4     (25*)
     sleep 2
     sta GRP1                ; 3     (28)
     
-    ldx Text4            ; 4     (32)
-    lda left_text+4,x         ; 4     (36)
-    ldx Text5            ; 4     (40)
-    ora right_text+4,x        ; 4     (44)
+    ldx Text4               ; 4     (32)
+    lda left_text+4,x       ; 4     (36)
+    ldx Text5               ; 4     (40)
+    ora right_text+4,x      ; 4     (44)
     sleep 2
     sta GRP0                ; 3     (47)
     
-    ldx Text6           ; 4     (51)
-    lda left_text+4,x         ; 4     (55)
-    ldx Text7           ; 4     (59)
-    ora right_text+4,x        ; 4     (63)
+    ldx Text6               ; 4     (51)
+    lda left_text+4,x       ; 4     (55)
+    ldx Text7               ; 4     (59)
+    ora right_text+4,x      ; 4     (63)
     
-    ldy #$0F          ; 2     (65)
+    ldy #$0F                ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
@@ -372,16 +372,16 @@ Frame0Text
     ;line 2
     sta WSYNC               ; 3     (0)
 
-    ldx Text8           ; 4     (4)
-    lda left_text+4,x         ; 4     (8)
-    ldx Text9           ; 4     (12)
-    ora right_text+4,x        ; 4     (16)
+    ldx Text8               ; 4     (4)
+    lda left_text+4,x       ; 4     (8)
+    ldx Text9               ; 4     (12)
+    ora right_text+4,x      ; 4     (16)
     sta Temp                ; 3     (19)
 
-    ldx Text10           ; 4     (23*)
-    lda left_text+4,x         ; 4     (27)
-    ldx Text11           ; 4     (31)
-    ora right_text+4,x        ; 4     (35)
+    ldx Text10              ; 4     (23*)
+    lda left_text+4,x       ; 4     (27)
+    ldx Text11              ; 4     (31)
+    ora right_text+4,x      ; 4     (35)
     
     ldx Temp                ; 3     (38)
     VSLEEP; sleep 4
@@ -502,7 +502,7 @@ RsDungMidEnt: SUBROUTINE
     lda #$73;lda roomEX
     sta roomId
     lda #MS_PLAY_DUNG
-    sta AudioFlags
+    sta SeqFlags
 .rts
     rts
     
@@ -524,7 +524,7 @@ RsDungExit: SUBROUTINE
     ora #$80
     sta roomFlags
     lda #MS_PLAY_THEME
-    sta AudioFlags
+    sta SeqFlags
 .rts
     rts
 
@@ -774,42 +774,119 @@ BANK_5
     align 16
     INCLUDE "gen/ms_header.asm"
     INCLUDE "gen/MusicSeq.asm"
+    INCLUDE "gen/Sfx.asm"
 
 UpdateAudio: SUBROUTINE
-    lda AudioFlags
+    lda SeqFlags
     bpl .continueSequence
     and #$7F
-    sta AudioFlags
+    sta SeqFlags
     lda #$FF
     ldx Frame
-    inx
     sta SeqCur
     sta SeqCur + 1
     stx SeqTFrame
     stx SeqTFrame + 1
 .continueSequence
+    ldx #0
+    jsr AudioChannel
+    ldx #1
+    jsr AudioChannel
 
-    ldx Frame
-    cpx SeqTFrame+0
-    bne .skipChannel0
-    lda AudioFlags
-    and #$07
-    jsr AudioDel
-
-.skipChannel0
-    ldx SeqTFrame+1
-    cpx Frame
-    bne .skipChannel1
-    lda AudioFlags
-    and #$07
-    ora #$08
-    jsr AudioDel
-
-.skipChannel1
+    lda SfxFlags
+    and #$3F
+    beq .sfxEnd
+    bit SfxFlags
+    bpl .skipResetSfx
+    ldy #$FF
+    sty SfxCur
+.skipResetSfx
+    tax
+    jsr SfxDel
+.sfxEnd
+    lda AUDCT
+    sta AUDC1
+    lda AUDFT
+    sta AUDF1
+    lda AUDVT
+    sta AUDV1
     rts
     
-AudioDel:
-    tax
+SfxStabPattern:
+    .byte $01, $02, $03, $02, $01
+    
+SfxStab: SUBROUTINE
+    ldx #8
+    stx AUDVT
+    stx AUDCT
+    ldy SfxCur
+    lda SfxStabPattern,y
+    sta AUDFT
+    cpy #4
+    bpl SfxStop
+    rts
+    
+SfxStop:
+    lda #0
+    sta SfxFlags
+    rts
+    
+SfxBomb: SUBROUTINE
+    lda SfxCur
+    cmp #16
+    bpl SfxStop
+    asl
+    sta AUDFT
+    lda #8
+    sta AUDVT
+    sta AUDCT
+    rts
+    
+SfxItemPickup: SUBROUTINE
+    lda SfxCur
+    cmp #4
+    bpl SfxStop
+    lda #4
+    sta AUDCT
+    ldx #8
+    stx AUDVT
+    inx
+    stx AUDFT
+    rts
+    
+SfxDel:
+    stx SfxFlags
+    inc SfxCur
+    lda SfxH-1,x
+    pha
+    lda SfxL-1,x
+    pha
+    rts
+    
+; x = channel
+AudioChannel: SUBROUTINE
+    lda Mul8,x
+    ora SeqFlags
+    and #$0F  
+    sta Temp0 ; SeqId
+    
+    ; Test if next note should be played
+    clv
+    ldy SeqTFrame,x
+    cpy Frame
+    bne .skipUpdateCur
+    ; Played note has changed
+    inc SeqCur,x
+    bit .OverflowOn
+    ldy Temp0
+    lda ms_header,y ; duration
+.OverflowOn
+    cmp SeqCur,x
+    bne .skipUpdateCur
+    lda #0
+    sta SeqCur,x
+.skipUpdateCur
+    ldx Temp0
     lda MusicSeqH,x
     pha
     lda MusicSeqL,x
@@ -818,133 +895,104 @@ AudioDel:
     
 MsNone: SUBROUTINE
     lda #0
-    ldy #1
-.loop
-    sta AUDC0,y
-    sta AUDF0,y
-    sta AUDV0,y
-    dey
-    bpl .loop
+    sta AUDV0
+    sta AUDVT
     rts
     
 MsDung0: SUBROUTINE
-    inc SeqCur
     ldx SeqCur
-    cpx ms_header + 0
-    bne .skipRoll
-    ldx #0
-    stx SeqCur
-.skipRoll
+    bvc .skipSetDur
+    lda ms_dung0_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame
+.skipSetDur
     lda ms_dung0_note,x
     sta AUDF0
     lda ms_dung0_tone,x
     sta AUDC0
     lda #2
     sta AUDV0
-    lda ms_dung0_dur,x
-    clc
-    adc Frame
-    sta SeqTFrame
     rts
     
 MsDung1: SUBROUTINE
-    inc SeqCur + 1
     ldx SeqCur + 1
-    cpx ms_header + 1
-    bne .skipRoll
-    ldx #0
-    stx SeqCur + 1
-.skipRoll
-    lda ms_dung1_note,x
-    sta AUDF1
-    lda ms_dung1_tone,x
-    sta AUDC1
-    lda #2
-    sta AUDV1
+    bvc .skipSetDir
     lda #$0A ;ms_dung1_dur,x
     clc
     adc Frame
     sta SeqTFrame + 1
+.skipSetDir
+    lda ms_dung1_note,x
+    sta AUDFT
+    lda ms_dung1_tone,x
+    sta AUDCT
+    lda #2
+    sta AUDVT
     rts
     
 MsGI0: SUBROUTINE
-    inc SeqCur
     ldx SeqCur
-    cpx ms_header + 2
-    bne .skipRoll
-    ldx #4
-    stx SeqCur
-.skipRoll
+    bvc .skipSetDur
+    lda ms_gi0_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame
+.skipSetDur
     lda ms_gi0_note,x
     sta AUDF0
     lda ms_gi0_tone,x
     sta AUDC0
     lda #2
     sta AUDV0
-    lda ms_gi0_dur,x
-    clc
-    adc Frame
-    sta SeqTFrame
     rts
     
 MsGI1: SUBROUTINE
-    inc SeqCur + 1
     ldx SeqCur + 1
-    cpx ms_header + 3
-    bne .skipRoll
-    ldx #4
-    stx SeqCur + 1
-.skipRoll
-    lda ms_gi1_note,x
-    sta AUDF0 + 1
-    lda ms_gi1_tone,x
-    sta AUDC0 + 1
-    lda #2
-    sta AUDV0 + 1
+    bvc .skipSetDur
     lda ms_gi1_dur,x
     clc
     adc Frame
     sta SeqTFrame + 1
+.skipSetDur
+    lda ms_gi1_note,x
+    sta AUDFT
+    lda ms_gi1_tone,x
+    sta AUDCT
+    lda #2
+    sta AUDVT
     rts
     
 MsOver0: SUBROUTINE
-    inc SeqCur
     ldx SeqCur
-    cpx ms_header + 4
-    bne .skipRoll
-    ldx #0
-    stx SeqCur
-.skipRoll
+    bvc .skipSetDur
+    lda ms_over0_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame
+.skipSetDur
     lda ms_over0_note,x
     sta AUDF0
     lda ms_over0_tone,x
     sta AUDC0
     lda #2
     sta AUDV0
-    lda ms_over0_dur,x
-    clc
-    adc Frame
-    sta SeqTFrame
     rts
     
 MsOver1: SUBROUTINE
-    inc SeqCur + 1
     ldx SeqCur + 1
-    cpx ms_header + 5
-    bne .skipRoll
-    ldx #0
-    stx SeqCur + 1
-.skipRoll
-    lda ms_over1_note,x
-    sta AUDF0 + 1
-    lda ms_over1_tone,x
-    sta AUDC0 + 1
-    lda #2
-    sta AUDV0 + 1
+    bvc .skipSetDur
     lda ms_over1_dur,x
     clc
     adc Frame
     sta SeqTFrame + 1
+.skipSetDur
+    lda ms_over1_note,x
+    sta AUDFT
+    lda ms_over1_tone,x
+    sta AUDCT
+    lda #2
+    sta AUDVT
     rts
     
     LOG_SIZE "-BANK 5- Audio", BANK_5
@@ -1227,6 +1275,9 @@ PlayerItem_B6: SUBROUTINE
 ; If Item Button, stab sword
     lda #ItemTimerSword
     sta plItemTimer
+; Sfx
+    lda #SFX_STAB
+    sta SfxFlags
 .skipSetItemTimer
     ldy plItemTimer
     bne .drawSword
@@ -1369,7 +1420,7 @@ INIT_POS:
     sta plHealthMax
     
     ;lda #$83
-    ;sta AudioFlags
+    ;sta SeqFlags
     
     lda #$77
     sta roomId

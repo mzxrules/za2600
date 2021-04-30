@@ -81,13 +81,16 @@ itemKeys    ds 1
 itemBombs   ds 1
 itemTri     ds 1
 itemFlags   ds 2
-AudioFlags  ds 1
+SeqFlags    ds 1
     ; 1xxx_xxxx New Sequence
     ; x1xx_xxxx Mute Seq Channel 1
     ; xxxx_1xxx Sequence Channel 1
     ; xxxx_x111 Sequence
 SeqTFrame   ds 2
 SeqCur      ds 2
+SfxFlags    ds 1
+    ; 1xxx_xxxx New Sfx
+SfxCur      ds 1
 
 mapSpr      ds 2
 NUSIZ0_T    ds 1
@@ -99,8 +102,13 @@ Temp4       ds 1
 Temp5       ds 1
 Temp6       ds 1
 
+    SEG.U VARS_AUD_ZERO
+    ORG Temp4
+AUDCT       ds 1
+AUDFT       ds 1
+AUDVT       ds 1
 
-    SEG.U VARS_ZERO2
+    SEG.U VARS_TEXT_ZERO
     ORG Temp0
 Temp        ds 1
 Text0       ds 1
@@ -115,7 +123,6 @@ Text8       ds 1
 Text9       ds 1
 Text10      ds 1
 Text11      ds 1
-
 
 	echo "-RAM-",$80,(.)
     
@@ -220,6 +227,9 @@ MS_PLAY_GI      = $82
 MS_PLAY_OVER    = $83
 MS_PLAY_THEME   = $84
 
+SFX_STAB        = $81
+SFX_BOMB        = $82
+SFX_ITEM_PICKUP = $83
     MACRO LOG_SIZE
         echo .- {2}+$8000,{2},(.),{1}
     ENDM

@@ -184,5 +184,5 @@ Raft
 Magic Key
 Bow
 Arrow, Silver Arrow
-
+Bracelet, Bracelet Lv2
 Recorder?

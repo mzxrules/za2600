@@ -53,6 +53,11 @@ tbl = [
         "MsNone",
         "MsNone",
         "MsNone",
+    ]),
+    ( "Sfx", [
+        "SfxStab",
+        "SfxBomb",
+        "SfxItemPickup"
     ])
 ]
 

@@ -309,7 +309,6 @@ print("gi")
 giSq = [DumpSongChannel("ms_gi0", gi0, dungeon_beat), DumpSongChannel("ms_gi1", gi1, dungeon_beat)]
 print("over")
 overSq = [DumpSongChannel("ms_over0", ov0, dungeon_beat), DumpSongChannel("ms_over1", ov1, dungeon_beat)]
-header = []
 
 fl = [
     ("{}_note",2),
@@ -319,14 +318,19 @@ fl = [
 
 sequences = [dungSq, giSq, overSq]
 
+header = [0] * 16
+headerCur = 1
 for seq in sequences:
     for chan in seq:
-        header.append(chan[1])
+        header[headerCur] = chan[1]
         for np, index in fl:
             n = np.format(chan[0])
             str = f"{n}:\n" + ToAsm(chan[index])
             with open(f"gen/{n}.asm", "w") as file:
                 file.write(str)
+        headerCur += 8
+        headerCur %= 16
+    headerCur += 1
             
 str = "ms_header:\n" + ToAsm(header)
 with open("gen/ms_header.asm", "w") as file:
