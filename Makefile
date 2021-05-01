@@ -16,5 +16,5 @@ gen/ms_header.asm: sound.py
 gen/mesg_data.asm: text.py
 	python3 text.py
 
-gen/world/b1world.asm: world/w0.bin world.py
+gen/world/b1world.asm: world/w0.bin world/w1.bin world.py
 	python3 world.py

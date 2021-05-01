@@ -368,10 +368,10 @@ PF1Room21:
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
 PF1Room22:
     .byte $F0 ; |XXXX....|
     .byte $F0 ; |XXXX....|

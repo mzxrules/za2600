@@ -69,26 +69,74 @@ right_text
     include "gen/mesg_data.asm"
 
 TextKernel: SUBROUTINE
+    sta WSYNC ; Scanlines 56 to 97 (3116) (TIM64T 48)
+    lda #49
+    sta TIM64T
+; start
+    lda #6
+    sta NUSIZ0
+    sta NUSIZ1
+    lda #$0F
+    sta COLUP0
+    sta COLUP1
+    lda #1
+    sta VDELP0
+    sta VDELP1
+    
+TextSetPosition: SUBROUTINE
     lda Frame
     and #1
-    beq .loadtext1
-    ldx #11
-.textloop0
-    lda Mesg0A,x
-    sta Text0,x
-    dex
-    bpl .textloop0
-    clv
-    bvc .drawtext
-.loadtext1
-    ldx #11
-.textloop1
-    lda Mesg0B,x
-    sta Text0,x
+    beq .position_frame_1
+        lda #32
+        ldx #0
+        jsr SetHorizPos
+        lda #48
+        ldx #1
+        jsr SetHorizPos
+        jmp .end_position
+    
+.position_frame_1    
+        lda #40
+        ldx #0
+        jsr SetHorizPos
+        lda #56
+        ldx #1
+        jsr SetHorizPos
+.end_position
+
+    sta WSYNC
+    sta HMOVE
+    
+    lda #$FE
+    sta TextLoop
+
+TextDisplayLoop:
 .SetVFlag
-    dex
-    bpl .textloop1
+    inc TextLoop
+    inc TextLoop
+    lda Frame
+    and #$01        ; a ==   x1
+    eor #1
+    ora TextLoop    ; a ==   11
+    ora mesgId      ; a == 1111
+    tax
+    lda MesgAL,x
+    sta TMesgPtr
+    lda MesgAH,x
+    sta TMesgPtr+1
+
+    clv ; Overflow stores text a/b
+    ldy #11
+    lda Frame
+    and #1
+    bne .loadTextLoop
     bit .SetVFlag
+    
+.loadTextLoop
+    lda (TMesgPtr),y
+    sta Text0,y
+    dey
+    bpl .loadTextLoop
 
 .drawtext
     ldx Text0
@@ -397,16 +445,36 @@ Frame0Text
     sta GRP1
     sta GRP0
     
-    jmp ____end_text
-____end_text
-    
 FinishVS
-    sleep 10
+    sleep 13
     lda #0
     sta GRP1
     sta GRP0
     sta GRP1
-    rts
+    
+    lda TextLoop
+    bne .end
+    jmp TextDisplayLoop
+    
+.end
+    lda #0
+    sta VDELP0
+    sta VDELP1
+    sta GRP0
+    sta GRP1
+    sta GRP0
+    
+    lda #COLOR_PLAYER_00
+    sta COLUP0
+    jsr PosWorldObjects
+    
+.waitTimerLoop
+    lda INTIM
+    bne .waitTimerLoop
+    ldy TEXT_ROOM_HEIGHT
+    sta WSYNC ; 95
+    
+    jmp KERNEL_WORLD_RESUME
 
 SetHorizPos: SUBROUTINE
     sta WSYNC   ; start a new line
@@ -1449,7 +1517,7 @@ VERTICAL_SYNC: ; 3 SCANLINES
 
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda #0
-    ;sta VDELP0
+    sta VDELP0
     sta VDELP1
     
     lda roomFlags
@@ -1475,8 +1543,6 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda BANK_ROM + 6
     jsr KeydoorCheck_B6
     jsr UpdateDoors_B6
-    lda #ROOM_PX_HEIGHT-1
-    sta roomSpr
     lda BANK_ROM + 5
     jsr UpdateAudio
     jsr EnemyAIDel
@@ -1485,14 +1551,19 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
 ; Pre-Position Sprites
 ;===============================================================================
 
+; room draw start
+    ldy KernelId
+    lda RoomWorldOff,y
+    sta roomSpr
+    
 ; player draw height
-    lda #(ROOM_HEIGHT+8)
+    lda Spr8WorldOff,y;#(ROOM_HEIGHT+8)
     sec
     sbc plY
     sta plDY
 
 ; player sword draw height
-    lda #(ROOM_HEIGHT+8)
+    lda Spr8WorldOff,y;#(ROOM_HEIGHT+8)
     sec
     sbc m0Y
     sta m0DY
@@ -1511,7 +1582,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta plSpr+1
 
 ; enemy draw height
-    lda #(ROOM_HEIGHT+8)
+    lda Spr8WorldOff,y;#(ROOM_HEIGHT+8)
     sec
     sbc enY
     sta enDY
@@ -1532,7 +1603,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda #7
     sta blH
 ; ball draw height
-    lda #(ROOM_HEIGHT+1)
+    lda Spr1WorldOff,y;#(ROOM_HEIGHT+1)
     sec
     sbc blY
     sta blDY
@@ -1735,10 +1806,9 @@ KERNEL_HUD_LOOP:
     sta PF1
 ;=========== Scanline 0 ==============
     bpl .loop
-    LOG_SIZE "-HUD LOOP-", KERNEL_HUD_LOOP
-; HUD END
-    lda #76
-    sta TIM8T
+; HUD LOOP End
+    lda #85;#76 
+    sta TIM8T ; Delay 8 scanlines
     lda #0
     sta ENAM0
     sta GRP1
@@ -1752,39 +1822,50 @@ KERNEL_HUD_LOOP:
     and #$0F  ; 2
     ora THudTemp ; 3
     sta GRP0 ; 3
+    
     lda fgColor
     sta COLUPF
-    lda #1
-    sta VDELP1
     
-    sta WSYNC
-; HMOVE setup
     ldx #0
     stx GRP0
-    stx NUSIZ1
-    lda NUSIZ0_T
-    sta NUSIZ0
+    stx GRP1
+    LOG_SIZE "-HUD KERNEL-", KERNEL_HUD
+    lda KernelId
+    beq .defaultWorldKernel
+    lda BANK_ROM + 3
+    jmp TextKernel
+    
+.defaultWorldKernel
+; HMOVE setup
     jsr PosWorldObjects
-    sta WSYNC
-    sta HMOVE
 
 .waitTimerLoop
     lda INTIM
     bne .waitTimerLoop
     sta WSYNC
-
+    
+    ldy #ROOM_HEIGHT
+KERNEL_WORLD_RESUME:
+    
+    lda BANK_ROM + 0
     lda #$FF
     sta PF0
     sta PF1
     sta PF2
 
-    ldy #ROOM_HEIGHT
     lda bgColor
     sta COLUBK
     lda fgColor
     sta COLUPF
     lda enColor
     sta COLUP1
+    
+    lda #1
+    ldx #0
+    sta VDELP1
+    stx NUSIZ1
+    lda NUSIZ0_T
+    sta NUSIZ0
     
     lda #0
     ldx #0
@@ -2288,11 +2369,19 @@ SwordOff4Y:
     .byte 3, 3, -2, 6
 SwordOff8Y:
     .byte 3, 3, -6, 6
-    align 16
+    ;align 16
 WorldColors:
     .byte $00, COLOR_DARK_BLUE, $00, COLOR_LIGHT_BLUE, $42, $00, COLOR_PATH, $06, $02, COLOR_LIGHT_BLUE, COLOR_GREEN_ROCK, COLOR_LIGHT_WATER, $00, COLOR_CHOCOLATE, COLOR_GOLDEN, $0E
 HealthPattern:
     .byte $00, $01, $03, $07, $0F, $1F, $3F, $7F, $FF 
+
+Spr8WorldOff:
+    .byte (ROOM_HEIGHT+8), (TEXT_ROOM_HEIGHT+8)
+Spr1WorldOff: 
+    .byte (ROOM_HEIGHT+1), (TEXT_ROOM_HEIGHT+1)
+RoomWorldOff:
+    .byte (ROOM_PX_HEIGHT-1), (TEXT_ROOM_PX_HEIGHT-1)
+
     LOG_SIZE "-DATA-", DataStart
 
 ;===============================================================================
@@ -2326,6 +2415,37 @@ PosObject: SUBROUTINE
         sta RESP0,X    ; 4 23 - set coarse X position of object
         rts            ; 6 29
 */
+        
+;===============================================================================
+; PosWorldObjects
+;----------
+; Sets X position for all TIA objects
+; X position must be between 0-134 ($00 to $86)
+; Higher values will cause an extra cycle
+;===============================================================================
+PosWorldObjects: SUBROUTINE
+    sec            ; 2
+    ldx #4
+.Loop
+    sta WSYNC      ; 3
+    lda plX,x      ; 4
+DivideLoop
+    sbc #15        ; 2  2 - each time thru this loop takes 5 cycles, which is
+    bcs DivideLoop ; 2  4 - the same amount of time it takes to draw 15 pixels
+    eor #7         ; 2  6 - The EOR & ASL statements convert the remainder
+    asl            ; 2  8 - of position/15 to the value needed to fine tune
+    asl            ; 2 10 - the X position
+    asl            ; 2 12
+    asl            ; 2 14
+    sta.wx HMP0,X  ; 5 19 - store fine tuning of X
+    sta RESP0,X    ; 4 23 - set coarse X position of object
+; scn cycle 67
+    dex ; 69
+    bpl .Loop ; 72
+        
+    sta WSYNC
+    sta HMOVE
+    rts
 
 ; $18 2 iter (9) + 15 = 24
 ; $18
@@ -2375,38 +2495,6 @@ PosHudObjects: SUBROUTINE
     rts
 
     LOG_SIZE "-BANK 7-", ENTRY
-        
-;===============================================================================
-; PosWorldObjects
-;----------
-; Sets X position for all TIA objects
-; X position must be between 0-134 ($00 to $86)
-; Higher values will cause an extra cycle
-;===============================================================================
-	ORG $3FC6
-	RORG $FFC6
-PosWorldObjects: SUBROUTINE
-        sec            ; 2
-        ldx #4
-.Loop
-        sta WSYNC      ; 3
-        lda plX,x      ; 4
-DivideLoop
-        sbc #15        ; 2  2 - each time thru this loop takes 5 cycles, which is
-        bcs DivideLoop ; 2  4 - the same amount of time it takes to draw 15 pixels
-        eor #7         ; 2  6 - The EOR & ASL statements convert the remainder
-        asl            ; 2  8 - of position/15 to the value needed to fine tune
-        asl            ; 2 10 - the X position
-        asl            ; 2 12
-        asl            ; 2 14
-        sta.wx HMP0,X  ; 5 19 - store fine tuning of X
-        sta RESP0,X    ; 4 23 - set coarse X position of object
-; scn cycle 67
-        dex ; 69
-        bpl .Loop ; 72
-        rts
-        
-        LOG_SIZE "-PosWorldObjects-", PosWorldObjects
         
     ORG $3FE0
     ; This space is reserved to prevent unintentional bank swaps

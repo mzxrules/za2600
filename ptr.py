@@ -81,16 +81,14 @@ def DumpPtrAsm(editorBindings):
             DumpEditorBindings(name, list, editorBindings)
             continue
             
-        tL = f"{name}L:\n"
-        tH = f"{name}H:\n"
-        
         l = []
         h = []
         for item in list:
             l.append(f"<({item}-1)")
             h.append(f">({item}-1)")
             
-        out = tL + ToAsm(l,8) + '\n' + tH + ToAsm(h,8)
+        out = f"{name}L:\n" + ToAsm(l,8) + '\n'
+        out += f"{name}H:\n" + ToAsm(h,8)
         
         with open(f'gen/{name}.asm', "w") as file:
             file.write(out)

@@ -2,7 +2,7 @@
 from collections import defaultdict
 import itertools
 import random
-from asmgen import ToAsm
+from asmgen import ToAsm, ToAsm2
 
 sprdic = {
     "A" : [
@@ -546,6 +546,7 @@ with open("gen/text_right.asm", "w") as file:
     file.write(ToAsm(right_chr, 16))
     
 strOut = ""
+msgTbl = [[], [], [], []]
 for i in range(len(mesgRaw) // 2):
     dA = mesgRaw[i*2+0]
     dB = mesgRaw[i*2+1]
@@ -553,6 +554,18 @@ for i in range(len(mesgRaw) // 2):
     strOut += ToAsm(dA)
     strOut += f"Mesg{i}B:\n"
     strOut += ToAsm(dB)
+for i in range(len(mesgRaw) // 4):
+    msgTbl[0].append(f"<(Mesg{i*2}A)")
+    msgTbl[0].append(f"<(Mesg{i*2}B)")
+    msgTbl[0].append(f"<(Mesg{i*2+1}A)")
+    msgTbl[0].append(f"<(Mesg{i*2+1}B)")
+    msgTbl[1].append(f">(Mesg{i*2}A)")
+    msgTbl[1].append(f">(Mesg{i*2}B)")
+    msgTbl[1].append(f">(Mesg{i*2+1}A)")
+    msgTbl[1].append(f">(Mesg{i*2+1}B)")
+    
+strOut += "MesgAL:\n" + ToAsm2(msgTbl[0],8)
+strOut += "MesgAH:\n" + ToAsm2(msgTbl[1],8)
     
 with open("gen/mesg_data.asm", "w") as file:
     file.write(strOut)

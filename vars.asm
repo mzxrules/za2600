@@ -6,6 +6,7 @@
     ORG $80
 Frame       ds 1
 Rand8       ds 1
+KernelId    ds 1
 plX         ds 1
 enX         ds 1
 m0X         ds 1
@@ -45,9 +46,9 @@ bgColor     ds 1
 fgColor     ds 1
 worldId     ds 1
 worldBank   ds 1
-worldSX     ds 1
-worldSY     ds 1
-worldSR     ds 1
+worldSX     ds 1 ; respawn X
+worldSY     ds 1 ; respawn Y
+worldSR     ds 1 ; respawn room
 roomId      ds 1
 roomSpr     ds 1
 roomFlags   ds 1
@@ -72,14 +73,13 @@ plState     ds 1
     ; 0000_0001 Lock Player Axis
 plHealthMax ds 1
 plHealth    ds 1
-    
-    
 plItemTimer ds 1
 itemRupees  ds 1
 itemKeys    ds 1
 itemBombs   ds 1
 itemTri     ds 1
 itemFlags   ds 2
+mesgId      ds 1
 SeqFlags    ds 1
     ; 1xxx_xxxx New Sequence
     ; x1xx_xxxx Mute Seq Channel 1
@@ -91,8 +91,8 @@ SfxFlags    ds 1
     ; 1xxx_xxxx New Sfx
 SfxCur      ds 1
 
-mapSpr      ds 2
 NUSIZ0_T    ds 1
+mapSpr      ds 2
 Temp0       ds 1
 Temp1       ds 1
 Temp2       ds 1
@@ -116,7 +116,9 @@ THudTemp    ds 1
 THudDigits  ds 6
 
     SEG.U VARS_TEXT_ZERO
-    ORG Temp0
+    ORG mapSpr
+TextLoop    ds 1
+TMesgPtr    ds 2
 Temp        ds 1
 Text0       ds 1
 Text1       ds 1
@@ -182,6 +184,8 @@ ROOM_PX_HEIGHT      = 20 ; height of room in pixels
 ROOM_SPR_HEIGHT     = 16 ; height of room sprite sheet
 ROOM_SPR_SHEET      = 16 ; width of room sprite sheet in 8 bit sprites
 ROOM_HEIGHT         = [(8*ROOM_PX_HEIGHT)/2-1] ; Screen visible height of play
+TEXT_ROOM_PX_HEIGHT = 16 ; height of room in pixels, when text is displayed
+TEXT_ROOM_HEIGHT    = [(8*TEXT_ROOM_PX_HEIGHT)/2-1] ;
 GRID_STEP           = 4 ; unit grid that the player should snap to
 MAX_LOCKS           = 16
 
