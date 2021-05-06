@@ -103,9 +103,12 @@ Temp6       ds 1
 
     SEG.U VARS_AUD_ZERO
     ORG Temp4
-AUDCT       ds 1
-AUDFT       ds 1
-AUDVT       ds 1
+AUDCT0      ds 1
+AUDCT1      ds 1
+AUDFT0      ds 1
+AUDFT1      ds 1
+AUDVT0      ds 1
+AUDVT1      ds 1
 
     SEG.U VARS_HUD_ZERO
     ORG Temp0

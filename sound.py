@@ -1,9 +1,31 @@
 #!/usr/bin/env python3
 from asmgen import *
 
+notes = [
+    "C",
+    "C#",
+    "D",
+    "D#",
+    "E",
+    "F",
+    "F#",
+    "G",
+    "G#",
+    "A",
+    "A#",
+    "B"
+]
+
 N1dic = { #Buzzy
-    "C3" : 31,
+    "C2" : 31,
     "A#3" : 8
+}
+
+N6dic = { #Buzzy/Pure
+    "D2" : 13,
+    "D#2" : 12,
+    "F#2" : 10, 
+    "D3" : 6
 }
 
 N4dic = {
@@ -40,6 +62,7 @@ NBdic = {
     "G3"  : 26,
     "G#3" : 24,
     "A3"  : 23,
+    "A#3" : 22, #bad
     "B3"  : 20,
     "C4"  : 19,
     "C#4" : 18,
@@ -60,6 +83,37 @@ NBdic = {
     "E7"  : 1
 }
 
+toneDics = [
+    (4, N4dic),
+    (12, NBdic),
+    (1, N1dic),
+    (6, N6dic)
+]
+
+tonePackDic = {
+    0 : 0,
+    1 : 1,
+    4 : 2,
+    6 : 3,
+    12 : 4,
+}
+
+def NoteSpectrumTest():
+    testSeq = []
+    for i in range(1, 9*12):
+        testSeq.append((i,0))
+    seq = DecSeqToStrSeq(testSeq)
+    for note, dur in seq:
+        foundNote = False
+        for toneVal, dic in toneDics:
+                if note in dic:
+                    foundNote = True
+                    print(note + " GOOD")
+                    break;
+        if not foundNote:
+            print(note + " BAD")
+
+
 def DumpSongChannel(name, channelNotes, beat):
     time = 0
     totalNotes = 0
@@ -67,21 +121,18 @@ def DumpSongChannel(name, channelNotes, beat):
     durs = []
     tones = []
     for keyStr, dur in channelNotes:
-        note = 31
+        tone = 0
+        note = 32
         if keyStr == "_":
             tone = 0
             note = 0
-        elif keyStr in N4dic:
-            tone = 4
-            note = N4dic[keyStr]
-        elif keyStr in NBdic:
-            tone = 12
-            note = NBdic[keyStr]
-        elif keyStr in N1dic:
-            tone = 1
-            note = N1dic[keyStr]
-            print("Tone 1 {} {}".format(keyStr, dur))
         else:
+            for toneVal, dic in toneDics:
+                if keyStr in dic:
+                    tone = toneVal
+                    note = dic[keyStr]
+                    break;
+        if tone == 0 and note == 32:
             print("Error {} {}".format(keyStr, dur))
             tone = 1
             note = 31
@@ -98,7 +149,11 @@ def DumpSongChannel(name, channelNotes, beat):
         tones.append(tone)
         
     totalNotes = len(notes)
-    return [name, totalNotes, notes, tones, durs]
+    for i in range(len(notes)):
+        note = notes[i] << 3
+        note |= tonePackDic[tones[i]]
+        notes[i] = note
+    return [name, totalNotes, notes, durs]
 
 def ListToND(list, dim):
     r = []
@@ -116,6 +171,59 @@ def ConvertMusic(a0, a1, bars=None):
     a0 = [item for sublist in a0 for item in sublist]
     a1 = [item for sublist in a1 for item in sublist]
     return (ListToND(a0, 2), ListToND(a1,2))
+    
+def SeqPlayableTest(seq):
+    score = 0
+    for note, dur in seq:
+        if note == "_":
+            score += 1
+        else:
+            for toneVal, dic in toneDics:
+                if note in dic:
+                    score += 1
+    return score
+
+def StrSeqToDecSeq(seq):
+    newSeq = []
+    for note, dur in seq:
+        for i in range(11, -1, -1):
+            if note.find(notes[i]) != -1:
+                noteDigit = int(note[len(notes[i]):])
+                newSeq.append((noteDigit * 12 + i, dur))
+                break
+    return newSeq
+
+def DecSeqToStrSeq(seq):
+    newSeq = []
+    for note, dur in seq:
+        i = note % 12
+        p = note // 12
+        newSeq.append((f"{notes[i]}{p}", dur))
+    return newSeq
+    
+def ShiftDecSeq(seq, shift):
+    newSeq = []
+    for note, dur in seq:
+        newSeq.append((note+shift, dur))
+    return newSeq
+    
+def ShiftStrSeq(seq, shift):
+    d = StrSeqToDecSeq(seq)
+    return DecSeqToStrSeq(ShiftDecSeq(d, shift))
+
+def FindBestSeq(seq):
+    dSeq = StrSeqToDecSeq(seq)
+    scores = []
+    for shift in range(-36, 16):
+        s = ShiftDecSeq(dSeq, shift)
+        scores.append((SeqPlayableTest(DecSeqToStrSeq(s)),shift))
+        
+    scores.sort(reverse=True)
+    print(scores)
+    quit()
+
+#NoteSpectrumTest()
+#quit()
 
 # BPM to frames:
 # frames = 1 beat * (1 min/BPM) * (60 seconds /1 min) * (60 fps)
@@ -130,31 +238,37 @@ dungeon_baseline = [
     [
     "G5", 8,
     "A#5", 4,
-    "D6", 4,],
+    "D6", 4,
+    ],
     [
     "C#6", 4,
-    "F#5", 12,],
+    "F#5", 12,
+    ],
     [
     "F5", 10,
     "G#5", 4,
-    "C#6", 2,],
+    "C#6", 2,
+    ],
     [
     "C6", 4,
-    "E5", 12,],
+    "E5", 12,
+    ],
     [
     "D#5", 1,
     "D5", 1,
     "D#5", 6,
     "G5", 3,
-    "D#6", 3,
-    "D6", 2,],
+    "D#2", 3, # D#6, but I don't have one
+    "D6", 2,
+    ], 
     [
     "D5", 1,
     "C#5", 1,
     "D5", 6,
     "G5", 3,
-    "D6", 3,
-    "C#5", 2,],
+    "D2", 3, # D6
+    "C#5", 2, # C#6
+    ],
     
     # 5/4 time signature
     [
@@ -162,22 +276,25 @@ dungeon_baseline = [
     "F#4", 1,
     "A5", 1,
     "F#4", 1,
-    "A5", 1,],
+    "A5", 1,
+    ],
     [
     "C6", 1,
     "A5", 1,
     "C6", 1,
-    "D#6", 1,
-    "C6", 1,],
+    "C2", 1, # D#6
+    "C6", 1,
+    ],
     [
-    "D#6", 1,
-    "F#6", 1,
+    "C2", 2, # D#6
+    #"F#2", 1, # F#6
     "A6", 1,
-    "F#6", 1,
-    "D#6", 1,],
+    "C2", 2, # F#6
+    #"D#2", 1, # D#6
+    ],
     [
     "C6", 1,
-    "D#6", 1,
+    "C2", 1, # D#6
     "C6", 1,
     "A5", 1,
     "F#5", 1],
@@ -188,29 +305,34 @@ dungeon_highline = [
     "G3", 1,
     "A#3", 1,
     "D4", 1,
-    "D#4", 1,] * 4,
+    "D#4", 1,
+    ] * 4,
     [ 
     "F#3", 1,
     "A3", 1,
     "D4", 1,
-    "D#4", 1, ] * 4,
+    "D#4", 1,
+    ] * 4,
     [
     "F3", 1,
     "G#3", 1,
     "D4", 1,
-    "D#4", 1 ] * 4,
+    "D#4", 1 
+    ] * 4,
     [
     "E3", 1,
     "G3", 1,
     "D4", 1,
-    "D#4", 1 ] * 4,
+    "D#4", 1
+    ] * 4,
     [
-    "D#3", 1,
+    "D#2", 1, #"D#3", 1,
     "G3", 1,
     "C4", 1,
-    "D4", 1 ] * 4,
+    "D4", 1 
+    ] * 4,
     [
-    "D3", 1,
+    "D2", 1, # "D3", 1,
     "G3", 1,
     "C4", 1,
     "D4", 1 
@@ -269,39 +391,74 @@ get_item_baseline = [
 
 game_over_highline = [
     [
-     "G5", 1,
-     "G4", 1,
-     "C5", 1,
-     "E5", 1,
+    "G6", 2,
+    "G5", 2,
+    "C6", 2,
+    "E6", 2,
     ],
     [
-     "D#5", 1,
-     "G4", 1,
-     "B4", 1,
-     "A5", 1,
+    "D#6", 2,
+    "G5", 2,
+    "B6", 2,
+    "B5", 2,
+    ],
+    [
+    "A6", 2,
+    "C6", 2,
+    "E6", 2,
+    "A6", 2,
+    ],
+    [
+    "G6", 2,
+    "C6", 2,
+    "D6", 2,
+    "E6", 2,
+    ],
+    [
+    "A6", 2,
+    "C6", 2,
+    "F6", 2,
+    "A6", 2,
+    ],
+    [
+    "G#6", 2,
+    "C6", 2,
+    "D6", 2,
+    "F6", 2,
+    ],
+    [
+    "E6", 2,
+    "G5", 2,
+    "C6", 2,
+    "E6", 2,
+    ],
+    [
+    "D6", 2,
+    "A5", 2,
+    "B5", 2,
+    "D6", 2
     ]
 ]
 empty_channel = [
     [ "_", 1 ]
 ]
 
+def AdjustDungeonBaseline(seq):
+    test = []
+    for note, dir in seq:
+        if dir > 2:
+            test.append((note, 2))
+            test.append(("_", dir-2))
+        else:
+            test.append((note,dir))
+    return test
+    
 a0, a1 = ConvertMusic(dungeon_baseline, dungeon_highline,10)
 gi0, gi1 = ConvertMusic(get_item_highline, get_item_baseline)
 ov0, ov1 = ConvertMusic(game_over_highline, empty_channel)
-test = []
-for note, dir in a0:
-    if dir > 2:
-        test.append((note, 2))
-        test.append(("_", dir-2))
-    else:
-        test.append((note,dir))
-a0 = test
 
-test = []
-for item in ov0:
-    test.append(item)
-    test.append(("_",1))
-ov0 = test
+a0 = AdjustDungeonBaseline(a0)
+ov0 = ShiftStrSeq(ov0,-10) #FindBestSeq(ov0)
 
 print("dung")
 dungSq = [DumpSongChannel("ms_dung0", a0, dungeon_beat), DumpSongChannel("ms_dung1", a1, dungeon_beat)]
@@ -312,8 +469,7 @@ overSq = [DumpSongChannel("ms_over0", ov0, dungeon_beat), DumpSongChannel("ms_ov
 
 fl = [
     ("{}_note",2),
-    ("{}_tone",3),
-    ("{}_dur", 4)
+    ("{}_dur", 3)
 ]
 
 sequences = [dungSq, giSq, overSq]
@@ -335,4 +491,3 @@ for seq in sequences:
 str = "ms_header:\n" + ToAsm(header)
 with open("gen/ms_header.asm", "w") as file:
     file.write(str)
-    

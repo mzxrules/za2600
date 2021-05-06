@@ -9,19 +9,26 @@
     SEG.U VARS
     ORG $80
 Frame       ds 1
+SeqFlag     ds 1
+SWCHA_last  ds 1
 Tone        ds 1
 Freq        ds 1
 Vol         ds 1
 songLen     ds 2
+seq0Notes   ds 2
+seq1Notes   ds 2
+seq0Durs    ds 2
+seq1Durs    ds 2
 songCur     ds 2
 songTFrame  ds 2
 Cool        ds 1
 
 
-    
 ; ****************************************
 ; * Constants                            *
 ; ****************************************
+
+CHAN_1_OFF = 8
 
 	echo "-RAM-",$80,(.)
 
@@ -52,15 +59,8 @@ INIT:
     sta CTRLPF
     lda #8
     sta Vol
-    lda ms_header
-    sta songLen
-    lda ms_header+1
-    sta songLen+1
-    lda #10
-    sta songTFrame
-    sta songTFrame+1
-    dec songCur
-    dec songCur+1
+    lda #$81
+    sta SeqFlag
     
     
 ;TOP_FRAME ;3 37 192 30
@@ -90,6 +90,30 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     ;rol
     adc #0
     sta Cool
+    
+    bit SeqFlag
+    bpl .ChangeSeqEnd
+    lda SeqFlag
+    and #$7F
+    sta SeqFlag
+    and #7
+    pha
+    tay
+    ldx #0
+    jsr SetSeqChannel
+    pla
+    ora #CHAN_1_OFF
+    tay
+    ldx #2
+    jsr SetSeqChannel
+    
+    lda Frame
+    sta songTFrame
+    sta songTFrame+1
+    lda #$FF
+    sta songCur
+    sta songCur+1
+.ChangeSeqEnd
     
     lda Frame
     cmp songTFrame
@@ -136,11 +160,53 @@ OVERSCAN_WAIT:
     
     jmp VERTICAL_SYNC
 
-ProcessInput:
+ProcessInput: SUBROUTINE
 _ = .
+    bit SWCHA_last
+    bpl .finalUpdate
+    bvc .finalUpdate
+    
+    bit SWCHA
+    bvc .leftPressed
+    bmi .finalUpdate
+    lda SeqFlag
+    clc
+    adc #1
+    and #CHAN_1_OFF-1
+    ora #$80
+    sta SeqFlag
+    bmi .finalUpdate
+    
+.leftPressed
+    lda SeqFlag
+    sec
+    sbc #1
+    and #CHAN_1_OFF-1
+    ora #$80
+    sta SeqFlag
+    
+.finalUpdate
     lda SWCHA
+    sta SWCHA_last
     rts
     echo "Input Size ",(.-_)
+    
+SetSeqChannel: SUBROUTINE
+    lda SeqL_note,y
+    sta seq0Notes,x
+    lda SeqH_note,y
+    sta seq0Notes+1,x
+    lda SeqL_dur,y
+    sta seq0Durs,x
+    lda SeqH_dur,y
+    sta seq0Durs+1,x
+    
+    txa
+    lsr
+    tax
+    lda ms_header,y
+    sta songLen,x
+    rts
     
 ;===============================================================================
 ; PosObject
@@ -178,17 +244,24 @@ UpdateSong0: SUBROUTINE
     sta AUDV0
     inc songCur
     lda songCur
-    cmp ms_header+0
+    cmp songLen
     bne .skipResetSongCur
     lda #0
     sta songCur
 .skipResetSongCur
-    tax
-    lda ms_dung0_note,x
+    tay
+    lda (seq0Notes),y
+    pha
+    lsr
+    lsr
+    lsr
     sta AUDF0
-    lda ms_dung0_tone,x
+    pla
+    and #7
+    tax
+    lda ToneLookup,x
     sta AUDC0
-    lda ms_dung0_dur,x
+    lda (seq0Durs),y
     clc
     adc Frame
     sta songTFrame
@@ -199,17 +272,24 @@ UpdateSong1: SUBROUTINE
     sta AUDV0+1
     inc songCur+1
     lda songCur+1
-    cmp ms_header+1
+    cmp songLen+1
     bne .skipResetSongCur
     lda #0
     sta songCur+1
 .skipResetSongCur
-    tax
-    lda ms_dung1_note,x
+    tay
+    lda (seq1Notes),y
+    pha
+    lsr
+    lsr
+    lsr
     sta AUDF0+1
-    lda ms_dung1_tone,x
+    pla
+    and #7
+    tax
+    lda ToneLookup,x
     sta AUDC0+1
-    lda ms_dung1_dur,x
+    lda (seq1Durs),Y
     clc
     adc Frame
     sta songTFrame+1
@@ -238,13 +318,42 @@ AUDTEST: SUBROUTINE
     ;sty AUDV0
     
   
+ToneLookup
+    .byte 0, 1, 4, 6, 12
+    
+SeqH_note
+    .byte #>ms_none_note, #>ms_dung0_note, #>ms_gi0_note, #>ms_over0_note, #>ms_none_note, #>ms_none_note, #>ms_none_note, #>ms_none_note
+    .byte #>ms_none_note, #>ms_dung1_note, #>ms_gi1_note, #>ms_over1_note, #>ms_none_note, #>ms_none_note, #>ms_none_note, #>ms_none_note
+    
+SeqL_note
+    .byte #<ms_none_note, #<ms_dung0_note, #<ms_gi0_note, #<ms_over0_note, #<ms_none_note, #<ms_none_note, #<ms_none_note, #<ms_none_note
+    .byte #<ms_none_note, #<ms_dung1_note, #<ms_gi1_note, #<ms_over1_note, #<ms_none_note, #<ms_none_note, #<ms_none_note, #<ms_none_note
+    
+    
+SeqH_dur
+    .byte #>ms_none_dur, #>ms_dung0_dur, #>ms_gi0_dur, #>ms_over0_dur, #>ms_none_dur, #>ms_none_dur, #>ms_none_dur, #>ms_none_dur
+    .byte #>ms_none_dur, #>ms_dung1_dur, #>ms_gi1_dur, #>ms_over1_dur, #>ms_none_dur, #>ms_none_dur, #>ms_none_dur, #>ms_none_dur
+    
+SeqL_dur
+    .byte #<ms_none_dur, #<ms_dung0_dur, #<ms_gi0_dur, #<ms_over0_dur, #<ms_none_dur, #<ms_none_dur, #<ms_none_dur, #<ms_none_dur
+    .byte #<ms_none_dur, #<ms_dung1_dur, #<ms_gi1_dur, #<ms_over1_dur, #<ms_none_dur, #<ms_none_dur, #<ms_none_dur, #<ms_none_dur
+    
+ms_none_note:
+ms_none_dur:
+    .byte 0
     align 256
     include "gen/ms_dung0_note.asm"
-    include "gen/ms_dung0_tone.asm"
     include "gen/ms_dung0_dur.asm"
     include "gen/ms_dung1_note.asm"
-    include "gen/ms_dung1_tone.asm"
     include "gen/ms_dung1_dur.asm"
+    include "gen/ms_gi0_note.asm"
+    include "gen/ms_gi0_dur.asm"
+    include "gen/ms_gi1_note.asm"
+    include "gen/ms_gi1_dur.asm"
+    include "gen/ms_over0_note.asm"
+    include "gen/ms_over1_note.asm"
+    include "gen/ms_over0_dur.asm"
+    include "gen/ms_over1_dur.asm"
     include "gen/ms_header.asm"
 	echo "-CODE-",$F000,(.)
     

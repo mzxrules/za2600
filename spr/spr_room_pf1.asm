@@ -368,7 +368,7 @@ PF1Room21:
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
-    .byte $FF ; |XXXXXXXX|
+    .byte $00 ; |........|
     .byte $FF ; |XXXXXXXX|
     .byte $FF ; |XXXXXXXX|
     .byte $FF ; |XXXXXXXX|

@@ -492,7 +492,7 @@ SetHorizPos: SUBROUTINE
     sta HMP0,x  ; set fine offset
     rts     ; return to caller
  
-    LOG_SIZE "-BANK 3-", BANK_3
+    LOG_SIZE "-BANK 3- Text Bank", BANK_3
 
 ; ****************************************
 ; *               BANK 4                 *
@@ -821,23 +821,15 @@ EnMoveUp: SUBROUTINE
     RORG $F000
 BANK_5
     INCLUDE "gen/ms_dung0_note.asm"
-    INCLUDE "gen/ms_dung0_tone.asm"
     INCLUDE "gen/ms_dung0_dur.asm"
     INCLUDE "gen/ms_dung1_note.asm"
-    INCLUDE "gen/ms_dung1_tone.asm"
-    ;INCLUDE "gen/ms_dung1_dur.asm"
     INCLUDE "gen/ms_gi0_note.asm"
-    INCLUDE "gen/ms_gi0_tone.asm"
     INCLUDE "gen/ms_gi0_dur.asm"
     INCLUDE "gen/ms_gi1_note.asm"
-    INCLUDE "gen/ms_gi1_tone.asm"
     INCLUDE "gen/ms_gi1_dur.asm"
-    align 256
     INCLUDE "gen/ms_over0_note.asm"
-    INCLUDE "gen/ms_over0_tone.asm"
     INCLUDE "gen/ms_over0_dur.asm"
     INCLUDE "gen/ms_over1_note.asm"
-    INCLUDE "gen/ms_over1_tone.asm"
     INCLUDE "gen/ms_over1_dur.asm"
     align 16
     INCLUDE "gen/ms_header.asm"
@@ -872,12 +864,13 @@ UpdateAudio: SUBROUTINE
     tax
     jsr SfxDel
 .sfxEnd
-    lda AUDCT
-    sta AUDC1
-    lda AUDFT
-    sta AUDF1
-    lda AUDVT
-    sta AUDV1
+    ldy #5
+    
+.set_audio_loop
+    lda AUDCT0,y
+    sta AUDC0,y
+    dey
+    bpl .set_audio_loop
     rts
     
 SfxStabPattern:
@@ -885,11 +878,11 @@ SfxStabPattern:
     
 SfxStab: SUBROUTINE
     ldx #8
-    stx AUDVT
-    stx AUDCT
+    stx AUDVT1
+    stx AUDCT1
     ldy SfxCur
     lda SfxStabPattern,y
-    sta AUDFT
+    sta AUDFT1
     cpy #4
     bpl SfxStop
     rts
@@ -904,10 +897,10 @@ SfxBomb: SUBROUTINE
     cmp #16
     bpl SfxStop
     asl
-    sta AUDFT
+    sta AUDFT1
     lda #8
-    sta AUDVT
-    sta AUDCT
+    sta AUDVT1
+    sta AUDCT1
     rts
     
 SfxItemPickup: SUBROUTINE
@@ -915,11 +908,11 @@ SfxItemPickup: SUBROUTINE
     cmp #4
     bpl SfxStop
     lda #4
-    sta AUDCT
+    sta AUDCT1
     ldx #8
-    stx AUDVT
+    stx AUDVT1
     inx
-    stx AUDFT
+    stx AUDFT1
     rts
     
 SfxDel:
@@ -963,8 +956,8 @@ AudioChannel: SUBROUTINE
     
 MsNone: SUBROUTINE
     lda #0
-    sta AUDV0
-    sta AUDVT
+    sta AUDVT0
+    sta AUDVT1
     rts
     
 MsDung0: SUBROUTINE
@@ -976,13 +969,28 @@ MsDung0: SUBROUTINE
     sta SeqTFrame
 .skipSetDur
     lda ms_dung0_note,x
-    sta AUDF0
-    lda ms_dung0_tone,x
-    sta AUDC0
-    lda #2
-    sta AUDV0
-    rts
+; A = Packed Note
+SeqChan0:
+    ldy #0
+    beq SeqChan
     
+SeqChan1:
+    ldy #1
+SeqChan:
+    pha
+    lsr
+    lsr
+    lsr
+    sta AUDFT0,y
+    pla
+    and #7
+    tax
+    lda ToneLookup,x
+    sta AUDCT0,y
+    lda #2
+    sta AUDVT0,y
+    rts
+
 MsDung1: SUBROUTINE
     ldx SeqCur + 1
     bvc .skipSetDir
@@ -992,12 +1000,7 @@ MsDung1: SUBROUTINE
     sta SeqTFrame + 1
 .skipSetDir
     lda ms_dung1_note,x
-    sta AUDFT
-    lda ms_dung1_tone,x
-    sta AUDCT
-    lda #2
-    sta AUDVT
-    rts
+    jmp SeqChan1
     
 MsGI0: SUBROUTINE
     ldx SeqCur
@@ -1008,12 +1011,7 @@ MsGI0: SUBROUTINE
     sta SeqTFrame
 .skipSetDur
     lda ms_gi0_note,x
-    sta AUDF0
-    lda ms_gi0_tone,x
-    sta AUDC0
-    lda #2
-    sta AUDV0
-    rts
+    jmp SeqChan0
     
 MsGI1: SUBROUTINE
     ldx SeqCur + 1
@@ -1024,12 +1022,7 @@ MsGI1: SUBROUTINE
     sta SeqTFrame + 1
 .skipSetDur
     lda ms_gi1_note,x
-    sta AUDFT
-    lda ms_gi1_tone,x
-    sta AUDCT
-    lda #2
-    sta AUDVT
-    rts
+    jmp SeqChan1
     
 MsOver0: SUBROUTINE
     ldx SeqCur
@@ -1040,12 +1033,7 @@ MsOver0: SUBROUTINE
     sta SeqTFrame
 .skipSetDur
     lda ms_over0_note,x
-    sta AUDF0
-    lda ms_over0_tone,x
-    sta AUDC0
-    lda #2
-    sta AUDV0
-    rts
+    jmp SeqChan0
     
 MsOver1: SUBROUTINE
     ldx SeqCur + 1
@@ -1056,13 +1044,11 @@ MsOver1: SUBROUTINE
     sta SeqTFrame + 1
 .skipSetDur
     lda ms_over1_note,x
-    sta AUDFT
-    lda ms_over1_tone,x
-    sta AUDCT
-    lda #2
-    sta AUDVT
-    rts
+    jmp SeqChan1
     
+    ;align 8
+ToneLookup
+    .byte 0, 1, 4, 6, 12
     LOG_SIZE "-BANK 5- Audio", BANK_5
 
     SEG Bank6
@@ -1315,7 +1301,8 @@ KeydoorCheck_B6: SUBROUTINE
     and roomDoors
     sta roomDoors
     dec itemKeys
-    
+    lda #SFX_STAB
+    sta SfxFlags
     ; x = door dir, S/N/E/W
     
     ; load world bank (RAM)
@@ -1529,6 +1516,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     jsr LoadRoom
     lda #0
     sta enType
+    sta KernelId
 .skipLoadRoom
 
     bit roomFlags
@@ -1992,6 +1980,7 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     adc #$10
     sta roomId
 .plYDSkip
+
     cpy roomId
     beq .skipSwapRoom
     lda #$80
@@ -2371,7 +2360,7 @@ SwordOff8Y:
     .byte 3, 3, -6, 6
     ;align 16
 WorldColors:
-    .byte $00, COLOR_DARK_BLUE, $00, COLOR_LIGHT_BLUE, $42, $00, COLOR_PATH, $06, $02, COLOR_LIGHT_BLUE, COLOR_GREEN_ROCK, COLOR_LIGHT_WATER, $00, COLOR_CHOCOLATE, COLOR_GOLDEN, $0E
+    .byte $00, COLOR_DARK_BLUE, $00, COLOR_LIGHT_BLUE, $42, $7A, COLOR_PATH, $06, $02, COLOR_LIGHT_BLUE, COLOR_GREEN_ROCK, COLOR_LIGHT_WATER, $00, COLOR_CHOCOLATE, COLOR_GOLDEN, $0E
 HealthPattern:
     .byte $00, $01, $03, $07, $0F, $1F, $3F, $7F, $FF 
 

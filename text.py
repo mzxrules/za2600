@@ -478,12 +478,8 @@ def greedy_quickrand(seq):
 
 mesg = [
     "012345678901234567890123",
-    "IT'S DANGEROUS TO GO",
-    "ALONE! TAKE THIS.",
-    "FIG CAN GO SUCK IT =)",
-    "",
-    "ONLY YOU CAN PREVENT",
-    "FOREST FIRES",
+    "  IT'S DANGEROUS TO GO  ",
+    "   ALONE! TAKE THIS.    ",
 ]
 
 # format messages, eliminating the template message
