@@ -1,102 +1,6 @@
 #!/usr/bin/env python3
 from asmgen import *
-
-notes = [
-    "C",
-    "C#",
-    "D",
-    "D#",
-    "E",
-    "F",
-    "F#",
-    "G",
-    "G#",
-    "A",
-    "A#",
-    "B"
-]
-
-N1dic = { #Buzzy
-    "C2" : 31,
-    "A#3" : 8
-}
-
-N6dic = { #Buzzy/Pure
-    "D2" : 13,
-    "D#2" : 12,
-    "F#2" : 10, 
-    "D3" : 6
-}
-
-N4dic = {
-    "B4"  : 31,
-    "C5"  : 29,
-    "C#5" : 27,
-    "D5"  : 26,
-    "D#5" : 24,
-    "E5"  : 23, #23
-    "F5"  : 21,
-    "F#5" : 20,
-    "G5"  : 19,
-    "G#5" : 18,
-    "A5"  : 17,
-    "A#5" : 16,
-    "B5"  : 15,
-    "C6"  : 14,
-    "C#6" : 13,
-    "D6"  : 12, #bad
-    #"D#6" : 11, #bad
-    "E6"  : 11,
-    "G6"  : 9,
-    "A6"  : 8,
-    "B6"  : 7,
-    "C#7" : 6,
-    "E7"  : 5,
-    "G7"  : 4,
-    "B7"  : 3,
-}
-NBdic = {
-    "E3"  : 31,
-    "F3"  : 29,
-    "F#3" : 27,
-    "G3"  : 26,
-    "G#3" : 24,
-    "A3"  : 23,
-    "A#3" : 22, #bad
-    "B3"  : 20,
-    "C4"  : 19,
-    "C#4" : 18,
-    "D4"  : 17,
-    "D#4" : 16,
-    "E#4" : 15,
-    "F4"  : 14,
-    "F#4" : 13,
-    "A4"  : 11,
-    "C5"  : 9,
-    "D5"  : 8,
-    "E5"  : 7,
-    "F#5" : 6,
-    "A5"  : 5,
-    "C6"  : 4,
-    "E6"  : 3,
-    "A6"  : 2,
-    "E7"  : 1
-}
-
-toneDics = [
-    (4, N4dic),
-    (12, NBdic),
-    (1, N1dic),
-    (6, N6dic)
-]
-
-tonePackDic = {
-    0 : 0,
-    1 : 1,
-    4 : 2,
-    6 : 3,
-    12 : 4,
-}
+from sound_common import *
 
 def NoteSpectrumTest():
     testSeq = []
@@ -155,83 +59,17 @@ def DumpSongChannel(name, channelNotes, beat):
         notes[i] = note
     return [name, totalNotes, notes, durs]
 
-def ListToND(list, dim):
-    r = []
-    for i in range(0,len(list),dim):
-        v = []
-        for j in range(dim):
-            v.append(list[i+j])
-        r.append(v)
-    return r
-
-def ConvertMusic(a0, a1, bars=None):
-    if bars is not None:
-        a0 = a0[0:bars] 
-        a1 = a1[0:bars]
-    a0 = [item for sublist in a0 for item in sublist]
-    a1 = [item for sublist in a1 for item in sublist]
-    return (ListToND(a0, 2), ListToND(a1,2))
-    
-def SeqPlayableTest(seq):
-    score = 0
-    for note, dur in seq:
-        if note == "_":
-            score += 1
-        else:
-            for toneVal, dic in toneDics:
-                if note in dic:
-                    score += 1
-    return score
-
-def StrSeqToDecSeq(seq):
-    newSeq = []
-    for note, dur in seq:
-        for i in range(11, -1, -1):
-            if note.find(notes[i]) != -1:
-                noteDigit = int(note[len(notes[i]):])
-                newSeq.append((noteDigit * 12 + i, dur))
-                break
-    return newSeq
-
-def DecSeqToStrSeq(seq):
-    newSeq = []
-    for note, dur in seq:
-        i = note % 12
-        p = note // 12
-        newSeq.append((f"{notes[i]}{p}", dur))
-    return newSeq
-    
-def ShiftDecSeq(seq, shift):
-    newSeq = []
-    for note, dur in seq:
-        newSeq.append((note+shift, dur))
-    return newSeq
-    
-def ShiftStrSeq(seq, shift):
-    d = StrSeqToDecSeq(seq)
-    return DecSeqToStrSeq(ShiftDecSeq(d, shift))
-
-def FindBestSeq(seq):
-    dSeq = StrSeqToDecSeq(seq)
-    scores = []
-    for shift in range(-36, 16):
-        s = ShiftDecSeq(dSeq, shift)
-        scores.append((SeqPlayableTest(DecSeqToStrSeq(s)),shift))
-        
-    scores.sort(reverse=True)
-    print(scores)
-    quit()
-
-#NoteSpectrumTest()
-#quit()
-
 # BPM to frames:
 # frames = 1 beat * (1 min/BPM) * (60 seconds /1 min) * (60 fps)
 
 # Dungeon Theme
-# 90 BPM 4/4 time signature
-
+# 90 BPM 4/4 time signature, so quarter gets beat
+# 1 = sixteenth note, so divide by 4
 dungeon_beat = 3600/90/4
+
+# Overworld Theme
+# 90 BPM 4/4 time signature
+overworld_beat = 3600/150
 
 dungeon_baseline = [
     #G4, everything is shifted up an octave
@@ -439,6 +277,216 @@ game_over_highline = [
     "D6", 2
     ]
 ]
+
+overworld_highline = [
+    # 5
+    [
+        "A#5", 1,
+        
+        "F5", (1/3),
+        "F5", (1/3),
+        "E5", (1/3),
+        
+        "F5", (3/4),
+        
+        "A#5", (1/4),
+        
+        "A#5", (1/4),
+        "C6", (1/4),
+        "C#6",(1/4),
+        "D#6", (1/4)
+    ],
+    [
+        "F6", 2,
+        "_", (1/2),
+        "F6", (1/2),
+        
+        "F6", (1/3),
+        "F#6", (1/3),
+        "G#6", (1/3)
+    ],
+    [
+        "A#6", 2, #(3/4)+1,
+        #"_", 1,
+        
+        "_", (1/3),
+        "A#6", (1/3),
+        "A#6", (1/3),
+        
+        "A#6", (1/3),
+        "G#6", (1/3),
+        "F#6", (1/3)
+    ],
+    [
+        "G#6", (2/3),
+        "F#6", (1/3),
+        
+        "F6", (6/3),
+        #"_", (1/3),
+        "F6", 1,
+    ],
+    [
+        "D#6", (1/2),
+        "D#6", (1/4),
+        "F6", (1/4),
+        
+        "F#6", 2,
+        
+        "F6", (1/2),
+        "D#6", (1/2)
+    ],
+    [
+        "C#6", (1/2),
+        "C#6", (1/4),
+        "D#6", (1/4),
+        
+        "F6", 2,
+        
+        "D#6", (1/2),
+        "C#6", (1/2)
+    ],
+    [
+        "C6", (1/2),
+        "C6", (1/4),
+        "D6", (1/4),
+        
+        "E6", 2,
+        
+        "G6", 1
+    ],
+    [
+        "F6", (1/2), #highline
+        "F5", (1/4), #basey line
+        "F5", (1/4),
+        
+        "F5", (1/2),
+        "F5", (1/4),
+        "F5", (1/4),
+        
+        "F5", (1/2),
+        "F5", (1/4),
+        "F5", (1/4),
+        
+        "F5", (1/2),
+        "F5", (1/2),
+    ],
+    [
+        "A#5", 1,
+        
+        "F5", (1/3),
+        "F5", (1/3),
+        "E5", (1/3),
+        
+        "F5", (3/4),
+        
+        "A#5", (1/4),
+        
+        "A#5", (1/4),
+        "C6", (1/4),
+        "C#6",(1/4),
+        "D#6", (1/4)
+    ],
+    # 14. F6-> G#5
+    [
+        "F6", (3/4),
+        "A#5", (1/4),
+        
+        "A#5", (1/4),
+        "C6", (1/4),
+        "D6", (1/4),
+        "D#6", (1/4),
+        
+        "F6", (1/2),
+        "F6", (1/2),
+        
+        "F6", (1/3),
+        "F#6", (1/3),
+        "G#6", (1/3),
+    ],
+    [
+        "A#6", 3,
+        "C#7", 1,
+    ],
+    [
+        "C7", 1,
+        "A6", 2,
+        "F6", 1
+    ],
+    [
+        "F#6", 3,
+        "A#6", 1,
+    ],
+    [
+        "A6", 1,
+        "F6", 2,
+        "F6", 1
+    ],
+    [
+        "F#6", 3,
+        "A#6", 1,
+    ],
+    [
+        "A6", 1,
+        "F6", 2,
+        "D6", 1
+    ],
+    # 21
+    [
+        "D#6", 3,
+        "F#6", 1
+    ],
+    [
+        "F6", 1,
+        "C#6", 2,
+        "A#5", 1
+    ],
+    [
+        "C6", (1/2),
+        "C6", (1/4),
+        "D6", (1/4),
+        
+        "E6", 2,
+        "G6", 1
+    ],
+    [
+        "F6", (1/2),
+        
+        "F5", (1/4),
+        "F5", (1/4),
+        
+        "F5", (2/4),
+        "F5", (1/4),
+        "F5", (1/4),
+        
+        "F5", (2/4),
+        "F5", (1/4),
+        "F5", (1/4),
+        
+        "F5", (1/2),
+        "F5", (1/2)
+    ],
+    
+]
+
+overworld_baseline = [
+    [
+        "B4", 1,
+        
+        "C5", (1/3),
+        "B4", (1/3),
+        "A4", (1/3),
+        
+        "B4", (3/4),
+        "B4", (1/4),
+        
+        "B4", (1/4),
+        "C5", (1/4),
+        "C#5", (1/4),
+        "D5", (1/4)
+    ]
+]
+
+
 empty_channel = [
     [ "_", 1 ]
 ]
@@ -456,9 +504,12 @@ def AdjustDungeonBaseline(seq):
 a0, a1 = ConvertMusic(dungeon_baseline, dungeon_highline,10)
 gi0, gi1 = ConvertMusic(get_item_highline, get_item_baseline)
 ov0, ov1 = ConvertMusic(game_over_highline, empty_channel)
+wo0, wo1 = ConvertMusic(overworld_highline, empty_channel)
 
 a0 = AdjustDungeonBaseline(a0)
-ov0 = ShiftStrSeq(ov0,-10) #FindBestSeq(ov0)
+#FindBestSeq()
+ov0 = ShiftStrSeq(ov0,-10)
+wo0 = ShiftStrSeq(wo0,-11)
 
 print("dung")
 dungSq = [DumpSongChannel("ms_dung0", a0, dungeon_beat), DumpSongChannel("ms_dung1", a1, dungeon_beat)]
@@ -466,13 +517,15 @@ print("gi")
 giSq = [DumpSongChannel("ms_gi0", gi0, dungeon_beat), DumpSongChannel("ms_gi1", gi1, dungeon_beat)]
 print("over")
 overSq = [DumpSongChannel("ms_over0", ov0, dungeon_beat), DumpSongChannel("ms_over1", ov1, dungeon_beat)]
+print("world")
+worldSq = [DumpSongChannel("ms_world0", wo0, overworld_beat), DumpSongChannel("ms_world1", wo1, overworld_beat)]
 
 fl = [
     ("{}_note",2),
     ("{}_dur", 3)
 ]
 
-sequences = [dungSq, giSq, overSq]
+sequences = [dungSq, giSq, overSq, worldSq]
 
 header = [0] * 16
 headerCur = 1

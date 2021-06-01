@@ -59,7 +59,7 @@ INIT:
     sta CTRLPF
     lda #8
     sta Vol
-    lda #$81
+    lda #$84
     sta SeqFlag
     
     
@@ -115,16 +115,30 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta songCur+1
 .ChangeSeqEnd
     
-    lda Frame
-    cmp songTFrame
+    ldx Frame
+    cpx songTFrame
     bne .skipNoteChange0
     jsr UpdateSong0
+    jmp .Channel1
 .skipNoteChange0
-    lda Frame
-    cmp songTFrame+1
+    inx
+    cpx songTFrame
+    bne .Channel1
+    ldy #0
+    jsr MuteChannel
+.Channel1
+    ldx Frame
+    cpx songTFrame+1
     bne .skipNoteChange1
     jsr UpdateSong1
+    jmp .end
 .skipNoteChange1
+    inx
+    cpx songTFrame+1
+    bne .end
+    ldy #1
+    jsr MuteChannel
+.end
     
 KERNEL_MAIN:  ; 192 scanlines
     sta WSYNC
@@ -238,6 +252,11 @@ DivideLoop
         sta RESP0,X    ; 4 23 - set coarse X position of object
         rts            ; 6 29    
       
+MuteChannel: SUBROUTINE
+    lda #0
+    sta AUDF0,y
+    sta AUDC0,y
+    rts
       
 UpdateSong0: SUBROUTINE
     lda #2
@@ -322,21 +341,21 @@ ToneLookup
     .byte 0, 1, 4, 6, 12
     
 SeqH_note
-    .byte #>ms_none_note, #>ms_dung0_note, #>ms_gi0_note, #>ms_over0_note, #>ms_none_note, #>ms_none_note, #>ms_none_note, #>ms_none_note
-    .byte #>ms_none_note, #>ms_dung1_note, #>ms_gi1_note, #>ms_over1_note, #>ms_none_note, #>ms_none_note, #>ms_none_note, #>ms_none_note
+    .byte #>ms_none_note, #>ms_dung0_note, #>ms_gi0_note, #>ms_over0_note, #>ms_world0_note, #>ms_none_note, #>ms_none_note, #>ms_none_note
+    .byte #>ms_none_note, #>ms_dung1_note, #>ms_gi1_note, #>ms_over1_note, #>ms_world1_note, #>ms_none_note, #>ms_none_note, #>ms_none_note
     
 SeqL_note
-    .byte #<ms_none_note, #<ms_dung0_note, #<ms_gi0_note, #<ms_over0_note, #<ms_none_note, #<ms_none_note, #<ms_none_note, #<ms_none_note
-    .byte #<ms_none_note, #<ms_dung1_note, #<ms_gi1_note, #<ms_over1_note, #<ms_none_note, #<ms_none_note, #<ms_none_note, #<ms_none_note
+    .byte #<ms_none_note, #<ms_dung0_note, #<ms_gi0_note, #<ms_over0_note, #<ms_world0_note, #<ms_none_note, #<ms_none_note, #<ms_none_note
+    .byte #<ms_none_note, #<ms_dung1_note, #<ms_gi1_note, #<ms_over1_note, #<ms_world1_note, #<ms_none_note, #<ms_none_note, #<ms_none_note
     
     
 SeqH_dur
-    .byte #>ms_none_dur, #>ms_dung0_dur, #>ms_gi0_dur, #>ms_over0_dur, #>ms_none_dur, #>ms_none_dur, #>ms_none_dur, #>ms_none_dur
-    .byte #>ms_none_dur, #>ms_dung1_dur, #>ms_gi1_dur, #>ms_over1_dur, #>ms_none_dur, #>ms_none_dur, #>ms_none_dur, #>ms_none_dur
+    .byte #>ms_none_dur, #>ms_dung0_dur, #>ms_gi0_dur, #>ms_over0_dur, #>ms_world0_dur, #>ms_none_dur, #>ms_none_dur, #>ms_none_dur
+    .byte #>ms_none_dur, #>ms_dung1_dur, #>ms_gi1_dur, #>ms_over1_dur, #>ms_world1_dur, #>ms_none_dur, #>ms_none_dur, #>ms_none_dur
     
 SeqL_dur
-    .byte #<ms_none_dur, #<ms_dung0_dur, #<ms_gi0_dur, #<ms_over0_dur, #<ms_none_dur, #<ms_none_dur, #<ms_none_dur, #<ms_none_dur
-    .byte #<ms_none_dur, #<ms_dung1_dur, #<ms_gi1_dur, #<ms_over1_dur, #<ms_none_dur, #<ms_none_dur, #<ms_none_dur, #<ms_none_dur
+    .byte #<ms_none_dur, #<ms_dung0_dur, #<ms_gi0_dur, #<ms_over0_dur, #<ms_world0_dur, #<ms_none_dur, #<ms_none_dur, #<ms_none_dur
+    .byte #<ms_none_dur, #<ms_dung1_dur, #<ms_gi1_dur, #<ms_over1_dur, #<ms_world1_dur, #<ms_none_dur, #<ms_none_dur, #<ms_none_dur
     
 ms_none_note:
 ms_none_dur:
@@ -354,6 +373,10 @@ ms_none_dur:
     include "gen/ms_over1_note.asm"
     include "gen/ms_over0_dur.asm"
     include "gen/ms_over1_dur.asm"
+    include "gen/ms_world0_note.asm"
+    include "gen/ms_world1_note.asm"
+    include "gen/ms_world0_dur.asm"
+    include "gen/ms_world1_dur.asm"
     include "gen/ms_header.asm"
 	echo "-CODE-",$F000,(.)
     

@@ -831,6 +831,12 @@ BANK_5
     INCLUDE "gen/ms_over0_dur.asm"
     INCLUDE "gen/ms_over1_note.asm"
     INCLUDE "gen/ms_over1_dur.asm"
+    
+    INCLUDE "gen/ms_world0_note.asm"
+    INCLUDE "gen/ms_world0_dur.asm"
+    INCLUDE "gen/ms_world1_note.asm"
+    INCLUDE "gen/ms_world1_dur.asm"
+    
     align 16
     INCLUDE "gen/ms_header.asm"
     INCLUDE "gen/MusicSeq.asm"
@@ -954,6 +960,8 @@ AudioChannel: SUBROUTINE
     pha
     rts
     
+MsWorld0:
+MsWorld1:
 MsNone: SUBROUTINE
     lda #0
     sta AUDVT0
