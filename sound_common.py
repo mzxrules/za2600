@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from dataclasses import dataclass, field
 
 notes = [
     "C",
@@ -96,7 +97,54 @@ tonePackDic = {
     6 : 3,
     12 : 4,
 }
+
+@dataclass
+class AtariSeq:
+    name: str
+    totalNotes: int = 0
+    notes: list = field(default_factory=list)
+    durs: list = field(default_factory=list)
     
+    def GetDuration(self):
+        total = 0
+        for dur in self.durs:
+            total += dur
+        return total
+
+@dataclass
+class Seq:
+    name: str
+    bpm: int # target beats per minute
+    qbeat: int # value of a beat
+    ch0: list
+    ch1: list
+    beat: int = 0 # Atari timesteps per beat
+    
+    def __post_init__(self):
+        # BPM to frames:
+        # frames = 1 beat * (1 min/BPM) * (60 seconds /1 min) * (60 fps)
+        self.beat = 3600 / self.bpm / self.qbeat
+        
+    def Flatten(self, bars=None):
+        self.ch0, self.ch1 = FlattenStrSeq(self.ch0, self.ch1, bars)
+        
+    def ShiftChannel(self, chan, shift):
+        if chan == 0:
+            self.ch0 = ShiftStrSeq(self.ch0, shift)
+        else:
+            self.ch1 = ShiftStrSeq(self.ch1, shift)
+            
+    def AdjustChannel(self, chan, delegate):
+        if chan == 0:
+            self.ch0 = delegate(self.ch0)
+        else:
+            self.ch1 = delegate(self.ch1)
+            
+    def DumpSong(self):
+        c0 = DumpSongChannel(f"{self.name}0", self.ch0, self.beat)
+        c1 = DumpSongChannel(f"{self.name}1", self.ch1, self.beat)
+        return [c0, c1]
+        
 def SeqPlayableTest(seq):
     score = 0
     for note, dur in seq:
@@ -124,6 +172,9 @@ def SeqNoteExistTest(seq):
 def StrSeqToDecSeq(seq):
     newSeq = []
     for note, dur in seq:
+        if note == "_":
+            newSeq.append((0, dur))
+            continue
         for i in range(11, -1, -1):
             if note.find(notes[i]) != -1:
                 noteDigit = int(note[len(notes[i]):])
@@ -134,24 +185,20 @@ def StrSeqToDecSeq(seq):
 def DecSeqToStrSeq(seq):
     newSeq = []
     for note, dur in seq:
+        if note == 0:
+            newSeq.append(("_", dur))
+            continue
         i = note % 12
         p = note // 12
         newSeq.append((f"{notes[i]}{p}", dur))
-    return newSeq
-
-def StrSeqToDecSeq(seq):
-    newSeq = []
-    for note, dur in seq:
-        for i in range(11, -1, -1):
-            if note.find(notes[i]) != -1:
-                noteDigit = int(note[len(notes[i]):])
-                newSeq.append((noteDigit * 12 + i, dur))
-                break
     return newSeq
     
 def ShiftDecSeq(seq, shift):
     newSeq = []
     for note, dur in seq:
+        if note == 0:
+            newSeq.append((0, dur))
+            continue
         newSeq.append((note+shift, dur))
     return newSeq
     
@@ -180,10 +227,66 @@ def ListToND(list, dim):
         r.append(v)
     return r
 
-def ConvertMusic(a0, a1, bars=None):
+def FlattenStrSeq(a0, a1, bars=None):
     if bars is not None:
         a0 = a0[0:bars] 
         a1 = a1[0:bars]
     a0 = [item for sublist in a0 for item in sublist]
     a1 = [item for sublist in a1 for item in sublist]
     return (ListToND(a0, 2), ListToND(a1,2))
+
+def DumpSongChannel(name, channelNotes, beat):
+    time = 0
+    totalNotes = 0
+    notes = []
+    durs = []
+    tones = []
+    for keyStr, dur in channelNotes:
+        tone = 0
+        note = 32
+        if keyStr == "_":
+            tone = 0
+            note = 0
+        else:
+            for toneVal, dic in toneDics:
+                if keyStr in dic:
+                    tone = toneVal
+                    note = dic[keyStr]
+                    break;
+        if tone == 0 and note == 32:
+            print("Error {} {}".format(keyStr, dur))
+            tone = 1
+            note = 31
+            
+        d = beat*dur
+        while d > 256:
+            d -= 256
+            notes.append(note)
+            durs.append(0)
+            tones.append(tone)
+            
+        notes.append(note)
+        durs.append((d//1)%256)
+        tones.append(tone)
+        
+    totalNotes = len(notes)
+    for i in range(len(notes)):
+        note = notes[i] << 3
+        note |= tonePackDic[tones[i]]
+        notes[i] = note
+    return AtariSeq(name, totalNotes, notes, durs)
+    
+def NoteSpectrumTest():
+    testSeq = []
+    for i in range(1, 9*12):
+        testSeq.append((i,0))
+    seq = DecSeqToStrSeq(testSeq)
+    for note, dur in seq:
+        foundNote = False
+        for toneVal, dic in toneDics:
+                if note in dic:
+                    foundNote = True
+                    print(note + " GOOD")
+                    break;
+        if not foundNote:
+            print(note + " BAD")

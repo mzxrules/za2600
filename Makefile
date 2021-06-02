@@ -10,7 +10,7 @@ zelda.bin: gen/world/b1world.asm gen/RoomScript.asm spr/spr_room_pf1.asm spr/spr
 gen/RoomScript.asm: ptr.py
 	python3 ptr.py
     
-gen/ms_header.asm: sound.py
+gen/ms_header.asm: sound_common.py seq.py sound.py
 	python3 sound.py
     
 gen/mesg_data.asm: text.py
