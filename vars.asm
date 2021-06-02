@@ -240,6 +240,7 @@ MS_PLAY_DUNG    = $81
 MS_PLAY_GI      = $82
 MS_PLAY_OVER    = $83
 MS_PLAY_THEME   = $84
+MS_PLAY_THEME_L = $85
 
 SFX_STAB        = $81
 SFX_BOMB        = $82

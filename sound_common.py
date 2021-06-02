@@ -143,7 +143,7 @@ class Seq:
     def DumpSong(self):
         c0 = DumpSongChannel(f"{self.name}0", self.ch0, self.beat)
         c1 = DumpSongChannel(f"{self.name}1", self.ch1, self.beat)
-        return [c0, c1]
+        return (c0, c1)
         
 def SeqPlayableTest(seq):
     score = 0

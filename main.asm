@@ -591,7 +591,7 @@ RsDungExit: SUBROUTINE
     lda roomFlags
     ora #$80
     sta roomFlags
-    lda #MS_PLAY_THEME
+    lda #MS_PLAY_THEME_L
     sta SeqFlags
 .rts
     rts
@@ -832,9 +832,13 @@ BANK_5
     INCLUDE "gen/ms_over1_note.asm"
     INCLUDE "gen/ms_over1_dur.asm"
     
+    INCLUDE "gen/ms_intro0_note.asm"
     INCLUDE "gen/ms_world0_note.asm"
+    INCLUDE "gen/ms_intro0_dur.asm"
     INCLUDE "gen/ms_world0_dur.asm"
+    INCLUDE "gen/ms_intro1_note.asm"
     INCLUDE "gen/ms_world1_note.asm"
+    INCLUDE "gen/ms_intro1_dur.asm"
     INCLUDE "gen/ms_world1_dur.asm"
     
     align 16
@@ -960,8 +964,6 @@ AudioChannel: SUBROUTINE
     pha
     rts
     
-MsWorld0:
-MsWorld1:
 MsNone: SUBROUTINE
     lda #0
     sta AUDVT0
@@ -977,11 +979,11 @@ MsDung0: SUBROUTINE
     sta SeqTFrame
 .skipSetDur
     lda ms_dung0_note,x
+
 ; A = Packed Note
 SeqChan0:
     ldy #0
     beq SeqChan
-    
 SeqChan1:
     ldy #1
 SeqChan:
@@ -998,6 +1000,16 @@ SeqChan:
     lda #2
     sta AUDVT0,y
     rts
+    
+SeqMuteChan0:
+    ldy #0
+    beq SeqMuteChan
+SeqMuteChan1:
+    ldy #1
+SeqMuteChan:
+    lda #0
+    sta AUDVT0,y
+    rts
 
 MsDung1: SUBROUTINE
     ldx SeqCur + 1
@@ -1008,6 +1020,60 @@ MsDung1: SUBROUTINE
     sta SeqTFrame + 1
 .skipSetDir
     lda ms_dung1_note,x
+    jmp SeqChan1
+    
+    
+MsIntro0: SUBROUTINE
+    ldx SeqCur
+    bvc .skipSetDur
+    lda ms_intro0_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame
+    jmp SeqMuteChan0
+.skipSetDur
+    lda ms_intro0_note,x
+    jmp SeqChan0
+    
+MsIntro1: SUBROUTINE
+    ldx SeqCur + 1
+    bvc .skipSetDur
+    lda ms_intro1_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame + 1
+    cpx #24
+    bne .skipSwitchSeq
+    lda #MS_PLAY_THEME_L
+    sta SeqFlags
+.skipSwitchSeq
+    jmp SeqMuteChan1
+.skipSetDur
+    lda ms_intro1_note,x
+    jmp SeqChan1
+
+MsWorld0: SUBROUTINE
+    ldx SeqCur
+    bvc .skipSetDur
+    lda ms_world0_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame
+    jmp SeqMuteChan0
+.skipSetDur
+    lda ms_world0_note,x
+    jmp SeqChan0
+    
+MsWorld1: SUBROUTINE
+    ldx SeqCur + 1
+    bvc .skipSetDur
+    lda ms_world1_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame + 1
+    jmp SeqMuteChan1
+.skipSetDur
+    lda ms_world1_note,x
     jmp SeqChan1
     
 MsGI0: SUBROUTINE
@@ -1482,8 +1548,8 @@ INIT_POS:
     sta plHealth
     sta plHealthMax
     
-    ;lda #$83
-    ;sta SeqFlags
+    lda #MS_PLAY_THEME
+    sta SeqFlags
     
     lda #$77
     sta roomId

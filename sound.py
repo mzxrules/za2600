@@ -24,8 +24,8 @@ seqs = {
     "dung" : Seq("ms_dung", 90, 4, dungeon_baseline, dungeon_highline),
     "gi"   : Seq("ms_gi", 90, 4, get_item_highline, get_item_baseline),
     "over" : Seq("ms_over", 90, 4, game_over_highline, empty_channel),
-    "world": Seq("ms_world", 150, 1, overworld_highline, empty_channel),
-    "intro": Seq("ms_intro", 150, 1, overworld_intro_highline, overworld_intro_baseline)
+    "intro": Seq("ms_intro", 150, 1, overworld_intro_highline, overworld_intro_baseline),
+    "world": Seq("ms_world", 150, 1, overworld_highline, overworld_baseline),
 }
 
 for k, seq in seqs.items():
@@ -34,6 +34,7 @@ for k, seq in seqs.items():
 seqs["dung"].AdjustChannel(0, AdjustDungeonBaseline) 
 seqs["over"].ShiftChannel(0,-10)
 seqs["world"].ShiftChannel(0,-11)
+seqs["world"].ShiftChannel(1,-11)
 seqs["intro"].ShiftChannel(0,-11)
 seqs["intro"].ShiftChannel(1,-11)
 
@@ -42,6 +43,12 @@ sequences = []
 for k, seq in seqs.items():
     print(k)
     sequences.append(seq.DumpSong())
+
+for c0, c1 in sequences:
+    if c0.name == "ms_intro0":
+        c0.totalNotes += 1
+        c1.totalNotes += 1
+        break
 
 fl = [
     ("{}_note",2, "notes"),
