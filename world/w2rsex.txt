@@ -228,7 +228,7 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
+RsDungExit
 zz0
 RsNone
 zz0

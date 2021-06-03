@@ -504,6 +504,7 @@ SetHorizPos: SUBROUTINE
 BANK_4
     INCLUDE "gen/EnemyAI.asm"
     INCLUDE "gen/RoomScript.asm"
+    INCLUDE "gen/ItemId.asm"
 NextDir: SUBROUTINE
     jsr Random
     and #3
@@ -525,10 +526,16 @@ NoAI:
     sta enY
 RsNone:
 RsWorldMidEnt:
-RsStairs:
 RsRaftSpot:
 RsNeedTriforce:
 RsFairyFountain:
+    rts
+
+RsText: SUBROUTINE
+    lda #1
+    sta KernelId
+    lda roomEX
+    sta mesgId
     rts
     
 RsItem: SUBROUTINE
@@ -539,12 +546,125 @@ RsItem: SUBROUTINE
     lda BANK_RAM + 1,y
     lda rRoomFlag,x
     bmi .rts
-    ora #$80
-    sta wRoomFlag,x
-    inc itemKeys
     
+    lda #$40
+    sta enX
+    lda #$2C
+    sta enY
+    lda #6
+    sta enType
+    
+    ;ora #$80
+    ;sta wRoomFlag,x
+    ;jsr GiItemDel
 .rts
     lda BANK_RAM + 0
+    lda #0
+    sta roomRS
+    rts
+    
+GiItemDel: SUBROUTINE
+    ldx roomEX
+    lda ItemIdH,x
+    pha
+    lda ItemIdL,x
+    pha
+    rts
+    
+GiFlute:
+GiBomb:
+GiRing:
+GiSword3:
+GiSword2:
+GiRupee5:
+GiBoots:
+GiMeat:
+GiCandle:
+GiPotion:
+GiRecoverHeart:
+GiFairy:
+GiRaft:
+GiTriforce:
+    inc itemTri
+    lda #MS_PLAY_GI
+    sta SeqFlags
+    rts
+GiKey:
+    inc itemKeys
+    rts
+GiMasterKey:
+    lda #$C0
+    sta itemKeys
+    lda #MS_PLAY_GI
+    sta SeqFlags
+    rts
+    
+GiHeart:
+    clc
+    lda #8
+    adc plHealthMax
+    sta plHealthMax
+    lda #8
+    adc plHealth
+    sta plHealth
+    lda #MS_PLAY_GI
+    sta SeqFlags
+    rts
+    
+ItemAI: SUBROUTINE
+    lda #>SprItem0
+    sta enSpr+1
+    ldy roomEX
+    lda GiItemColors,y
+    sta enColor
+    lda roomEX
+    asl
+    asl
+    asl
+    clc
+    adc #<SprItem0
+    sta enSpr
+    lda CXPPMM
+    bpl .rts
+    ; item collected
+    lda #0
+    sta enType
+    ldx roomId
+    ldy worldBank
+    lda BANK_RAM + 1,y
+    lda rRoomFlag,x
+    ora #$80
+    sta wRoomFlag,x
+    lda BANK_RAM + 0
+    jsr GiItemDel
+.rts
+    rts
+    
+GiItemColors:
+    .byte COLOR_DARKNUT_RED, COLOR_DARKNUT_RED, COLOR_DARKNUT_BLUE, COLOR_DARKNUT_BLUE
+    .byte COLOR_TRIFORCE, COLOR_DARKNUT_RED, COLOR_TRIFORCE, COLOR_TRIFORCE
+    .byte $06, $0E, COLOR_DARKNUT_BLUE, COLOR_DARKNUT_RED
+    .byte $0E, COLOR_DARKNUT_RED, COLOR_DARKNUT_BLUE, $F0
+    .byte COLOR_TRIFORCE
+    
+TriforceAI: SUBROUTINE
+    lda #>SprItem6
+    sta enSpr+1
+    lda #<SprItem6
+    sta enSpr
+    lda #$4C
+    sta enX
+    lda #$2C
+    sta enY
+    lda Frame
+    and #$10
+    bne .TriforceBlue
+
+    lda #COLOR_TRIFORCE
+    .byte $2C
+.TriforceBlue
+    lda #COLOR_LIGHT_BLUE
+    sta enColor
     rts
     
 RsDungMidEnt: SUBROUTINE
@@ -562,17 +682,20 @@ RsDungMidEnt: SUBROUTINE
     sta plY
     lda roomId
     sta worldSR
-    lda #01
-    sta worldId
+    ldy roomEX
+    lda DUNGEON_ENT-1,y
+    sta roomId
+    sty worldId
     lda roomFlags
     ora #$80
     sta roomFlags
-    lda #$73;lda roomEX
-    sta roomId
     lda #MS_PLAY_DUNG
     sta SeqFlags
 .rts
     rts
+    
+DUNGEON_ENT:
+    .byte #$73, #$00, #$00, #$00, #$00, #$F3, #$00, #$00, #$00
     
 RsDungExit: SUBROUTINE
     bit roomFlags
@@ -595,30 +718,8 @@ RsDungExit: SUBROUTINE
     sta SeqFlags
 .rts
     rts
-
-TriforceAI: SUBROUTINE
-    lda #>SprItem6
-    sta enSpr+1
-    lda #<SprItem6
-    sta enSpr
-    lda #$4C
-    sta enX
-    lda #$2C
-    sta enY
-    lda Frame
-    and #$10
-    bne .TriforceBlue
-
-    lda #COLOR_TRIFORCE
-    .byte $2C
-.TriforceBlue
-    lda #COLOR_LIGHT_BLUE
-    sta enColor
-    rts
-
-
+    
 SpectacleOpenAI: SUBROUTINE
-
     ldy #$6
     lda rPF2Room,y
     and #$F9
@@ -651,16 +752,21 @@ BlockStairAI: SUBROUTINE
     sta enSpr
     rts
 
-StairAI: SUBROUTINE
+RsStairs:
     lda #$40
     sta enX
     lda #$2C
     sta enY
+    lda EN_STAIRS
+    sta enType
+    rts
+    
+StairAI: SUBROUTINE
     lda fgColor
     sta enColor
-    lda #<SprItem7
+    lda #<SprE31
     sta enSpr
-    lda #>SprItem7
+    lda #>SprE31
     sta enSpr+1
 
     lda enX
@@ -669,12 +775,8 @@ StairAI: SUBROUTINE
     lda enY
     cmp plY
     bne .playerNotOnStairs
-    lda #01
-    sta worldId
-    lda #$73
+    lda roomEX
     sta roomId
-    lda #0
-    sta enType
     lda roomFlags
     ora #$80
     sta roomFlags
@@ -1544,7 +1646,7 @@ INIT_POS:
     sta blY
     
     ; set player stats
-    lda #$80
+    lda #$18
     sta plHealth
     sta plHealthMax
     

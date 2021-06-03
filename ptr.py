@@ -17,7 +17,8 @@ tbl = [
         "StairAI",
         "BlockStairAI",
         "SpectacleOpenAI",
-        "TriforceAI"
+        "TriforceAI",
+        "ItemAI"
     ]),
     ( "RoomScript", [
         "RsNone",
@@ -28,12 +29,27 @@ tbl = [
         "RsRaftSpot",
         "RsNeedTriforce",
         "RsDungExit",
-        "RsFairyFountain"
+        "RsFairyFountain",
+        "RsText"
     ]),
     ( "ItemId", [
-        "GiRandom",
-        "GiKey",
+        "GiRecoverHeart",
+        "GiFairy",
+        "GiBomb",
+        "GiRupee5",
         "GiTriforce",
+        "GiHeart",
+        "GiKey",
+        "GiMasterKey",
+        "GiSword2",
+        "GiSword3",
+        "GiCandle",
+        "GiMeat",
+        "GiBoots",
+        "GiRing",
+        "GiPotion",
+        "GiRaft",
+        "GiFlute",
     ]),
     ( "MusicSeq", [
         "MsNone",
@@ -79,7 +95,6 @@ def DumpPtrAsm(editorBindings):
             DumpEditorBindings(name, list, editorBindings)
         elif name == "ItemId":
             DumpEditorBindings(name, list, editorBindings)
-            continue
             
         l = []
         h = []

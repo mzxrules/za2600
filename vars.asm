@@ -34,10 +34,10 @@ enYL        ds 1
 plSpr       ds 2 ; plSprOff
 enSpr       ds 2 ; enSprOff
 plDir       ds 1
-enDir       ds 2
-enType      ds 2
+enDir       ds 1
+enType      ds 1
 enState     ds 1
-enColor     ds 2
+enColor     ds 1
 enBlockDir  ds 1
 enStun      ds 1
 enRecoil    ds 1
@@ -75,7 +75,7 @@ plHealthMax ds 1
 plHealth    ds 1
 plItemTimer ds 1
 itemRupees  ds 1
-itemKeys    ds 1
+itemKeys    ds 1 ; Sign bit = Master Key
 itemBombs   ds 1
 itemTri     ds 1
 itemFlags   ds 2
@@ -91,6 +91,7 @@ SfxFlags    ds 1
     ; 1xxx_xxxx New Sfx
 SfxCur      ds 1
 
+; Context Temp Vars
 NUSIZ0_T    ds 1
 mapSpr      ds 2
 Temp0       ds 1
@@ -137,7 +138,9 @@ Text10      ds 1
 Text11      ds 1
 
 	echo "-RAM-",$80,(.)
-    
+
+; Level Data Banks 1 and 2
+
     ORG $F000
 WORLD_T_PF1L    ds 256
 WORLD_T_PF1R    ds 256
@@ -148,7 +151,7 @@ WORLD_EX        ds 256 ; Extra Data (Exits, Items)
 WORLD_EN        ds 256 ; Enemy Encounter
 WORLD_WA        ds 256 ; Bombable walls
 
-
+; Ram Bank 0
     SEG.U VARS_RAM
     ORG $F800
 wPF1RoomL   ds ROOM_PX_HEIGHT
@@ -162,6 +165,7 @@ rPF2Room    ds ROOM_PX_HEIGHT
 rPF1RoomR   ds ROOM_PX_HEIGHT
 rRoomClear  ds 256/8
 
+; Ram Bank 1 and 2
     SEG.U VARS_ROOM
     ORG $F800
 wRAM_SEG
@@ -200,6 +204,9 @@ EnBoardXL = BoardXL+8
 EnBoardXR = BoardXR-8
 EnBoardYU = BoardYU-8
 EnBoardYD = BoardYD+8
+
+EN_DARKNUT = 1
+EN_STAIRS = 2
 
 ; U/D, pX $3C-$44
 ; L/R, pY $28-$30
