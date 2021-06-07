@@ -591,6 +591,8 @@ GiTriforce:
     rts
 GiKey:
     inc itemKeys
+    lda #SFX_ITEM_PICKUP
+    sta SfxFlags
     rts
 GiMasterKey:
     lda #$C0
@@ -757,7 +759,7 @@ RsStairs:
     sta enX
     lda #$2C
     sta enY
-    lda EN_STAIRS
+    lda #EN_STAIRS
     sta enType
     rts
     
@@ -783,6 +785,73 @@ StairAI: SUBROUTINE
 
 .playerNotOnStairs
     rts
+    
+EnSystem: SUBROUTINE
+    lda #$60
+    sta blX
+    sta blY
+    
+    lda enType
+    bne .rts
+    lda #5
+    sta Temp2
+    jsr EnRandSpawn
+.rts
+    rts
+    
+EnRandSpawnRetry:
+    dec Temp2
+    beq .rts
+EnRandSpawn: SUBROUTINE
+    jsr Random
+    and #$7 ; y pos mask
+    ;sta itemRupees ; remove
+    cmp #7
+    bne .skipYShift
+    lsr
+.skipYShift
+    asl
+    tay      ; y pos * 2
+    lda #$18 ; x pos mask
+    and Rand8
+    lsr
+    lsr
+    lsr
+    tax
+    lda EnSpawnPF2Mask,x
+    sta Temp0
+    lda rPF2Room+2+1,y
+    and Temp0
+    bne EnRandSpawnRetry
+    lda rPF2Room+2+2,y
+    and Temp0
+    bne EnRandSpawnRetry
+    tya
+    asl
+    asl ; y * 4 (* 8 total)
+    clc
+    adc #$14
+    sta enY
+    sta enYL
+    lda Mul8,x
+    bit Rand8
+    bmi .skipInvert
+    eor #$FF
+    sec
+    adc #0
+.skipInvert
+    clc
+    adc #$40
+    sta enX
+    sta enXL
+    lda #EN_DARKNUT
+    sta enType
+    rts
+   
+    LOG_SIZE "EnRandSpawn", EnRandSpawn
+    
+EnSpawnPF2Mask:
+    .byte $80, $60, $18, $06
 
 DarknutAI: SUBROUTINE
     lda #>SprE0
@@ -1196,9 +1265,28 @@ MsGI1: SUBROUTINE
     clc
     adc Frame
     sta SeqTFrame + 1
+    cpx #5
+    beq .ResumeSong
 .skipSetDur
     lda ms_gi1_note,x
     jmp SeqChan1
+    
+.ResumeSong
+    lda worldId
+    bne .playDungeonTheme
+    lda roomId
+    bmi .playNone
+    lda #MS_PLAY_THEME_L
+    sta SeqFlags
+    bne .skipSetDur
+.playNone
+    lda #MS_PLAY_NONE
+    sta SeqFlags
+    bne .skipSetDur
+.playDungeonTheme
+    lda #MS_PLAY_DUNG
+    sta SeqFlags
+    bne .skipSetDur
     
 MsOver0: SUBROUTINE
     ldx SeqCur
@@ -1641,9 +1729,9 @@ INIT_POS:
     bpl INIT_POS
     
     ; set ball
-    lda #$60
-    sta blX
-    sta blY
+    ;lda #$60
+    ;sta blX
+    ;sta blY
     
     ; set player stats
     lda #$18
@@ -2175,6 +2263,9 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
    
 .RoomScript:   
     jsr RoomScriptDel
+    
+.EnSystem:
+    jsr EnSystem
 
 OVERSCAN_WAIT:
     sta WSYNC
@@ -2475,6 +2566,7 @@ LoadRoom: SUBROUTINE
 ; Generate Random Number
 ;-----------------------
 ;   A - returns the randomly generated value
+;   Cycles = 23 per call
 ;===============================================================================
 Random:
         lda Rand8

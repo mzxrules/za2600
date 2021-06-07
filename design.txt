@@ -157,6 +157,64 @@ KeydoorCheck -> Kernel Main loop
     14.06
     
     
+Enemy Spawn Routine: 
+
+PF1L is normal, so bit 0x80 is left, 0x01 is toward center
+PF2 is mirrored, so bit 0x80 is center, 0x01 is left/right
+PF1R is "mirrored" so bit 0x80 is right, 0x01 is toward center
+PF is 4 units per bit, 0x40 is center x, 0x48 is top, 0x10 is bottom ("2x2" sprites)
+With standard "2x2" sprites We can force PF2 spawns to only be on the "grid",
+using these bit patterns:
+
+0x80 -> x = +-0x00 + 0x40
+0x60 -> x = +-0x08 + 0x40
+0x18 -> x = +-0x10 + 0x40
+0x06 -> x = +-0x18 + 0x40
+
+4 PF2 checks
+
+for y component:
+
+0 = 0x14
+1 = 0x1C
+2 = 0x24
+3 = 0x2C
+4 = 0x34
+5 = 0x3C
+6 = 0x44
+
+Vertically, I think I want to avoid spawning enemies on the first/last pf line;
+this gives us 13 possible vertical spawn positions, 7 if we do "on grid" spawns
+
+In total, that's 28 PF2 spawn points
+
+For PF1 spawns, these bit patterns are "on grid"
+
+0x06 -> x = +-0x28 + 0x40
+0x18 -> x = +-0x30 + 0x40
+
+That's 14 PF1 spawn points, or 28 total
+
+Together, it makes 56 spawn checks
+
+Algo time!
+
+8 x pos, 7 y pos: 3 bits x, 3 bits y
+
+x bits:
+
+0?? PF2 check
+0xx PF2 check type
+1?? PF1 check
+10? PF1L
+11? PF1R
+1?x PF1 check type
+
+y bits:
+if 7 -> 3, then
+0-6 = line * 2 + 1
+
+    
 Text: 
 load text into ram via loop
  36.48

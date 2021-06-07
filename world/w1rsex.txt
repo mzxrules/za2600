@@ -68,6 +68,8 @@ RsNone
 zz0
 RsNone
 zz0
+RsItem
+zz6
 RsNone
 zz0
 RsNone
@@ -98,10 +100,8 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
-zz0
-RsNone
-zz0
+RsItem
+zz6
 RsNone
 zz0
 RsNone
@@ -136,6 +136,8 @@ RsNone
 zz0
 RsNone
 zz0
+RsItem
+zz6
 RsNone
 zz0
 RsNone
@@ -162,10 +164,8 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
-zz0
-RsStairs
-zz53
+RsItem
+zz6
 RsNone
 zz0
 RsNone
@@ -231,7 +231,7 @@ zz6
 RsDungExit
 zz0
 RsItem
-zz7
+zz6
 RsNone
 zz0
 RsNone
