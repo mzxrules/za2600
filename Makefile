@@ -4,7 +4,7 @@ all: zelda.bin audio.bin
 audio.bin: gen/ms_header.asm audio.asm
 	dasm audio.asm -f3 -oaudio.bin -saudio.sym -T1
 
-zelda.bin: gen/world/b1world.asm gen/RoomScript.asm spr/spr_room_pf1.asm spr/spr_room_pf2.asm gen/mesg_data.asm gen/ms_header.asm vars.asm main.asm 
+zelda.bin: gen/world/b1world.asm gen/RoomScript.asm spr/spr_room_pf1.asm spr/spr_room_pf2.asm gen/mesg_data.asm gen/ms_header.asm b3.asm b4.asm b5.asm b6.asm b7.asm vars.asm main.asm 
 	dasm main.asm -f3 -ozelda.bin -szelda.sym -T1
     
 gen/RoomScript.asm: ptr.py

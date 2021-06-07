@@ -1,4 +1,4 @@
-RsNone
+RsDungExit
 zz0
 RsNone
 zz0
