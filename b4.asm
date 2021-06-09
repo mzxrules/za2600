@@ -41,7 +41,7 @@ RsItem: SUBROUTINE
     ldy worldBank
     lda BANK_RAM + 1,y
     lda rRoomFlag,x
-    bmi .rts
+    bmi .NoLoad
     
     lda #$40
     sta enX
@@ -49,14 +49,11 @@ RsItem: SUBROUTINE
     sta enY
     lda #6
     sta enType
-    
-    ;ora #$80
-    ;sta wRoomFlag,x
-    ;jsr GiItemDel
-.rts
+.NoLoad
     lda BANK_RAM + 0
     lda #0
     sta roomRS
+.rts
     rts
     
 GiItemDel: SUBROUTINE
@@ -282,21 +279,86 @@ StairAI: SUBROUTINE
 .playerNotOnStairs
     rts
     
-EnSystem: SUBROUTINE
-    lda #$60
-    sta blX
-    sta blY
+EnSysEncounter:
+    .byte EN_DARKNUT
+EnSysEncounterCount:
+    .byte 2
     
+    align 256
+EnSystem: SUBROUTINE
+    ; precompute room clear flag helpers because it's annoying
+    lda roomId
+    lsr
+    lsr
+    lsr
+    sta EnSysClearOff
+    lda roomId
+    and #7
+    tax
+    lda Bit8,x
+    sta EnSysClearMask
+    
+    ; Set x to clear flag offset
+    ldx EnSysClearOff
+    ; Set y to encounterId
+    ldy roomEN
+    
+    ; If room load this frame, setup new encounter
+    lda roomFlags
+    bvs .checkRoomClear
+    
+    ; Else, if room clear event flag set, set room clear flag
+    and #$20
+    beq .runEncounter ; flag not set, run encounter
+    
+    lda rRoomClear,x
+    ora EnSysClearMask
+    sta wRoomClear,x
+    bne .runEncounter ; should always branch
+    
+    ; Test if room wasn't cleared
+.checkRoomClear
+    lda #0
+    sta roomENCount
+    ; check room clear state
+    lda rRoomClear,x ; get room clear byte
+    and EnSysClearMask
+    bne .runEncounter
+    
+    lda EnSysEncounterCount,y
+    sta roomENCount
+    
+.runEncounter
+    ; toggle off room clear event
+    lda #$DF
+    and roomFlags
+    sta roomFlags
+    
+    lda roomENCount
+    beq .rts
     lda enType
     bne .rts
-    lda #5
-    sta Temp2
+    lda EnSysEncounter,y
+    sta EnSysNext
+    lda #4
+    sta EnSysSpawnTry
     jsr EnRandSpawn
+    lda EnSysSpawnTry
+    beq .rts
+    ldy #EN_V0_COUNT-1
+    lda #0
+.EnInitLoop:
+    sta EN_VARIABLES,y
+    dey
+    bpl .EnInitLoop
+    
+    lda EnSysNext
+    sta enType
 .rts
     rts
     
 EnRandSpawnRetry:
-    dec Temp2
+    dec EnSysSpawnTry
     beq .rts
 EnRandSpawn: SUBROUTINE
     jsr Random
@@ -309,7 +371,7 @@ EnRandSpawn: SUBROUTINE
     asl
     tay      ; y pos * 2
     lda #$18 ; x pos mask
-    and Rand8
+    and Rand16
     lsr
     lsr
     lsr
@@ -330,7 +392,7 @@ EnRandSpawn: SUBROUTINE
     sta enY
     sta enYL
     lda Mul8,x
-    bit Rand8
+    bit Rand16
     bmi .skipInvert
     eor #$FF
     sec
@@ -340,33 +402,14 @@ EnRandSpawn: SUBROUTINE
     adc #$40
     sta enX
     sta enXL
-    lda #EN_DARKNUT
-    sta enType
     rts
    
     LOG_SIZE "EnRandSpawn", EnRandSpawn
     
 EnSpawnPF2Mask:
     .byte $80, $60, $18, $06
-
-DarknutAI: SUBROUTINE
-    lda #>SprE0
-    sta enSpr+1
-; update stun/recoil timers
-    lda enRecoil
-    cmp #1
-    adc #0
-    sta enRecoil
-    lda enStun
-    cmp #1
-    adc #0
-    sta enStun
-    asl
-    asl
-    adc #COLOR_DARKNUT_RED
-    sta enColor
-
-.setBlockedDir
+    
+EnBlockedDirSet: SUBROUTINE
     lda enBlockDir
     and #$F0
     ldx enX
@@ -388,10 +431,49 @@ DarknutAI: SUBROUTINE
     ora #8
 .setBlockedEnd
     sta enBlockDir
+    rts
+    
+EnSysEnDie:
+    lda #$80
+    sta enY
+    lda #0
+    sta enType
+    dec roomENCount
+    bne .rts
+    ; Set room clear flag
+    lda #$20
+    ora roomFlags
+    sta roomFlags
+.rts
+    rts
+
+DarknutAI: SUBROUTINE
+    lda enState
+    bmi .skipInit
+    lda #$80
+    ora enState
+    sta enState
+    jsr Random
+    and #3
+    sta enDir
+    lda #1
+    sta enHp
+.skipInit
+    lda #>SprE0
+    sta enSpr+1
+; update stun timer
+    lda enStun
+    cmp #1
+    adc #0
+    sta enStun
+    asl
+    asl
+    adc #COLOR_DARKNUT_RED
+    sta enColor
+
+    jsr EnBlockedDirSet
 
 .checkPFHit
-    lda enRecoil
-    bne .endCheckPFHit
     lda CXP1FB
     bpl .endCheckPFHit
     ; set blocked dir
@@ -409,8 +491,9 @@ DarknutAI: SUBROUTINE
     bne .endCheckHit
     lda #-32
     sta enStun
-    lda #-16
-    sta enRecoil
+    dec enHp
+    bne .endCheckHit
+    jmp EnSysEnDie
 .endCheckHit
 
 .checkBlocked
@@ -424,10 +507,10 @@ DarknutAI: SUBROUTINE
 
 .randDir
     lda enX
-    and #3
+    and #7
     bne .move
     lda enY
-    and #3
+    and #7
     bne .move
     lda Frame
     eor enBlockDir
@@ -438,7 +521,6 @@ DarknutAI: SUBROUTINE
     jsr NextDir
 
 .move
-
     ldx enDir
     ldy Mul8,x
     sty enSpr
@@ -458,7 +540,6 @@ DarknutAI: SUBROUTINE
     beq EnMoveUp
 .return
     rts
-
 
 EnMoveRight: SUBROUTINE
     inc enX

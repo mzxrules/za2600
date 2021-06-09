@@ -233,6 +233,8 @@ KeydoorCheck_B6: SUBROUTINE
 .UnlockDown
 .UnlockRight
     lda roomDoors
+    ; Verify that door is a "keydoor". This is done by toggling the keydoor bit
+    ; And then masking out just the one door, thus if a is not 0, it's not a keydoor
     eor #%01010101
     and KeydoorMask,x
     bne .rts1
@@ -337,3 +339,137 @@ WorldDoorPF1B:
     
 WorldDoorPF2:
     .byte $00, $FF, $3F, $FF
+
+ProcessInput_B6: SUBROUTINE
+    ; test if player locked
+    lda #02
+    bit plState
+    beq .InputContinue
+    rts
+.InputContinue
+    lda plState
+    and #$BF
+    sta plState
+    bpl .FireNotHit
+    lda INPT4
+    bmi .FireNotHit
+    lda plItemTimer
+    bne .FireNotHit
+    lda plState
+    ora #$40
+    sta plState
+.FireNotHit
+    lda plState
+    and #$7F
+    bit INPT4
+    bpl .skipLastFire
+    ora #$80
+.skipLastFire
+    sta plState
+
+    lda plItemTimer
+    cmp #1
+    adc #0
+    sta plItemTimer
+
+    bmi .skipItemInput
+
+.skipItemInput
+    lda SWCHA
+    and #$F0
+
+ContRight:
+    asl
+    bcs ContLeft
+    lda plY
+    and #(GRID_STEP - 1)
+    beq MovePlayerRight
+    and #(GRID_STEP / 2)
+    beq MovePlayerDown
+    jmp MovePlayerUp
+
+MovePlayerRight:
+    lda plState
+    lsr
+    bcc .MovePlayerRightFr
+    lda #2
+    bit plDir
+    bne .rts
+.MovePlayerRightFr
+    lda #$00
+    sta plDir
+    inc plX
+.rts
+    rts ;jmp ContFin
+
+ContLeft:
+    asl
+    bcs ContDown
+    lda plY
+    and #(GRID_STEP - 1)
+    beq MovePlayerLeft
+    and #(GRID_STEP / 2)
+    beq MovePlayerDown
+    jmp MovePlayerUp
+
+MovePlayerLeft:
+    lda plState
+    lsr
+    bcc .MovePlayerLeftFr
+    lda #2
+    bit plDir
+    bne .rts
+.MovePlayerLeftFr
+    lda #$01
+    sta plDir
+    dec plX
+    rts ;jmp ContFin
+
+ContDown:
+    asl
+    bcs ContUp
+    lda plX
+    and #(GRID_STEP - 1)
+    beq MovePlayerDown
+    and #(GRID_STEP / 2)
+    beq MovePlayerLeft
+    jmp MovePlayerRight
+
+MovePlayerDown:
+    lda plState
+    lsr
+    bcc .MovePlayerDownFr
+    lda #2
+    bit plDir
+    beq .rts
+.MovePlayerDownFr
+    lda #$2
+    sta plDir
+    dec plY
+    rts ;jmp ContFin
+
+ContUp:
+    asl
+    bcs ContFin
+    lda plX
+    and #(GRID_STEP - 1)
+    beq MovePlayerUp
+    and #(GRID_STEP / 2)
+    beq MovePlayerLeft
+    jmp MovePlayerRight
+
+MovePlayerUp:
+    lda plState
+    lsr
+    bcc .MovePlayerUpFr
+    lda #2
+    bit plDir
+    beq .rts
+.MovePlayerUpFr
+    lda #$3
+    sta plDir
+    inc plY
+
+ContFin:
+    rts
+    LOG_SIZE "Input", ProcessInput_B6

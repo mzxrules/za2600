@@ -37,6 +37,10 @@ BANK_1
     INCBIN "world/w0ex.bin"
     INCBIN "world/w0ex.bin"
     
+	repeat 512
+	.byte $00
+	repend
+    
     LOG_SIZE "-BANK 1- World", BANK_1
 
     SEG Bank2
@@ -50,6 +54,10 @@ BANK_2
     INCBIN "world/w2rs.bin"
     INCBIN "world/w1ex.bin"
     INCBIN "world/w2ex.bin"
+    
+	repeat 512
+	.byte $00
+	repend
     
     LOG_SIZE "-BANK 2- Dungeons", BANK_2
 

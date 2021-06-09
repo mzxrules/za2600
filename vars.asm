@@ -5,7 +5,7 @@
     SEG.U VARS_ZERO
     ORG $80
 Frame       ds 1
-Rand8       ds 1
+Rand16      ds 2
 KernelId    ds 1
 plX         ds 1
 enX         ds 1
@@ -36,11 +36,18 @@ enSpr       ds 2 ; enSprOff
 plDir       ds 1
 enDir       ds 1
 enType      ds 1
-enState     ds 1
 enColor     ds 1
+
+EN_VARIABLES:
+enState     ds 1
+enHp        ds 1
 enBlockDir  ds 1
 enStun      ds 1
-enRecoil    ds 1
+    ORG EN_VARIABLES
+En0V        ds 10 ; Zero initialized enemy vars
+EN_0V_END:
+;EnRV        ds 8 ; "random" state enemy vars
+
 
 bgColor     ds 1
 fgColor     ds 1
@@ -52,16 +59,19 @@ worldSR     ds 1 ; respawn room
 roomId      ds 1
 roomSpr     ds 1
 roomFlags   ds 1
+roomTimer   ds 1 ; Shutter animation timer
     ; 1000_0000 Force Load Room
     ; 0100_0000 Room Load happened this frame
+    ; 0010_0000 Enemy Clear event
+    ; 0001_0000 Disable Open Shutter Door on roomEN == 0
 roomDoors   ds 1
     ; xxxx_xx11 N
     ; xxxx_11xx S
     ; xx11_xxxx E
     ; 11xx_xxxx W
 roomRS      ds 1
-roomEN      ds 1
-roomENCount ds 1
+roomEN      ds 1 ; encounter type
+roomENCount ds 1 ; num encounters
 roomEX      ds 1
 roomWA      ds 1
 plState     ds 1
@@ -118,6 +128,13 @@ THudHealthL ds 1
 THudHealthH ds 1
 THudTemp    ds 1
 THudDigits  ds 6
+    
+    SEG.U VARS_EN_SYS
+    ORG Temp1
+EnSysSpawnTry   ds 1
+EnSysNext       ds 1
+EnSysClearOff   ds 1 ; offset to byte that room clear is stored at
+EnSysClearMask  ds 1 ; stores bitmask for room clear flag
 
     SEG.U VARS_TEXT_ZERO
     ORG mapSpr
@@ -172,12 +189,13 @@ wRAM_SEG
 wRoomFlag   ds 256
 rRAM_SEG
 rRoomFlag   ds 256
+    ; all world types
+    ; 1xxx_xxxx Got Item
     ; dungeons only
     ; xxxx_xxx1 N open
     ; xxxx_x1xx S open
     ; xxx1_xxxx E open
     ; x1xx_xxxx W open
-    ; 1xxx_xxxx Got Item
     
 ; ****************************************
 ; * Constants                            *
@@ -204,6 +222,8 @@ EnBoardXL = BoardXL+8
 EnBoardXR = BoardXR-8
 EnBoardYU = BoardYU-8
 EnBoardYD = BoardYD+8
+
+EN_V0_COUNT = EN_0V_END - EN_VARIABLES
 
 EN_DARKNUT = 1
 EN_STAIRS = 2
@@ -252,6 +272,16 @@ MS_PLAY_THEME_L = $85
 SFX_STAB        = $81
 SFX_BOMB        = $82
 SFX_ITEM_PICKUP = $83
+
+BIT_01 = Bit8
+BIT_02 = Bit8 + 1
+BIT_04 = Bit8 + 2
+BIT_08 = Bit8 + 3
+BIT_10 = Bit8 + 4
+BIT_20 = Bit8 + 5
+BIT_40 = Bit8 + 6
+BIT_80 = Bit8 + 7
+
     MACRO LOG_SIZE
         echo .- {2}+$8000,{2},(.),{1}
     ENDM

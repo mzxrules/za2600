@@ -18,8 +18,10 @@ INIT:
     sta CTRLPF
     
     ; seed RNG
-    lda #$2C
-    sta Rand8
+    ; lda INTIM
+    ; sta Rand8
+    ; eor #$FF
+    sta Rand16
     lda #$20
     ldx #10-1
 INIT_POS:
@@ -28,9 +30,8 @@ INIT_POS:
     bpl INIT_POS
     
     ; set ball
-    ;lda #$60
-    ;sta blX
-    ;sta blY
+    lda #$60
+    sta blY
     
     ; set player stats
     lda #$18
@@ -43,7 +44,6 @@ INIT_POS:
     lda #$77
     sta roomId
     jsr LoadRoom
-
 
 ;TOP_FRAME ;3 37 192 30
 VERTICAL_SYNC: ; 3 SCANLINES
@@ -76,6 +76,8 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     bpl .skipLoadRoom
     ora #$40
     sta roomFlags
+    lda #$E0
+    sta roomTimer
     jsr LoadRoom
     lda #0
     sta enType
@@ -84,9 +86,9 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
 
     bit roomFlags
     bvs .roomLoadCpuSkip
-    jsr ProcessInput
-    jsr Random
     lda BANK_ROM + 6
+    jsr ProcessInput_B6
+    jsr Random
     jsr PlayerItem_B6
 .roomLoadCpuSkip
 
@@ -95,7 +97,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     jsr KeydoorCheck_B6
     jsr UpdateDoors_B6
     lda BANK_ROM + 5
-    jsr UpdateAudio
+    jsr UpdateAudio_B5
     jsr EnemyAIDel
     
 ;==============================================================================
@@ -559,13 +561,38 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     dex
     bpl .posResetLoop
 .skipCollisionPosReset
-   
+    
+    lda BANK_ROM + 4
+.EnSystem:
+    jsr EnSystem
+    
 .RoomScript:   
     jsr RoomScriptDel
     
-.EnSystem:
-    jsr EnSystem
-
+.RoomOpenShutterDoor
+    lda worldId
+    beq .endOpenShutterDoor
+    lda roomTimer
+    cmp #1
+    adc #0
+    sta roomTimer
+    bmi .endOpenShutterDoor
+    lda roomFlags
+    and #$10
+    bne .endOpenShutterDoor
+    lda roomENCount
+    bne .endOpenShutterDoor
+    lda roomDoors
+    asl ; keydoor/walls have lsb 1, shift to msb to keep high bit
+    ora #%01010101 ; always keep low bit 
+    and roomDoors
+    cmp roomDoors
+    sta roomDoors
+    beq .endOpenShutterDoor
+    lda #SFX_BOMB
+    sta SfxFlags
+.endOpenShutterDoor
+    
 OVERSCAN_WAIT:
     sta WSYNC
     lda INTIM
@@ -592,140 +619,6 @@ TestCollisionReset:
     lda plY,x
     sta plYL,x
     rts
-
-ProcessInput: SUBROUTINE
-    ; test if player locked
-    lda #02
-    bit plState
-    beq .InputContinue
-    rts
-.InputContinue
-    lda plState
-    and #$BF
-    sta plState
-    bpl .FireNotHit
-    lda INPT4
-    bmi .FireNotHit
-    lda plItemTimer
-    bne .FireNotHit
-    lda plState
-    ora #$40
-    sta plState
-.FireNotHit
-    lda plState
-    and #$7F
-    bit INPT4
-    bpl .skipLastFire
-    ora #$80
-.skipLastFire
-    sta plState
-
-    lda plItemTimer
-    cmp #1
-    adc #0
-    sta plItemTimer
-
-    bmi .skipItemInput
-
-.skipItemInput
-    lda SWCHA
-    and #$F0
-
-ContRight:
-    asl
-    bcs ContLeft
-    lda plY
-    and #(GRID_STEP - 1)
-    beq MovePlayerRight
-    and #(GRID_STEP / 2)
-    beq MovePlayerDown
-    jmp MovePlayerUp
-
-MovePlayerRight:
-    lda plState
-    lsr
-    bcc .MovePlayerRightFr
-    lda #2
-    bit plDir
-    bne .rts
-.MovePlayerRightFr
-    lda #$00
-    sta plDir
-    inc plX
-.rts
-    rts ;jmp ContFin
-
-ContLeft:
-    asl
-    bcs ContDown
-    lda plY
-    and #(GRID_STEP - 1)
-    beq MovePlayerLeft
-    and #(GRID_STEP / 2)
-    beq MovePlayerDown
-    jmp MovePlayerUp
-
-MovePlayerLeft:
-    lda plState
-    lsr
-    bcc .MovePlayerLeftFr
-    lda #2
-    bit plDir
-    bne .rts
-.MovePlayerLeftFr
-    lda #$01
-    sta plDir
-    dec plX
-    rts ;jmp ContFin
-
-ContDown:
-    asl
-    bcs ContUp
-    lda plX
-    and #(GRID_STEP - 1)
-    beq MovePlayerDown
-    and #(GRID_STEP / 2)
-    beq MovePlayerLeft
-    jmp MovePlayerRight
-
-MovePlayerDown:
-    lda plState
-    lsr
-    bcc .MovePlayerDownFr
-    lda #2
-    bit plDir
-    beq .rts
-.MovePlayerDownFr
-    lda #$2
-    sta plDir
-    dec plY
-    rts ;jmp ContFin
-
-ContUp:
-    asl
-    bcs ContFin
-    lda plX
-    and #(GRID_STEP - 1)
-    beq MovePlayerUp
-    and #(GRID_STEP / 2)
-    beq MovePlayerLeft
-    jmp MovePlayerRight
-
-MovePlayerUp:
-    lda plState
-    lsr
-    bcc .MovePlayerUpFr
-    lda #2
-    bit plDir
-    beq .rts
-.MovePlayerUpFr
-    lda #$3
-    sta plDir
-    inc plY
-
-ContFin:
-    rts
-    LOG_SIZE "Input", ProcessInput
 
 LoadRoom: SUBROUTINE
     ; flush loadroom flag
@@ -868,16 +761,17 @@ LoadRoom: SUBROUTINE
 ;   Cycles = 23 per call
 ;==============================================================================
 Random:
-        lda Rand8
-        lsr
-        bcc noeor
-        eor #$B4
+    lda Rand16 + 0
+    lsr
+    rol Rand16 + 1
+    bcc noeor
+    eor #$B4
 noeor:
-        sta Rand8
-        rts
+    sta Rand16 + 0
+    eor Rand16 + 1
+    rts
 
-RoomScriptDel:
-    lda BANK_ROM + 4
+RoomScriptDel: ; BANK_ROM 4
     ldx roomRS
     lda RoomScriptH,x
     pha
@@ -894,10 +788,6 @@ EnemyAIDel:
     pha
     rts
 
-    LOG_SIZE "-CODE-", ENTRY
-
-DataStart
-
     ;align 16
 Mul8:
     .byte 0x00, 0x08, 0x10, 0x18, 0x20, 0x28, 0x30, 0x38, 0x40, 0x48, 0x50, 0x58
@@ -906,9 +796,7 @@ Lazy8:
 Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
     
-    
-    ;align 4 
-
+    ;align 4
 SwordWidth4:
     .byte $20, $20, $10, $10
 SwordWidth8:
@@ -937,45 +825,16 @@ Spr1WorldOff:
     .byte (ROOM_HEIGHT+1), (TEXT_ROOM_HEIGHT+1)
 RoomWorldOff:
     .byte (ROOM_PX_HEIGHT-1), (TEXT_ROOM_PX_HEIGHT-1)
-
-    LOG_SIZE "-DATA-", DataStart
-
-;==============================================================================
-; PosObject
-;----------
-; subroutine for setting the X position of any TIA object
-; when called, set the following registers:
-;   A - holds the X position of the object
-;   X - holds which object to position
-;       0 = player0
-;       1 = player1
-;       2 = missile0
-;       3 = missile1
-;       4 = ball
-; the routine will set the coarse X position of the object, as well as the
-; fine-tune register that will be used when HMOVE is used.
-;==============================================================================
-/*
-PosObject: SUBROUTINE
-        sec
-        sta WSYNC
-.DivideLoop
-        sbc #15        ; 2  2 - each time thru this loop takes 5 cycles, which is
-        bcs .DivideLoop; 2  4 - the same amount of time it takes to draw 15 pixels
-        eor #7         ; 2  6 - The EOR & ASL statements convert the remainder
-        asl            ; 2  8 - of position/15 to the value needed to fine tune
-        asl            ; 2 10 - the X position
-        asl            ; 2 12
-        asl            ; 2 14
-        sta.wx HMP0,X  ; 5 19 - store fine tuning of X
-        sta RESP0,X    ; 4 23 - set coarse X position of object
-        rts            ; 6 29
-*/
+        
+BANK_7_FREE:
+    ORG $3FE0-$51
+    RORG $FFE0-$51
+        LOG_SIZE "-BANK 7- FREE", BANK_7_FREE
         
 ;==============================================================================
 ; PosWorldObjects
 ;----------
-; Sets X position for all TIA objects
+; Sets X position for all TIA objects within the world view
 ; X position must be between 0-134 ($00 to $86)
 ; Higher values will cause an extra cycle
 ;==============================================================================
@@ -1002,10 +861,16 @@ DivideLoop
     sta WSYNC
     sta HMOVE
     rts
-
+;==============================================================================
+; PosHudObjects
+;----------
+; Positions all HUD elements within a single scanline
+;----------
+; Timing Notes: 
 ; $18 2 iter (9) + 15 = 24
 ; $18
 ; $60 7 iter (34) + 15 = 49
+;==============================================================================
 PosHudObjects: SUBROUTINE
     sta WSYNC
     ; 26 cycles start

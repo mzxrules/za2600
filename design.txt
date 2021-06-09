@@ -244,3 +244,18 @@ Bow
 Arrow, Silver Arrow
 Bracelet, Bracelet Lv2
 Recorder?
+
+; ASM TRICKS
+; dec to target amount
+    lda #$00 ; <- Target Value
+    cmp v
+    lda v
+    sbc #$0
+    sta v
+    
+; inc to target amount+1
+    lda #$00 ; FF loops indefinitely
+    cmp itemRupees
+    lda itemRupees
+    sbc #$FF
+    sta itemRupees
