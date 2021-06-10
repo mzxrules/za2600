@@ -76,10 +76,10 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     bpl .skipLoadRoom
     ora #$40
     sta roomFlags
-    lda #$E0
+    lda #$E8
     sta roomTimer
     jsr LoadRoom
-    lda #0
+    lda #EN_NONE
     sta enType
     sta KernelId
 .skipLoadRoom
@@ -98,7 +98,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     jsr UpdateDoors_B6
     lda BANK_ROM + 5
     jsr UpdateAudio_B5
-    jsr EnemyAIDel
+    jsr EntityDel
     
 ;==============================================================================
 ; Pre-Position Sprites
@@ -779,12 +779,12 @@ RoomScriptDel: ; BANK_ROM 4
     pha
     rts
 
-EnemyAIDel:
+EntityDel:
     lda BANK_ROM + 4
     ldx enType
-    lda EnemyAIH,x
+    lda EntityH,x
     pha
-    lda EnemyAIL,x
+    lda EntityL,x
     pha
     rts
 

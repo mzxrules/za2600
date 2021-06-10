@@ -5,6 +5,7 @@
     INCLUDE "vcs.h"
     INCLUDE "macro.h"
     INCLUDE "vars.asm"
+    INCLUDE "gen/const.asm"
 
 ; ****************************************
 ; *               BANK 0                 *
@@ -89,7 +90,7 @@ right_text
     ORG $2000
     RORG $F000
 BANK_4
-    INCLUDE "gen/EnemyAI.asm"
+    INCLUDE "gen/Entity.asm"
     INCLUDE "gen/RoomScript.asm"
     INCLUDE "gen/ItemId.asm"
     include "b4.asm"

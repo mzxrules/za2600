@@ -225,9 +225,6 @@ EnBoardYD = BoardYD+8
 
 EN_V0_COUNT = EN_0V_END - EN_VARIABLES
 
-EN_DARKNUT = 1
-EN_STAIRS = 2
-
 ; U/D, pX $3C-$44
 ; L/R, pY $28-$30
 BoardKeydoorUDA = $3C
@@ -268,10 +265,6 @@ MS_PLAY_GI      = $82
 MS_PLAY_OVER    = $83
 MS_PLAY_THEME   = $84
 MS_PLAY_THEME_L = $85
-
-SFX_STAB        = $81
-SFX_BOMB        = $82
-SFX_ITEM_PICKUP = $83
 
 BIT_01 = Bit8
 BIT_02 = Bit8 + 1

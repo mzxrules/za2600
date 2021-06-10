@@ -16,7 +16,7 @@ NextDir: SUBROUTINE
     and #3
     sta enDir
     rts
-NoAI:
+EnNone:
     lda #$F0
     sta enSpr+1
     sta enY
@@ -47,7 +47,7 @@ RsItem: SUBROUTINE
     sta enX
     lda #$2C
     sta enY
-    lda #6
+    lda #EN_ITEM
     sta enType
 .NoLoad
     lda BANK_RAM + 0
@@ -106,7 +106,7 @@ GiHeart:
     sta SeqFlags
     rts
     
-ItemAI: SUBROUTINE
+EnItem: SUBROUTINE
     lda #>SprItem0
     sta enSpr+1
     ldy roomEX
@@ -122,7 +122,7 @@ ItemAI: SUBROUTINE
     lda CXPPMM
     bpl .rts
     ; item collected
-    lda #0
+    lda #EN_NONE
     sta enType
     ldx roomId
     ldy worldBank
@@ -142,7 +142,7 @@ GiItemColors:
     .byte $0E, COLOR_DARKNUT_RED, COLOR_DARKNUT_BLUE, $F0
     .byte COLOR_TRIFORCE
     
-TriforceAI: SUBROUTINE
+EnTriforce: SUBROUTINE
     lda #>SprItem6
     sta enSpr+1
     lda #<SprItem6
@@ -214,7 +214,7 @@ RsDungExit: SUBROUTINE
 .rts
     rts
     
-SpectacleOpenAI: SUBROUTINE
+EnSpectacleOpen: SUBROUTINE
     ldy #$6
     lda rPF2Room,y
     and #$F9
@@ -230,7 +230,7 @@ SpectacleOpenAI: SUBROUTINE
     sta enSpr
     rts
 
-BlockStairAI: SUBROUTINE
+EnBlockStairs: SUBROUTINE
 ; diamond room
     ldy #$D
     lda rPF2Room,y
@@ -256,7 +256,7 @@ RsStairs:
     sta enType
     rts
     
-StairAI: SUBROUTINE
+EnStairs: SUBROUTINE
     lda fgColor
     sta enColor
     lda #<SprE31
@@ -436,7 +436,7 @@ EnBlockedDirSet: SUBROUTINE
 EnSysEnDie:
     lda #$80
     sta enY
-    lda #0
+    lda #EN_NONE
     sta enType
     dec roomENCount
     bne .rts
@@ -447,7 +447,7 @@ EnSysEnDie:
 .rts
     rts
 
-DarknutAI: SUBROUTINE
+EnDarknut: SUBROUTINE
     lda enState
     bmi .skipInit
     lda #$80
