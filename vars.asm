@@ -58,8 +58,8 @@ worldSY     ds 1 ; respawn Y
 worldSR     ds 1 ; respawn room
 roomId      ds 1
 roomSpr     ds 1
-roomFlags   ds 1
 roomTimer   ds 1 ; Shutter animation timer
+roomFlags   ds 1
     ; 1000_0000 Force Load Room
     ; 0100_0000 Room Load happened this frame
     ; 0010_0000 Enemy Clear event
@@ -77,10 +77,11 @@ roomWA      ds 1
 plState     ds 1
     ; 1000_0000 Fire Pressed Last Frame
     ; 0100_0000 Use Current Item
-    ; 0000_1000 Enemy Is Wall
+    ; 0010_0000 Move Until Unblocked
+    ; 0000_1000 P1 Is Wall
     ; 0000_0100 Playfield Ignore
     ; 0000_0010 Lock Player
-    ; 0000_0001 Lock Player Axis
+    ; 0000_0001 Lock Player Axis - Hover Boots
 plHealthMax ds 1
 plHealth    ds 1
 plItemTimer ds 1
@@ -92,8 +93,8 @@ itemFlags   ds 2
 mesgId      ds 1
 SeqFlags    ds 1
     ; 1xxx_xxxx New Sequence
-    ; x1xx_xxxx Mute Seq Channel 1
-    ; xxxx_1xxx Sequence Channel 1
+    ; 11xx_xxxx Play Region Sequence
+    ; xxxx_1xxx Reserved for sequence's second channel
     ; xxxx_x111 Sequence
 SeqTFrame   ds 2
 SeqCur      ds 2
@@ -263,8 +264,10 @@ MS_PLAY_NONE    = $80
 MS_PLAY_DUNG    = $81
 MS_PLAY_GI      = $82
 MS_PLAY_OVER    = $83
-MS_PLAY_THEME   = $84
-MS_PLAY_THEME_L = $85
+MS_PLAY_THEME   = $84 ; Overworld Theme with intro
+MS_PLAY_THEME_L = $85 ; Overworld Theme without intro
+MS_PLAY_RSEQ    = $40 | MS_PLAY_THEME   ; Plays region local sequence
+MS_PLAY_RSEQ_L  = $40 | MS_PLAY_THEME_L ; Plays region local sequence
 
 BIT_01 = Bit8
 BIT_02 = Bit8 + 1

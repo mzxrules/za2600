@@ -76,6 +76,12 @@ tbl = [
         "SfxStab",
         "SfxBomb",
         "SfxItemPickup"
+    ]),
+    ( "PlMoveDir", [
+        "PlDirRight",
+        "PlDirLeft",
+        "PlDirDown",
+        "PlDirUp"
     ])
 ]
 
@@ -113,7 +119,7 @@ def DumpPtrAsm(editorBindings):
         for item in list:
             l.append(f"<({item}-1)")
             h.append(f">({item}-1)")
-            if name != "MusicSeq":
+            if name != "MusicSeq" and name != "PlMoveDir":
                 temp = (ToSnakeCase(item), name, idx)
                 const.append(temp)
                 length = len(temp[0]) 

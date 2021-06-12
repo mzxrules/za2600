@@ -35,15 +35,9 @@ INIT_POS:
     
     ; set player stats
     lda #$18
-    sta plHealth
     sta plHealthMax
     
-    lda #MS_PLAY_THEME
-    sta SeqFlags
-    
-    lda #$77
-    sta roomId
-    jsr LoadRoom
+    jsr RESPAWN
 
 ;TOP_FRAME ;3 37 192 30
 VERTICAL_SYNC: ; 3 SCANLINES
@@ -78,6 +72,8 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta roomFlags
     lda #$E8
     sta roomTimer
+    lda #$22
+    sta plState
     jsr LoadRoom
     lda #EN_NONE
     sta enType
@@ -547,11 +543,28 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 .plYDSkip
 
     cpy roomId
-    beq .skipSwapRoom
+    beq .endSwapRoom
     lda #$80
     ora roomFlags
     sta roomFlags
-.skipSwapRoom
+.endSwapRoom
+    
+.playerWallPass
+    lda plState
+    and #$20
+    beq .skipPlayerWallPass
+    bit CXP0FB ; if player collided with playfield, keep moving through wall
+    bmi .playerWallPassCont
+    lda #$00
+    sta plState
+    .bpl .skipPlayerWallPass
+    
+.playerWallPassCont
+    ldx plDir
+    jsr PlMoveDirDel
+    jmp .skipCollisionPosReset
+    
+.skipPlayerWallPass
     bit roomFlags
     bmi .skipCollisionPosReset
     ldx #1
@@ -787,6 +800,27 @@ EntityDel:
     lda EntityL,x
     pha
     rts
+    
+PlMoveDirDel:
+    lda PlMoveDirH,x
+    pha
+    lda PlMoveDirL,x
+    pha
+    rts
+
+PlDirUp:
+    inc plY
+    rts
+PlDirDown:
+    dec plY
+    rts
+
+PlDirRight
+    inc plX
+    rts
+PlDirLeft:
+    dec plX
+    rts
 
     ;align 16
 Mul8:
@@ -795,6 +829,9 @@ Lazy8:
     .byte 0x01, 0x02, 0x04, 0x08
 Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
+    
+WORLD_ENT: ; Initial room spawns for worlds 0-9
+    .byte $77, $73, $00, $00, $00, $00, $F3, $00, $00, $00
     
     ;align 4
 SwordWidth4:
@@ -825,6 +862,27 @@ Spr1WorldOff:
     .byte (ROOM_HEIGHT+1), (TEXT_ROOM_HEIGHT+1)
 RoomWorldOff:
     .byte (ROOM_PX_HEIGHT-1), (TEXT_ROOM_PX_HEIGHT-1)
+    
+    INCLUDE "gen/PlMoveDir.asm"
+    
+RESPAWN: SUBROUTINE
+    lda #$18
+    sta plHealth
+SPAWN_AT_DEFAULT: SUBROUTINE
+    lda #MS_PLAY_RSEQ
+    sta SeqFlags
+    
+    lda #$40
+    sta plX
+    lda #$10
+    sta plY
+    
+    ldy worldId
+    lda WORLD_ENT,y
+    sta roomId
+    lda #$80
+    sta roomFlags
+    rts
         
 BANK_7_FREE:
     ORG $3FE0-$51

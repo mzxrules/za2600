@@ -3,8 +3,24 @@
 ;==============================================================================
 UpdateAudio_B5: SUBROUTINE
     lda SeqFlags
+    bit SeqFlags
     bpl .continueSequence
-    and #$7F
+    bvc .continueSeqSwitch
+    
+    ; Play region dependent sequence
+    ldy worldId
+    bne .playDungeonTheme
+    ldy roomId
+    ;play MS_PLAY_THEME or MS_PLAY_THEME_L depending on SeqFlag state
+    bpl .continueSeqSwitch
+.playNone
+    lda #MS_PLAY_NONE
+    bne .continueSeqSwitch
+.playDungeonTheme
+    lda #MS_PLAY_DUNG
+    
+.continueSeqSwitch
+    and #$3F
     sta SeqFlags
     lda #$FF
     ldx Frame
@@ -250,27 +266,12 @@ MsGI1: SUBROUTINE
     adc Frame
     sta SeqTFrame + 1
     cpx #5
-    beq .ResumeSong
+    bne .skipSetDur
+    lda #MS_PLAY_RSEQ_L
+    sta SeqFlags
 .skipSetDur
     lda ms_gi1_note,x
     jmp SeqChan1
-    
-.ResumeSong
-    lda worldId
-    bne .playDungeonTheme
-    lda roomId
-    bmi .playNone
-    lda #MS_PLAY_THEME_L
-    sta SeqFlags
-    bne .skipSetDur
-.playNone
-    lda #MS_PLAY_NONE
-    sta SeqFlags
-    bne .skipSetDur
-.playDungeonTheme
-    lda #MS_PLAY_DUNG
-    sta SeqFlags
-    bne .skipSetDur
     
 MsOver0: SUBROUTINE
     ldx SeqCur

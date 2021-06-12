@@ -173,24 +173,14 @@ RsDungMidEnt: SUBROUTINE
     sta worldSX
     lda #$20
     sta worldSY
-    lda #$10
-    sta plY
     lda roomId
     sta worldSR
+    
     ldy roomEX
-    lda DUNGEON_ENT-1,y
-    sta roomId
     sty worldId
-    lda roomFlags
-    ora #$80
-    sta roomFlags
-    lda #MS_PLAY_DUNG
-    sta SeqFlags
+    jmp SPAWN_AT_DEFAULT
 .rts
     rts
-    
-DUNGEON_ENT:
-    .byte #$73, #$00, #$00, #$00, #$00, #$F3, #$00, #$00, #$00
     
 RsDungExit: SUBROUTINE
     bit roomFlags
@@ -284,7 +274,6 @@ EnSysEncounter:
 EnSysEncounterCount:
     .byte 2
     
-    align 256
 EnSystem: SUBROUTINE
     ; precompute room clear flag helpers because it's annoying
     lda roomId
@@ -304,10 +293,11 @@ EnSystem: SUBROUTINE
     ldy roomEN
     
     ; If room load this frame, setup new encounter
-    lda roomFlags
+    bit roomFlags
     bvs .checkRoomClear
     
     ; Else, if room clear event flag set, set room clear flag
+    lda roomFlags
     and #$20
     beq .runEncounter ; flag not set, run encounter
     
