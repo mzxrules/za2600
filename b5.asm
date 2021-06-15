@@ -92,10 +92,36 @@ SfxItemPickup: SUBROUTINE
     sta AUDCT1
     ldx #8
     stx AUDVT1
-    inx
+    ldx #9
     stx AUDFT1
     rts
     
+SfxDef: SUBROUTINE
+    lda SfxCur
+    cmp #4
+    bpl SfxStop
+    lda #6
+    sta AUDCT1
+    ldx #8
+    stx AUDVT1
+    ldx #4
+    stx AUDFT1
+    rts
+    
+SfxPlHeal:
+SfxPlDamage: SUBROUTINE
+    ldx SfxCur
+    cpx #7
+    bpl SfxStop
+    lda SfxDamageFreq,x
+    sta AUDFT1
+    lda #1
+    sta AUDCT1
+    lda #8
+    sta AUDVT1
+    rts
+SfxDamageFreq:
+    .byte  14, 11, 8, 12, 15, 18, 19
 SfxDel:
     stx SfxFlags
     inc SfxCur

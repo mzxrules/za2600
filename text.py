@@ -478,6 +478,8 @@ def greedy_quickrand(seq):
 
 mesg = [
     "012345678901234567890123",
+    "        GAME OVER       ",
+    " PRESS FIRE TO CONTINUE ",
     "  IT'S DANGEROUS TO GO  ",
     "   ALONE! TAKE THIS.    ",
 ]

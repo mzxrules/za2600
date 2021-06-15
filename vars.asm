@@ -39,10 +39,22 @@ enType      ds 1
 enColor     ds 1
 
 EN_VARIABLES:
+; EnemyCommon
 enState     ds 1
 enHp        ds 1
-enBlockDir  ds 1
 enStun      ds 1
+enBlockDir  ds 1
+EN_ENEMY_VARIABLES: 
+    ORG EN_ENEMY_VARIABLES
+; Darknut
+    ORG EN_ENEMY_VARIABLES
+; Wallmaster
+enWallPhase ds 1 ; anim timer for phasing through wall
+enPX        ds 1
+enPY        ds 1
+    ORG EN_VARIABLES
+; Gameover
+enInputDelay ds 1
     ORG EN_VARIABLES
 En0V        ds 10 ; Zero initialized enemy vars
 EN_0V_END:
@@ -277,6 +289,11 @@ BIT_10 = Bit8 + 4
 BIT_20 = Bit8 + 5
 BIT_40 = Bit8 + 6
 BIT_80 = Bit8 + 7
+
+EN_BLOCKDIR_L = 1
+EN_BLOCKDIR_R = 2
+EN_BLOCKDIR_U = 4
+EN_BLOCKDIR_D = 8
 
     MACRO LOG_SIZE
         echo .- {2}+$8000,{2},(.),{1}

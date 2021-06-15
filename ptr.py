@@ -16,6 +16,7 @@ tbl = [
     ( "Entity", [
         "EnNone",
         "EnDarknut",
+        "EnWallmaster",
         "EnStairs",
         "EnBlockStairs",
         "EnSpectacleOpen",
@@ -32,7 +33,8 @@ tbl = [
         "RsNeedTriforce",
         "RsDungExit",
         "RsFairyFountain",
-        "RsText"
+        "RsText",
+        "RsGameOver"
     ]),
     ( "ItemId", [
         "GiRecoverHeart",
@@ -75,13 +77,22 @@ tbl = [
     ( "Sfx", [
         "SfxStab",
         "SfxBomb",
-        "SfxItemPickup"
+        "SfxItemPickup",
+        "SfxDef",
+        "SfxPlHeal",
+        "SfxPlDamage"
     ]),
     ( "PlMoveDir", [
-        "PlDirRight",
-        "PlDirLeft",
-        "PlDirDown",
-        "PlDirUp"
+        "PlDirR",
+        "PlDirL",
+        "PlDirD",
+        "PlDirU"
+    ]),
+    ( "EnMoveDir", [
+        "EnDirL",
+        "EnDirR",
+        "EnDirU",
+        "EnDirD"
     ])
 ]
 
@@ -119,7 +130,7 @@ def DumpPtrAsm(editorBindings):
         for item in list:
             l.append(f"<({item}-1)")
             h.append(f">({item}-1)")
-            if name != "MusicSeq" and name != "PlMoveDir":
+            if name != "MusicSeq":
                 temp = (ToSnakeCase(item), name, idx)
                 const.append(temp)
                 length = len(temp[0]) 

@@ -6,16 +6,56 @@ NextDir: SUBROUTINE
     and #3
     tax
 .nextLoop
+    inx
     lda enBlockDir
     and Lazy8,x
-    beq .end
-    inx
-    bpl .nextLoop
-.end
+    bne .nextLoop
     txa
     and #3
     sta enDir
     rts
+    
+SeekDir: SUBROUTINE
+    ldx #EN_DIR_L
+    lda enX
+    sec
+    sbc plX
+    bpl .checkY ; enX - plX >= 0, left
+                ; enX - plX <  0, right
+    ldx #EN_DIR_R
+    ; negate A
+    eor #$FF
+    adc #1
+.checkY
+    sta Temp0 ; store abs(enX - plX)
+    ldy #EN_DIR_D
+    lda enY
+    sec
+    sbc plY
+    bpl .checkAxis  ; enY - plY >= 0, down
+                    ; enY - plY <  0, up
+    ldy #EN_DIR_U
+    ; negate A
+    eor #$FF
+    adc #1
+.checkAxis
+    sta Temp1
+    stx enDir
+    lda enBlockDir
+    and Bit8,x
+    bne .storeY
+    lda enBlockDir
+    and Bit8,y
+    bne .rts
+    lda Temp1
+    sec
+    sbc Temp0 ; abs(yDelta) - abs(xDelta)
+    bmi .rts
+.storeY
+    sty enDir
+.rts
+    rts
+    
 EnNone:
     lda #$F0
     sta enSpr+1
@@ -53,6 +93,36 @@ RsItem: SUBROUTINE
     lda BANK_RAM + 0
     lda #0
     sta roomRS
+.rts
+    rts
+    
+RsGameOver: SUBROUTINE
+    ldy plHealth
+    bne .skipInit
+    dey
+    sty plHealth
+    ldx #0
+    stx bgColor
+    stx fgColor
+    stx mesgId
+    inx
+    stx KernelId
+    inx
+    stx plState
+    
+    lda #MS_PLAY_OVER
+    sta SeqFlags
+    lda #-$30
+    sta enInputDelay
+.skipInit
+    lda enInputDelay
+    cmp #1
+    adc #0
+    sta enInputDelay
+    bne .rts
+    bit INPT4
+    bmi .rts
+    jsr RESPAWN
 .rts
     rts
     
@@ -256,23 +326,23 @@ EnStairs: SUBROUTINE
 
     lda enX
     cmp plX
-    bne .playerNotOnStairs
+    bne .rts
     lda enY
     cmp plY
-    bne .playerNotOnStairs
+    bne .rts
     lda roomEX
     sta roomId
     lda roomFlags
     ora #$80
     sta roomFlags
 
-.playerNotOnStairs
+.rts
     rts
     
 EnSysEncounter:
-    .byte EN_DARKNUT
+    .byte EN_WALLMASTER, EN_DARKNUT
 EnSysEncounterCount:
-    .byte 2
+    .byte 1, 2
     
 EnSystem: SUBROUTINE
     ; precompute room clear flag helpers because it's annoying
@@ -328,6 +398,10 @@ EnSystem: SUBROUTINE
     beq .rts
     lda enType
     bne .rts
+    lda #2
+    bit plState
+    bne .rts
+    
     lda EnSysEncounter,y
     sta EnSysNext
     lda #4
@@ -399,27 +473,38 @@ EnRandSpawn: SUBROUTINE
 EnSpawnPF2Mask:
     .byte $80, $60, $18, $06
     
-EnBlockedDirSet: SUBROUTINE
-    lda enBlockDir
-    and #$F0
+;==============================================================================
+; EnSetBlockedDir
+;----------
+; Updates enemy's enBlockDir flags
+; A = flag reset mask. Set to $F0 to reset flags
+;==============================================================================
+EnSetBlockedDir: SUBROUTINE
+    and enBlockDir
     ldx enX
     cpx #EnBoardXR
     bne .setBlockedL
-    ora #1
+    ora #EN_BLOCKDIR_R
 .setBlockedL
     cpx #EnBoardXL
     bne .setBlockedD
-    ora #2
+    ora #EN_BLOCKDIR_L
 .setBlockedD
     ldx enY
     cpx #EnBoardYD
     bne .setBlockedU
-    ora #4
+    ora #EN_BLOCKDIR_D
 .setBlockedU
     cpx #EnBoardYU
-    bne .setBlockedEnd
-    ora #8
-.setBlockedEnd
+    bne .checkPFHit
+    ora #EN_BLOCKDIR_U
+
+.checkPFHit
+    ldx CXP1FB
+    bpl .setBlockDir
+    ldx enDir
+    ora Bit8,x
+.setBlockDir
     sta enBlockDir
     rts
     
@@ -436,12 +521,125 @@ EnSysEnDie:
     sta roomFlags
 .rts
     rts
+    
+EnWallmasterCapture: SUBROUTINE
+    inc enWallPhase
+    ldx enWallPhase
+    cpx #33
+    bne .rts
+    jsr SPAWN_AT_DEFAULT
+.rts
+    rts
 
+EnWallmaster: SUBROUTINE
+    ; draw sprite
+    lda #>SprE15
+    sta enSpr+1
+    lda enWallPhase
+    lsr
+    clc
+    adc #<SprE15-8
+    sta enSpr
+    lda #0
+    sta enColor
+    
+    bit enState
+    bvs EnWallmasterCapture
+    bmi .runMain
+    
+; calculate initial position
+    lda #0 ; up wall phase
+    ldy #EnBoardYU
+    ldx #EnBoardXL
+    cpy plY
+    beq .contInit
+    cpx plX
+    beq .contInit
+    lda #32 ; down wall phase
+    ldy #EnBoardYD
+    ldx #EnBoardXR
+    cpy plY
+    beq .contInit
+    cpx plX
+    bne .rts
+
+.contInit
+    stx enX
+    sty enY
+    sta enWallPhase
+    
+    lda #$80
+    sta enState
+    
+.runMain
+    ldx enWallPhase
+    cpx #16
+    beq .next
+    bmi .incWallPhase
+    dec enWallPhase
+    bpl .rts ; always branch
+.incWallPhase
+    inc enWallPhase
+    bpl .rts ; always branch
+    
+.next
+    bit CXPPMM
+    bpl .handleMovement
+    lda #-4
+    jsr UPDATE_PL_HEALTH
+    lda plState
+    ora #2
+    sta plState
+    lda plX
+    sta enX
+    lda plY
+    sta enY
+    lda #$40
+    ora enState
+    sta enState
+    lda #$80
+    sta plY
+    rts
+.handleMovement
+    lda #3
+    bit enX
+    bne .skipSetDir
+    bit enY
+    bne .skipSetDir
+    
+    lda #$F0
+    ldx enPX
+    cpx enX
+    bne .NextDir
+    ldx enPY
+    cpx enY
+    bne .NextDir
+    lda #$FF
+.NextDir
+    jsr EnSetBlockedDir
+    jsr SeekDir
+.skipSetDir
+    lda enX
+    sta enPX
+    lda enY
+    sta enPY
+    lda CXP1FB
+    bmi .forceMove
+    lda Frame
+    and #1
+    bne .rts
+.forceMove
+    ldx enDir
+    jmp EnMoveDirDel
+.rts
+    rts
+
+    LOG_SIZE "EnWallmaster", EnWallmaster
+    
 EnDarknut: SUBROUTINE
     lda enState
     bmi .skipInit
     lda #$80
-    ora enState
     sta enState
     jsr Random
     and #3
@@ -461,17 +659,8 @@ EnDarknut: SUBROUTINE
     adc #COLOR_DARKNUT_RED
     sta enColor
 
-    jsr EnBlockedDirSet
-
-.checkPFHit
-    lda CXP1FB
-    bpl .endCheckPFHit
-    ; set blocked dir
-    ldx enDir
-    lda enBlockDir
-    ora Bit8,x
-    sta enBlockDir
-.endCheckPFHit
+    lda #$F0
+    jsr EnSetBlockedDir
 
 .checkHit
 ; if collided with weapon && stun == 0,
@@ -479,17 +668,23 @@ EnDarknut: SUBROUTINE
     bpl .endCheckHit
     lda enStun
     bne .endCheckHit
+    lda plDir
+    cmp enDir
+    beq .defSfx
     lda #-32
     sta enStun
     dec enHp
     bne .endCheckHit
     jmp EnSysEnDie
+.defSfx
+    lda #SFX_DEF
+    sta SfxFlags
 .endCheckHit
 
 .checkBlocked
     lda enBlockDir
     ldx enDir
-    and Lazy8,x
+    and Bit8,x
     beq .endCheckBlocked
     jsr NextDir
     jmp .move
@@ -517,32 +712,36 @@ EnDarknut: SUBROUTINE
 
     lda Frame
     and #1
-    beq .return
-    txa
-
-    cmp #0
-    beq EnMoveRight
-    cmp #1
-    beq EnMoveLeft
-    cmp #2
-    beq EnMoveDown
-    cmp #3
-    beq EnMoveUp
-.return
+    beq .rts
+   
+EnMoveDirDel:
+    lda EnMoveDirH,x
+    pha
+    lda EnMoveDirL,x
+    pha
+.rts
     rts
+    LOG_SIZE "EnDarknut", EnDarknut
 
-EnMoveRight: SUBROUTINE
+    INCLUDE "gen/EnMoveDir.asm"
+
+EnDirR2: SUBROUTINE
+    inc enX
+EnDirR: SUBROUTINE
     inc enX
     rts
-
-EnMoveLeft: SUBROUTINE
+EnDirL2: SUBROUTINE
+    dec enX
+EnDirL: SUBROUTINE
     dec enX
     rts
-
-EnMoveDown: SUBROUTINE
+EnDirD2: SUBROUTINE
+    dec enY
+EnDirD: SUBROUTINE
     dec enY
     rts
-
-EnMoveUp: SUBROUTINE
+EnDirU2: SUBROUTINE
+    inc enY
+EnDirU: SUBROUTINE
     inc enY
     rts

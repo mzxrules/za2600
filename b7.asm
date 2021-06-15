@@ -605,6 +605,19 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     lda #SFX_BOMB
     sta SfxFlags
 .endOpenShutterDoor
+
+; Game Over check
+    ldy plHealth
+    bne .skipGameOver
+    
+    sty enType
+    sty roomFlags
+    lda #RS_GAME_OVER
+    sta roomRS
+    lda #$80
+    sta plY
+    
+.skipGameOver
     
 OVERSCAN_WAIT:
     sta WSYNC
@@ -808,17 +821,17 @@ PlMoveDirDel:
     pha
     rts
 
-PlDirUp:
+PlDirU:
     inc plY
     rts
-PlDirDown:
+PlDirD:
     dec plY
     rts
 
-PlDirRight
+PlDirR:
     inc plX
     rts
-PlDirLeft:
+PlDirL:
     dec plX
     rts
 
@@ -865,10 +878,37 @@ RoomWorldOff:
     
     INCLUDE "gen/PlMoveDir.asm"
     
+;==============================================================================
+; UPDATE_PL_HEALTH
+;----------
+; Changes player health
+; A = amount to change health by
+;==============================================================================
+UPDATE_PL_HEALTH: SUBROUTINE
+    ldy #SFX_PL_DAMAGE
+    cmp #0
+    bmi .playSfx
+    ldy #SFX_PL_HEAL
+.playSfx
+    sty SfxFlags
+    clc
+    adc plHealth
+    bpl .cont
+    lda #0
+.cont
+    cmp plHealthMax
+    bmi .setHp
+    lda plHealthMax
+.setHp
+    sta plHealth
+    rts
+    
 RESPAWN: SUBROUTINE
     lda #$18
     sta plHealth
 SPAWN_AT_DEFAULT: SUBROUTINE
+    lda #0
+    sta plState
     lda #MS_PLAY_RSEQ
     sta SeqFlags
     

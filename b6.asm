@@ -308,14 +308,6 @@ PlayerItem_B6: SUBROUTINE
 .endSword
     rts
  
-Encounters:
-    align 256
-    .byte $00
-    align 256
-    .byte $00
-    align 256
-    .byte $00
-    
     align 4
 KeydoorMask:
     ; S/N/E/W
