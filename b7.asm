@@ -420,88 +420,11 @@ KERNEL_WORLD_RESUME:
     
     lda #0
     ldx #0
-    sta WSYNC
-    sta CXCLR
-    LOG_SIZE "-KERNEL HUD-", KERNEL_HUD
-
-KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
-    sta ENAM0       ; 3
-    stx GRP0        ; 3
-
-    ldx roomSpr     ; 3
-    lda rPF1RoomL,x ; 4
-    sta PF1         ; 3
-    lda rPF2Room,x  ; 4
-    sta PF2         ; 3
-
-; Enemy
-    lda #7          ; 2     enemy height
-    dcp enDY        ; 5
-    bcs .DrawE0     ; 2/3
-    lda #0          ; 2
-    .byte $2C       ; 4-5   BIT compare hack to skip 2 byte op
-.DrawE0:
-    lda (enSpr),y   ; 5
-    sta GRP1        ; 3
-    lda rPF1RoomR,x ; 4
-    sta PF1         ; 3
+    jsr rKERNEL ; JUMP WORLD KERNEL
     
-; Ball
-    lda blH         ; 3 ball height
-    dcp blDY        ; 5
-    lda #1          ; 2
-    adc #0          ; 2
-    sta WSYNC       ; 3  34-35 cycles, not counting WSYNC (can save cycle by fixing bcs)
-    sta ENABL
-
-    ldx roomSpr     ; 3
-    lda rPF1RoomL,x ; 4
-    sta PF1         ; 3
-
-; Player
-    lda #7          ; 2 player height
-    dcp plDY        ; 5
-    bcs .DrawP0     ; 2/3
-    lda #0          ; 2
-    .byte $2C       ; 4-5 BIT compare hack to skip 2 byte op
-.DrawP0:
-    lda (plSpr),y   ; 5
-    pha
-    ldx roomSpr     ; 3
-    lda rPF1RoomR,x ; 4
-    sta PF1         ; 3
-    pla
-    tax             ; 2
-
-; Playfield
-    tya             ; 2
-    and #3          ; 2
-    beq .skipPFDec  ; 2/3
-    .byte $2C       ; 4-5
-.skipPFDec
-    dec roomSpr     ; 5
-
-; Player Missle
-    lda m0H         ; 3 player height
-    dcp m0DY        ; 5
-    lda #1          ; 2
-    adc #0          ; 2
-
-    sta WSYNC
-    dey
-    bpl KERNEL_LOOP
-    LOG_SIZE "-KERNEL WORLD-", KERNEL_LOOP
-; Post Kernel
-    lda fgColor
-    sta COLUBK
-    lda #0
-    sta PF1
-    sta PF2
-    sta GRP0
-    sta GRP1
-    sta ENAM0
-    sta PF0
-
+    lda #7
+    sta EN_HEIGHT_ADDR
+    
 OVERSCAN: SUBROUTINE ; 30 scanlines
     sta WSYNC
     lda #2
@@ -904,6 +827,91 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     lda #$80
     sta roomFlags
     rts
+
+KERNEL_WORLD: SUBROUTINE
+    sta WSYNC
+    sta CXCLR
+
+KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
+    sta ENAM0       ; 3
+    stx GRP0        ; 3
+
+    ldx roomSpr     ; 3
+    lda rPF1RoomL,x ; 4
+    sta PF1         ; 3
+    lda rPF2Room,x  ; 4
+    sta PF2         ; 3
+
+; Enemy
+KERNEL_WORLD_EN_HEIGHT:
+    lda #7          ; 2     enemy height
+    dcp enDY        ; 5
+    bcs .DrawE0     ; 2/3
+    lda #0          ; 2
+    .byte $2C       ; 4-5   BIT compare hack to skip 2 byte op
+.DrawE0:
+    lda (enSpr),y   ; 5
+    sta GRP1        ; 3
+    lda rPF1RoomR,x ; 4
+    sta PF1         ; 3
+    
+; Ball
+    lda blH         ; 3 ball height
+    dcp blDY        ; 5
+    lda #1          ; 2
+    adc #0          ; 2
+    sta WSYNC       ; 3  34-35 cycles, not counting WSYNC (can save cycle by fixing bcs)
+    sta ENABL
+
+    ldx roomSpr     ; 3
+    lda rPF1RoomL,x ; 4
+    sta PF1         ; 3
+
+; Player
+    lda #7          ; 2 player height
+    dcp plDY        ; 5
+    bcs .DrawP0     ; 2/3
+    lda #0          ; 2
+    .byte $2C       ; 4-5 BIT compare hack to skip 2 byte op
+.DrawP0:
+    lda (plSpr),y   ; 5
+    pha
+    ldx roomSpr     ; 3
+    lda rPF1RoomR,x ; 4
+    sta PF1         ; 3
+    pla
+    tax             ; 2
+
+; Playfield
+    tya             ; 2
+    and #3          ; 2
+    beq .skipPFDec  ; 2/3
+    .byte $2C       ; 4-5
+.skipPFDec
+    dec roomSpr     ; 5
+
+; Player Missle
+    lda m0H         ; 3 player height
+    dcp m0DY        ; 5
+    lda #1          ; 2
+    adc #0          ; 2
+
+    sta WSYNC
+    dey
+    bpl KERNEL_LOOP
+; Post Kernel
+    lda fgColor
+    sta COLUBK
+    lda #0
+    sta PF1
+    sta PF2
+    sta GRP0
+    sta GRP1
+    sta ENAM0
+    sta PF0
+    rts
+
+    LOG_SIZE "-KERNEL WORLD-", KERNEL_WORLD
         
 BANK_7_FREE:
     ORG $3FE0-$51

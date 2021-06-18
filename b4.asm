@@ -531,10 +531,28 @@ EnBossCucco: SUBROUTINE
     sta enSpr+1
     lda #<SprE24
     sta enSpr
-    lda #%0101
+    lda #%0111
     sta NUSIZ1_T
     lda #$0a
     sta enColor
+    lda #15
+    sta EN_HEIGHT_ADDR
+    lda enState
+    bmi .skipInit
+    ora #$80
+    sta enState
+.skipInit
+    lda #$40
+    sta enX
+    sta enY
+    rts
+
+    lda Frame
+    bne .rts
+    jsr EnSysEnDie
+    lda #0
+    sta NUSIZ1_T
+.rts 
     rts
 
 EnWallmasterCapture: SUBROUTINE

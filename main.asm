@@ -182,6 +182,14 @@ ENTRY: SUBROUTINE
     bpl .loRamLoop
     ; loRamBank = 0
     
+    ; kernel transfer
+    ldy #$80 - 1
+.initWorldKernMem
+    lda KERNEL_WORLD,y
+    sta wKERNEL,y
+    dey
+    bpl .initWorldKernMem
+    
     INCLUDE "b7.asm"
 
     LOG_SIZE "-BANK 7-", ENTRY

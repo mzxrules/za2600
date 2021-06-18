@@ -8,14 +8,14 @@ loop for 9
 inc "$hexStr" by "ABCDEF"
 
 : "q"
-set "CHAR" to 4
+set "CHAR" to 0
 loop start
 inc "$" by "SprItem&loopcount&:\n"
 set "sp&sp&" to 8
 goto "#dumpchr"
 inc "$" by "$dumpchr"
 inc "CHAR" by 1
-loop for 17
+loop for 21
 set "$sht" to "spr/spr_item.asm"
 goto "#dumpsht"
 
@@ -52,7 +52,7 @@ set "$sht" to "spr/spr_map.asm"
 goto "#dumpsht"
 
 
-set "CHAR" to 0
+set "CHAR" to 64
 loop start
 inc "$" by "SprP&loopcount&:\n"
 set "sp&sp&" to 8

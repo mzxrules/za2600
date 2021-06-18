@@ -93,7 +93,12 @@ plState     ds 1
     ; 0000_0100 Playfield Ignore
     ; 0000_0010 Lock Player
     ; 0000_0001 Lock Player Axis - Hover Boots
-plState2    ds 1    
+plState2    ds 1
+    ; 0000_0011 Active Item
+    ;        00 Sword
+    ;        01 Bombs
+    ;        10 Bow
+    ;        11 Flame
 plStun      ds 1
 plHealthMax ds 1
 plHealth    ds 1
@@ -191,12 +196,14 @@ wPF1RoomL   ds ROOM_PX_HEIGHT
 wPF2Room    ds ROOM_PX_HEIGHT
 wPF1RoomR   ds ROOM_PX_HEIGHT
 wRoomClear  ds 256/8
+wKERNEL     ds $80
 
     ORG $F900
 rPF1RoomL   ds ROOM_PX_HEIGHT
 rPF2Room    ds ROOM_PX_HEIGHT
 rPF1RoomR   ds ROOM_PX_HEIGHT
 rRoomClear  ds 256/8
+rKERNEL     ds $80
 
 ; Ram Bank 1 and 2
     SEG.U VARS_ROOM
@@ -297,6 +304,8 @@ EN_BLOCKDIR_L = 1
 EN_BLOCKDIR_R = 2
 EN_BLOCKDIR_U = 4
 EN_BLOCKDIR_D = 8
+
+EN_HEIGHT_ADDR = KERNEL_WORLD_EN_HEIGHT - KERNEL_WORLD + wKERNEL + 1
 
     MACRO LOG_SIZE
         echo .- {2}+$8000,{2},(.),{1}
