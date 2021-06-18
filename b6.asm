@@ -5,6 +5,22 @@ LoadRoom_B6: SUBROUTINE
 ; set OR mask for the room top/bottom
     lda worldId
     beq .WorldRoomOrTop
+    
+; sneak in opportunity to update roomDoors
+    ldx worldBank
+    lda BANK_RAM + 1,x
+    ldy roomId
+    lda rRoomFlag,y
+    and #%01010101
+    sta Temp6
+    asl
+    clc
+    adc Temp6
+    eor #$FF
+    and roomDoors
+    sta roomDoors
+    lda BANK_RAM
+    
     lda #$FF
     .byte $2C
 .WorldRoomOrTop
@@ -194,33 +210,30 @@ KeydoorCheck_B6: SUBROUTINE
     beq .rts1
     lda itemKeys
     beq .rts1
-    
-; Up/Down check    
+        
     lda plX
-    sec
-    sbc #BoardKeydoorUDA
+    ldy plY
+    
+; Up/Down check
+    cmp #BoardKeydoorUDA
     ; continue if positive
     bmi .LRCheck
-    sbc #$8+1
+    cmp #BoardKeydoorUDA + $8+1
     bpl .LRCheck
     
     ldx #0
-    lda plY
-    cmp #BoardKeydoorUY
+    cpy #BoardKeydoorUY
     beq .UnlockUp
-    cmp #BoardKeydoorDY
+    cpy #BoardKeydoorDY
     beq .UnlockDown
     
 .LRCheck
-    lda plY
-    sec
-    sbc #BoardKeydoorLRA
+    cpy #BoardKeydoorLRA
     bmi .rts1
-    sbc #$8+1
+    cpy #BoardKeydoorLRA + $8+1
     bpl .rts1
     
     ldx #2
-    lda plX
     cmp #BoardKeydoorRX
     beq .UnlockRight
     cmp #BoardKeydoorLX

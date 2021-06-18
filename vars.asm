@@ -60,7 +60,6 @@ En0V        ds 10 ; Zero initialized enemy vars
 EN_0V_END:
 ;EnRV        ds 8 ; "random" state enemy vars
 
-
 bgColor     ds 1
 fgColor     ds 1
 worldId     ds 1
@@ -94,6 +93,8 @@ plState     ds 1
     ; 0000_0100 Playfield Ignore
     ; 0000_0010 Lock Player
     ; 0000_0001 Lock Player Axis - Hover Boots
+plState2    ds 1    
+plStun      ds 1
 plHealthMax ds 1
 plHealth    ds 1
 plItemTimer ds 1
@@ -101,6 +102,7 @@ itemRupees  ds 1
 itemKeys    ds 1 ; Sign bit = Master Key
 itemBombs   ds 1
 itemTri     ds 1
+itemMaps    ds 1
 itemFlags   ds 2
 mesgId      ds 1
 SeqFlags    ds 1
@@ -116,6 +118,7 @@ SfxCur      ds 1
 
 ; Context Temp Vars
 NUSIZ0_T    ds 1
+NUSIZ1_T    ds 1
 mapSpr      ds 2
 Temp0       ds 1
 Temp1       ds 1

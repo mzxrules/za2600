@@ -17,6 +17,7 @@ tbl = [
         "EnNone",
         "EnDarknut",
         "EnWallmaster",
+        "EnBossCucco",
         "EnStairs",
         "EnBlockStairs",
         "EnSpectacleOpen",

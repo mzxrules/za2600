@@ -22,21 +22,21 @@ TextSetPosition: SUBROUTINE
     lda Frame
     and #1
     beq .position_frame_1
-        lda #32
-        ldx #0
-        jsr SetHorizPos
-        lda #48
-        ldx #1
-        jsr SetHorizPos
-        jmp .end_position
-    
+    lda #32
+    ldx #0
+    jsr SetHorizPos
+    lda #48
+    ldx #1
+    jsr SetHorizPos
+    jmp .end_position
+
 .position_frame_1    
-        lda #40
-        ldx #0
-        jsr SetHorizPos
-        lda #56
-        ldx #1
-        jsr SetHorizPos
+    lda #40
+    ldx #0
+    jsr SetHorizPos
+    lda #56
+    ldx #1
+    jsr SetHorizPos
 .end_position
 
     sta WSYNC

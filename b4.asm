@@ -97,25 +97,29 @@ RsItem: SUBROUTINE
     rts
     
 RsGameOver: SUBROUTINE
-    ldy plHealth
+    lda enInputDelay
+    ldx plHealth
     bne .skipInit
-    dey
-    sty plHealth
-    ldx #0
+    dec plHealth
     stx bgColor
     stx fgColor
+    stx enType
+    stx roomFlags
     stx mesgId
     inx
     stx KernelId
     inx
     stx plState
     
-    lda #MS_PLAY_OVER
-    sta SeqFlags
-    lda #-$30
-    sta enInputDelay
+    ldx #RS_GAME_OVER
+    stx roomRS
+    ldx #$80
+    stx plY
+    
+    ldx #MS_PLAY_OVER
+    stx SeqFlags
+    lda #-$20
 .skipInit
-    lda enInputDelay
     cmp #1
     adc #0
     sta enInputDelay
@@ -340,9 +344,9 @@ EnStairs: SUBROUTINE
     rts
     
 EnSysEncounter:
-    .byte EN_WALLMASTER, EN_DARKNUT
+    .byte EN_BOSS_CUCCO, EN_DARKNUT, EN_WALLMASTER
 EnSysEncounterCount:
-    .byte 1, 2
+    .byte 1, 2, 2
     
 EnSystem: SUBROUTINE
     ; precompute room clear flag helpers because it's annoying
@@ -522,6 +526,17 @@ EnSysEnDie:
 .rts
     rts
     
+EnBossCucco: SUBROUTINE
+    lda #>SprE24
+    sta enSpr+1
+    lda #<SprE24
+    sta enSpr
+    lda #%0101
+    sta NUSIZ1_T
+    lda #$0a
+    sta enColor
+    rts
+
 EnWallmasterCapture: SUBROUTINE
     inc enWallPhase
     ldx enWallPhase
@@ -658,27 +673,34 @@ EnDarknut: SUBROUTINE
     asl
     adc #COLOR_DARKNUT_RED
     sta enColor
-
     lda #$F0
     jsr EnSetBlockedDir
 
-.checkHit
+.checkDamaged
 ; if collided with weapon && stun == 0,
     lda CXM0P
-    bpl .endCheckHit
+    bpl .endCheckDamaged
     lda enStun
-    bne .endCheckHit
+    bne .endCheckDamaged
     lda plDir
     cmp enDir
     beq .defSfx
     lda #-32
     sta enStun
     dec enHp
-    bne .endCheckHit
+    bne .endCheckDamaged
     jmp EnSysEnDie
 .defSfx
     lda #SFX_DEF
     sta SfxFlags
+.endCheckDamaged
+
+    bit enStun
+    bmi .endCheckHit
+    bit CXPPMM
+    bpl .endCheckHit
+    lda #-8
+    jsr UPDATE_PL_HEALTH
 .endCheckHit
 
 .checkBlocked
@@ -744,4 +766,12 @@ EnDirU2: SUBROUTINE
     inc enY
 EnDirU: SUBROUTINE
     inc enY
+    rts
+    
+RoomScriptDel: ; BANK_ROM 4
+    ldx roomRS
+    lda RoomScriptH,x
+    pha
+    lda RoomScriptL,x
+    pha
     rts

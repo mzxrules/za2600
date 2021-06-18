@@ -22,12 +22,6 @@ INIT:
     ; sta Rand8
     ; eor #$FF
     sta Rand16
-    lda #$20
-    ldx #10-1
-INIT_POS:
-    sta plX,x
-    dex
-    bpl INIT_POS
     
     ; set ball
     lda #$60
@@ -80,16 +74,15 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta KernelId
 .skipLoadRoom
 
+    lda BANK_ROM + 6
     bit roomFlags
     bvs .roomLoadCpuSkip
-    lda BANK_ROM + 6
     jsr ProcessInput_B6
     jsr Random
     jsr PlayerItem_B6
 .roomLoadCpuSkip
 
 ; room setup
-    lda BANK_ROM + 6
     jsr KeydoorCheck_B6
     jsr UpdateDoors_B6
     lda BANK_ROM + 5
@@ -158,17 +151,29 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta blDY
     
 .minimap_setup
+; map color and sprite id
+    ldx worldId
+    ldy #COLOR_MINIMAP
+    cpx #2
+    bmi .setMinimapColor
+    lda Bit8-2,x
+    and itemMaps
+    bne .setMinimapColor
+    ldx #0
+    ldy #2
+.setMinimapColor
+    sty COLUP1
+
 ; sprite setup
     lda #<(MINIMAP) ; Sprite + height-1
     clc
-    ldx worldId
     adc Mul8,x
     sta mapSpr
     lda #>(MINIMAP)
     sta mapSpr+1
 ; double width map if on overworld
     ldx #5
-    bit worldId
+    lda worldId
     beq .minimap_16
     ldx #$00
 .minimap_16
@@ -229,10 +234,10 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta THudDigits+1
 
     jsr PosHudObjects
-    
 ; ===================================================    
 ;    Pre HUD
 ; ===================================================
+.PRE_HUD:
     lda roomId
     lsr
     lsr
@@ -263,10 +268,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     ldx THudHealthL
     lda HealthPattern,x
     sta THudHealthL
-    lda #0
     
-    lda #COLOR_MINIMAP
-    sta COLUP1
     lda #COLOR_PLAYER_02
     sta COLUPF
 
@@ -410,8 +412,8 @@ KERNEL_WORLD_RESUME:
     sta COLUP1
     
     lda #1
-    ldx #0
     sta VDELP1
+    ldx NUSIZ1_T
     stx NUSIZ1
     lda NUSIZ0_T
     sta NUSIZ0
@@ -488,6 +490,8 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     sta WSYNC
     dey
     bpl KERNEL_LOOP
+    LOG_SIZE "-KERNEL WORLD-", KERNEL_LOOP
+; Post Kernel
     lda fgColor
     sta COLUBK
     lda #0
@@ -497,7 +501,6 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     sta GRP1
     sta ENAM0
     sta PF0
-    LOG_SIZE "-KERNEL WORLD-", KERNEL_LOOP
 
 OVERSCAN: SUBROUTINE ; 30 scanlines
     sta WSYNC
@@ -505,6 +508,12 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     sta VBLANK
     lda #32
     sta TIM64T ; 27 scanline timer
+    
+; update player stun timer
+    lda plStun
+    cmp #1
+    adc #0
+    sta plStun
     
 ; test player board bounds
     ldy roomId
@@ -609,14 +618,7 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 ; Game Over check
     ldy plHealth
     bne .skipGameOver
-    
-    sty enType
-    sty roomFlags
-    lda #RS_GAME_OVER
-    sta roomRS
-    lda #$80
-    sta plY
-    
+    jsr RsGameOver
 .skipGameOver
     
 OVERSCAN_WAIT:
@@ -692,8 +694,7 @@ LoadRoom: SUBROUTINE
     sta Temp4
     txa
     and #$01
-    clc
-    adc #$F0
+    ora #$F0
     sta Temp5
     txa
     and #$0E
@@ -710,8 +711,7 @@ LoadRoom: SUBROUTINE
     sta Temp0
     txa
     and #$01
-    clc
-    adc #$F0
+    ora #$F0
     sta Temp1
     txa
     and #$0E
@@ -726,8 +726,7 @@ LoadRoom: SUBROUTINE
     sta Temp2
     txa
     and #$03
-    clc
-    adc #$F0
+    ora #$F0
     sta Temp3
     txa
     and #$0C
@@ -738,21 +737,6 @@ LoadRoom: SUBROUTINE
 ; set OR mask for the room sides    
     lda worldId
     beq .WorldRoomOrSides
-; sneak in opportunity to update roomDoors
-    ldx worldBank
-    lda BANK_RAM + 1,x
-    ldy roomId
-    lda rRoomFlag,y
-    and #%01010101
-    sta Temp6
-    asl
-    clc
-    adc Temp6
-    eor #$FF
-    and roomDoors
-    sta roomDoors
-    lda BANK_RAM
-    
     lda #$C0
     .byte $2C
 .WorldRoomOrSides
@@ -795,14 +779,6 @@ Random:
 noeor:
     sta Rand16 + 0
     eor Rand16 + 1
-    rts
-
-RoomScriptDel: ; BANK_ROM 4
-    ldx roomRS
-    lda RoomScriptH,x
-    pha
-    lda RoomScriptL,x
-    pha
     rts
 
 EntityDel:
@@ -856,13 +832,13 @@ SwordHeight4:
 SwordHeight8:
     .byte 1, 1, 7, 7
 SwordOff4X:
-    .byte 7, -1, 4, 4
+    .byte 8, -2, 4, 4
 SwordOff8X:
-    .byte 7, -5, 4, 4
+    .byte 8, -6, 4, 4
 SwordOff4Y:
-    .byte 3, 3, -2, 6
+    .byte 3, 3, -3, 7
 SwordOff8Y:
-    .byte 3, 3, -6, 6
+    .byte 3, 3, -7, 7
     ;align 16
 WorldColors:
     .byte $00, COLOR_DARK_BLUE, $00, COLOR_LIGHT_BLUE, $42, $7A, COLOR_PATH, $06, $02, COLOR_LIGHT_BLUE, COLOR_GREEN_ROCK, COLOR_LIGHT_WATER, $00, COLOR_CHOCOLATE, COLOR_GOLDEN, $0E
@@ -885,10 +861,14 @@ RoomWorldOff:
 ; A = amount to change health by
 ;==============================================================================
 UPDATE_PL_HEALTH: SUBROUTINE
-    ldy #SFX_PL_DAMAGE
-    cmp #0
-    bmi .playSfx
     ldy #SFX_PL_HEAL
+    cmp #0
+    bpl .playSfx
+    bit plStun
+    bmi .rts
+    ldx #-24
+    stx plStun
+    ldy #SFX_PL_DAMAGE
 .playSfx
     sty SfxFlags
     clc
@@ -901,6 +881,7 @@ UPDATE_PL_HEALTH: SUBROUTINE
     lda plHealthMax
 .setHp
     sta plHealth
+.rts
     rts
     
 RESPAWN: SUBROUTINE
