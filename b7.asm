@@ -16,6 +16,7 @@ INIT:
     
     lda #%00110001 ; ball size 8, reflect playfield
     sta CTRLPF
+    sta VDELBL
     
     ; seed RNG
     ; lda INTIM
@@ -140,6 +141,10 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda enSpr + 1;#>(SprE0 + 7)
     sbc #0
     sta enSpr + 1
+    
+.enemy_missile_setup
+    lda #40
+    sta m1DY
     
 .ball_sprite_setup
     lda #7
@@ -412,14 +417,14 @@ KERNEL_WORLD_RESUME:
     sta COLUP1
     
     lda #1
-    sta VDELP1
+    sta VDELP0
     ldx NUSIZ1_T
     stx NUSIZ1
     lda NUSIZ0_T
     sta NUSIZ0
     
     lda #0
-    ldx #0
+    tax
     jsr rKERNEL ; JUMP WORLD KERNEL
     
     lda #7
@@ -829,29 +834,29 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     rts
 
 KERNEL_WORLD: SUBROUTINE
-    sta WSYNC
-    sta CXCLR
-
+    sta WSYNC       ; 3
+    sta CXCLR       ; 3
 KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     sta ENAM0       ; 3
-    stx GRP0        ; 3
+    stx GRP1        ; 3
 
     ldx roomSpr     ; 3
     lda rPF1RoomL,x ; 4
     sta PF1         ; 3
     lda rPF2Room,x  ; 4
     sta PF2         ; 3
-
-; Enemy
-KERNEL_WORLD_EN_HEIGHT:
-    lda #7          ; 2     enemy height
-    dcp enDY        ; 5
-    bcs .DrawE0     ; 2/3
+    
+; Player            ;    CYCLE 15
+    lda #7          ; 2 player height
+    dcp plDY        ; 5
+    bcs .DrawP0     ; 2/3
     lda #0          ; 2
-    .byte $2C       ; 4-5   BIT compare hack to skip 2 byte op
-.DrawE0:
-    lda (enSpr),y   ; 5
-    sta GRP1        ; 3
+    .byte $2C       ; 4-5 BIT compare hack to skip 2 byte op
+.DrawP0:
+    lda (plSpr),y   ; 5
+    
+    sta GRP0        ; 3
+; PF1R first line   
     lda rPF1RoomR,x ; 4
     sta PF1         ; 3
     
@@ -860,27 +865,34 @@ KERNEL_WORLD_EN_HEIGHT:
     dcp blDY        ; 5
     lda #1          ; 2
     adc #0          ; 2
-    sta WSYNC       ; 3  34-35 cycles, not counting WSYNC (can save cycle by fixing bcs)
-    sta ENABL
+    sta ENABL       ; 3
+    
+; Enemy Missile     ;    CYCLE 15
+    lda m1H         ; 3 player height
+    dcp m1DY        ; 5
+    ;sta WSYNC
+    lda #1          ; 2
+    adc #0          ; 2
+    sta ENAM1       ; 3
 
-    ldx roomSpr     ; 3
     lda rPF1RoomL,x ; 4
     sta PF1         ; 3
-
-; Player
-    lda #7          ; 2 player height
-    dcp plDY        ; 5
-    bcs .DrawP0     ; 2/3
-    lda #0          ; 2
-    .byte $2C       ; 4-5 BIT compare hack to skip 2 byte op
-.DrawP0:
-    lda (plSpr),y   ; 5
-    pha
-    ldx roomSpr     ; 3
     lda rPF1RoomR,x ; 4
-    sta PF1         ; 3
-    pla
+    pha             ; 3
+
+; Enemy             ;    CYCLE 15
+KERNEL_WORLD_EN_HEIGHT:
+    lda #7          ; 2     enemy height
+    dcp enDY        ; 5
+    bcs .DrawE0     ; 2/3
+    lda #0          ; 2
+    .byte $2C       ; 4-5   BIT compare hack to skip 2 byte op
+.DrawE0:
+    lda (enSpr),y   ; 5
     tax             ; 2
+    
+    pla             ; 4
+    sta PF1         ; 3
 
 ; Playfield
     tya             ; 2
@@ -889,24 +901,24 @@ KERNEL_WORLD_EN_HEIGHT:
     .byte $2C       ; 4-5
 .skipPFDec
     dec roomSpr     ; 5
-
-; Player Missle
+    
+; Player Missile    ;    CYCLE 15
     lda m0H         ; 3 player height
     dcp m0DY        ; 5
     lda #1          ; 2
     adc #0          ; 2
-
-    sta WSYNC
-    dey
-    bpl KERNEL_LOOP
+    
+    dey             ; 2
+    sta WSYNC       ; 3
+    bpl KERNEL_LOOP ; 3/2
 ; Post Kernel
     lda fgColor
     sta COLUBK
     lda #0
     sta PF1
     sta PF2
-    sta GRP0
     sta GRP1
+    sta GRP0
     sta ENAM0
     sta PF0
     rts

@@ -346,40 +346,37 @@ WorldDoorPF2:
     .byte $00, $FF, $3F, $FF
 
 ProcessInput_B6: SUBROUTINE
+    bit INPT1
+    bmi .skipTest
+    inc itemKeys
+.skipTest
     ; test if player locked
     lda #02
     bit plState
     beq .InputContinue
     rts
 .InputContinue
+    ; Test and update fire button state and related flags
     lda plState
-    and #$BF
-    sta plState
-    bpl .FireNotHit
-    lda INPT4
-    bmi .FireNotHit
-    lda plItemTimer
-    bne .FireNotHit
-    lda plState
-    ora #$40
-    sta plState
-.FireNotHit
-    lda plState
-    and #$7F
-    bit INPT4
-    bpl .skipLastFire
+    cmp #$80 ; Test if fire pressed last frame, store in carry
+    and #$3F ; ~$80 + ~$40, button held and use current item event
     ora #$80
-.skipLastFire
+    bit INPT4
+    bmi .FireNotHit ; Button not pressed
+    eor #$80 ; invert flag
+    bcc .FireNotHit ; Button held down
+    ldx plItemTimer
+    bne .FireNotHit ; Item in use
+    ora #$40
+.FireNotHit
     sta plState
 
+    ; update player item timer
     lda plItemTimer
     cmp #1
     adc #0
     sta plItemTimer
-
-    bmi .skipItemInput
-
-.skipItemInput
+    
     lda SWCHA
     and #$F0
 

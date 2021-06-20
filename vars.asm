@@ -87,8 +87,9 @@ roomEX      ds 1
 roomWA      ds 1
 plState     ds 1
     ; 1000_0000 Fire Pressed Last Frame
-    ; 0100_0000 Use Current Item
+    ; 0100_0000 Use Current Item Event
     ; 0010_0000 Move Until Unblocked
+    ; 0001_0000 Swap item event
     ; 0000_1000 P1 Is Wall
     ; 0000_0100 Playfield Ignore
     ; 0000_0010 Lock Player
