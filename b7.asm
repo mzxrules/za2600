@@ -6,14 +6,6 @@ INIT:
     lda #COLOR_PLAYER_00
     sta COLUP0
 
-    ; set bgColor
-    lda #COLOR_PATH
-    sta bgColor
-
-    ; set playfield
-    lda #COLOR_GREEN_ROCK
-    sta fgColor
-    
     lda #%00110001 ; ball size 8, reflect playfield
     sta CTRLPF
     sta VDELBL
@@ -45,9 +37,12 @@ VERTICAL_SYNC: ; 3 SCANLINES
     sta WSYNC
     sta WSYNC
     lda #0      ; LoaD Accumulator with 0 so D1=0
+    ; disable VDEL for HUD drawing
+    sta VDELP0
+    sta VDELP1
     ;sta PF0     ; blank the playfield
-    sta PF1
-    sta PF2
+    ;sta PF1
+    ;sta PF2
     ;sta GRP0    ; blanks player0 if VDELP0 was off
     ;sta GRP1    ; blanks player0 if VDELP0 was on, player1 if VDELP1 was off
     ;sta GRP0    ; blanks                           player1 if VDELP1 was on
@@ -55,10 +50,6 @@ VERTICAL_SYNC: ; 3 SCANLINES
     sta VSYNC
 
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
-    lda #0
-    sta VDELP0
-    sta VDELP1
-    
     lda roomFlags
     and #$BF
     sta roomFlags
@@ -116,7 +107,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     clc
     ldx plDir
     adc Mul8,x
-    sec ; set Carry
+    sec
     sbc plY
     sta plSpr
 
@@ -147,8 +138,6 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta m1DY
     
 .ball_sprite_setup
-    lda #7
-    sta blH
 ; ball draw height
     lda Spr1WorldOff,y;#(ROOM_HEIGHT+1)
     sec
@@ -379,7 +368,7 @@ KERNEL_HUD_LOOP:
     ora THudTemp ; 3
     sta GRP0 ; 3
     
-    lda fgColor
+    lda rFgColor
     sta COLUPF
     
     ldx #0
@@ -408,27 +397,21 @@ KERNEL_WORLD_RESUME:
     sta PF0
     sta PF1
     sta PF2
-
-    lda bgColor
-    sta COLUBK
-    lda fgColor
-    sta COLUPF
-    lda enColor
-    sta COLUP1
-    
     lda #1
     sta VDELP0
-    ldx NUSIZ1_T
-    stx NUSIZ1
-    lda NUSIZ0_T
-    sta NUSIZ0
     
-    lda #0
-    tax
     jsr rKERNEL ; JUMP WORLD KERNEL
     
-    lda #7
-    sta EN_HEIGHT_ADDR
+; Post Kernel
+    lda rFgColor
+    sta COLUBK
+    lda #0
+    sta PF1
+    sta PF2
+    sta GRP1
+    sta GRP0
+    sta ENAM0
+    sta PF0
     
 OVERSCAN: SUBROUTINE ; 30 scanlines
     sta WSYNC
@@ -436,6 +419,9 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     sta VBLANK
     lda #32
     sta TIM64T ; 27 scanline timer
+    
+    lda #7
+    sta wENH
     
 ; update player stun timer
     lda plStun
@@ -548,7 +534,7 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     bne .skipGameOver
     jsr RsGameOver
 .skipGameOver
-    
+
 OVERSCAN_WAIT:
     sta WSYNC
     lda INTIM
@@ -605,7 +591,7 @@ LoadRoom: SUBROUTINE
     and #$0F
     tax
     lda WorldColors,x
-    sta fgColor
+    sta wFgColor
     lda WORLD_COLOR,y
     lsr
     lsr
@@ -613,7 +599,7 @@ LoadRoom: SUBROUTINE
     lsr
     tax
     lda WorldColors,x
-    sta bgColor
+    sta wBgColor
     
     ; PF1 Right
     lda WORLD_T_PF1R,y
@@ -833,7 +819,24 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     sta roomFlags
     rts
 
-KERNEL_WORLD: SUBROUTINE
+KERNEL_WORLD: SUBROUTINE ; rKERNEL
+    VKERNEL1 BgColor
+    lda #COLOR_PATH
+    sta COLUBK
+    VKERNEL1 FgColor
+    lda #COLOR_GREEN_ROCK
+    sta COLUPF
+    lda enColor
+    sta COLUP1
+    
+    ldx NUSIZ1_T
+    stx NUSIZ1
+    lda NUSIZ0_T
+    sta NUSIZ0
+    
+    lda #0
+    tax
+    
     sta WSYNC       ; 3
     sta CXCLR       ; 3
 KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
@@ -861,14 +864,16 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     sta PF1         ; 3
     
 ; Ball
-    lda blH         ; 3 ball height
+    VKERNEL1 BLH
+    lda #7          ; 2 ball height
     dcp blDY        ; 5
     lda #1          ; 2
     adc #0          ; 2
     sta ENABL       ; 3
     
 ; Enemy Missile     ;    CYCLE 15
-    lda m1H         ; 3 player height
+    VKERNEL1 M1H
+    lda #7          ; 3 enM height
     dcp m1DY        ; 5
     ;sta WSYNC
     lda #1          ; 2
@@ -881,7 +886,7 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     pha             ; 3
 
 ; Enemy             ;    CYCLE 15
-KERNEL_WORLD_EN_HEIGHT:
+    VKERNEL1 ENH
     lda #7          ; 2     enemy height
     dcp enDY        ; 5
     bcs .DrawE0     ; 2/3
@@ -893,17 +898,17 @@ KERNEL_WORLD_EN_HEIGHT:
     
     pla             ; 4
     sta PF1         ; 3
-
 ; Playfield
     tya             ; 2
     and #3          ; 2
-    beq .skipPFDec  ; 2/3
+    beq .PFDec      ; 2/3
     .byte $2C       ; 4-5
-.skipPFDec
+.PFDec
     dec roomSpr     ; 5
     
 ; Player Missile    ;    CYCLE 15
-    lda m0H         ; 3 player height
+    VKERNEL1 M0H
+    lda #7          ; 2 plM height
     dcp m0DY        ; 5
     lda #1          ; 2
     adc #0          ; 2
@@ -911,16 +916,6 @@ KERNEL_WORLD_EN_HEIGHT:
     dey             ; 2
     sta WSYNC       ; 3
     bpl KERNEL_LOOP ; 3/2
-; Post Kernel
-    lda fgColor
-    sta COLUBK
-    lda #0
-    sta PF1
-    sta PF2
-    sta GRP1
-    sta GRP0
-    sta ENAM0
-    sta PF0
     rts
 
     LOG_SIZE "-KERNEL WORLD-", KERNEL_WORLD

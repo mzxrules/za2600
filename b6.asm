@@ -309,7 +309,7 @@ PlayerItem_B6: SUBROUTINE
     lda SwordWidth4,y
     sta NUSIZ0_T
     lda SwordHeight4,y
-    sta m0H
+    sta wM0H
     lda SwordOff4X,y
     clc
     adc plX

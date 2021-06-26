@@ -1,6 +1,10 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
+
+;==============================================================================
+; Selects a new direction to move in at random, respecting blocked direction
+;==============================================================================
 NextDir: SUBROUTINE
     jsr Random
     and #3
@@ -15,6 +19,9 @@ NextDir: SUBROUTINE
     sta enDir
     rts
     
+;==============================================================================
+; Selects a new direction based on the shortest path to the player
+;==============================================================================
 SeekDir: SUBROUTINE
     ldx #EN_DIR_L
     lda enX
@@ -54,6 +61,39 @@ SeekDir: SUBROUTINE
 .storeY
     sty enDir
 .rts
+    rts
+    
+;==============================================================================
+; Updates enemy's enBlockDir flags
+; A = flag reset mask. Set to $F0 to reset blocked direction flags
+;==============================================================================
+EnSetBlockedDir: SUBROUTINE
+    and enBlockDir
+    ldx enX
+    cpx #EnBoardXR
+    bne .setBlockedL
+    ora #EN_BLOCKDIR_R
+.setBlockedL
+    cpx #EnBoardXL
+    bne .setBlockedD
+    ora #EN_BLOCKDIR_L
+.setBlockedD
+    ldx enY
+    cpx #EnBoardYD
+    bne .setBlockedU
+    ora #EN_BLOCKDIR_D
+.setBlockedU
+    cpx #EnBoardYU
+    bne .checkPFHit
+    ora #EN_BLOCKDIR_U
+
+.checkPFHit
+    ldx CXP1FB
+    bpl .setBlockDir
+    ldx enDir
+    ora Bit8,x
+.setBlockDir
+    sta enBlockDir
     rts
     
 EnNone:
@@ -101,8 +141,8 @@ RsGameOver: SUBROUTINE
     ldx plHealth
     bne .skipInit
     dec plHealth
-    stx bgColor
-    stx fgColor
+    stx wBgColor
+    stx wFgColor
     stx enType
     stx roomFlags
     stx mesgId
@@ -288,7 +328,7 @@ EnSpectacleOpen: SUBROUTINE
     sta enX
     lda #$20
     sta enY
-    lda fgColor
+    lda rFgColor
     sta enColor
     lda #(30*8)
     sta enSpr
@@ -305,7 +345,7 @@ EnBlockStairs: SUBROUTINE
     sta enX
     lda #$3C
     sta enY
-    lda fgColor
+    lda rFgColor
     sta enColor
     lda #(30*8)
     sta enSpr
@@ -321,7 +361,7 @@ RsStairs:
     rts
     
 EnStairs: SUBROUTINE
-    lda fgColor
+    lda rFgColor
     sta enColor
     lda #<SprE31
     sta enSpr
@@ -344,9 +384,9 @@ EnStairs: SUBROUTINE
     rts
     
 EnSysEncounter:
-    .byte EN_BOSS_CUCCO, EN_DARKNUT, EN_WALLMASTER
+    .byte EN_LIKE_LIKE, EN_OCTOROK, EN_DARKNUT, EN_WALLMASTER, EN_BOSS_CUCCO
 EnSysEncounterCount:
-    .byte 1, 2, 2
+    .byte 1, 2, 2, 1, 1
     
 EnSystem: SUBROUTINE
     ; precompute room clear flag helpers because it's annoying
@@ -477,41 +517,6 @@ EnRandSpawn: SUBROUTINE
 EnSpawnPF2Mask:
     .byte $80, $60, $18, $06
     
-;==============================================================================
-; EnSetBlockedDir
-;----------
-; Updates enemy's enBlockDir flags
-; A = flag reset mask. Set to $F0 to reset flags
-;==============================================================================
-EnSetBlockedDir: SUBROUTINE
-    and enBlockDir
-    ldx enX
-    cpx #EnBoardXR
-    bne .setBlockedL
-    ora #EN_BLOCKDIR_R
-.setBlockedL
-    cpx #EnBoardXL
-    bne .setBlockedD
-    ora #EN_BLOCKDIR_L
-.setBlockedD
-    ldx enY
-    cpx #EnBoardYD
-    bne .setBlockedU
-    ora #EN_BLOCKDIR_D
-.setBlockedU
-    cpx #EnBoardYU
-    bne .checkPFHit
-    ora #EN_BLOCKDIR_U
-
-.checkPFHit
-    ldx CXP1FB
-    bpl .setBlockDir
-    ldx enDir
-    ora Bit8,x
-.setBlockDir
-    sta enBlockDir
-    rts
-    
 EnSysEnDie:
     lda #$80
     sta enY
@@ -536,7 +541,7 @@ EnBossCucco: SUBROUTINE
     lda #$0a
     sta enColor
     lda #15
-    sta EN_HEIGHT_ADDR
+    sta wENH
     lda enState
     bmi .skipInit
     ora #$80
@@ -554,7 +559,7 @@ EnBossCucco: SUBROUTINE
     sta NUSIZ1_T
 .rts 
     rts
-
+    
 EnWallmasterCapture: SUBROUTINE
     inc enWallPhase
     ldx enWallPhase
@@ -566,12 +571,12 @@ EnWallmasterCapture: SUBROUTINE
 
 EnWallmaster: SUBROUTINE
     ; draw sprite
-    lda #>SprE15
+    lda #>SprE10
     sta enSpr+1
     lda enWallPhase
     lsr
     clc
-    adc #<SprE15-8
+    adc #<SprE10-8
     sta enSpr
     lda #0
     sta enColor
@@ -667,19 +672,173 @@ EnWallmaster: SUBROUTINE
 .rts
     rts
 
-    LOG_SIZE "EnWallmaster", EnWallmaster
+    LOG_SIZE "EnWallmaster", EnWallmasterCapture
+    
+EnOctorok: SUBROUTINE
+    jsr Random
+    and #$7F
+    ora #$10
+    sta enTimer
+    and #3
+    sta enDir
+    lda #1
+    sta enHp
+    lda #COLOR_OCTOROK_BLUE
+    sta enColor
+    lda #EN_OCTOROK_MAIN
+    sta enType
+    
+EnOctorokMain:
+    lda #>SprE4
+    sta enSpr+1
+    ldx enDir
+    lda Mul8,x
+    clc 
+    adc #<SprE4
+    sta enSpr
+    
+    lda #1
+    bit Frame
+    beq .checkBlocked
+    ldx enTimer
+    bpl .checkBlocked
+    dex
+    rts
+    
+.checkBlocked
+    lda #$F0
+    jsr EnSetBlockedDir
+    lda enBlockDir
+    ldx enDir
+    and Bit8,x
+    beq .endCheckBlocked
+    jsr NextDir
+.endCheckBlocked
+
+    lda Frame
+    and #1
+    bne .rts
+    ldx enDir
+    jsr EnMoveDirDel
+.rts
+    rts
+    
+ENEMY_ROT:
+   ;.byte 0, 2, 1, 3 ; enemy direction sprite indices
+    .byte 2, 3, 1, 0 ; clockwise
+    .byte 3, 2, 0, 1 ; counterclock
+    
+    LOG_SIZE "EnOctorok", EnOctorok
+    
+EnLikeLike: SUBROUTINE
+    jsr SeekDir
+    lda #6
+    sta enHp
+    lda #EN_LIKE_LIKE_MAIN
+    sta enType
+    
+EnLikeLikeMain: SUBROUTINE
+    ; Draw Routine
+    lda #>SprE16
+    sta enSpr+1
+    lda Frame
+    lsr
+    lsr
+    lsr
+    and #1
+    tax
+    lda Mul8,x
+    clc 
+    adc #<SprE16
+    sta enSpr
+    
+; update stun timer
+    lda enStun
+    cmp #1
+    adc #0
+    sta enStun
+    asl
+    asl
+    adc #COLOR_DARKNUT_RED
+    sta enColor
+    
+.checkDamaged
+; if collided with weapon && stun == 0,
+    lda CXM0P
+    bpl .endCheckDamaged
+    lda enStun
+    bne .endCheckDamaged
+    lda #-32
+    sta enStun
+    dec enHp
+    bne .endCheckDamaged
+    jmp EnSysEnDie
+.endCheckDamaged
+    
+    ; Check if player was sucked in
+    bit enState
+    bvs .lockInPlace
+    
+    ; Check player hit
+    bit enStun
+    bmi .endCheckHit
+    bit CXPPMM
+    bpl .endCheckHit
+    lda #-8
+    jsr UPDATE_PL_HEALTH
+    lda enState
+    ora #$40
+    sta enState
+    lda Frame
+    and #$3F
+    sta enSuccTimer
+.endCheckHit
+    
+    ; Movement Routine
+    lda #$F0
+    jsr EnSetBlockedDir
+    lda enBlockDir
+    ldx enDir
+    and Bit8,x
+    beq .endCheckBlocked
+    jsr NextDir
+.endCheckBlocked
+
+    lda Frame
+    and #1
+    bne .rts
+    ldx enDir
+    jsr EnMoveDirDel
+.rts
+    rts
+    
+.lockInPlace
+    lda Frame
+    and #$3F
+    cmp enSuccTimer
+    bne .skipSuccDamage
+    lda #-8
+    jsr UPDATE_PL_HEALTH
+.skipSuccDamage
+
+    lda enX
+    sta plX
+    lda enY
+    sta plY
+    rts
+    
+    LOG_SIZE "EnLikeLike", EnLikeLike
     
 EnDarknut: SUBROUTINE
-    lda enState
-    bmi .skipInit
-    lda #$80
-    sta enState
+    lda #EN_DARKNUT_MAIN
+    sta enType
     jsr Random
     and #3
     sta enDir
     lda #1
     sta enHp
-.skipInit
+    
+EnDarknutMain:
     lda #>SprE0
     sta enSpr+1
 ; update stun timer
@@ -713,6 +872,7 @@ EnDarknut: SUBROUTINE
     sta SfxFlags
 .endCheckDamaged
 
+    ; Check player hit
     bit enStun
     bmi .endCheckHit
     bit CXPPMM

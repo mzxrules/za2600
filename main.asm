@@ -56,7 +56,16 @@ BANK_2
     INCBIN "world/w1ex.bin"
     INCBIN "world/w2ex.bin"
     
-	repeat 512
+    repeat 8
+        repeat 8
+        .byte $01, $00
+        repend
+        repeat 8
+        .byte $00, $01
+        repend
+    repend
+    
+	repeat 256
 	.byte $00
 	repend
     
@@ -183,13 +192,13 @@ ENTRY: SUBROUTINE
     ; loRamBank = 0
     
     ; kernel transfer
-    ldy #$80 - 1
+    ldy #KERNEL_LEN
 .initWorldKernMem
-    lda KERNEL_WORLD,y
-    sta wKERNEL,y
+    lda KERNEL_WORLD-1,y
+    sta wKERNEL-1,y
     dey
-    bpl .initWorldKernMem
-    
+    bne .initWorldKernMem
+    LOG_SIZE "ENTRY", ENTRY
     INCLUDE "b7.asm"
 
     LOG_SIZE "-BANK 7-", ENTRY

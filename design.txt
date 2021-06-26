@@ -16,7 +16,7 @@ Bosses
 
 Darknut Logic:
 
-Directions RLDU
+Directions LRUD, opposes player directions
 States:
 Stun        ds 1 (non-zero = can't take damage)
 Recoil      ds 1 (non-zero = recoiling)
@@ -57,11 +57,84 @@ Post:
 
 if Health = 0, spawn item
 
+Octorok Logic:
+    States:
+    Init
+        set enTimer to N
+    Walk
+        dec timer
+        if timer = 0, Telegraph attack
+        else base movement pattern
+    Telegraph Attack
+        rotate in place N times (0-7 times?)
+        at end of state, fire missile
+    Attack
+        idle N frames
+        
+    PlAttack:
+        enable recoil
+        dec health 1, 2, 4
+        
+Leever Logic:
+    States:
+    Init
+    Rise
+    Walk
+    Sink
+    Hide
+
+Stalfos Logic:
+    States:
+    Walk
+        base movement pattern
+        
+Gibdos Logic:
+    States:
+    Walk
+        base movement pattern
+        
+Rope Logic:
+    States:
+    Walk
+        base movement pattern
+        if plX or plY = enX or enY, stalk
+    Stalk
+        move until collide with wall
+        goto walk
+        
+LikeLike Logic:
+    States:
+    Walk
+        base movement pattern
+    Succ
+        lock player position until dead
+
+Moblin Logic:
+    Walk
+        base movement pattern
+    Telegraph Attack
+        idle N frames
+        at end of state, fire missile
+    Attack
+        idle N frames
+        
+WizrobeA Logic:
+    States:
+    Wait
+        idle N frames, invisible
+        end of state, spawn on player's x or y lines
+    Phase In
+        flicker sprite on/off
+    Attack
+        fire missile
+        idle N frames
+    Phase Out
+        flicker sprite on/off
 
 Input repeat prevention:
 
-INPT4 == $00 ; button pressed 
-INPT4 == $80 ; button not pressed 
+INPT4 == $00 ; fire button pressed 
+INPT4 == $80 ; fire button not pressed 
 
 if last button == not pressed && button == pressed && ItemTimer == 0
     ItemButton

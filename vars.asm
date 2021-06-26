@@ -23,9 +23,11 @@ m0DY        ds 1
 m1DY        ds 1
 blDY        ds 1
 
-m0H         ds 1
-m1H         ds 1
-blH         ds 1
+; KERNEL VARS
+; ENH
+; M0H
+; M1H
+; BLH
 
 plXL        ds 1
 enXL        ds 1
@@ -52,6 +54,14 @@ EN_ENEMY_VARIABLES:
 enWallPhase ds 1 ; anim timer for phasing through wall
 enPX        ds 1
 enPY        ds 1
+    ORG EN_ENEMY_VARIABLES
+; Octorok
+enTimer     ds 1
+enMDX       ds 1
+enMDY       ds 1
+    ORG EN_ENEMY_VARIABLES
+; LikeLike
+enSuccTimer ds 1
     ORG EN_VARIABLES
 ; Gameover
 enInputDelay ds 1
@@ -60,8 +70,8 @@ En0V        ds 10 ; Zero initialized enemy vars
 EN_0V_END:
 ;EnRV        ds 8 ; "random" state enemy vars
 
-bgColor     ds 1
-fgColor     ds 1
+;BgColor     ds 1
+;FgColor     ds 1
 worldId     ds 1
 worldBank   ds 1
 worldSX     ds 1 ; respawn X
@@ -193,18 +203,18 @@ WORLD_WA        ds 256 ; Bombable walls
 ; Ram Bank 0
     SEG.U VARS_RAM
     ORG $F800
+wKERNEL     ds KERNEL_LEN
 wPF1RoomL   ds ROOM_PX_HEIGHT
 wPF2Room    ds ROOM_PX_HEIGHT
 wPF1RoomR   ds ROOM_PX_HEIGHT
 wRoomClear  ds 256/8
-wKERNEL     ds $80
 
     ORG $F900
+rKERNEL     ds KERNEL_LEN
 rPF1RoomL   ds ROOM_PX_HEIGHT
 rPF2Room    ds ROOM_PX_HEIGHT
 rPF1RoomR   ds ROOM_PX_HEIGHT
 rRoomClear  ds 256/8
-rKERNEL     ds $80
 
 ; Ram Bank 1 and 2
     SEG.U VARS_ROOM
@@ -228,6 +238,8 @@ rRoomFlag   ds 256
 BANK_ROM    = $1FE0
 BANK_RAM7   = $1FE7
 BANK_RAM    = $1FE8
+
+KERNEL_LEN  = $90   ; World Kernel length
 
 ROOM_PX_HEIGHT      = 20 ; height of room in pixels
 ROOM_SPR_HEIGHT     = 16 ; height of room sprite sheet
@@ -266,6 +278,7 @@ PlState_ItemButton          = $40
 PlState_Stab                = $20
 
 COLOR_DARKNUT_RED   = $42
+COLOR_OCTOROK_BLUE  = $72
 COLOR_DARKNUT_BLUE  = $74
 COLOR_PATH          = $3C
 COLOR_GREEN_ROCK    = $D0
@@ -306,8 +319,6 @@ EN_BLOCKDIR_R = 2
 EN_BLOCKDIR_U = 4
 EN_BLOCKDIR_D = 8
 
-EN_HEIGHT_ADDR = KERNEL_WORLD_EN_HEIGHT - KERNEL_WORLD + wKERNEL + 1
-
     MACRO LOG_SIZE
         echo .- {2}+$8000,{2},(.),{1}
     ENDM
@@ -317,4 +328,9 @@ EN_HEIGHT_ADDR = KERNEL_WORLD_EN_HEIGHT - KERNEL_WORLD + wKERNEL + 1
 .j0
     bvs .j1
 .j1
+    ENDM
+    
+    MACRO VKERNEL1
+r{1} = . - KERNEL_WORLD + rKERNEL + 1
+w{1} = . - KERNEL_WORLD + wKERNEL + 1
     ENDM
