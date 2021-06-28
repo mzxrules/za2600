@@ -96,6 +96,27 @@ EnSetBlockedDir: SUBROUTINE
     sta enBlockDir
     rts
     
+EnDirR2: SUBROUTINE
+    inc enX
+EnDirR: SUBROUTINE
+    inc enX
+    rts
+EnDirL2: SUBROUTINE
+    dec enX
+EnDirL: SUBROUTINE
+    dec enX
+    rts
+EnDirD2: SUBROUTINE
+    dec enY
+EnDirD: SUBROUTINE
+    dec enY
+    rts
+EnDirU2: SUBROUTINE
+    inc enY
+EnDirU: SUBROUTINE
+    inc enY
+    rts
+    
 EnNone:
     lda #$F0
     sta enSpr+1
@@ -511,11 +532,11 @@ EnRandSpawn: SUBROUTINE
     sta enX
     sta enXL
     rts
-   
-    LOG_SIZE "EnRandSpawn", EnRandSpawn
     
 EnSpawnPF2Mask:
     .byte $80, $60, $18, $06
+   
+    LOG_SIZE "EnRandSpawn", EnRandSpawn
     
 EnSysEnDie:
     lda #$80
@@ -531,422 +552,15 @@ EnSysEnDie:
 .rts
     rts
     
-EnBossCucco: SUBROUTINE
-    lda #>SprE24
-    sta enSpr+1
-    lda #<SprE24
-    sta enSpr
-    lda #%0111
-    sta NUSIZ1_T
-    lda #$0a
-    sta enColor
-    lda #15
-    sta wENH
-    lda enState
-    bmi .skipInit
-    ora #$80
-    sta enState
-.skipInit
-    lda #$40
-    sta enX
-    sta enY
-    rts
-
-    lda Frame
-    bne .rts
-    jsr EnSysEnDie
-    lda #0
-    sta NUSIZ1_T
-.rts 
-    rts
-    
-EnWallmasterCapture: SUBROUTINE
-    inc enWallPhase
-    ldx enWallPhase
-    cpx #33
-    bne .rts
-    jsr SPAWN_AT_DEFAULT
-.rts
-    rts
-
-EnWallmaster: SUBROUTINE
-    ; draw sprite
-    lda #>SprE10
-    sta enSpr+1
-    lda enWallPhase
-    lsr
-    clc
-    adc #<SprE10-8
-    sta enSpr
-    lda #0
-    sta enColor
-    
-    bit enState
-    bvs EnWallmasterCapture
-    bmi .runMain
-    
-; calculate initial position
-    lda #0 ; up wall phase
-    ldy #EnBoardYU
-    ldx #EnBoardXL
-    cpy plY
-    beq .contInit
-    cpx plX
-    beq .contInit
-    lda #32 ; down wall phase
-    ldy #EnBoardYD
-    ldx #EnBoardXR
-    cpy plY
-    beq .contInit
-    cpx plX
-    bne .rts
-
-.contInit
-    stx enX
-    sty enY
-    sta enWallPhase
-    
-    lda #$80
-    sta enState
-    
-.runMain
-    ldx enWallPhase
-    cpx #16
-    beq .next
-    bmi .incWallPhase
-    dec enWallPhase
-    bpl .rts ; always branch
-.incWallPhase
-    inc enWallPhase
-    bpl .rts ; always branch
-    
-.next
-    bit CXPPMM
-    bpl .handleMovement
-    lda #-4
-    jsr UPDATE_PL_HEALTH
-    lda plState
-    ora #2
-    sta plState
-    lda plX
-    sta enX
-    lda plY
-    sta enY
-    lda #$40
-    ora enState
-    sta enState
-    lda #$80
-    sta plY
-    rts
-.handleMovement
-    lda #3
-    bit enX
-    bne .skipSetDir
-    bit enY
-    bne .skipSetDir
-    
-    lda #$F0
-    ldx enPX
-    cpx enX
-    bne .NextDir
-    ldx enPY
-    cpx enY
-    bne .NextDir
-    lda #$FF
-.NextDir
-    jsr EnSetBlockedDir
-    jsr SeekDir
-.skipSetDir
-    lda enX
-    sta enPX
-    lda enY
-    sta enPY
-    lda CXP1FB
-    bmi .forceMove
-    lda Frame
-    and #1
-    bne .rts
-.forceMove
-    ldx enDir
-    jmp EnMoveDirDel
-.rts
-    rts
-
-    LOG_SIZE "EnWallmaster", EnWallmasterCapture
-    
-EnOctorok: SUBROUTINE
-    jsr Random
-    and #$7F
-    ora #$10
-    sta enTimer
-    and #3
-    sta enDir
-    lda #1
-    sta enHp
-    lda #COLOR_OCTOROK_BLUE
-    sta enColor
-    lda #EN_OCTOROK_MAIN
-    sta enType
-    
-EnOctorokMain:
-    lda #>SprE4
-    sta enSpr+1
-    ldx enDir
-    lda Mul8,x
-    clc 
-    adc #<SprE4
-    sta enSpr
-    
-    lda #1
-    bit Frame
-    beq .checkBlocked
-    ldx enTimer
-    bpl .checkBlocked
-    dex
-    rts
-    
-.checkBlocked
-    lda #$F0
-    jsr EnSetBlockedDir
-    lda enBlockDir
-    ldx enDir
-    and Bit8,x
-    beq .endCheckBlocked
-    jsr NextDir
-.endCheckBlocked
-
-    lda Frame
-    and #1
-    bne .rts
-    ldx enDir
-    jsr EnMoveDirDel
-.rts
-    rts
-    
-ENEMY_ROT:
-   ;.byte 0, 2, 1, 3 ; enemy direction sprite indices
-    .byte 2, 3, 1, 0 ; clockwise
-    .byte 3, 2, 0, 1 ; counterclock
-    
-    LOG_SIZE "EnOctorok", EnOctorok
-    
-EnLikeLike: SUBROUTINE
-    jsr SeekDir
-    lda #6
-    sta enHp
-    lda #EN_LIKE_LIKE_MAIN
-    sta enType
-    
-EnLikeLikeMain: SUBROUTINE
-    ; Draw Routine
-    lda #>SprE16
-    sta enSpr+1
-    lda Frame
-    lsr
-    lsr
-    lsr
-    and #1
-    tax
-    lda Mul8,x
-    clc 
-    adc #<SprE16
-    sta enSpr
-    
-; update stun timer
-    lda enStun
-    cmp #1
-    adc #0
-    sta enStun
-    asl
-    asl
-    adc #COLOR_DARKNUT_RED
-    sta enColor
-    
-.checkDamaged
-; if collided with weapon && stun == 0,
-    lda CXM0P
-    bpl .endCheckDamaged
-    lda enStun
-    bne .endCheckDamaged
-    lda #-32
-    sta enStun
-    dec enHp
-    bne .endCheckDamaged
-    jmp EnSysEnDie
-.endCheckDamaged
-    
-    ; Check if player was sucked in
-    bit enState
-    bvs .lockInPlace
-    
-    ; Check player hit
-    bit enStun
-    bmi .endCheckHit
-    bit CXPPMM
-    bpl .endCheckHit
-    lda #-8
-    jsr UPDATE_PL_HEALTH
-    lda enState
-    ora #$40
-    sta enState
-    lda Frame
-    and #$3F
-    sta enSuccTimer
-.endCheckHit
-    
-    ; Movement Routine
-    lda #$F0
-    jsr EnSetBlockedDir
-    lda enBlockDir
-    ldx enDir
-    and Bit8,x
-    beq .endCheckBlocked
-    jsr NextDir
-.endCheckBlocked
-
-    lda Frame
-    and #1
-    bne .rts
-    ldx enDir
-    jsr EnMoveDirDel
-.rts
-    rts
-    
-.lockInPlace
-    lda Frame
-    and #$3F
-    cmp enSuccTimer
-    bne .skipSuccDamage
-    lda #-8
-    jsr UPDATE_PL_HEALTH
-.skipSuccDamage
-
-    lda enX
-    sta plX
-    lda enY
-    sta plY
-    rts
-    
-    LOG_SIZE "EnLikeLike", EnLikeLike
-    
-EnDarknut: SUBROUTINE
-    lda #EN_DARKNUT_MAIN
-    sta enType
-    jsr Random
-    and #3
-    sta enDir
-    lda #1
-    sta enHp
-    
-EnDarknutMain:
-    lda #>SprE0
-    sta enSpr+1
-; update stun timer
-    lda enStun
-    cmp #1
-    adc #0
-    sta enStun
-    asl
-    asl
-    adc #COLOR_DARKNUT_RED
-    sta enColor
-    lda #$F0
-    jsr EnSetBlockedDir
-
-.checkDamaged
-; if collided with weapon && stun == 0,
-    lda CXM0P
-    bpl .endCheckDamaged
-    lda enStun
-    bne .endCheckDamaged
-    lda plDir
-    cmp enDir
-    beq .defSfx
-    lda #-32
-    sta enStun
-    dec enHp
-    bne .endCheckDamaged
-    jmp EnSysEnDie
-.defSfx
-    lda #SFX_DEF
-    sta SfxFlags
-.endCheckDamaged
-
-    ; Check player hit
-    bit enStun
-    bmi .endCheckHit
-    bit CXPPMM
-    bpl .endCheckHit
-    lda #-8
-    jsr UPDATE_PL_HEALTH
-.endCheckHit
-
-.checkBlocked
-    lda enBlockDir
-    ldx enDir
-    and Bit8,x
-    beq .endCheckBlocked
-    jsr NextDir
-    jmp .move
-.endCheckBlocked
-
-.randDir
-    lda enX
-    and #7
-    bne .move
-    lda enY
-    and #7
-    bne .move
-    lda Frame
-    eor enBlockDir
-    and #$20
-    beq .move
-    eor enBlockDir
-    sta enBlockDir
-    jsr NextDir
-
-.move
-    ldx enDir
-    ldy Mul8,x
-    sty enSpr
-
-    lda Frame
-    and #1
-    beq .rts
-   
 EnMoveDirDel:
+    ldx enDir
     lda EnMoveDirH,x
     pha
     lda EnMoveDirL,x
     pha
-.rts
-    rts
-    LOG_SIZE "EnDarknut", EnDarknut
-
-    INCLUDE "gen/EnMoveDir.asm"
-
-EnDirR2: SUBROUTINE
-    inc enX
-EnDirR: SUBROUTINE
-    inc enX
-    rts
-EnDirL2: SUBROUTINE
-    dec enX
-EnDirL: SUBROUTINE
-    dec enX
-    rts
-EnDirD2: SUBROUTINE
-    dec enY
-EnDirD: SUBROUTINE
-    dec enY
-    rts
-EnDirU2: SUBROUTINE
-    inc enY
-EnDirU: SUBROUTINE
-    inc enY
     rts
     
-RoomScriptDel: ; BANK_ROM 4
+RoomScriptDel:
     ldx roomRS
     lda RoomScriptH,x
     pha

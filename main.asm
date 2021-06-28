@@ -102,6 +102,12 @@ BANK_4
     INCLUDE "gen/Entity.asm"
     INCLUDE "gen/RoomScript.asm"
     INCLUDE "gen/ItemId.asm"
+    INCLUDE "gen/EnMoveDir.asm"
+    INCLUDE "en/darknut.asm"
+    INCLUDE "en/wallmaster.asm"
+    INCLUDE "en/octorok.asm"
+    INCLUDE "en/likelike.asm"
+    INCLUDE "en/bosscucco.asm"
     include "b4.asm"
     
     LOG_SIZE "-BANK 4- EnemyAI", BANK_4
