@@ -55,14 +55,17 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta roomFlags
     bpl .skipLoadRoom
     ora #$40
+    and #~$10 ; zero room clear stall flag
     sta roomFlags
-    lda #$E8
+    lda #-$18
     sta roomTimer
     lda #$22
     sta plState
     jsr LoadRoom
     lda #EN_NONE
     sta enType
+    sta blType
+    sta blTemp
     sta KernelId
 .skipLoadRoom
 
@@ -139,7 +142,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     
 .ball_sprite_setup
 ; ball draw height
-    lda Spr1WorldOff,y;#(ROOM_HEIGHT+1)
+    lda Spr8WorldOff,y;#(ROOM_HEIGHT+1)
     sec
     sbc blY
     sta blDY
@@ -505,6 +508,10 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 .RoomScript:   
     jsr RoomScriptDel
     
+.BallScript:
+    ldx blType
+    jsr BallDel
+    
 .RoomOpenShutterDoor
     lda worldId
     beq .endOpenShutterDoor
@@ -550,7 +557,9 @@ OVERSCAN_WAIT:
 ; x = Player (0), Enemy (1)
 ;==============================================================================
 TestCollisionReset:
-    bpl .SkipPFCollision
+    and #$C0
+    beq .SkipPFCollision
+    
     lda plXL,x
     sta plX,x
     lda plYL,x

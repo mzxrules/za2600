@@ -52,8 +52,8 @@ EN_ENEMY_VARIABLES:
     ORG EN_ENEMY_VARIABLES
 ; Wallmaster
 enWallPhase ds 1 ; anim timer for phasing through wall
-enPX        ds 1
-enPY        ds 1
+enPX        ds 1 ; posX last frame, after collision check
+enPY        ds 1 ; posY last frame, after collision check
     ORG EN_ENEMY_VARIABLES
 ; Octorok
 enTimer     ds 1
@@ -68,10 +68,13 @@ enInputDelay ds 1
     ORG EN_VARIABLES
 En0V        ds 10 ; Zero initialized enemy vars
 EN_0V_END:
-;EnRV        ds 8 ; "random" state enemy vars
 
-;BgColor     ds 1
-;FgColor     ds 1
+blType      ds 1 ;
+blTemp      ds 1 ; Room ball state
+blDir       ds 1        
+
+;BgColor    ds 1
+;FgColor    ds 1
 worldId     ds 1
 worldBank   ds 1
 worldSX     ds 1 ; respawn X

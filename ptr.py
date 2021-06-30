@@ -31,6 +31,7 @@ tbl = [
     ]),
     ( "RoomScript", [
         "RsNone",
+        "RsCentralBlock",
         "RsWorldMidEnt",
         "RsDungMidEnt",
         "RsStairs",
@@ -42,6 +43,16 @@ tbl = [
         "RsText",
         "RsGameOver"
     ]),
+    ( "Ball", [
+        "BlNone",
+        # Ball movement ids must be 1-4
+        "BlR",
+        "BlL",
+        "BlD",
+        "BlU",
+        "BlPushBlock",
+    ]
+    ),
     ( "ItemId", [
         "GiRecoverHeart",
         "GiFairy",

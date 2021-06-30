@@ -87,14 +87,15 @@ EnWallmaster: SUBROUTINE
     bit enY
     bne .skipSetDir
     
-    lda #$F0
+    ; test if position changed since last update
+    lda #$F0 ; clear blocked direction
     ldx enPX
     cpx enX
     bne .NextDir
     ldx enPY
     cpx enY
     bne .NextDir
-    lda #$FF
+    lda #$FF ; preserve blocked direction
 .NextDir
     jsr EnSetBlockedDir
     jsr SeekDir

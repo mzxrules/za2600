@@ -101,6 +101,7 @@ right_text
 BANK_4
     INCLUDE "gen/Entity.asm"
     INCLUDE "gen/RoomScript.asm"
+    INCLUDE "gen/Ball.asm"
     INCLUDE "gen/ItemId.asm"
     INCLUDE "gen/EnMoveDir.asm"
     INCLUDE "en/darknut.asm"

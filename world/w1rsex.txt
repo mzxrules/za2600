@@ -130,7 +130,7 @@ RsNone
 zz0
 RsText
 zz0
-RsNone
+RsCentralBlock
 zz0
 RsNone
 zz0

@@ -372,6 +372,74 @@ EnBlockStairs: SUBROUTINE
     sta enSpr
     rts
 
+BlNone:
+    lda #$80
+    sta blY
+    rts
+    
+BlR: SUBROUTINE
+    inc blX
+    rts
+BlL:
+    dec blX
+    rts
+BlU:
+    inc blY
+    rts
+BlD:
+    dec blY
+    rts
+
+BlPushBlock: SUBROUTINE
+    ldx roomENCount
+    bne .rts
+    ldx blTemp
+    inx
+    cpx #16+8 ; full move
+    bpl .pushDone
+    stx blTemp
+    cpx #8
+    bmi .pushCheck
+    lda Frame
+    and #1
+    beq .rts
+    ldx blDir
+    inx
+    jmp BallDel
+
+.pushCheck
+    ; set direction
+    lda plDir
+    sta blDir
+    
+    ldy #0
+    bit CXP0FB
+    bvs .rts
+    sty blTemp
+    rts
+    
+.pushDone
+    lda roomFlags
+    and #~$10
+    ora #$20
+    sta roomFlags
+.rts
+    rts
+    
+RsCentralBlock: SUBROUTINE
+    lda roomFlags
+    ora #$10
+    sta roomFlags
+    ldx #$40+1
+    stx blX
+    ldx #$2C
+    stx blY
+    lda #BL_PUSH_BLOCK
+    sta blType
+    lda #RS_NONE
+    sta roomRS
+    rts
+    
 RsStairs:
     lda #$40
     sta enX
@@ -405,9 +473,9 @@ EnStairs: SUBROUTINE
     rts
     
 EnSysEncounter:
-    .byte EN_LIKE_LIKE, EN_OCTOROK, EN_DARKNUT, EN_WALLMASTER, EN_BOSS_CUCCO
+    .byte EN_NONE, EN_DARKNUT, EN_LIKE_LIKE, EN_OCTOROK, EN_WALLMASTER, EN_BOSS_CUCCO
 EnSysEncounterCount:
-    .byte 1, 2, 2, 1, 1
+    .byte 0, 2, 2, 1, 1
     
 EnSystem: SUBROUTINE
     ; precompute room clear flag helpers because it's annoying
@@ -557,6 +625,13 @@ EnMoveDirDel:
     lda EnMoveDirH,x
     pha
     lda EnMoveDirL,x
+    pha
+    rts
+    
+BallDel:
+    lda BallH,x
+    pha
+    lda BallL,x
     pha
     rts
     
