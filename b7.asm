@@ -51,11 +51,11 @@ VERTICAL_SYNC: ; 3 SCANLINES
 
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda roomFlags
-    and #$BF
+    and #~RF_LOADED_EV
     sta roomFlags
     bpl .skipLoadRoom
-    ora #$40
-    and #~$10 ; zero room clear stall flag
+    ora #RF_LOADED_EV
+    and #~[RF_LOAD_EV + RF_NO_ENCLEAR + RF_CLEAR]
     sta roomFlags
     lda #-$18
     sta roomTimer
@@ -422,7 +422,7 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     sta VBLANK
     lda #32
     sta TIM64T ; 27 scanline timer
-    
+; reset world kernel vars
     lda #7
     sta wENH
     
@@ -470,12 +470,13 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 
     cpy roomId
     beq .endSwapRoom
-    lda #$80
+    lda #RF_LOAD_EV
     ora roomFlags
     sta roomFlags
 .endSwapRoom
-    
-.playerWallPass
+  
+; Phase player through walls if flag set
+.PlayerWallPass
     lda plState
     and #$20
     beq .skipPlayerWallPass
@@ -512,6 +513,19 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     ldx blType
     jsr BallDel
     
+; Update Room Flags
+    lda #RF_NO_ENCLEAR
+    bit roomFlags
+    bvs .endUpdateRoomFlags
+    bne .endUpdateRoomFlags
+    lda roomENCount
+    bne .endUpdateRoomFlags
+    lda roomFlags
+    ora #RF_CLEAR
+    sta roomFlags
+.endUpdateRoomFlags
+    
+; Update Shutter Doors
 .RoomOpenShutterDoor
     lda worldId
     beq .endOpenShutterDoor
@@ -521,10 +535,8 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     sta roomTimer
     bmi .endOpenShutterDoor
     lda roomFlags
-    and #$10
-    bne .endOpenShutterDoor
-    lda roomENCount
-    bne .endOpenShutterDoor
+    and #RF_CLEAR
+    beq .endOpenShutterDoor
     lda roomDoors
     asl ; keydoor/walls have lsb 1, shift to msb to keep high bit
     ora #%01010101 ; always keep low bit 
@@ -572,11 +584,6 @@ TestCollisionReset:
     rts
 
 LoadRoom: SUBROUTINE
-    ; flush loadroom flag
-    lda roomFlags
-    and #$7F
-    sta roomFlags
-
     ; load world bank
     ldy worldId
     beq .worldBankSet
@@ -824,7 +831,7 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     ldy worldId
     lda WORLD_ENT,y
     sta roomId
-    lda #$80
+    lda #RF_LOAD_EV
     sta roomFlags
     rts
 

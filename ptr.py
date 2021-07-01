@@ -24,7 +24,6 @@ tbl = [
         "EnOctorokMain",
         "EnLikeLikeMain",
         "EnStairs",
-        "EnBlockStairs",
         "EnSpectacleOpen",
         "EnTriforce",
         "EnItem"
@@ -35,6 +34,7 @@ tbl = [
         "RsWorldMidEnt",
         "RsDungMidEnt",
         "RsStairs",
+        "RsDiamondBlockStairs",
         "RsItem",
         "RsRaftSpot",
         "RsNeedTriforce",

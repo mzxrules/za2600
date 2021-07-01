@@ -88,8 +88,10 @@ EnSetBlockedDir: SUBROUTINE
     ora #EN_BLOCKDIR_U
 
 .checkPFHit
-    ldx CXP1FB
-    bpl .setBlockDir
+    bit CXP1FB
+    bmi .setCurBlock
+    bvc .setBlockDir
+.setCurBlock
     ldx enDir
     ora Bit8,x
 .setBlockDir
@@ -179,7 +181,7 @@ RsGameOver: SUBROUTINE
     
     ldx #MS_PLAY_OVER
     stx SeqFlags
-    lda #-$20
+    lda #-$20 ; input delay timer
 .skipInit
     cmp #1
     adc #0
@@ -332,7 +334,7 @@ RsDungExit: SUBROUTINE
     lda #0
     sta worldId
     lda roomFlags
-    ora #$80
+    ora #RF_LOAD_EV
     sta roomFlags
     lda #MS_PLAY_THEME_L
     sta SeqFlags
@@ -355,21 +357,21 @@ EnSpectacleOpen: SUBROUTINE
     sta enSpr
     rts
 
-EnBlockStairs: SUBROUTINE
-; diamond room
-    ldy #$D
-    lda rPF2Room,y
-    and #$7F
-    sta wPF2Room,y
-    sta wPF2Room+1,y
-    lda #$40
-    sta enX
+RsDiamondBlockStairs: SUBROUTINE
+    lda #RF_NO_ENCLEAR
+    ora roomFlags
+    sta roomFlags
+    lda #0
+    sta wPF2Room + 13
+    sta wPF2Room + 14
+    lda #$41
+    sta blX
     lda #$3C
-    sta enY
-    lda rFgColor
-    sta enColor
-    lda #(30*8)
-    sta enSpr
+    sta blY
+    lda #BL_PUSH_BLOCK
+    sta blType
+    lda #RS_STAIRS
+    sta roomRS
     rts
 
 BlNone:
@@ -395,10 +397,10 @@ BlPushBlock: SUBROUTINE
     bne .rts
     ldx blTemp
     inx
-    cpx #16+8 ; full move
+    cpx #16+12 ; full move
     bpl .pushDone
     stx blTemp
-    cpx #8
+    cpx #12
     bmi .pushCheck
     lda Frame
     and #1
@@ -420,15 +422,14 @@ BlPushBlock: SUBROUTINE
     
 .pushDone
     lda roomFlags
-    and #~$10
-    ora #$20
+    ora #RF_CLEAR
     sta roomFlags
 .rts
     rts
     
 RsCentralBlock: SUBROUTINE
     lda roomFlags
-    ora #$10
+    ora #RF_NO_ENCLEAR
     sta roomFlags
     ldx #$40+1
     stx blX
@@ -441,12 +442,16 @@ RsCentralBlock: SUBROUTINE
     rts
     
 RsStairs:
+    lda roomFlags
+    and #RF_CLEAR
+    beq .rts
     lda #$40
     sta enX
     lda #$2C
     sta enY
     lda #EN_STAIRS
     sta enType
+.rts
     rts
     
 EnStairs: SUBROUTINE
@@ -466,9 +471,8 @@ EnStairs: SUBROUTINE
     lda roomEX
     sta roomId
     lda roomFlags
-    ora #$80
+    ora #RF_LOAD_EV
     sta roomFlags
-
 .rts
     rts
     
@@ -499,9 +503,9 @@ EnSystem: SUBROUTINE
     bit roomFlags
     bvs .checkRoomClear
     
-    ; Else, if room clear event flag set, set room clear flag
+    ; Else, if enemy clear event flag set, set enemy clear flag
     lda roomFlags
-    and #$20
+    and #RF_ENCLEAR_EV
     beq .runEncounter ; flag not set, run encounter
     
     lda rRoomClear,x
@@ -522,8 +526,8 @@ EnSystem: SUBROUTINE
     sta roomENCount
     
 .runEncounter
-    ; toggle off room clear event
-    lda #$DF
+    ; toggle off enemy clear event
+    lda #~RF_ENCLEAR_EV
     and roomFlags
     sta roomFlags
     
@@ -614,7 +618,7 @@ EnSysEnDie:
     dec roomENCount
     bne .rts
     ; Set room clear flag
-    lda #$20
+    lda #RF_ENCLEAR_EV
     ora roomFlags
     sta roomFlags
 .rts

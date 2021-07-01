@@ -84,10 +84,11 @@ roomId      ds 1
 roomSpr     ds 1
 roomTimer   ds 1 ; Shutter animation timer
 roomFlags   ds 1
-    ; 1000_0000 Force Load Room
-    ; 0100_0000 Room Load happened this frame
-    ; 0010_0000 Enemy Clear event
-    ; 0001_0000 Disable Open Shutter Door on roomEN == 0
+RF_LOAD_EV      = $80 ; 1000_0000 Force Load Room
+RF_LOADED_EV    = $40 ; 0100_0000 Room Load happened this frame
+RF_ENCLEAR_EV   = $20 ; 0010_0000 Enemy Clear event
+RF_NO_ENCLEAR   = $10 ; 0001_0000 Blocks Enemy Cleared from setting Room Cleared
+RF_CLEAR        = $08 ; 0000_1000 Room Cleared (Enemies dead, or puzzle solved)
 roomDoors   ds 1
     ; xxxx_xx11 N
     ; xxxx_11xx S
@@ -210,14 +211,14 @@ wKERNEL     ds KERNEL_LEN
 wPF1RoomL   ds ROOM_PX_HEIGHT
 wPF2Room    ds ROOM_PX_HEIGHT
 wPF1RoomR   ds ROOM_PX_HEIGHT
-wRoomClear  ds 256/8
+wRoomClear  ds 256/8            ; All Enemies Defeated flags
 
     ORG $F900
 rKERNEL     ds KERNEL_LEN
 rPF1RoomL   ds ROOM_PX_HEIGHT
 rPF2Room    ds ROOM_PX_HEIGHT
 rPF1RoomR   ds ROOM_PX_HEIGHT
-rRoomClear  ds 256/8
+rRoomClear  ds 256/8            ; All Enemies Defeated flags
 
 ; Ram Bank 1 and 2
     SEG.U VARS_ROOM

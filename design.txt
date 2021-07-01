@@ -2,17 +2,48 @@ List of todos, ordered by importance
 
 Status Hud
 Event System
-Door Unlock System
+Door Unlock System - Complete
 Ganon Fight Kernel
 Exits
 Raft System
-Enemy Spawns
+Enemy Spawns - First Implementation
 Wizrobes
 Stalfos
 Bubbles
 Keese
 Bosses
 
+Game Loop:
+
+    RoomLoad
+    if not RoomLoad:
+        PlayerInput
+        Random
+        PlayerItem logic
+    Check Keydoor unlock
+    Update Doors
+    Process Audio
+    Process Entity
+    Preconfig Sprites
+    Draw HUD
+    if TextKernel
+        Draw Text
+    Draw World
+    Test Board Exit
+    Test Player Phases through walls / collision reset
+    Process Enemy System
+    Process Room Script
+    Process Ball Script
+    Update Room Clear
+    Update Shutter Door
+    Test Game Over
+    
+Room Events:
+    RF_LOAD_EV      ; Triggers Room Load event
+    RF_LOADED_EV    ; If set, a new room has been loaded
+    RF_ENCLEAR_EV   ; Enemies Cleared event
+    RF_NO_ENCLEAR   ; Blocks Enemy Cleared from setting Room Cleared
+    RF_CLEAR        ; Room Cleared
 
 Darknut Logic:
 

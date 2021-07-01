@@ -234,7 +234,7 @@ RsNone
 zz0
 RsNone
 zz0
-RsCentralBlock
+RsDiamondBlockStairs
 zz0
 RsNone
 zz0
