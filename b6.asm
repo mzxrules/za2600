@@ -278,17 +278,82 @@ KeydoorCheck_B6: SUBROUTINE
     lda BANK_RAM + 0
     rts
 
+BombOffX:
+    .byte 10, -4, 3, 3
+BombOffY:
+    .byte 2, 2, -5, 9 
+    
+    .byte -2,  4, -8, 8, -8, 4,  4, -8, 8, -8, 4
+BombAnimDeltaX:
+    .byte -2, -4, 8, 0, -8, 4, -4, 8, 0, -8, 4
+BombAnimDeltaY:
+    
 PlayerItem_B6: SUBROUTINE
-; Sword
+; Bombs
     bit plState
-    bvc .skipSetItemTimer
-; If Item Button, stab sword
+    bvc .skipDropBomb
+    lda itemBombs
+    beq .skipDropBomb
+    sed
+    sec
+    sbc #1
+    cld
+    sta itemBombs
+    lda #-32
+    sta plItemTimer
+    ldx plDir
+    stx plItemDir
+    clc
+    lda BombOffX,x
+    adc plX
+    sta m0X
+    clc
+    lda BombOffY,x
+    adc plY
+    sta m0Y
+    lda #$20
+    sta NUSIZ0_T
+    lda #3
+    sta wM0H
+.skipDropBomb
+    ldy plItemTimer
+    bne .drawBomb
+    lda #$80
+    sta m0Y
+    bmi .rts
+.drawBomb
+    cpy #-11
+    bmi .rts
+    bne .skipDetonate
+    lda #7
+    sta wM0H
+    lda #$30
+    sta NUSIZ0_T
+    lda #SFX_BOMB
+    sta SfxFlags
+    
+.skipDetonate
+    clc
+    lda BombAnimDeltaX-$100,y
+    adc m0X
+    sta m0X
+    clc
+    lda BombAnimDeltaY-$100,y
+    adc m0Y
+    sta m0Y
+.rts
+    rts
+
+PlayerSword_B6: SUBROUTINE
+; If Item Button, use item
+    bit plState
+    bvc .skipSlashSword
     lda #ItemTimerSword
     sta plItemTimer
 ; Sfx
     lda #SFX_STAB
     sta SfxFlags
-.skipSetItemTimer
+.skipSlashSword
     ldy plItemTimer
     bne .drawSword
     lda #$80
@@ -349,6 +414,7 @@ ProcessInput_B6: SUBROUTINE
     bit INPT1
     bmi .skipTest
     inc itemKeys
+    inc itemBombs
 .skipTest
     ; test if player locked
     lda #02

@@ -1,7 +1,11 @@
 ; ****************************************
 ; * Variables                            *
 ; ****************************************
-
+    MACRO ITEM
+ITEMV_{1} = itemFlags + {2}
+ITEMF_{1} = {3}
+    ENDM
+    
     SEG.U VARS_ZERO
     ORG $80
 Frame       ds 1
@@ -118,12 +122,27 @@ plStun      ds 1
 plHealthMax ds 1
 plHealth    ds 1
 plItemTimer ds 1
+plItemDir   ds 1
 itemRupees  ds 1
 itemKeys    ds 1 ; Sign bit = Master Key
 itemBombs   ds 1
 itemTri     ds 1
 itemMaps    ds 1
 itemFlags   ds 2
+    ITEM SWORD2,    0,$01
+    ITEM SWORD3,    0,$02
+    ITEM CANDLE,    0,$04
+    ITEM MEAT,      0,$08
+    ITEM BOOTS,     0,$10
+    ITEM RING,      0,$20
+    ITEM POTION,    0,$40
+    ITEM RAFT,      0,$80
+    ITEM FLUTE,     1,$01
+    ITEM FIRE_MAGIC,1,$02
+    ITEM BOW,       1,$04
+    ITEM ARROWS,    1,$08
+    ITEM BRACELET,  1,$10
+
 mesgId      ds 1
 SeqFlags    ds 1
     ; 1xxx_xxxx New Sequence

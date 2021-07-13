@@ -363,3 +363,14 @@ Recorder?
     lda itemRupees
     sbc #$FF
     sta itemRupees
+    
+Text24 draws 24 characters on a line every 2 frames, but it consumed most of
+the rom I budgeted for text, without even storing text in the rom yet. It also
+used 24 bytes of ram, which is a ton. when i looked at the code, i discovered
+two subroutines, one for frame 1, one for frame 2, which were nearly identical.
+The main difference was that one needed a 4 cycle delay while the other needed
+a 6 cycle delay to position the sprite data correctly. I was able to
+deduplicate the code by using the overflow flag to store whether the delay
+should be 4 or 6 cycles long. A branch takes 2 cycles to execute, 3 if the
+branch is taken, and so a pair of bvs is enough to implement a variable cycle
+delay of 4/6 cycles.

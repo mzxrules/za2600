@@ -66,6 +66,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta enType
     sta blType
     sta blTemp
+    sta plItemTimer
     sta KernelId
 .skipLoadRoom
 
@@ -214,12 +215,12 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta THudDigits+2
 ; bomb display    
     lda itemBombs
-    cmp #10
+    cmp #$10
     bpl .hud_bomb_digit
     lda #<SprN11 - #<SprN0 +7
     .byte $2C
 .hud_bomb_digit
-    lda #<SprN1+7
+    lda #<SprN1 - #<SprN0 +7
     sta THudDigits+0 
     lda itemBombs
     and #$0F
@@ -750,7 +751,7 @@ Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
     
 WORLD_ENT: ; Initial room spawns for worlds 0-9
-    .byte $77, $73, $00, $00, $00, $00, $F3, $00, $00, $00
+    .byte $77, $73, $79, $00, $00, $00, $F3, $00, $00, $00
     
     ;align 4
 SwordWidth4:
@@ -946,7 +947,7 @@ BANK_7_FREE:
 ;----------
 ; Sets X position for all TIA objects within the world view
 ; X position must be between 0-134 ($00 to $86)
-; Higher values will cause an extra cycle
+; Higher values will waste an extra scanline
 ;==============================================================================
 PosWorldObjects: SUBROUTINE
     sec            ; 2

@@ -181,12 +181,12 @@ SprE19:
 SprE20:
     .byte $3C ; |..XXXX..|
     .byte $66 ; |.XX..XX.|
+    .byte $D3 ; |XX.X..XX|
     .byte $C3 ; |XX....XX|
-    .byte $81 ; |X......X|
-    .byte $81 ; |X......X|
-    .byte $C3 ; |XX....XX|
-    .byte $66 ; |.XX..XX.|
-    .byte $3C ; |..XXXX..|
+    .byte $C7 ; |XX...XXX|
+    .byte $6E ; |.XX.XXX.|
+    .byte $39 ; |..XXX..X|
+    .byte $14 ; |...X.X..|
 SprE21:
     .byte $00 ; |........|
     .byte $00 ; |........|

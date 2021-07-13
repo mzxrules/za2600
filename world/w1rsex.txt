@@ -208,8 +208,8 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
-zz0
+RsItem
+zz21
 RsNone
 zz0
 RsNone
@@ -240,7 +240,7 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
+RsDungExit
 zz0
 RsNone
 zz0

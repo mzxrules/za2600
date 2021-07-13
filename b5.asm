@@ -73,6 +73,26 @@ SfxStop:
     sta SfxFlags
     rts
     
+SfxSurfVPattern:
+    .byte 1, 1, 2, 3, 4, 5, 5, 5, 5, 4, 4, 3, 2, 1, 1, 1
+    
+SfxSurfFPattern:
+    .byte 2, 2, 3, 3, 5, 5, 7, 7, 1, 1, 1, 1, 1, 1, 1, 1
+    /* .byte 02, 03, 05, 07, 05, 10, 10, 10 */
+    
+SfxSurf: SUBROUTINE
+    ldx #8
+    stx AUDCT1
+    ldy SfxCur
+    
+    lda SfxSurfVPattern,y
+    sta AUDVT1
+    lda SfxSurfFPattern,y
+    sta AUDFT1
+    cpy #(SfxSurf-SfxSurfFPattern)
+    bpl SfxStop
+    rts
+    
 SfxBomb: SUBROUTINE
     lda SfxCur
     cmp #16

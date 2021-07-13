@@ -58,19 +58,29 @@ tbl = [
         "GiFairy",
         "GiBomb",
         "GiRupee5",
+        
         "GiTriforce",
         "GiHeart",
         "GiKey",
         "GiMasterKey",
+        
         "GiSword2",
         "GiSword3",
         "GiCandle",
         "GiMeat",
+        
         "GiBoots",
         "GiRing",
         "GiPotion",
         "GiRaft",
+        # 0x10
         "GiFlute",
+        "GiFireMagic",
+        "GiBow",
+        "GiArrows",
+        
+        "GiBracelet",
+        "GiMap"
     ]),
     ( "MusicSeq", [
         "MsNone",
@@ -97,7 +107,8 @@ tbl = [
         "SfxItemPickup",
         "SfxDef",
         "SfxPlHeal",
-        "SfxPlDamage"
+        "SfxPlDamage",
+        "SfxSurf"
     ]),
     ( "PlMoveDir", [
         "PlDirR",

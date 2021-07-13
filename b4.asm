@@ -125,11 +125,42 @@ EnNone:
     sta enY
 RsNone:
 RsWorldMidEnt:
-RsRaftSpot:
 RsNeedTriforce:
 RsFairyFountain:
     rts
-
+    
+RsRaftSpot: SUBROUTINE
+    lda plState
+    and #$20
+    bne .fixPos
+; If item not obtained
+    lda #ITEMF_RAFT
+    and ITEMV_RAFT
+    beq .rts
+; If not touching water surface
+    bit CXP0FB
+    bpl .rts
+    ldy plY
+    cpy #$40
+    bne .rts
+    ldx plX
+    cpx #$40
+    bne .rts
+    iny
+    sty plY
+    lda #PL_DIR_U
+    sta plDir
+    lda plState
+    ora #$22
+    sta plState
+    lda #SFX_SURF
+    sta SfxFlags
+.fixPos
+    lda #$40
+    sta plX
+.rts
+    rts
+    
 RsText: SUBROUTINE
     lda #1
     sta KernelId
@@ -201,19 +232,39 @@ GiItemDel: SUBROUTINE
     pha
     rts
     
-GiFlute:
 GiBomb:
-GiRing:
-GiSword3:
-GiSword2:
 GiRupee5:
-GiBoots:
-GiMeat:
-GiCandle:
-GiPotion:
 GiRecoverHeart:
 GiFairy:
+    rts
+
+GiSword2:
+GiSword3:
+GiCandle:
+GiMeat:
+GiBoots:
+GiRing:
+GiPotion:
 GiRaft:
+    lda Bit8-8,x
+    ora itemFlags
+    sta itemFlags
+    lda #MS_PLAY_GI
+    sta SeqFlags
+    rts
+    
+GiFlute:
+GiFireMagic:
+GiBow:
+GiArrows:
+GiBracelet:
+    lda Bit8-8,x
+    ora itemFlags+1
+    sta itemFlags+1
+    lda #MS_PLAY_GI
+    sta SeqFlags
+    rts
+
 GiTriforce:
     inc itemTri
     lda #MS_PLAY_GI
@@ -243,6 +294,28 @@ GiHeart:
     sta SeqFlags
     rts
     
+GiMap:
+    ldy worldId
+    lda Bit8-2,y
+    ora itemMaps
+    sta itemMaps
+    lda #SFX_ITEM_PICKUP
+    sta SfxFlags
+    rts
+    
+GiItemColors:
+    .byte COLOR_DARKNUT_RED, COLOR_DARKNUT_RED, COLOR_DARKNUT_BLUE, COLOR_DARKNUT_BLUE
+    .byte COLOR_TRIFORCE, COLOR_DARKNUT_RED, COLOR_TRIFORCE, COLOR_TRIFORCE
+    .byte $06, $0E, COLOR_DARKNUT_BLUE, COLOR_DARKNUT_RED
+    .byte $0E, COLOR_DARKNUT_RED, COLOR_DARKNUT_BLUE, $F0
+    
+    .byte COLOR_TRIFORCE, COLOR_DARKNUT_RED, $F0, COLOR_TRIFORCE
+    .byte COLOR_DARKNUT_RED, COLOR_TRIFORCE
+    
+;==============================================================================
+; ENTITY
+;==============================================================================
+    
 EnItem: SUBROUTINE
     lda #>SprItem0
     sta enSpr+1
@@ -271,13 +344,6 @@ EnItem: SUBROUTINE
     jsr GiItemDel
 .rts
     rts
-    
-GiItemColors:
-    .byte COLOR_DARKNUT_RED, COLOR_DARKNUT_RED, COLOR_DARKNUT_BLUE, COLOR_DARKNUT_BLUE
-    .byte COLOR_TRIFORCE, COLOR_DARKNUT_RED, COLOR_TRIFORCE, COLOR_TRIFORCE
-    .byte $06, $0E, COLOR_DARKNUT_BLUE, COLOR_DARKNUT_RED
-    .byte $0E, COLOR_DARKNUT_RED, COLOR_DARKNUT_BLUE, $F0
-    .byte COLOR_TRIFORCE
     
 EnTriforce: SUBROUTINE
     lda #>SprItem6

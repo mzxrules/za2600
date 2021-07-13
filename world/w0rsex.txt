@@ -112,8 +112,8 @@ RsDungMidEnt
 zz1
 RsNone
 zz0
-RsNone
-zz0
+RsFairyFountain
+zz16
 RsNone
 zz0
 RsNone
@@ -124,7 +124,7 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
+RsRaftSpot
 zz0
 RsNone
 zz0
@@ -132,7 +132,7 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
+RsFairyFountain
 zz0
 RsNone
 zz0
@@ -152,6 +152,8 @@ RsNone
 zz0
 RsNone
 zz0
+RsDiamondBlockStairs
+zz118
 RsNone
 zz0
 RsNone
@@ -166,9 +168,7 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
-zz0
-RsNone
+RsRaftSpot
 zz0
 RsNone
 zz0
@@ -235,13 +235,13 @@ zz0
 RsNone
 zz0
 RsDiamondBlockStairs
-zz0
+zz121
 RsNone
 zz0
-RsNone
-zz0
-RsNone
-zz0
+RsItem
+zz15
+RsDiamondBlockStairs
+zz77
 RsNone
 zz0
 RsNone
