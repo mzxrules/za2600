@@ -18,6 +18,9 @@ UpdateAudio_B5: SUBROUTINE
     bne .continueSeqSwitch
 .playDungeonTheme
     lda #MS_PLAY_DUNG
+    cpy #9
+    bmi .continueSeqSwitch
+    lda #MS_PLAY_FINAL
     
 .continueSeqSwitch
     and #$3F
@@ -291,6 +294,35 @@ MsWorld1: SUBROUTINE
     jmp SeqMuteChan1
 .skipSetDur
     lda ms_world1_note,x
+    jmp SeqChan1
+    
+MsFinal0: SUBROUTINE
+    ldx SeqCur
+    bvc .skipSetDur
+    lda ms_final0_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame
+    jmp SeqMuteChan0
+.skipSetDur
+    lda ms_final0_note,x
+    jmp SeqChan0
+    
+MsFinal1: SUBROUTINE
+    ldx SeqCur + 1
+    bvc .skipSetDur
+    lda #$0C
+    clc
+    adc Frame
+    sta SeqTFrame + 1
+    jmp SeqMuteChan1
+.skipSetDur
+    txa
+    lsr
+    lsr
+    lsr
+    tax
+    lda ms_final1_note,x
     jmp SeqChan1
     
 MsGI0: SUBROUTINE

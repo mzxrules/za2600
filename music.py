@@ -52,18 +52,22 @@ seqs = {
     "gi"   : Seq("ms_gi", 90, 4, get_item_highline, get_item_baseline),
     "over" : Seq("ms_over", 90, 4, game_over_highline, empty_channel),
     "world": Seq("ms_world", 150, 1, overworld_highline, overworld_baseline),
-    "intro": Seq("ms_intro", 150, 1, overworld_intro_highline, overworld_intro_baseline)
+    "intro": Seq("ms_intro", 150, 1, overworld_intro_highline, overworld_intro_baseline),
+    "final": Seq("ms_final", 150, 1, dung_final_highline, dung_final_baseline)
 }
 
-print("ch0")
-MeasureTest(seqs["intro"].ch0)
-print("ch1")
-MeasureTest(seqs["intro"].ch1)
+songKey = "final"
 
+print("ch0")
+MeasureTest(seqs[songKey].ch0)
+print("ch1")
+MeasureTest(seqs[songKey].ch1)
 
 for k, seq in seqs.items():
     seq.Flatten()
 
+seqs["final"].ch0 = seqs["final"].GetShiftChannel(0,6) + seqs["final"].GetShiftChannel(0,12)
+seqs["final"].ch1 += seqs["final"].GetShiftChannel(1,6)
 
-s = SeqToGenSound(seqs["intro"])
+s = SeqToGenSound(seqs[songKey])
 s.play()

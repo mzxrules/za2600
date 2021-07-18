@@ -89,7 +89,7 @@ tbl = [
         "MsOver0",
         "MsIntro0",
         "MsWorld0",
-        "MsNone",
+        "MsFinal0",
         "MsNone",
         
         "MsNone",
@@ -98,7 +98,7 @@ tbl = [
         "MsOver1",
         "MsIntro1",
         "MsWorld1",
-        "MsNone",
+        "MsFinal1",
         "MsNone",
     ]),
     ( "Sfx", [

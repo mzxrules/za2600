@@ -26,11 +26,14 @@ seqs = {
     "over" : Seq("ms_over", 90, 4, game_over_highline, empty_channel),
     "intro": Seq("ms_intro", 150, 1, overworld_intro_highline, overworld_intro_baseline),
     "world": Seq("ms_world", 150, 1, overworld_highline, overworld_baseline),
+    "final": Seq("ms_final", 150, 1, dung_final_highline, dung_final_baseline)
 }
 
 for k, seq in seqs.items():
     seq.Flatten()
 
+seqs["final"].ch0 = seqs["final"].GetShiftChannel(0,9) + seqs["final"].GetShiftChannel(0,15)
+seqs["final"].ch1 = seqs["final"].GetShiftChannel(1,21) + seqs["final"].GetShiftChannel(1,15)
 seqs["dung"].AdjustChannel(0, AdjustDungeonBaseline) 
 seqs["over"].ShiftChannel(0,-10)
 seqs["world"].ShiftChannel(0,-11)
@@ -48,7 +51,8 @@ for c0, c1 in sequences:
     if c0.name == "ms_intro0":
         c0.totalNotes += 1
         c1.totalNotes += 1
-        break
+    if c0.name == "ms_final0":
+        c1.notes = c1.notes[::8] # return every 8th note 
 
 fl = [
     ("{}_note",2, "notes"),

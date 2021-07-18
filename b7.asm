@@ -157,8 +157,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda Bit8-2,x
     and itemMaps
     bne .setMinimapColor
-    ldx #0
-    ldy #2
+    ldy #0
 .setMinimapColor
     sty COLUP1
 
@@ -280,17 +279,16 @@ KERNEL_MAIN: SUBROUTINE ; 192 scanlines
     sta VBLANK
 
 KERNEL_HUD: SUBROUTINE
-    ldy #7
+    ldy #7 ; Draw Height
     lda #0
     sta WSYNC
     beq .loop
 ;=========== Scanline 1A ==============
 .hudScanline1A
+    ldx #3
     sta WSYNC
-    lda #0
     sta GRP0
     sta PF1
-    ldx #3
 .hudShiftDigitLoop
     lda THudDigits,x
     sta THudDigits+2,x
@@ -325,11 +323,11 @@ KERNEL_HUD_LOOP:
     sta GRP0 ; 3
     lda THudHealthH
     sta PF1
+    lda #0
     cpy #5
     beq .hudScanline1A
     cpy #2
     beq .hudScanline1A
-    lda #0
     sta WSYNC
     sta PF1
 ;=========== Scanline 1 ==============
@@ -356,7 +354,7 @@ KERNEL_HUD_LOOP:
 ;=========== Scanline 0 ==============
     bpl .loop
 ; HUD LOOP End
-    lda #85;#76 
+    lda #85
     sta TIM8T ; Delay 8 scanlines
     lda #0
     sta ENAM0

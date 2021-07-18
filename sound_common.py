@@ -134,6 +134,12 @@ class Seq:
         else:
             self.ch1 = ShiftStrSeq(self.ch1, shift)
             
+    def GetShiftChannel(self, chan, shift):
+        if chan == 0:
+            return ShiftStrSeq(self.ch0, shift)
+        else:
+            return ShiftStrSeq(self.ch1, shift)
+            
     def AdjustChannel(self, chan, delegate):
         if chan == 0:
             self.ch0 = delegate(self.ch0)
@@ -206,17 +212,19 @@ def ShiftStrSeq(seq, shift):
     d = StrSeqToDecSeq(seq)
     return DecSeqToStrSeq(ShiftDecSeq(d, shift))
 
-def FindBestSeq(seq):
+def FindBestSeq(seq, scoreDiff = 0):
     dSeq = StrSeqToDecSeq(seq)
     scores = []
-    for shift in range(-36, 26):
+    maxScore = 0
+    for shift in range(-50, 50):
         s = ShiftDecSeq(dSeq, shift)
         nSeq = DecSeqToStrSeq(s)
         scores.append((SeqNoteExistTest(nSeq),SeqPlayableTest(nSeq),shift))
         
     scores.sort(reverse=True)
+    maxScore = scores[0][0]
+    scores = list(filter(lambda x: x[0] >= maxScore-scoreDiff, scores))
     print(scores)
-    quit()
     
 def ListToND(list, dim):
     r = []

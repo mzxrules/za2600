@@ -141,6 +141,9 @@ BANK_5
     INCLUDE "gen/ms_world1_note.asm"
     INCLUDE "gen/ms_intro1_dur.asm"
     INCLUDE "gen/ms_world1_dur.asm"
+    INCLUDE "gen/ms_final0_note.asm"
+    INCLUDE "gen/ms_final0_dur.asm"
+    INCLUDE "gen/ms_final1_note.asm"
     
     align 16
     INCLUDE "gen/ms_header.asm"

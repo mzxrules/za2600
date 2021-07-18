@@ -127,7 +127,7 @@ itemRupees  ds 1
 itemKeys    ds 1 ; Sign bit = Master Key
 itemBombs   ds 1
 itemTri     ds 1
-itemMaps    ds 1
+itemMaps    ds 1 ; Level 2-9
 itemFlags   ds 2
     ITEM SWORD2,    0,$01
     ITEM SWORD3,    0,$02
@@ -294,7 +294,7 @@ BoardKeydoorLX = $0C-1
 BoardKeydoorRX = $74+1
 
 
-ItemTimerSword  = -9 ; counts up to 0
+ItemTimerSword  = <-9 ; counts up to 0
 
 PlState_ItemButtonRepeat    = $80
 PlState_ItemButton          = $40
@@ -327,6 +327,7 @@ MS_PLAY_THEME   = $84 ; Overworld Theme with intro
 MS_PLAY_THEME_L = $85 ; Overworld Theme without intro
 MS_PLAY_RSEQ    = $40 | MS_PLAY_THEME   ; Plays region local sequence
 MS_PLAY_RSEQ_L  = $40 | MS_PLAY_THEME_L ; Plays region local sequence
+MS_PLAY_FINAL   = $86
 
 BIT_01 = Bit8
 BIT_02 = Bit8 + 1
