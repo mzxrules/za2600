@@ -4,6 +4,7 @@
     processor 6502
     INCLUDE "vcs.h"
     INCLUDE "macro.h"
+    INCLUDE "zmacros.asm"
     INCLUDE "vars.asm"
     INCLUDE "gen/const.asm"
 

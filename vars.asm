@@ -1,11 +1,6 @@
 ; ****************************************
 ; * Variables                            *
 ; ****************************************
-    MACRO ITEM
-ITEMV_{1} = itemFlags + {2}
-ITEMF_{1} = {3}
-    ENDM
-    
     SEG.U VARS_ZERO
     ORG $80
 Frame       ds 1
@@ -342,19 +337,3 @@ EN_BLOCKDIR_L = 1
 EN_BLOCKDIR_R = 2
 EN_BLOCKDIR_U = 4
 EN_BLOCKDIR_D = 8
-
-    MACRO LOG_SIZE
-        echo .- {2}+$8000,{2},(.),{1}
-    ENDM
-
-    MACRO VSLEEP
-    bvs .j0
-.j0
-    bvs .j1
-.j1
-    ENDM
-    
-    MACRO VKERNEL1
-r{1} = . - KERNEL_WORLD + rKERNEL + 1
-w{1} = . - KERNEL_WORLD + wKERNEL + 1
-    ENDM
