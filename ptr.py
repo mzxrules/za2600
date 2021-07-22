@@ -108,7 +108,8 @@ tbl = [
         "SfxDef",
         "SfxPlHeal",
         "SfxPlDamage",
-        "SfxSurf"
+        "SfxSurf",
+        "SfxArrow"
     ]),
     ( "PlMoveDir", [
         "PlDirR",

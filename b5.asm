@@ -60,6 +60,13 @@ UpdateAudio_B5: SUBROUTINE
 SfxStabPattern:
     .byte $01, $02, $03, $02, $01
     
+SfxSurfVPattern:
+    .byte 1, 1, 2, 3, 4, 5, 5, 5, 5, 4, 4, 3, 2, 1, 1, 1
+    
+SfxSurfFPattern:
+    .byte 2, 2, 3, 3, 5, 5, 7, 7, 1, 1, 1, 1, 1, 1, 1, 1
+    /* .byte 02, 03, 05, 07, 05, 10, 10, 10 */
+    
 SfxStab: SUBROUTINE
     ldx #8
     stx AUDVT1
@@ -75,13 +82,6 @@ SfxStop:
     lda #0
     sta SfxFlags
     rts
-    
-SfxSurfVPattern:
-    .byte 1, 1, 2, 3, 4, 5, 5, 5, 5, 4, 4, 3, 2, 1, 1, 1
-    
-SfxSurfFPattern:
-    .byte 2, 2, 3, 3, 5, 5, 7, 7, 1, 1, 1, 1, 1, 1, 1, 1
-    /* .byte 02, 03, 05, 07, 05, 10, 10, 10 */
     
 SfxSurf: SUBROUTINE
     ldx #8
@@ -129,6 +129,21 @@ SfxDef: SUBROUTINE
     stx AUDVT1
     ldx #4
     stx AUDFT1
+    rts
+    
+SfxArrowFreq:
+    .byte 2, 6, 11
+    
+SfxArrow: SUBROUTINE
+    ldx SfxCur
+    cpx #3
+    bpl SfxStop
+    lda #8
+    sta AUDCT1
+    lda #8
+    sta AUDVT1
+    lda SfxArrowFreq,x
+    sta AUDFT1
     rts
     
 SfxPlHeal:

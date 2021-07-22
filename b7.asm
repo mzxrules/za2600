@@ -19,6 +19,7 @@ INIT:
     ; set ball
     lda #$60
     sta blY
+    sta m1Y
     
     ; set player stats
     lda #$18
@@ -100,7 +101,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sbc plY
     sta plDY
 
-; player sword draw height
+; player missile draw height
     lda Spr8WorldOff,y;#(ROOM_HEIGHT+8)
     sec
     sbc m0Y
@@ -120,7 +121,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta plSpr+1
 
 ; enemy draw height
-    lda Spr8WorldOff,y;#(ROOM_HEIGHT+8)
+    lda Spr8WorldOff,y
     sec
     sbc enY
     sta enDY
@@ -138,12 +139,14 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta enSpr + 1
     
 .enemy_missile_setup
-    lda #40
+    lda Spr8WorldOff,y
+    sec
+    sbc m1Y
     sta m1DY
     
 .ball_sprite_setup
 ; ball draw height
-    lda Spr8WorldOff,y;#(ROOM_HEIGHT+1)
+    lda Spr8WorldOff,y
     sec
     sbc blY
     sta blDY
@@ -750,24 +753,7 @@ Bit8:
     
 WORLD_ENT: ; Initial room spawns for worlds 0-9
     .byte $77, $73, $79, $00, $00, $00, $F3, $00, $00, $00
-    
-    ;align 4
-SwordWidth4:
-    .byte $20, $20, $10, $10
-SwordWidth8:
-    .byte $30, $30, $10, $10
-SwordHeight4:
-    .byte 1, 1, 3, 3
-SwordHeight8:
-    .byte 1, 1, 7, 7
-SwordOff4X:
-    .byte 8, -2, 4, 4
-SwordOff8X:
-    .byte 8, -6, 4, 4
-SwordOff4Y:
-    .byte 3, 3, -3, 7
-SwordOff8Y:
-    .byte 3, 3, -7, 7
+
     ;align 16
 WorldColors:
     .byte $00, COLOR_DARK_BLUE, $00, COLOR_LIGHT_BLUE, $42, $7A, COLOR_PATH, $06, $02, COLOR_LIGHT_BLUE, COLOR_GREEN_ROCK, COLOR_LIGHT_WATER, $00, COLOR_CHOCOLATE, COLOR_GOLDEN, $0E

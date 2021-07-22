@@ -278,17 +278,115 @@ KeydoorCheck_B6: SUBROUTINE
     lda BANK_RAM + 0
     rts
 
+FireOffX:
 BombOffX:
     .byte 10, -4, 3, 3
+FireOffY:
 BombOffY:
     .byte 2, 2, -5, 9 
     
     .byte -2,  4, -8, 8, -8, 4,  4, -8, 8, -8, 4
 BombAnimDeltaX:
-    .byte -2, -4, 8, 0, -8, 4, -4, 8, 0, -8, 4
+    .byte -2, -4,  8, 0, -8, 4, -4,  8, 0, -8, 4
 BombAnimDeltaY:
     
 PlayerItem_B6: SUBROUTINE
+; ARROW
+    bit plState
+    bvc .skipSpawnArrow
+    ; implement arrow check
+    lda #-32
+    sta plItemTimer
+    ldy plDir
+    sty plItemDir
+    ; Spawn Arrow
+    lda #SFX_ARROW
+    sta SfxFlags
+    lda ArrowWidth8,y
+    sta NUSIZ0_T
+    lda ArrowHeight8,y
+    sta wM0H
+    lda ArrowOff8X,y
+    clc
+    adc plX
+    sta m0X
+    lda ArrowOff8Y,y
+    clc
+    adc plY
+    sta m0Y
+    rts
+    
+.skipSpawnArrow
+    ldy plItemTimer
+    beq .offScreen
+    lda m0X
+    cmp #BoardXL
+    bmi .offScreen
+    cmp #BoardXR
+    bpl .offScreen
+    lda m0Y
+    cmp #BoardYD
+    bmi .offScreen
+    cmp #BoardYU
+    bmi .drawArrow
+.offScreen
+    lda #$80
+    sta m0Y
+    bmi .rts
+.drawArrow
+    ldy plItemDir
+    lda ArrowDeltaX,y
+    clc
+    adc m0X
+    sta m0X
+    lda ArrowDeltaY,y
+    clc
+    adc m0Y
+    sta m0Y
+.rts
+    rts
+
+ArrowDeltaX:
+    .byte 2, -2
+ArrowDeltaY: 
+    .byte 0, 0, -2, 2
+
+PlayerFire_B6: SUBROUTINE
+; FIRE
+    bit plState
+    bvc .skipSpawnFire
+    ; implement fire check
+    lda #-32
+    sta plItemTimer
+    ldx plDir
+    stx plItemDir
+    clc
+    lda FireOffX,x
+    adc plX
+    sta m0X
+    clc
+    lda FireOffY,x
+    adc plY
+    sta m0Y
+    lda #$20
+    sta NUSIZ0_T
+    lda #0
+    sta wM0H
+.skipSpawnFire
+    ldy plItemTimer
+    bne .drawFire
+    lda #$80
+    sta m0Y
+    bmi .rts
+.drawFire
+    tya
+    and #3
+    sta wM0H
+.rts
+    rts
+    
+    
+PlayerBomb_B6: SUBROUTINE
 ; Bombs
     bit plState
     bvc .skipDropBomb
@@ -343,6 +441,33 @@ PlayerItem_B6: SUBROUTINE
     sta m0Y
 .rts
     rts
+    
+        
+    ;align 4
+ArrowWidth4:
+SwordWidth4:
+    .byte $20, $20, $10, $10
+ArrowWidth8:
+SwordWidth8:
+    .byte $30, $30, $10, $10
+ArrowHeight4:
+SwordHeight4:
+    .byte 1, 1, 3, 3
+ArrowHeight8:
+SwordHeight8:
+    .byte 1, 1, 7, 7
+ArrowOff4X:
+SwordOff4X:
+    .byte 8, -2, 4, 4
+ArrowOff8X:
+SwordOff8X:
+    .byte 8, -6, 4, 4
+ArrowOff4Y:
+SwordOff4Y:
+    .byte 3, 3, -3, 7
+ArrowOff8Y:
+SwordOff8Y:
+    .byte 3, 3, -7, 7
 
 PlayerSword_B6: SUBROUTINE
 ; If Item Button, use item
@@ -366,7 +491,7 @@ PlayerSword_B6: SUBROUTINE
     bmi .endSword
     cpy #-1
     beq .drawSword4
-    lda #4
+    lda #4 ; Draw Sword 8
 .drawSword4
     clc
     adc plDir
