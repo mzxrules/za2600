@@ -45,7 +45,7 @@ enState     ds 1
 enHp        ds 1
 enStun      ds 1
 enBlockDir  ds 1
-EN_ENEMY_VARIABLES: 
+EN_ENEMY_VARIABLES:
     ORG EN_ENEMY_VARIABLES
 ; Darknut
     ORG EN_ENEMY_VARIABLES
@@ -60,10 +60,25 @@ enMDX       ds 1
 enMDY       ds 1
     ORG EN_ENEMY_VARIABLES
 ; LikeLike
-enSuccTimer ds 1
+enLLTimer   ds 1
     ORG EN_VARIABLES
 ; Gameover
 enInputDelay ds 1
+    ORG EN_VARIABLES + 1
+; ClearDrop
+;enState     ds 1
+CD_UPDATE_B     = $80
+CD_UPDATE_A     = $40
+CD_LAST_UPDATE  = $01 ; Stores previous frame's active entity
+cdBTimer    ds 1
+cdAType     ds 1 ; Equivalent to enType
+cdBType     ds 1 ; Correspond to GiItems, such that 1 = GiItem 0
+CD_ITEM_RAND = $FF
+cdAX        ds 1
+cdBX        ds 1
+cdAY        ds 1
+cdBY        ds 1
+
     ORG EN_VARIABLES
 En0V        ds 10 ; Zero initialized enemy vars
 EN_0V_END:

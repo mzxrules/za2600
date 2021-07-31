@@ -66,7 +66,7 @@ EnLikeLikeMain: SUBROUTINE
     sta enState
     lda Frame
     and #$3F
-    sta enSuccTimer
+    sta enLLTimer
 .endCheckHit
     
     ; Movement Routine
@@ -89,7 +89,7 @@ EnLikeLikeMain: SUBROUTINE
 .lockInPlace
     lda Frame
     and #$3F
-    cmp enSuccTimer
+    cmp enLLTimer
     bne .skipSuccDamage
     lda #-8
     jsr UPDATE_PL_HEALTH

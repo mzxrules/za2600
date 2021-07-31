@@ -169,7 +169,8 @@ RsText: SUBROUTINE
     rts
     
 RsItem: SUBROUTINE
-    lda roomENCount
+    lda enType
+    cmp #EN_CLEAR_DROP
     bne .rts
     ldx roomId
     ldy worldBank
@@ -178,11 +179,11 @@ RsItem: SUBROUTINE
     bmi .NoLoad
     
     lda #$40
-    sta enX
+    sta cdAX
     lda #$2C
-    sta enY
+    sta cdAY
     lda #EN_ITEM
-    sta enType
+    sta cdAType
 .NoLoad
     lda BANK_RAM + 0
     lda #0
@@ -225,18 +226,44 @@ RsGameOver: SUBROUTINE
     rts
     
 GiItemDel: SUBROUTINE
-    ldx roomEX
     lda ItemIdH,x
     pha
     lda ItemIdL,x
     pha
     rts
     
-GiBomb:
-GiRupee5:
-GiRecoverHeart:
-GiFairy:
+GiBomb: SUBROUTINE
+    sed
+    clc
+    lda itemBombs
+    adc #4
+    cmp #$16
+    bmi .skipCap
+    lda #$16
+.skipCap
+    sta itemBombs
+    cld
     rts
+    
+GiRupee5: SUBROUTINE
+    sed
+    clc
+    lda itemRupees
+    adc #1
+    bcc .skipCap
+    lda #$99
+.skipCap
+    sta itemRupees
+    cld
+    rts
+    
+GiFairy: SUBROUTINE
+    lda #8*5
+    bpl .setHealth
+GiRecoverHeart:
+    lda #8
+.setHealth
+    jmp UPDATE_PL_HEALTH
 
 GiSword2:
 GiSword3:
@@ -283,6 +310,8 @@ GiMasterKey:
     rts
     
 GiHeart:
+    lda #MS_PLAY_GI
+    sta SeqFlags
     clc
     lda #8
     adc plHealthMax
@@ -290,8 +319,6 @@ GiHeart:
     lda #8
     adc plHealth
     sta plHealth
-    lda #MS_PLAY_GI
-    sta SeqFlags
     rts
     
 GiMap:
@@ -315,25 +342,39 @@ GiItemColors:
 ;==============================================================================
 ; ENTITY
 ;==============================================================================
+EnClearDrop: SUBROUTINE
+    lda enState
+    and #1
+    tay
+    lda Bit8+6,y
+    and enState
+    beq .endCollisionCheck ; Entity not active
     
-EnItem: SUBROUTINE
-    lda #>SprItem0
-    sta enSpr+1
-    ldy roomEX
-    lda GiItemColors,y
-    sta enColor
-    lda roomEX
-    asl
-    asl
-    asl
-    clc
-    adc #<SprItem0
-    sta enSpr
     lda CXPPMM
-    bpl .rts
+    bpl .endCollisionCheck ; Player hasn't collided with Entity
+    
+    cpy #0
+    beq .EnItemCollision ; Potentially collided with permanent item
+    
+    ; Collided with random drop
+    ldx cdBType
+    beq .endCollisionCheck ; Safety check
+    dex ; convert cdBType to GiType
+    lda #SFX_ITEM_PICKUP
+    sta SfxFlags
+    jsr GiItemDel
+    lda #EN_NONE
+    sta cdBType
+    jmp .endCollisionCheck
+
+.EnItemCollision
+    lda cdAType
+    cmp #EN_ITEM
+    bne .endCollisionCheck
+
     ; item collected
     lda #EN_NONE
-    sta enType
+    sta cdAType
     ldx roomId
     ldy worldBank
     lda BANK_RAM + 1,y
@@ -341,9 +382,128 @@ EnItem: SUBROUTINE
     ora #$80
     sta wRoomFlag,x
     lda BANK_RAM + 0
+    ldx roomEX
     jsr GiItemDel
+    
+.endCollisionCheck
+    ; Select active entity
+    lda #0
+    ldx cdAType
+    beq .ATypeNotLoaded
+    ora #CD_UPDATE_A
+.ATypeNotLoaded
+    ldy cdBType
+    beq .BTypeNotLoaded
+    ora #CD_UPDATE_B
+.BTypeNotLoaded
+    sta enState
+    lda enState
+    bne .execute
+    
+    ; Nothing to execute
+    lda #$F0
+    sta enSpr+1
+    lda #$00
+    sta enSpr
+    rts
+    
+.execute
+    tax ; x = enState
+    lda Frame
+    and #4
+    bne .TryTypeB
+.TryTypeA
+    txa
+    and #CD_UPDATE_A
+    bne .TypeA
+.TypeB
+    jmp EnClearDropTypeB
+.TryTypeB
+    txa
+    and #CD_UPDATE_B
+    bne .TypeB
+.TypeA
+
+EnClearDropTypeA: SUBROUTINE
+    ldx cdAX
+    stx enX
+    ldy cdAY
+    sty enY
+    
+    lda cdAType
+    cmp #EN_ITEM
+    beq EnItem
+    cmp #EN_STAIRS
+    bne .rts
+    
+EnStairs:
+    lda rFgColor
+    sta enColor
+    lda #<SprE31
+    sta enSpr
+    lda #>SprE31
+    sta enSpr+1
+
+    cpx plX
+    bne .rts
+    cpy plY
+    bne .rts
+    lda roomEX
+    sta roomId
+    lda roomFlags
+    ora #RF_LOAD_EV
+    sta roomFlags
+    rts
+    
+EnItem:; SUBROUTINE
+    ldy roomEX
+EnItemDraw: ; y == itemDraw
+    lda #>SprItem0
+    sta enSpr+1
+    lda GiItemColors,y
+    sta enColor
+    tya
+    asl
+    asl
+    asl
+    clc
+    adc #<SprItem0
+    sta enSpr
 .rts
     rts
+    
+; Random Item Drops
+EnClearDropTypeB: SUBROUTINE
+    inc enState
+    lda cdBX
+    sta enX
+    lda cdBY
+    sta enY
+    
+    lda cdBType
+    cmp #CD_ITEM_RAND
+    bne .skipRollItem
+    
+    ldx #EN_NONE
+    jsr Random
+    cmp #255 ;drop rate odds
+    bcs .rollEnd
+    jsr Random
+    and #3
+    tay
+    lda EnRandomDrops,y
+    tax
+    inx
+.rollEnd
+    stx cdBType
+.skipRollItem
+    ldy cdBType
+    dey
+    bpl EnItemDraw
+    rts
+    
+EnRandomDrops:
+    .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
     
 EnTriforce: SUBROUTINE
     lda #>SprItem6
@@ -512,40 +672,18 @@ RsStairs:
     and #RF_CLEAR
     beq .rts
     lda #$40
-    sta enX
+    sta cdAX
     lda #$2C
-    sta enY
+    sta cdAY
     lda #EN_STAIRS
-    sta enType
-.rts
-    rts
-    
-EnStairs: SUBROUTINE
-    lda rFgColor
-    sta enColor
-    lda #<SprE31
-    sta enSpr
-    lda #>SprE31
-    sta enSpr+1
-
-    lda enX
-    cmp plX
-    bne .rts
-    lda enY
-    cmp plY
-    bne .rts
-    lda roomEX
-    sta roomId
-    lda roomFlags
-    ora #RF_LOAD_EV
-    sta roomFlags
+    sta cdAType
 .rts
     rts
     
 EnSysEncounter:
     .byte EN_NONE, EN_DARKNUT, EN_LIKE_LIKE, EN_OCTOROK, EN_WALLMASTER, EN_BOSS_CUCCO
 EnSysEncounterCount:
-    .byte 0, 2, 2, 1, 1
+    .byte 0, 1, 2, 1, 1
     
 EnSystem: SUBROUTINE
     ; precompute room clear flag helpers because it's annoying
@@ -567,7 +705,7 @@ EnSystem: SUBROUTINE
     
     ; If room load this frame, setup new encounter
     bit roomFlags
-    bvs .checkRoomClear
+    bvs .checkRoomClear ; #RF_LOADED_EV
     
     ; Else, if enemy clear event flag set, set enemy clear flag
     lda roomFlags
@@ -677,16 +815,23 @@ EnSpawnPF2Mask:
     LOG_SIZE "EnRandSpawn", EnRandSpawn
     
 EnSysEnDie:
-    lda #$80
-    sta enY
-    lda #EN_NONE
-    sta enType
     dec roomENCount
-    bne .rts
+    bne .continueEncounter
     ; Set room clear flag
     lda #RF_ENCLEAR_EV
     ora roomFlags
     sta roomFlags
+    
+    lda enX
+    sta cdBX
+    lda enY
+    sta cdBY
+    
+.continueEncounter
+    lda #$80
+    sta enY
+    lda #EN_NONE
+    sta enType
 .rts
     rts
     
@@ -711,4 +856,26 @@ RoomScriptDel:
     pha
     lda RoomScriptL,x
     pha
+    rts
+    
+ClearDropSystem: SUBROUTINE
+    lda enType
+    bne .rts
+    lda roomFlags
+    and #RF_ENCLEAR_EV | #RF_CLEAR
+    beq .rts
+    
+    ldy #EN_CLEAR_DROP
+    sty enType
+    ldx #0
+    stx enState
+    stx cdBTimer
+    stx cdAType
+    stx cdBType
+    
+    and #RF_ENCLEAR_EV
+    beq .rts
+    dec cdBType
+    
+.rts
     rts

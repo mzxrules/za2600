@@ -92,7 +92,7 @@ SfxSurf: SUBROUTINE
     sta AUDVT1
     lda SfxSurfFPattern,y
     sta AUDFT1
-    cpy #(SfxSurf-SfxSurfFPattern)
+    cpy #(SfxSurfFPattern-SfxSurfVPattern)
     bpl SfxStop
     rts
     
@@ -107,6 +107,7 @@ SfxBomb: SUBROUTINE
     sta AUDCT1
     rts
     
+SfxPlHeal:
 SfxItemPickup: SUBROUTINE
     lda SfxCur
     cmp #4
@@ -146,7 +147,6 @@ SfxArrow: SUBROUTINE
     sta AUDFT1
     rts
     
-SfxPlHeal:
 SfxPlDamage: SUBROUTINE
     ldx SfxCur
     cpx #7
@@ -173,7 +173,7 @@ SfxDel:
 AudioChannel: SUBROUTINE
     lda Mul8,x
     ora SeqFlags
-    and #$0F  
+    and #$0F
     sta Temp0 ; SeqId
     
     ; Test if next note should be played

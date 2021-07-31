@@ -39,7 +39,11 @@ BANK_1
     INCBIN "world/w0ex.bin"
     INCBIN "world/w0ex.bin"
     
-	repeat 512
+	repeat 256
+	.byte $00
+	repend
+
+	repeat 256
 	.byte $00
 	repend
     

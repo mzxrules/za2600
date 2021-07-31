@@ -15,6 +15,7 @@ def ToAsm(data, n=16):
 tbl = [
     ( "Entity", [
         "EnNone",
+        "EnClearDrop",
         "EnDarknut",
         "EnWallmaster",
         "EnOctorok",

@@ -30,7 +30,7 @@ TextSetPosition: SUBROUTINE
     jsr SetHorizPos
     jmp .end_position
 
-.position_frame_1    
+.position_frame_1
     lda #40
     ldx #0
     jsr SetHorizPos
@@ -141,7 +141,7 @@ Frame0Text
     ora right_text+1,x      ; 4     (69)
 
     ; Text line 2 / 5
- 
+    
     ;line 1
     sta WSYNC               ; 3     (0)
     sty COLUP0              ; 3     (3)
@@ -201,7 +201,7 @@ Frame0Text
     ora right_text+2,x      ; 4     (69)
 
     ; Text line 3 / 5
- 
+    
     ;line 1
     sta WSYNC               ; 3     (0)
     sty COLUP0              ; 3     (3)
@@ -261,7 +261,7 @@ Frame0Text
     ora right_text+3,x      ; 4     (69)
 
     ; Text line 4 / 5
- 
+    
     ;line 1
     sta WSYNC               ; 3     (0)
     sty COLUP0              ; 3     (3)
@@ -321,7 +321,7 @@ Frame0Text
     ora right_text+4,x      ; 4     (69)
 
     ; Text line 5 / 5
- 
+    
     ;line 1
     sta WSYNC               ; 3     (0)
     sty COLUP0              ; 3     (3)

@@ -505,6 +505,9 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 .skipCollisionPosReset
     
     lda BANK_ROM + 4
+.ClearDropSystem:
+    jsr ClearDropSystem
+    
 .EnSystem:
     jsr EnSystem
     
@@ -518,8 +521,8 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 ; Update Room Flags
     lda #RF_NO_ENCLEAR
     bit roomFlags
-    bvs .endUpdateRoomFlags
-    bne .endUpdateRoomFlags
+    bvs .endUpdateRoomFlags ; RF_LOADED_EV
+    bne .endUpdateRoomFlags ; RF_NO_ENCLEAR
     lda roomENCount
     bne .endUpdateRoomFlags
     lda roomFlags
@@ -860,7 +863,7 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     lda (plSpr),y   ; 5
     
     sta GRP0        ; 3
-; PF1R first line   
+; PF1R first line
     lda rPF1RoomR,x ; 4
     sta PF1         ; 3
     
@@ -920,12 +923,12 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     rts
 
     LOG_SIZE "-KERNEL WORLD-", KERNEL_WORLD
-        
+    
 BANK_7_FREE:
     ORG $3FE0-$51
     RORG $FFE0-$51
         LOG_SIZE "-BANK 7- FREE", BANK_7_FREE
-        
+    
 ;==============================================================================
 ; PosWorldObjects
 ;----------
@@ -952,7 +955,7 @@ DivideLoop
 ; scn cycle 67
     dex ; 69
     bpl .Loop ; 72
-        
+    
     sta WSYNC
     sta HMOVE
     rts
@@ -961,7 +964,7 @@ DivideLoop
 ;----------
 ; Positions all HUD elements within a single scanline
 ;----------
-; Timing Notes: 
+; Timing Notes:
 ; $18 2 iter (9) + 15 = 24
 ; $18
 ; $60 7 iter (34) + 15 = 49

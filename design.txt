@@ -31,6 +31,7 @@ Game Loop:
     Draw World
     Test Board Exit
     Test Player Phases through walls / collision reset
+    Process ClearDrop
     Process Enemy System
     Process Room Script
     Process Ball Script
@@ -259,7 +260,43 @@ end  26.27
 KeydoorCheck -> Kernel Main loop
      1.63
     14.06
+
+ClearDrop System:
+
+Two slots: A, B 
+Stairs / Key Items, Random Item Drops
+
+RoomScript configures A, EnemySystem configures B
+RoomScript will wait for enType to be #EnClearDrop
+
+On EnSysEnDie, set enType to #EN_NONE
+Set cdBX/cdBY to enX/enY
+
+
+The ClearDrop system will init the rest of the system on #RF_ENCLEAR_EV
+
+If enType == #EN_NONE and (roomFlags & (#RF_ENCLEAR_EV or #RF_CLEAR))
+    set enType to #EnClearDrop
+    zero enState, cdBTimer, cdAType, cdBType
+    if #RF_ENCLEAR_EV
+        set cdBType #CD_ITEM_RAND 
+
+EnClearDrop:
+    Process previous frame's collision
+         if #CD_LAST_UPDATE indexes an inactive actor, skip
+
+    Set CD_UPDATE_A, CD_UPDATE_B based on cdA/BType being non-zero
     
+    if CD_UPDATE_A, CD_UPDATE_B == 0 rts
+    
+    if CD_UPDATE_A, not CD_UPDATE_B, run CD_UPDATE_A x == 1
+    
+    if not CD_UPDATE_A, CD_UPDATE_B, run CD_UPDATE_B x == 1
+
+    if CD_UPDATE_A and CD_UPDATE_B
+        a = Frame & 1
+        if a == 0, run CD_UPDATE_A, x == 2
+        else run CD_UPDATE_B, x == 2
     
 Enemy Spawn Routine: 
 

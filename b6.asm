@@ -290,7 +290,7 @@ BombAnimDeltaX:
     .byte -2, -4,  8, 0, -8, 4, -4,  8, 0, -8, 4
 BombAnimDeltaY:
     
-PlayerItem_B6: SUBROUTINE
+PlayerArrow_B6: SUBROUTINE
 ; ARROW
     bit plState
     bvc .skipSpawnArrow
@@ -442,7 +442,7 @@ PlayerBomb_B6: SUBROUTINE
 .rts
     rts
     
-        
+    
     ;align 4
 ArrowWidth4:
 SwordWidth4:
@@ -469,6 +469,7 @@ ArrowOff8Y:
 SwordOff8Y:
     .byte 3, 3, -7, 7
 
+PlayerItem_B6: SUBROUTINE
 PlayerSword_B6: SUBROUTINE
 ; If Item Button, use item
     bit plState
@@ -510,7 +511,7 @@ PlayerSword_B6: SUBROUTINE
     sta m0Y
 .endSword
     rts
- 
+    
     align 4
 KeydoorMask:
     ; S/N/E/W
@@ -521,7 +522,7 @@ KeydoorFlagB:
     .byte $01, $04, $40, $10
 KeydoorRoomOff:
     .byte $10, $F0, $01, $FF
-   
+    
     align 4
 WorldDoorPF1Up:
     .byte $C0, $C0, $FF, $FF
