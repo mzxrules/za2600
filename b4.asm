@@ -141,7 +141,7 @@ RsNeedTriforce:
     sta wPF1RoomL,y
     sta wPF2Room,y
     sta wPF1RoomR,y
-    lda #4
+    lda #TEXT_NEED_TRIFORCE
     sta roomEX
     jmp RsText
 .rts

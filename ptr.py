@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import re
+from dataclasses import dataclass, field
 
 def ToAsm(data, n=16):
     result = ""
@@ -12,8 +13,32 @@ def ToAsm(data, n=16):
         cur += n
     return result
 
+@dataclass
+class GameEnum:
+    name: str
+    shortName: str
+    genEditorBindings: bool
+    genPtrTable: bool
+    genConstants: bool
+    vals: list = field(default_factory=list) 
+    
+    def __post_init__(self):
+        if self.shortName == None:
+            shortName = name
+            
+    def EnumFunc(self, x):
+        if self.name == "Sfx":
+            return 0x81 + x
+        elif self.name == "Text":
+            return x * 4
+        return x
+
 tbl = [
-    ( "Entity", [
+    GameEnum("Entity", "En",
+    genEditorBindings=False,
+    genPtrTable=True, 
+    genConstants=True,
+    vals=[
         "EnNone",
         "EnClearDrop",
         "EnDarknut",
@@ -28,7 +53,11 @@ tbl = [
         "EnSpectacleOpen",
         "EnItem"
     ]),
-    ( "RoomScript", [
+    GameEnum("RoomScript", "Rs",
+    genEditorBindings=True,
+    genPtrTable=True, 
+    genConstants=True,
+    vals=[
         "RsNone",
         "RsCentralBlock",
         "RsWorldMidEnt",
@@ -43,7 +72,11 @@ tbl = [
         "RsText",
         "RsGameOver"
     ]),
-    ( "Ball", [
+    GameEnum("Ball", "Bl",
+    genEditorBindings=False,
+    genPtrTable=True, 
+    genConstants=True,
+    vals=[
         "BlNone",
         # Ball movement ids must be 1-4
         "BlR",
@@ -53,7 +86,11 @@ tbl = [
         "BlPushBlock",
     ]
     ),
-    ( "ItemId", [
+    GameEnum("ItemId", "Gi",
+    genEditorBindings=True,
+    genPtrTable=True, 
+    genConstants=True,
+    vals=[
         "GiRecoverHeart",
         "GiFairy",
         "GiBomb",
@@ -82,7 +119,11 @@ tbl = [
         "GiBracelet",
         "GiMap"
     ]),
-    ( "MusicSeq", [
+    GameEnum("MusicSeq", "Ms",
+    genEditorBindings=False,
+    genPtrTable=True, 
+    genConstants=False,
+    vals=[
         "MsNone",
         "MsDung0",
         "MsGI0",
@@ -101,7 +142,11 @@ tbl = [
         "MsFinal1",
         "MsNone",
     ]),
-    ( "Sfx", [
+    GameEnum("Sfx", "Sfx",
+    genEditorBindings=False,
+    genPtrTable=True, 
+    genConstants=True,
+    vals=[
         "SfxStab",
         "SfxBomb",
         "SfxItemPickup",
@@ -111,72 +156,91 @@ tbl = [
         "SfxSurf",
         "SfxArrow"
     ]),
-    ( "PlMoveDir", [
+    GameEnum("PlMoveDir", "PlDir",
+    genEditorBindings=False,
+    genPtrTable=True, 
+    genConstants=True,
+    vals=[
         "PlDirR",
         "PlDirL",
         "PlDirD",
         "PlDirU"
     ]),
-    ( "EnMoveDir", [
+    GameEnum("EnMoveDir", "EnDir",
+    genEditorBindings=False,
+    genPtrTable=True, 
+    genConstants=True,
+    vals=[
         "EnDirL",
         "EnDirR",
         "EnDirU",
         "EnDirD"
-    ])
+    ]),
+    GameEnum("Text", "Text",
+    genEditorBindings=True,
+    genPtrTable=True, 
+    genConstants=True,
+    vals=[
+        "TextGameover",
+        "TextNeedTriforce",
+        "Text2",
+        "Text3"
+    ]),
 ]
 
 def ToSnakeCase(str):
     return re.sub(r'(?<!^)(?=[A-Z])', '_', str).upper()
 
-def DumpEditorBindings(name, list, out):
-    ShortNames = {
-        "RoomScript" : "Rs",
-        "ItemId" : "Gi",
-    }
-    sn = ShortNames[name]
-    out[0] += f'set "{sn}Count" to {len(list)}\n'
+def GetEditorBindings(sn, list, out):
+    out += f'set "{sn}Count" to {len(list)}\n'
     for i in range(len(list)):
-        out[0] += f'set "${sn}{i}" to "{list[i]}"\n'
-        out[0] += f'set "{list[i]}" to {i}\n'
-    
-def DumpPtrAsm(editorBindings):
+        out += f'set "${sn}{i}" to "{list[i]}"\n'
+        out += f'set "{list[i]}" to {i}\n'
+        
+def DumpEditorBindings():
+    editorBindings = ""
+    for e in tbl:
+        if e.genEditorBindings:
+            GetEditorBindings(e.shortName, e.vals, editorBindings)
+            
+    with open(f'gen/editor_bindings.txt', "w") as file:
+        file.write(editorBindings)      
+
+def DumpConstants():
     const = []
     constLen = 0
-    for name, list in tbl:
-        out = ""
-        if name == "RoomScript":
-            DumpEditorBindings(name, list, editorBindings)
-        elif name == "ItemId":
-            DumpEditorBindings(name, list, editorBindings)
-            
-        l = []
-        h = []
-        
+    for e in tbl:
         idx = 0
-        if name == "Sfx":
-            idx = 0x81
-            
-        for item in list:
-            l.append(f"<({item}-1)")
-            h.append(f">({item}-1)")
-            if name != "MusicSeq":
-                temp = (ToSnakeCase(item), name, idx)
+        for item in e.vals:
+            if e.genConstants:
+                temp = (ToSnakeCase(item), e.name, e.EnumFunc(idx))
                 const.append(temp)
-                length = len(temp[0]) 
+                length = len(temp[0])
                 if length > constLen:
                     constLen = length
             idx += 1
             
-        out += f"{name}L:\n" + ToAsm(l,8) + '\n'
-        out += f"{name}H:\n" + ToAsm(h,8)
-        
-        with open(f'gen/{name}.asm', "w") as file:
-            file.write(out)
-    out = DumpConst(const, constLen)
+    out = GetConstants(const, constLen)
     with open("gen/const.asm", "w") as file:
         file.write(out)
+
+def DumpPtrAsm():
+    for e in tbl:
+        out = ""
+        l = []
+        h = []
+            
+        for item in e.vals:
+            l.append(f"<({item}-1)")
+            h.append(f">({item}-1)")
+            
+        out += f"{e.name}L:\n" + ToAsm(l,8) + '\n'
+        out += f"{e.name}H:\n" + ToAsm(h,8)
+        
+        with open(f'gen/{e.name}.asm', "w") as file:
+            file.write(out)
     
-def DumpConst(const, l):
+def GetConstants(const, l):
     lastName = None
     out = ""
     for sym, name, i in const:
@@ -187,9 +251,8 @@ def DumpConst(const, l):
             lastName = name
         out += f"{sym:<{l}} = ${i:02X}\n"
     return out
-
-editorBindings = [""]
-DumpPtrAsm(editorBindings)
-with open(f'gen/editor_bindings.txt', "w") as file:
-    file.write(editorBindings[0])   
+    
+DumpPtrAsm()
+DumpConstants()
+DumpEditorBindings()
 print("Update Ptr Tables")
