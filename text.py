@@ -480,6 +480,8 @@ mesg = [
     "012345678901234567890123",
     "        GAME OVER       ",
     " PRESS FIRE TO CONTINUE ",
+    "  ONES WHO DO NOT HAVE  ",
+    "  TRIFORCE CAN'T GO IN  ",
     "  IT'S DANGEROUS TO GO  ",
     "   ALONE! TAKE THIS.    ",
 ]

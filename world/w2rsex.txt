@@ -182,6 +182,10 @@ RsNone
 zz0
 RsNone
 zz0
+RsItem
+zz6
+RsItem
+zz21
 RsNone
 zz0
 RsNone
@@ -214,11 +218,7 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
-zz0
-RsNone
-zz0
-RsNone
+RsNeedTriforce
 zz0
 RsNone
 zz0
@@ -248,9 +248,9 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
+RsDiamondBlockStairs
 zz0
-RsNone
+RsDungExit
 zz0
 RsNone
 zz0

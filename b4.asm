@@ -125,8 +125,26 @@ EnNone:
     sta enY
 RsNone:
 RsWorldMidEnt:
-RsNeedTriforce:
 RsFairyFountain:
+    rts
+    
+RsNeedTriforce:
+    ldy #7
+    cpy itemTri
+    bmi .rts
+    
+    lda #RF_NO_ENCLEAR
+    ora roomFlags
+    sta roomFlags
+    
+    lda #$FF
+    sta wPF1RoomL,y
+    sta wPF2Room,y
+    sta wPF1RoomR,y
+    lda #4
+    sta roomEX
+    jmp RsText
+.rts
     rts
     
 RsRaftSpot: SUBROUTINE
@@ -453,15 +471,24 @@ EnStairs:
     lda roomFlags
     ora #RF_LOAD_EV
     sta roomFlags
+.rts
     rts
     
 EnItem:; SUBROUTINE
     ldy roomEX
-EnItemDraw: ; y == itemDraw
+EnItemDraw: SUBROUTINE ; y == itemDraw
     lda #>SprItem0
     sta enSpr+1
     lda GiItemColors,y
-    sta enColor
+    tax
+    cpy #5
+    bpl .skipItemColor
+    lda Frame
+    and #$10
+    beq .skipItemColor
+    ldx #COLOR_LIGHT_BLUE
+.skipItemColor
+    stx enColor
     tya
     asl
     asl
@@ -504,26 +531,6 @@ EnClearDropTypeB: SUBROUTINE
     
 EnRandomDrops:
     .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
-    
-EnTriforce: SUBROUTINE
-    lda #>SprItem6
-    sta enSpr+1
-    lda #<SprItem6
-    sta enSpr
-    lda #$4C
-    sta enX
-    lda #$2C
-    sta enY
-    lda Frame
-    and #$10
-    bne .TriforceBlue
-
-    lda #COLOR_TRIFORCE
-    .byte $2C
-.TriforceBlue
-    lda #COLOR_LIGHT_BLUE
-    sta enColor
-    rts
     
 RsDungMidEnt: SUBROUTINE
     lda plX

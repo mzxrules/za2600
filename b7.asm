@@ -755,11 +755,11 @@ Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
     
 WORLD_ENT: ; Initial room spawns for worlds 0-9
-    .byte $77, $73, $79, $00, $00, $00, $F3, $00, $00, $00
+    .byte $77, $73, $79, $00, $00, $00, $F3, $00, $00, $FE
 
     ;align 16
 WorldColors:
-    .byte $00, COLOR_DARK_BLUE, $00, COLOR_LIGHT_BLUE, $42, $7A, COLOR_PATH, $06, $02, COLOR_LIGHT_BLUE, COLOR_GREEN_ROCK, COLOR_LIGHT_WATER, $00, COLOR_CHOCOLATE, COLOR_GOLDEN, $0E
+    .byte $00, COLOR_DARK_BLUE, $00, COLOR_LIGHT_BLUE-2, $42, $7A, COLOR_PATH, $06, $02, COLOR_LIGHT_BLUE-2, COLOR_GREEN_ROCK, COLOR_LIGHT_WATER, $00, COLOR_CHOCOLATE, COLOR_GOLDEN, $0E
 HealthPattern:
     .byte $00, $01, $03, $07, $0F, $1F, $3F, $7F, $FF 
 
@@ -784,7 +784,7 @@ UPDATE_PL_HEALTH: SUBROUTINE
     bpl .playSfx
     bit plStun
     bmi .rts
-    ldx #-24
+    ldx #-48
     stx plStun
     ldy #SFX_PL_DAMAGE
 .playSfx

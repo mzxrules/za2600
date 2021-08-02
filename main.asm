@@ -40,7 +40,7 @@ BANK_1
     INCBIN "world/w0ex.bin"
     
 	repeat 256
-	.byte $00
+	.byte $01
 	repend
 
 	repeat 256

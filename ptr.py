@@ -26,7 +26,6 @@ tbl = [
         "EnLikeLikeMain",
         "EnStairs",
         "EnSpectacleOpen",
-        "EnTriforce",
         "EnItem"
     ]),
     ( "RoomScript", [

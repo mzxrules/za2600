@@ -134,8 +134,8 @@ RsNone
 zz0
 RsFairyFountain
 zz0
-RsNone
-zz0
+RsDungMidEnt
+zz9
 RsDungMidEnt
 zz4
 RsNone

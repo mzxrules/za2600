@@ -80,12 +80,12 @@ SprMap8:
     .byte $7E ; |.XXXXXX.|
     .byte $00 ; |........|
 SprMap9:
+    .byte $5A ; |.X.XX.X.|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
     .byte $7E ; |.XXXXXX.|
-    .byte $02 ; |......X.|
-    .byte $02 ; |......X.|
-    .byte $7E ; |.XXXXXX.|
-    .byte $42 ; |.X....X.|
-    .byte $42 ; |.X....X.|
-    .byte $7E ; |.XXXXXX.|
-    .byte $00 ; |........|
 
