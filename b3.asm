@@ -53,7 +53,7 @@ TextDisplayLoop:
     and #$01        ; a ==   x1
     eor #1
     ora TextLoop    ; a ==   11
-    ora mesgId      ; a == 1111
+    ora mesgId      ; a ==  111
     tax
     lda MesgAL,x
     sta TMesgPtr

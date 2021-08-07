@@ -11,11 +11,20 @@ mdata = []
 
 def PackRoomAndDoorData(bankId, levels):
     def PackStep(room, doors, type):
-        roomMask = [0xF1, 0xF1, 0xF3]
-        doorMask = [0x07, 0xE0, 0x18]
+        # Since playfield sprites are 16 bytes long, we store the middle two digits of the PF sprite address
+        # We further optimize by swapping the two digits; this lets us use simple AND masks and ORs to
+        # construct the final address
+        # e.g. spr index 0x18 is addressed to 0xF180. If stored as 0x81 instead, the digits line up
+        # 0xF0 00 = full address
+        #   X1 8x = 0x81 in A reg, repeated to show what I mean.
+        #
+        # PF1L and PF1R reserve 5 bits, while PF2 reserve 6 bits, leaving 8 bits for the 1 byte "door" data
+        # Chunking of the door byte is done in a way to minimize shifts
+        roomMask = [0xF1, 0xF1, 0xF3] # PF1L, PF1R, PF2 final packed layout
+        doorMask = [0x07, 0xE0, 0x18] # bits to extract from the "door" byte, mapped to PF1L, PF1R, PF2 
         # pack    >> -1, >>  4, >>  1
         # extract >>  1, >> -4, >> -1
-        doorRshift = [8-1, 8+4, 8+1]
+        doorRshift = [8-1, 8+4, 8+1] 
         doors &= doorMask[type]
         doors <<= 8
         doors >>= doorRshift[type]
@@ -46,11 +55,11 @@ def PackRoomAndDoorData(bankId, levels):
         for i in range(3):
             file.write("; {}\n".format(names[i]))
             file.write(ToAsm(worldstrip[i],16))
-         
-for i in range(3):
+
+for worldId in range(3):
     level = []
-    for j in range(3):
-        with open(files[j].format(i), "rb") as file:
+    for i in range(3):
+        with open(files[i].format(worldId), "rb") as file:
             level.append(list(file.read()))
     mdata.append(level)    
 

@@ -33,17 +33,22 @@ MINIMAP
 BANK_1
     INCLUDE "gen/world/b1world.asm"
     INCBIN "world/w0co.bin"
-    INCBIN "world/w0co.bin"
+    .byte $0F
+    INCLUDE "kworld.asm"
     INCBIN "world/w0rs.bin"
-    INCBIN "world/w0rs.bin"
-    INCBIN "world/w0ex.bin"
+    .byte #RS_NONE
+    ORG $0800+0x500
+    RORG $F000+0x500
     INCBIN "world/w0ex.bin"
     
-	repeat 256
+    ORG $0800+0x600
+    RORG $F000+0x600
+    
+	repeat 0x100
 	.byte $01
 	repend
 
-	repeat 256
+	repeat 0x100
 	.byte $00
 	repend
     
@@ -207,6 +212,7 @@ ENTRY: SUBROUTINE
     ; loRamBank = 0
     
     ; kernel transfer
+    lda BANK_ROM+1
     ldy #KERNEL_LEN
 .initWorldKernMem
     lda KERNEL_WORLD-1,y

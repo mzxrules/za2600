@@ -147,6 +147,29 @@ RsNeedTriforce:
 .rts
     rts
     
+EnShopkeeper: SUBROUTINE
+    ldy #GI_RUPEE5
+    jsr EnItemDraw
+    
+    lda #%0110
+    sta NUSIZ1_T
+    
+    lda #$20
+    sta enX
+    lda #$30
+    sta enY
+    rts
+    
+RsShop:
+    lda #RF_NO_ENCLEAR
+    ora roomFlags
+    sta roomFlags
+    lda #EN_SHOPKEEPER
+    sta enType
+    lda #TEXT3
+    sta roomEX
+    jmp RsText
+    
 RsRaftSpot: SUBROUTINE
     lda plState
     and #$20
@@ -348,15 +371,6 @@ GiMap:
     sta SfxFlags
     rts
     
-GiItemColors:
-    .byte COLOR_DARKNUT_RED, COLOR_DARKNUT_RED, COLOR_DARKNUT_BLUE, COLOR_DARKNUT_BLUE
-    .byte COLOR_TRIFORCE, COLOR_DARKNUT_RED, COLOR_TRIFORCE, COLOR_TRIFORCE
-    .byte $06, $0E, COLOR_DARKNUT_BLUE, COLOR_DARKNUT_RED
-    .byte $0E, COLOR_DARKNUT_RED, COLOR_DARKNUT_BLUE, $F0
-    
-    .byte COLOR_TRIFORCE, COLOR_DARKNUT_RED, $F0, COLOR_TRIFORCE
-    .byte COLOR_DARKNUT_RED, COLOR_TRIFORCE
-    
 ;==============================================================================
 ; ENTITY
 ;==============================================================================
@@ -449,10 +463,11 @@ EnClearDropTypeA: SUBROUTINE
     sty enY
     
     lda cdAType
-    cmp #EN_ITEM
-    beq EnItem
     cmp #EN_STAIRS
+    beq EnStairs
+    cmp #EN_ITEM
     bne .rts
+    jmp EnItem
     
 EnStairs:
     lda rFgColor
@@ -471,31 +486,6 @@ EnStairs:
     lda roomFlags
     ora #RF_LOAD_EV
     sta roomFlags
-.rts
-    rts
-    
-EnItem:; SUBROUTINE
-    ldy roomEX
-EnItemDraw: SUBROUTINE ; y == itemDraw
-    lda #>SprItem0
-    sta enSpr+1
-    lda GiItemColors,y
-    tax
-    cpy #5
-    bpl .skipItemColor
-    lda Frame
-    and #$10
-    beq .skipItemColor
-    ldx #COLOR_LIGHT_BLUE
-.skipItemColor
-    stx enColor
-    tya
-    asl
-    asl
-    asl
-    clc
-    adc #<SprItem0
-    sta enSpr
 .rts
     rts
     
@@ -526,7 +516,9 @@ EnClearDropTypeB: SUBROUTINE
 .skipRollItem
     ldy cdBType
     dey
-    bpl EnItemDraw
+    bmi .rts
+    jmp EnItemDraw
+.rts
     rts
     
 EnRandomDrops:

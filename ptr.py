@@ -51,7 +51,8 @@ tbl = [
         "EnLikeLikeMain",
         "EnStairs",
         "EnSpectacleOpen",
-        "EnItem"
+        "EnItem",
+        "EnShopkeeper"
     ]),
     GameEnum("RoomScript", "Rs",
     genEditorBindings=True,
@@ -70,6 +71,7 @@ tbl = [
         "RsDungExit",
         "RsFairyFountain",
         "RsText",
+        "RsShop",
         "RsGameOver"
     ]),
     GameEnum("Ball", "Bl",
@@ -191,17 +193,18 @@ tbl = [
 def ToSnakeCase(str):
     return re.sub(r'(?<!^)(?=[A-Z])', '_', str).upper()
 
-def GetEditorBindings(sn, list, out):
-    out += f'set "{sn}Count" to {len(list)}\n'
+def GetEditorBindings(sn, list):
+    out = f'set "{sn}Count" to {len(list)}\n'
     for i in range(len(list)):
         out += f'set "${sn}{i}" to "{list[i]}"\n'
         out += f'set "{list[i]}" to {i}\n'
+    return out
         
 def DumpEditorBindings():
     editorBindings = ""
     for e in tbl:
         if e.genEditorBindings:
-            GetEditorBindings(e.shortName, e.vals, editorBindings)
+            editorBindings += GetEditorBindings(e.shortName, e.vals)
             
     with open(f'gen/editor_bindings.txt', "w") as file:
         file.write(editorBindings)      

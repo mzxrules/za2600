@@ -484,6 +484,8 @@ mesg = [
     "  TRIFORCE CAN'T GO IN  ",
     "  IT'S DANGEROUS TO GO  ",
     "   ALONE! TAKE THIS.    ",
+    " BUY SOMETHING WILL YA? ",
+    "     99    99    99     ",
 ]
 
 # format messages, eliminating the template message

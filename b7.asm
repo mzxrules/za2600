@@ -427,6 +427,8 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 ; reset world kernel vars
     lda #7
     sta wENH
+    lda #0
+    sta NUSIZ1_T
     
 ; update player stun timer
     lda plStun
@@ -822,108 +824,61 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     lda #RF_LOAD_EV
     sta roomFlags
     rts
+    
+GiItemColors:
+    .byte COLOR_DARKNUT_RED     ; GiRecoverHeart
+    .byte COLOR_DARKNUT_RED     ; GiFairy
+    .byte COLOR_DARKNUT_BLUE    ; GiBomb
+    .byte COLOR_TRIFORCE        ; GiRupee5
 
-KERNEL_WORLD: SUBROUTINE ; rKERNEL
-    VKERNEL1 BgColor
-    lda #COLOR_PATH
-    sta COLUBK
-    VKERNEL1 FgColor
-    lda #COLOR_GREEN_ROCK
-    sta COLUPF
-    lda enColor
-    sta COLUP1
+    .byte COLOR_TRIFORCE        ; GiTriforce
+    .byte COLOR_DARKNUT_RED     ; GiHeart
+    .byte COLOR_TRIFORCE        ; GiKey
+    .byte COLOR_TRIFORCE        ; GiMasterKey
+
+    .byte $06                   ; GiSword2
+    .byte $0E                   ; GiSword3
+    .byte COLOR_DARKNUT_BLUE    ; GiCandle
+    .byte COLOR_DARKNUT_RED     ; GiMeat
+
+    .byte $0E                   ; GiBoots
+    .byte COLOR_DARKNUT_RED     ; GiRing
+    .byte COLOR_DARKNUT_BLUE    ; GiPotion
+    .byte $F0                   ; GiRaft
     
-    ldx NUSIZ1_T
-    stx NUSIZ1
-    lda NUSIZ0_T
-    sta NUSIZ0
-    
-    lda #0
+    .byte COLOR_TRIFORCE        ; GiFlute
+    .byte COLOR_DARKNUT_RED     ; GiFireMagic
+    .byte $F0                   ; GiBow
+    .byte COLOR_TRIFORCE        ; GiArrows
+
+    .byte COLOR_DARKNUT_RED     ; GiBracelet
+    .byte COLOR_TRIFORCE        ; GiMap
+        
+EnItem:; SUBROUTINE
+    ldy roomEX
+EnItemDraw: SUBROUTINE ; y == itemDraw
+    lda #>SprItem0
+    sta enSpr+1
+    lda GiItemColors,y
     tax
-    
-    sta WSYNC       ; 3
-    sta CXCLR       ; 3
-KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
-    sta ENAM0       ; 3
-    stx GRP1        ; 3
-
-    ldx roomSpr     ; 3
-    lda rPF1RoomL,x ; 4
-    sta PF1         ; 3
-    lda rPF2Room,x  ; 4
-    sta PF2         ; 3
-    
-; Player            ;    CYCLE 15
-    lda #7          ; 2 player height
-    dcp plDY        ; 5
-    bcs .DrawP0     ; 2/3
-    lda #0          ; 2
-    .byte $2C       ; 4-5 BIT compare hack to skip 2 byte op
-.DrawP0:
-    lda (plSpr),y   ; 5
-    
-    sta GRP0        ; 3
-; PF1R first line
-    lda rPF1RoomR,x ; 4
-    sta PF1         ; 3
-    
-; Ball
-    VKERNEL1 BLH
-    lda #7          ; 2 ball height
-    dcp blDY        ; 5
-    lda #1          ; 2
-    adc #0          ; 2
-    sta ENABL       ; 3
-    
-; Enemy Missile     ;    CYCLE 15
-    VKERNEL1 M1H
-    lda #7          ; 3 enM height
-    dcp m1DY        ; 5
-    ;sta WSYNC
-    lda #1          ; 2
-    adc #0          ; 2
-    sta ENAM1       ; 3
-
-    lda rPF1RoomL,x ; 4
-    sta PF1         ; 3
-    lda rPF1RoomR,x ; 4
-    pha             ; 3
-
-; Enemy             ;    CYCLE 15
-    VKERNEL1 ENH
-    lda #7          ; 2     enemy height
-    dcp enDY        ; 5
-    bcs .DrawE0     ; 2/3
-    lda #0          ; 2
-    .byte $2C       ; 4-5   BIT compare hack to skip 2 byte op
-.DrawE0:
-    lda (enSpr),y   ; 5
-    tax             ; 2
-    
-    pla             ; 4
-    sta PF1         ; 3
-; Playfield
-    tya             ; 2
-    and #3          ; 2
-    beq .PFDec      ; 2/3
-    .byte $2C       ; 4-5
-.PFDec
-    dec roomSpr     ; 5
-    
-; Player Missile    ;    CYCLE 15
-    VKERNEL1 M0H
-    lda #7          ; 2 plM height
-    dcp m0DY        ; 5
-    lda #1          ; 2
-    adc #0          ; 2
-    
-    dey             ; 2
-    sta WSYNC       ; 3
-    bpl KERNEL_LOOP ; 3/2
+    cpy #5
+    bpl .skipItemColor
+    lda Frame
+    and #$10
+    beq .skipItemColor
+    ldx #COLOR_LIGHT_BLUE
+.skipItemColor
+    stx enColor
+    tya
+    asl
+    asl
+    asl
+    clc
+    adc #<SprItem0
+    sta enSpr
+.rts
     rts
 
-    LOG_SIZE "-KERNEL WORLD-", KERNEL_WORLD
-    
 BANK_7_FREE:
     ORG $3FE0-$51
     RORG $FFE0-$51

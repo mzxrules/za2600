@@ -198,7 +198,7 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
+RsShop
 zz0
 RsNone
 zz0
