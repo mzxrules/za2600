@@ -2,6 +2,7 @@
 ; mzxrules 2021
 ;==============================================================================
     processor 6502
+TIA_BASE_ADDRESS = $40
     INCLUDE "vcs.h"
     INCLUDE "macro.h"
     INCLUDE "zmacros.asm"

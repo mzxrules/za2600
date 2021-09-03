@@ -567,7 +567,6 @@ EnRandSpawnRetry:
 EnRandSpawn: SUBROUTINE
     jsr Random
     and #$7 ; y pos mask
-    ;sta itemRupees ; remove
     cmp #7
     bne .skipYShift
     lsr
@@ -580,13 +579,9 @@ EnRandSpawn: SUBROUTINE
     lsr
     lsr
     tax
-    lda EnSpawnPF2Mask,x
-    sta Temp0
     lda rPF2Room+2+1,y
-    and Temp0
-    bne EnRandSpawnRetry
-    lda rPF2Room+2+2,y
-    and Temp0
+    ora rPF2Room+2+2,y
+    and EnSpawnPF2Mask,x
     bne EnRandSpawnRetry
     tya
     asl

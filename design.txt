@@ -1,11 +1,11 @@
 List of todos, ordered by importance
 
-Status Hud
+Status Hud - Mostly Complete
 Event System
 Door Unlock System - Complete
 Ganon Fight Kernel
 Exits
-Raft System
+Raft System - Complete
 Enemy Spawns - First Implementation
 Wizrobes
 Stalfos
@@ -411,3 +411,18 @@ deduplicate the code by using the overflow flag to store whether the delay
 should be 4 or 6 cycles long. A branch takes 2 cycles to execute, 3 if the
 branch is taken, and so a pair of bvs is enough to implement a variable cycle
 delay of 4/6 cycles.
+
+
+E7 -> 3E conversion
+
+Ram 
+
+WorldKernel $ 90
+PF          $ 3C
+RoomClear   $ 20 for 256 rooms
+RoomFlag    $100
+
+Rom
+
+World Data could be packed into $400 bytes per 128 rooms,
+instead of $800 per 256. This would require less bank switching
