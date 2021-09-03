@@ -513,10 +513,12 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 .EnSystem:
     jsr EnSystem
     
-.RoomScript:   
+.RoomScript:
+    lda BANK_ROM + 6
     jsr RoomScriptDel
     
 .BallScript:
+    lda BANK_ROM + 4
     ldx blType
     jsr BallDel
     
@@ -558,6 +560,7 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 ; Game Over check
     ldy plHealth
     bne .skipGameOver
+    lda BANK_ROM + 6
     jsr RsGameOver
 .skipGameOver
 
@@ -766,11 +769,11 @@ HealthPattern:
     .byte $00, $01, $03, $07, $0F, $1F, $3F, $7F, $FF 
 
 Spr8WorldOff:
-    .byte (ROOM_HEIGHT+8), (TEXT_ROOM_HEIGHT+8)
+    .byte (ROOM_HEIGHT+8), (TEXT_ROOM_HEIGHT+8), (TEXT_ROOM_HEIGHT+8)
 Spr1WorldOff: 
     .byte (ROOM_HEIGHT+1), (TEXT_ROOM_HEIGHT+1)
 RoomWorldOff:
-    .byte (ROOM_PX_HEIGHT-1), (TEXT_ROOM_PX_HEIGHT-1)
+    .byte (ROOM_PX_HEIGHT-1), (TEXT_ROOM_PX_HEIGHT-1), (TEXT_ROOM_PX_HEIGHT-1)
     
     INCLUDE "gen/PlMoveDir.asm"
     
@@ -878,6 +881,8 @@ EnItemDraw: SUBROUTINE ; y == itemDraw
     sta enSpr
 .rts
     rts
+
+    INCLUDE "gen/mesg_digits.asm"
 
 BANK_7_FREE:
     ORG $3FE0-$51

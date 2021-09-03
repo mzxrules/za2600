@@ -133,7 +133,7 @@ tbl = [
         "MsIntro0",
         "MsWorld0",
         "MsFinal0",
-        "MsNone",
+        "MsMyst0",
         
         "MsNone",
         "MsDung1",
@@ -142,7 +142,7 @@ tbl = [
         "MsIntro1",
         "MsWorld1",
         "MsFinal1",
-        "MsNone",
+        "MsMyst1",
     ]),
     GameEnum("Sfx", "Sfx",
     genEditorBindings=False,

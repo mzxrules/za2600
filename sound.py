@@ -26,7 +26,8 @@ seqs = {
     "over" : Seq("ms_over", 90, 4, game_over_highline, empty_channel),
     "intro": Seq("ms_intro", 150, 1, overworld_intro_highline, overworld_intro_baseline),
     "world": Seq("ms_world", 150, 1, overworld_highline, overworld_baseline),
-    "final": Seq("ms_final", 150, 1, dung_final_highline, dung_final_baseline)
+    "final": Seq("ms_final", 150, 1, dung_final_highline, dung_final_baseline),
+    "myst" : Seq("ms_myst", 150, 1/4, empty_channel, myst_baseline)
 }
 
 for k, seq in seqs.items():
@@ -40,6 +41,7 @@ seqs["world"].ShiftChannel(0,-11)
 seqs["world"].ShiftChannel(1,-11)
 seqs["intro"].ShiftChannel(0,-11)
 seqs["intro"].ShiftChannel(1,-11)
+seqs["myst"].ShiftChannel(1,12)
 
 sequences = []
 

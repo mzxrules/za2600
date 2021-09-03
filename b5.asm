@@ -387,6 +387,28 @@ MsOver1: SUBROUTINE
 .skipSetDur
     lda ms_over1_note,x
     jmp SeqChan1
+
+MsMyst0: SUBROUTINE
+    ldx SeqCur
+    bvc .skipSetDur
+    lda ms_myst0_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame
+.skipSetDur
+    lda ms_myst0_note,x
+    jmp SeqChan0
+    
+MsMyst1: SUBROUTINE
+    ldx SeqCur + 1
+    bvc .skipSetDur
+    lda ms_myst1_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame + 1
+.skipSetDur
+    lda ms_myst1_note,x
+    jmp SeqChan1
     
     ;align 8
 ToneLookup

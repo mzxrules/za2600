@@ -110,7 +110,6 @@ right_text
     RORG $F000
 BANK_4
     INCLUDE "gen/Entity.asm"
-    INCLUDE "gen/RoomScript.asm"
     INCLUDE "gen/Ball.asm"
     INCLUDE "gen/ItemId.asm"
     INCLUDE "gen/EnMoveDir.asm"
@@ -154,6 +153,10 @@ BANK_5
     INCLUDE "gen/ms_final0_note.asm"
     INCLUDE "gen/ms_final0_dur.asm"
     INCLUDE "gen/ms_final1_note.asm"
+    INCLUDE "gen/ms_myst0_note.asm"
+    INCLUDE "gen/ms_myst0_dur.asm"
+    INCLUDE "gen/ms_myst1_note.asm"
+    INCLUDE "gen/ms_myst1_dur.asm"
     
     align 16
     INCLUDE "gen/ms_header.asm"
@@ -173,6 +176,7 @@ BANK_5
 ; ****************************************
 
 BANK_6
+    INCLUDE "gen/RoomScript.asm"
     INCLUDE "b6.asm"
     LOG_SIZE "-BANK 6- Engine", BANK_6
 

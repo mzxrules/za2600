@@ -39,19 +39,20 @@ TextSetPosition: SUBROUTINE
     jsr SetHorizPos
 .end_position
 
-    sta WSYNC
+    sta WSYNC ; To Scanline 59
     sta HMOVE
     
     lda #$FE
     sta TextLoop
 
 TextDisplayLoop:
+    sta WSYNC
 .SetVFlag
     inc TextLoop
     inc TextLoop
     lda Frame
     and #$01        ; a ==   x1
-    eor #1
+    ;eor #1
     ora TextLoop    ; a ==   11
     ora mesgId      ; a ==  111
     tax
@@ -64,6 +65,7 @@ TextDisplayLoop:
     ldy #11
     lda Frame
     and #1
+    tax
     bne .loadTextLoop
     bit .SetVFlag
     
@@ -73,7 +75,23 @@ TextDisplayLoop:
     dey
     bpl .loadTextLoop
 
-.drawtext
+    lda #2
+    cmp KernelId
+    bne .drawText
+    cmp TextLoop
+    bne .drawText
+
+    ldy shopDigit+0
+    lda MesgDigits,y
+    sta Text1,x
+    ldy shopDigit+1
+    lda MesgDigits,y
+    sta Text5,x
+    ldy shopDigit+2
+    lda MesgDigits,y
+    sta Text9,x
+
+.drawText
     ldx Text0
     lda left_text,x
     ldx Text1

@@ -123,28 +123,6 @@ EnNone:
     lda #$F0
     sta enSpr+1
     sta enY
-RsNone:
-RsWorldMidEnt:
-RsFairyFountain:
-    rts
-    
-RsNeedTriforce:
-    ldy #7
-    cpy itemTri
-    bmi .rts
-    
-    lda #RF_NO_ENCLEAR
-    ora roomFlags
-    sta roomFlags
-    
-    lda #$FF
-    sta wPF1RoomL,y
-    sta wPF2Room,y
-    sta wPF1RoomR,y
-    lda #TEXT_NEED_TRIFORCE
-    sta roomEX
-    jmp RsText
-.rts
     rts
     
 EnShopkeeper: SUBROUTINE
@@ -158,114 +136,20 @@ EnShopkeeper: SUBROUTINE
     sta enX
     lda #$30
     sta enY
-    rts
-    
-RsShop:
-    lda #RF_NO_ENCLEAR
-    ora roomFlags
-    sta roomFlags
-    lda #EN_SHOPKEEPER
-    sta enType
-    lda #TEXT3
-    sta roomEX
-    jmp RsText
-    
-RsRaftSpot: SUBROUTINE
-    lda plState
-    and #$20
-    bne .fixPos
-; If item not obtained
-    lda #ITEMF_RAFT
-    and ITEMV_RAFT
-    beq .rts
-; If not touching water surface
-    bit CXP0FB
-    bpl .rts
-    ldy plY
-    cpy #$40
-    bne .rts
-    ldx plX
-    cpx #$40
-    bne .rts
-    iny
-    sty plY
-    lda #PL_DIR_U
-    sta plDir
-    lda plState
-    ora #$22
-    sta plState
-    lda #SFX_SURF
-    sta SfxFlags
-.fixPos
-    lda #$40
-    sta plX
-.rts
-    rts
-    
-RsText: SUBROUTINE
+
+    ldy #6
     lda #1
-    sta KernelId
-    lda roomEX
-    sta mesgId
+    and Frame
+    beq .skipOtherDigit
+    ldy #9
+.skipOtherDigit
+    sty shopDigit
+    dey
+    sty shopDigit + 1
+    dey
+    sty shopDigit + 2
     rts
-    
-RsItem: SUBROUTINE
-    lda enType
-    cmp #EN_CLEAR_DROP
-    bne .rts
-    ldx roomId
-    ldy worldBank
-    lda BANK_RAM + 1,y
-    lda rRoomFlag,x
-    bmi .NoLoad
-    
-    lda #$40
-    sta cdAX
-    lda #$2C
-    sta cdAY
-    lda #EN_ITEM
-    sta cdAType
-.NoLoad
-    lda BANK_RAM + 0
-    lda #0
-    sta roomRS
-.rts
-    rts
-    
-RsGameOver: SUBROUTINE
-    lda enInputDelay
-    ldx plHealth
-    bne .skipInit
-    dec plHealth
-    stx wBgColor
-    stx wFgColor
-    stx enType
-    stx roomFlags
-    stx mesgId
-    inx
-    stx KernelId
-    inx
-    stx plState
-    
-    ldx #RS_GAME_OVER
-    stx roomRS
-    ldx #$80
-    stx plY
-    
-    ldx #MS_PLAY_OVER
-    stx SeqFlags
-    lda #-$20 ; input delay timer
-.skipInit
-    cmp #1
-    adc #0
-    sta enInputDelay
-    bne .rts
-    bit INPT4
-    bmi .rts
-    jsr RESPAWN
-.rts
-    rts
-    
+        
 GiItemDel: SUBROUTINE
     lda ItemIdH,x
     pha
@@ -524,48 +408,6 @@ EnClearDropTypeB: SUBROUTINE
 EnRandomDrops:
     .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
     
-RsDungMidEnt: SUBROUTINE
-    lda plX
-    cmp #$40
-    bne .rts
-    lda plY
-    cmp #$28
-    bne .rts
-    lda #$40
-    sta worldSX
-    lda #$20
-    sta worldSY
-    lda roomId
-    sta worldSR
-    
-    ldy roomEX
-    sty worldId
-    jmp SPAWN_AT_DEFAULT
-.rts
-    rts
-    
-RsDungExit: SUBROUTINE
-    bit roomFlags
-    bmi .rts
-    lda plY
-    cmp #BoardYD
-    bne .rts
-    lda worldSX
-    sta plX
-    lda worldSY
-    sta plY
-    lda worldSR
-    sta roomId
-    lda #0
-    sta worldId
-    lda roomFlags
-    ora #RF_LOAD_EV
-    sta roomFlags
-    lda #MS_PLAY_THEME_L
-    sta SeqFlags
-.rts
-    rts
-    
 EnSpectacleOpen: SUBROUTINE
     ldy #$6
     lda rPF2Room,y
@@ -582,22 +424,6 @@ EnSpectacleOpen: SUBROUTINE
     sta enSpr
     rts
 
-RsDiamondBlockStairs: SUBROUTINE
-    lda #RF_NO_ENCLEAR
-    ora roomFlags
-    sta roomFlags
-    lda #0
-    sta wPF2Room + 13
-    sta wPF2Room + 14
-    lda #$41
-    sta blX
-    lda #$3C
-    sta blY
-    lda #BL_PUSH_BLOCK
-    sta blType
-    lda #RS_STAIRS
-    sta roomRS
-    rts
 
 BlNone:
     lda #$80
@@ -652,32 +478,6 @@ BlPushBlock: SUBROUTINE
 .rts
     rts
     
-RsCentralBlock: SUBROUTINE
-    lda roomFlags
-    ora #RF_NO_ENCLEAR
-    sta roomFlags
-    ldx #$40+1
-    stx blX
-    ldx #$2C
-    stx blY
-    lda #BL_PUSH_BLOCK
-    sta blType
-    lda #RS_NONE
-    sta roomRS
-    rts
-    
-RsStairs:
-    lda roomFlags
-    and #RF_CLEAR
-    beq .rts
-    lda #$40
-    sta cdAX
-    lda #$2C
-    sta cdAY
-    lda #EN_STAIRS
-    sta cdAType
-.rts
-    rts
     
 EnSysEncounter:
     .byte EN_NONE, EN_DARKNUT, EN_LIKE_LIKE, EN_OCTOROK, EN_WALLMASTER, EN_BOSS_CUCCO
@@ -846,14 +646,6 @@ BallDel:
     lda BallH,x
     pha
     lda BallL,x
-    pha
-    rts
-    
-RoomScriptDel:
-    ldx roomRS
-    lda RoomScriptH,x
-    pha
-    lda RoomScriptL,x
     pha
     rts
     

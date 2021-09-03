@@ -459,10 +459,10 @@ def greedy_scs(reads, k=1):
         read_a, read_b, olen = pick_maximal_overlap(reads, k)
     return ''.join(reads)
 
-def UsedChars(mesg):
+def UsedChars(mesg_data):
     strSet = set()
-    for m in mesg:
-        strSet |= set(m)
+    for mesg in mesg_data:
+        strSet |= set(mesg)
     return strSet
     
 def greedy_quickrand(seq):
@@ -476,7 +476,8 @@ def greedy_quickrand(seq):
             result = r
     return result
 
-mesg = [
+mesg_data = [
+    # First line is template, for easy spacing.
     "012345678901234567890123",
     "        GAME OVER       ",
     " PRESS FIRE TO CONTINUE ",
@@ -485,15 +486,19 @@ mesg = [
     "  IT'S DANGEROUS TO GO  ",
     "   ALONE! TAKE THIS.    ",
     " BUY SOMETHING WILL YA? ",
-    "     99    99    99     ",
+    "   99      99      99   ", # 12, 56, 9A
 ]
 
-# format messages, eliminating the template message
-mesg = mesg[1:]
-for i in range(len(mesg)):
-    mesg[i] = '{:<24}'.format(mesg[i])
+# eliminate the template message.
+mesg_data = mesg_data[1:]
 
-usedChars = UsedChars(mesg)
+# format messages such that they are fixed width
+for i in range(len(mesg_data)):
+    mesg_data[i] = '{:<24}'.format(mesg_data[i])
+
+usedChars = UsedChars(mesg_data)
+usedChars |= set("0123456789 ")
+
 sprSeqs = []
 charSprRef = { }
 
@@ -510,17 +515,17 @@ for chr in usedChars:
 
 mesgRaw = []
 
-for m in mesg:
+for mesg in mesg_data:
     raw = []
-    for chr in m:
+    for chr in mesg:
         raw.append(charSprRef[chr][0])
     rawPairs = [raw[i:i+2] for i in range(0, len(raw), 2)]
     rawA = [rawPairs[i] for i in range(0, len(rawPairs), 2)]
     rawA = [item for sublist in rawA for item in sublist]
     rawB = [rawPairs[i] for i in range(1, len(rawPairs), 2)]
     rawB = [item for sublist in rawB for item in sublist]
-    mesgRaw.append(rawA)
     mesgRaw.append(rawB)
+    mesgRaw.append(rawA)
 
 helpme = {
     "0" : 0,
@@ -568,8 +573,18 @@ for i in range(len(mesgRaw) // 4):
     
 strOut += "MesgAL:\n" + ToAsm2(msgTbl[0],8)
 strOut += "MesgAH:\n" + ToAsm2(msgTbl[1],8)
-    
+
 with open("gen/mesg_data.asm", "w") as file:
+    file.write(strOut)
+    
+# generate digit lookup table
+raw = []
+for chr in "0123456789":
+    raw.append(charSprRef[chr][0])
+    
+strOut = "MesgDigits:\n" + ToAsm(raw)
+
+with open("gen/mesg_digits.asm", "w") as file:
     file.write(strOut)
 
 print(sorted(usedChars)) 

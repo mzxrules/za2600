@@ -78,6 +78,11 @@ cdAX        ds 1
 cdBX        ds 1
 cdAY        ds 1
 cdBY        ds 1
+    ORG EN_VARIABLES + 1
+; EnShopkeeper
+shopItem    ds 3
+shopDigit   ds 3
+
 
     ORG EN_VARIABLES
 En0V        ds 10 ; Zero initialized enemy vars
