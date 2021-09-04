@@ -62,6 +62,8 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta roomTimer
     lda #$22
     sta plState
+    lda #SLOT_B7_D
+    sta BANK_SLOT
     jsr LoadRoom
     lda #EN_NONE
     sta enType
@@ -71,7 +73,12 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta KernelId
 .skipLoadRoom
 
-    lda BANK_ROM + 6
+    ;lda BANK-ROM + 6
+    lda #SLOT_B6_A
+    sta BANK_SLOT
+    lda #SLOT_B6_B
+    sta BANK_SLOT
+
     bit roomFlags
     bvs .roomLoadCpuSkip
     jsr ProcessInput_B6
@@ -82,7 +89,10 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
 ; room setup
     jsr KeydoorCheck_B6
     jsr UpdateDoors_B6
-    lda BANK_ROM + 5
+    lda #SLOT_B5_A
+    sta BANK_SLOT
+    lda #SLOT_B5_B
+    sta BANK_SLOT
     jsr UpdateAudio_B5
     jsr EntityDel
     
@@ -90,187 +100,9 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
 ; Pre-Position Sprites
 ;==============================================================================
 
-; room draw start
-    ldy KernelId
-    lda RoomWorldOff,y
-    sta roomSpr
-    
-; player draw height
-    lda Spr8WorldOff,y;#(ROOM_HEIGHT+8)
-    sec
-    sbc plY
-    sta plDY
-
-; player missile draw height
-    lda Spr8WorldOff,y;#(ROOM_HEIGHT+8)
-    sec
-    sbc m0Y
-    sta m0DY
-
-.player_sprite_setup
-    lda #<(SprP0 + 7) ; Sprite + height-1
-    clc
-    ldx plDir
-    adc Mul8,x
-    sec
-    sbc plY
-    sta plSpr
-
-    lda #>(SprP0 + 7)
-    sbc #0
-    sta plSpr+1
-
-; enemy draw height
-    lda Spr8WorldOff,y
-    sec
-    sbc enY
-    sta enDY
-
-.enemy_sprite_setup
-    lda enSpr; #<(SprE0 + 7)
-    clc
-    adc #7;enSpr
-    sec
-    sbc enY
-    sta enSpr
-
-    lda enSpr + 1;#>(SprE0 + 7)
-    sbc #0
-    sta enSpr + 1
-    
-.enemy_missile_setup
-    lda Spr8WorldOff,y
-    sec
-    sbc m1Y
-    sta m1DY
-    
-.ball_sprite_setup
-; ball draw height
-    lda Spr8WorldOff,y
-    sec
-    sbc blY
-    sta blDY
-    
-.minimap_setup
-; map color and sprite id
-    ldx worldId
-    ldy #COLOR_MINIMAP
-    cpx #2
-    bmi .setMinimapColor
-    lda Bit8-2,x
-    and itemMaps
-    bne .setMinimapColor
-    ldy #0
-.setMinimapColor
-    sty COLUP1
-
-; sprite setup
-    lda #<(MINIMAP) ; Sprite + height-1
-    clc
-    adc Mul8,x
-    sta mapSpr
-    lda #>(MINIMAP)
-    sta mapSpr+1
-; double width map if on overworld
-    ldx #5
-    lda worldId
-    beq .minimap_16
-    ldx #$00
-.minimap_16
-    stx NUSIZ1 ; double minimap size if world 0
-    lda #0
-    sta COLUBK
-    sta NUSIZ0 ; clean sword from previous frame
-    
-    lda BANK_ROM + 0
-.hud_sprite_setup
-; rupee display
-    lda itemRupees
-    and #$0F
-    asl
-    asl
-    asl
-    clc
-    adc #7
-    sta THudDigits+5
-    lda itemRupees
-    and #$F0
-    lsr
-    clc
-    adc #7
-    sta THudDigits+4
-; key display
-    ldx itemKeys
-    bmi .hud_all_keys
-    cpx #9
-    bmi .hud_key_digit
-    ldx #9
-    .byte $2C
-.hud_all_keys
-    ldx #10
-.hud_key_digit
-    lda Mul8,x
-    clc
-    adc #7
-    sta THudDigits+3
-    lda #<SprN10 - #<SprN0 +7
-    sta THudDigits+2
-; bomb display    
-    lda itemBombs
-    cmp #$10
-    bpl .hud_bomb_digit
-    lda #<SprN11 - #<SprN0 +7
-    .byte $2C
-.hud_bomb_digit
-    lda #<SprN1 - #<SprN0 +7
-    sta THudDigits+0 
-    lda itemBombs
-    and #$0F
-    asl
-    asl
-    asl
-    clc
-    adc #7
-    sta THudDigits+1
-
-    jsr PosHudObjects
-; ===================================================    
-;    Pre HUD
-; ===================================================
-.PRE_HUD:
-    lda roomId
-    lsr
-    lsr
-    lsr
-    lsr
-    eor #$7
-    and #$7
-    sta TMapPosY
-    lda plHealth
-    clc
-    adc #7
-    lsr
-    lsr
-    lsr
-    sta THudHealthL
-    sec
-    sbc #8
-    bcs .skipHealthHighClampMin
-    lda #0
-.skipHealthHighClampMin
-    tax
-    lda HealthPattern,x
-    sta THudHealthH
-    beq .skipHealthClamp
-    lda #8
-    sta THudHealthL
-.skipHealthClamp
-    ldx THudHealthL
-    lda HealthPattern,x
-    sta THudHealthL
-    
-    lda #COLOR_PLAYER_02
-    sta COLUPF
+    lda #SLOT_B7_C
+    sta BANK_SLOT
+    jmp POSITION_SPRITES
 
 ; ===================================================
 ; Kernel Main
@@ -382,7 +214,8 @@ KERNEL_HUD_LOOP:
     LOG_SIZE "-HUD KERNEL-", KERNEL_HUD
     lda KernelId
     beq .defaultWorldKernel
-    lda BANK_ROM + 3
+    lda #SLOT_B3_A
+    sta BANK_SLOT
     jmp TextKernel
     
 .defaultWorldKernel
@@ -397,7 +230,9 @@ KERNEL_HUD_LOOP:
     ldy #ROOM_HEIGHT
 KERNEL_WORLD_RESUME:
     
-    lda BANK_ROM + 0
+    lda #SLOT_B0_B
+    sta BANK_SLOT
+
     lda #$FF
     sta PF0
     sta PF1
@@ -435,7 +270,7 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     cmp #1
     adc #0
     sta plStun
-    
+
 ; test player board bounds
     ldy roomId
     lda plX
@@ -506,7 +341,10 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     bpl .posResetLoop
 .skipCollisionPosReset
     
-    lda BANK_ROM + 4
+    lda #SLOT_B4_A
+    sta BANK_SLOT
+    lda #SLOT_B4_B
+    sta BANK_SLOT
 .ClearDropSystem:
     jsr ClearDropSystem
     
@@ -514,11 +352,17 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     jsr EnSystem
     
 .RoomScript:
-    lda BANK_ROM + 6
+    lda #SLOT_B6_A
+    sta BANK_SLOT
+    lda #SLOT_B6_B
+    sta BANK_SLOT
     jsr RoomScriptDel
     
 .BallScript:
-    lda BANK_ROM + 4
+    lda #SLOT_B4_A
+    sta BANK_SLOT
+    lda #SLOT_B4_B
+    sta BANK_SLOT
     ldx blType
     jsr BallDel
     
@@ -560,7 +404,11 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 ; Game Over check
     ldy plHealth
     bne .skipGameOver
-    lda BANK_ROM + 6
+    lda #SLOT_B6_A
+    sta BANK_SLOT
+    lda #SLOT_B6_B
+    sta BANK_SLOT
+
     jsr RsGameOver
 .skipGameOver
 
@@ -592,117 +440,6 @@ TestCollisionReset:
     lda plY,x
     sta plYL,x
     rts
-
-LoadRoom: SUBROUTINE
-    ; load world bank
-    ldy worldId
-    beq .worldBankSet
-    ldy #1
-.worldBankSet
-    sty worldBank
-    lda BANK_ROM + 1,y
-
-    ldy roomId
-    lda WORLD_RS,y
-    sta roomRS
-    lda WORLD_EX,y
-    sta roomEX
-    lda WORLD_EN,y
-    sta roomEN
-    lda WORLD_WA,y
-    sta roomWA
-    
-    ; set fg/bg color
-    lda WORLD_COLOR,y
-    and #$0F
-    tax
-    lda WorldColors,x
-    sta wFgColor
-    lda WORLD_COLOR,y
-    lsr
-    lsr
-    lsr
-    lsr
-    tax
-    lda WorldColors,x
-    sta wBgColor
-    
-    ; PF1 Right
-    lda WORLD_T_PF1R,y
-    tax
-    and #$F0
-    sta Temp4
-    txa
-    and #$01
-    ora #$F0
-    sta Temp5
-    txa
-    and #$0E
-    asl
-    asl
-    asl
-    asl
-    sta roomDoors
-    
-    ; PF1 Left
-    lda WORLD_T_PF1L,y
-    tax
-    and #$F0
-    sta Temp0
-    txa
-    and #$01
-    ora #$F0
-    sta Temp1
-    txa
-    and #$0E
-    lsr
-    ora roomDoors
-    sta roomDoors
-    
-    ; PF2
-    lda WORLD_T_PF2,y
-    tax
-    and #$F0
-    sta Temp2
-    txa
-    and #$03
-    ora #$F0
-    sta Temp3
-    txa
-    and #$0C
-    asl
-    ora roomDoors
-    sta roomDoors
-    
-; set OR mask for the room sides    
-    lda worldId
-    beq .WorldRoomOrSides
-    lda #$C0
-    .byte $2C
-.WorldRoomOrSides
-    lda #$00
-    sta Temp6
-    
-    ldy #ROOM_SPR_HEIGHT-1
-.roomInitMem
-    lda BANK_ROM + 0
-.roomInitMemLoop
-    lda (Temp0),y ; PF1L
-    ora Temp6
-    sta wPF1RoomL+2,y
-    lda (Temp4),y ; PF1R
-    ora Temp6
-    sta wPF1RoomR+2,y
-    lda (Temp2),y ; PF2
-    sta wPF2Room+2,y
-    dey
-    bpl .roomInitMemLoop
-
-; All room sprite data has been read, we can now switch banks to
-; conserve Bank 7 space
-    lda BANK_ROM + 6
-    jmp LoadRoom_B6
-    LOG_SIZE "Room Load", LoadRoom
         
 ;==============================================================================
 ; Generate Random Number
@@ -722,13 +459,12 @@ noeor:
     rts
 
 EntityDel:
-    lda BANK_ROM + 4
-    ldx enType
-    lda EntityH,x
-    pha
-    lda EntityL,x
-    pha
-    rts
+    lda #SLOT_B4_A
+    sta BANK_SLOT
+
+    lda #SLOT_B4_B
+    sta BANK_SLOT
+    jmp ENTITY_DEL_CONT
     
 PlMoveDirDel:
     lda PlMoveDirH,x
@@ -827,7 +563,7 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     lda #RF_LOAD_EV
     sta roomFlags
     rts
-    
+
 GiItemColors:
     .byte COLOR_DARKNUT_RED     ; GiRecoverHeart
     .byte COLOR_DARKNUT_RED     ; GiFairy
@@ -883,11 +619,11 @@ EnItemDraw: SUBROUTINE ; y == itemDraw
     rts
 
     INCLUDE "gen/mesg_digits.asm"
-
-BANK_7_FREE:
-    ORG $3FE0-$51
-    RORG $FFE0-$51
-        LOG_SIZE "-BANK 7- FREE", BANK_7_FREE
+    
+;BANK_7_FREE:
+;    ORG $07E0-$51
+;    RORG $FFE0-$51
+;        LOG_SIZE "-BANK 7- FREE", BANK_7_FREE
     
 ;==============================================================================
 ; PosWorldObjects
@@ -915,59 +651,6 @@ DivideLoop
 ; scn cycle 67
     dex ; 69
     bpl .Loop ; 72
-    
-    sta WSYNC
-    sta HMOVE
-    rts
-;==============================================================================
-; PosHudObjects
-;----------
-; Positions all HUD elements within a single scanline
-;----------
-; Timing Notes:
-; $18 2 iter (9) + 15 = 24
-; $18
-; $60 7 iter (34) + 15 = 49
-;==============================================================================
-PosHudObjects: SUBROUTINE
-    sta WSYNC
-    ; 26 cycles start
-    
-    lda worldId         ; 3
-    ; 7 cycle start
-    bne .dungeon        ; 2/3
-    lda #$F             ; 2
-    bne .roomIdMask     ; 3
-.dungeon
-    lda #$7             ; 2
-    nop                 ; 2
-.roomIdMask
-    ; 7 cycle end
-    
-    and roomId          ; 3
-    eor #7              ; 2
-    asl                 ; 2
-    asl                 ; 2
-    asl                 ; 2
-    asl                 ; 2
-    sta HMM0            ; 3
-    ; 26 cycles end
-    sta RESP1           ; 3 - Map Sprite
-    sta RESM0           ; 3 - Player Dot
-    ; 18 cycles start
-    lda worldId         ; 3
-    bne .MapShift       ; 2/3
-    lda #0              ; 2
-    beq .SetMapShift    ; 3
-.MapShift
-    lda #$F0            ; 2
-    nop                 ; 2
-.SetMapShift
-    sta HMP1            ; 3
-    lda #0              ; 2
-    sta HMP0            ; 3
-    ; 18 cycles end
-    sta RESP0           ;  - Inventory Sprites
     
     sta WSYNC
     sta HMOVE

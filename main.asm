@@ -2,7 +2,7 @@
 ; mzxrules 2021
 ;==============================================================================
     processor 6502
-TIA_BASE_ADDRESS = $40
+TIA_BASE_ADDRESS = $00
     INCLUDE "vcs.h"
     INCLUDE "macro.h"
     INCLUDE "zmacros.asm"
@@ -15,9 +15,114 @@ TIA_BASE_ADDRESS = $40
     SEG Bank0
     ORG $0000
     RORG $F000
-BANK_0
+    
+    INCLUDE "kworld.asm"
+
+ENTRY: SUBROUTINE
+    CLEAN_START
+    lda 0
+    sta BANK_SLOT
+    jmp ENTRY_INIT
+
+ENTRY_INIT: SUBROUTINE
+    lda #SLOT_B7
+    sta BANK_SLOT
+
+    lda #(RAMSEG_F4 | 1)
+    sta BANK_SLOT
+
+    lda #(RAMSEG_F8 | 0)
+    sta BANK_SLOT_RAM
+
+    lda #0
+.wipeRamA
+    dex
+    sta wRAM_SEG,x
+    bne .wipeRamA
+
+.wipeRamB
+    dex
+    sta wRAM_SEG + $100,x
+    bne .wipeRamB
+
+    ; kernel transfer
+    ldy #KERNEL_LEN
+.initWorldKernMem
+    lda KERNEL_WORLD-1,y
+    sta wKERNEL-1,y
+    dey
+    bne .initWorldKernMem
+
+    jmp INIT
+
+    LOG_SIZE "-BANK 0- ENTRY", ENTRY
+
+    ORG $03FC
+    RORG $FFFC
+    .word (ENTRY + $C00)
+    .word (ENTRY + $C00)
+
+; ****************************************
+; *               BANK 1                 *
+; ****************************************
+
+    SEG Bank1
+    ORG $0400
+    RORG $F400
+BANK_1
+
+    LOG_SIZE "-BANK 1- FREE", BANK_1
+    
+; ****************************************
+; *               BANK 2                 *
+; ****************************************
+
+    SEG Bank2
+    ORG $0800
+    RORG $F400
+BANK_2
+
+    INCLUDE "b7-2.asm"
+    LOG_SIZE "-BANK 2-", BANK_2
+
+; ****************************************
+; *               BANK 3                 *
+; ****************************************
+
+    SEG Bank3
+    ORG $0C00
+    RORG $F400
+BANK_3
+
+    INCLUDE "b7-3.asm"
+    LOG_SIZE "-BANK 3-", BANK_3
+
+; ****************************************
+; *               BANK 4                 *
+; ****************************************
+    
+    SEG Bank4
+    ORG $1000
+    RORG $F000
+
+BANK_4
     INCLUDE "spr/spr_room_pf1.asm"
     INCLUDE "spr/spr_room_pf2.asm"
+    LOG_SIZE "-BANK 4- PF Sprites", BANK_4
+    
+; ****************************************
+; *               BANK 5                 *
+; ****************************************
+
+    SEG Bank5
+    ORG $1400
+    RORG $F000
+    
+BANK_5
+    repeat 8
+    .byte $00
+    repend
+    align $100
     INCLUDE "spr/spr_en.asm"
     INCLUDE "spr/spr_item.asm"
 MINIMAP
@@ -25,71 +130,101 @@ MINIMAP
     align $20
     INCLUDE "spr/spr_pl.asm"
     INCLUDE "spr/spr_num.asm"
-
-    LOG_SIZE "-BANK 0- Sprites", BANK_0
-
-    SEG Bank1
-    ORG $0800
-    RORG $F000
-BANK_1
-    INCLUDE "gen/world/b1world.asm"
-    INCBIN "world/w0co.bin"
-    .byte $0F
-    INCLUDE "kworld.asm"
-    INCBIN "world/w0rs.bin"
-    .byte #RS_NONE
-    ORG $0800+0x500
-    RORG $F000+0x500
-    INCBIN "world/w0ex.bin"
     
-    ORG $0800+0x600
-    RORG $F000+0x600
+    LOG_SIZE "-BANK 5- Sprites", BANK_5
     
-	repeat 0x100
-	.byte $01
-	repend
-
-	repeat 0x100
-	.byte $00
-	repend
-    
-    LOG_SIZE "-BANK 1- World", BANK_1
-
-    SEG Bank2
-    ORG $1000
-    RORG $F000
-BANK_2
-    INCLUDE "gen/world/b2world.asm"
-    INCBIN "world/w1co.bin"
-    INCBIN "world/w2co.bin"
-    INCBIN "world/w1rs.bin"
-    INCBIN "world/w2rs.bin"
-    INCBIN "world/w1ex.bin"
-    INCBIN "world/w2ex.bin"
-    
-    repeat 8
-        repeat 8
-        .byte $01, $00
-        repend
-        repeat 8
-        .byte $00, $01
-        repend
-    repend
-    
-	repeat 256
-	.byte $00
-	repend
-    
-    LOG_SIZE "-BANK 2- Dungeons", BANK_2
-
 ; ****************************************
-; *               BANK 3                 *
+; *               BANK 6                 *
 ; ****************************************
 
-    SEG Bank3
+    SEG Bank6
     ORG $1800
     RORG $F000
-BANK_3
+BANK_6
+    INCLUDE "gen/world/b0world.asm"
+    INCBIN "world/w0co.bin"
+    INCBIN "world/w0rs.bin"
+    INCBIN "world/w0ex.bin"
+    
+    repeat 0x80
+    .byte $01
+    repend
+
+    repeat 0x80
+    .byte $00
+    repend
+    LOG_SIZE "-BANK 6- World 0", BANK_6
+    
+; ****************************************
+; *               BANK 7                 *
+; ****************************************
+    
+    ORG $1C00
+    RORG $F000
+BANK_7
+
+    INCLUDE "gen/world/b1world.asm"
+    INCBIN "world/w1co.bin"
+    INCBIN "world/w1rs.bin"
+    INCBIN "world/w1ex.bin"
+    
+    repeat 0x80
+    .byte $01
+    repend
+
+    repeat 0x80
+    .byte $00
+    repend
+    
+    LOG_SIZE "-BANK 7- Dungeon 1", BANK_7
+    
+; ****************************************
+; *               BANK 8                 *
+; ****************************************
+
+    SEG Bank8
+    ORG $2000
+    RORG $F000
+BANK_8
+
+    INCLUDE "gen/world/b2world.asm"
+    INCBIN "world/w2co.bin"
+    INCBIN "world/w2rs.bin"
+    INCBIN "world/w2ex.bin"
+    
+    repeat 0x80
+    .byte $01
+    repend
+
+    repeat 0x80
+    .byte $00
+    repend
+
+    LOG_SIZE "-BANK 8- Dungeon 2", BANK_8
+
+; ****************************************
+; *               BANK 9                 *
+; ****************************************
+
+    SEG Bank9
+    ORG $2400
+    RORG $F000
+BANK_9
+
+    repeat 0x400
+    .byte $00
+    repend
+    
+    LOG_SIZE "-BANK 9- FREE", BANK_9
+
+; ****************************************
+; *               BANK 10                *
+; ****************************************
+
+    SEG Bank10
+    ORG $2800
+    RORG $F000
+BANK_10
 
 left_text
     include "gen/text_left.asm"
@@ -100,16 +235,16 @@ right_text
     include "gen/mesg_data.asm"
     include "b3.asm"
  
-    LOG_SIZE "-BANK 3- Text Bank", BANK_3
+    LOG_SIZE "-BANK 10/11- Text Bank", BANK_10
 
 ; ****************************************
-; *               BANK 4                 *
+; *               BANK 12                *
 ; ****************************************
 
-    SEG Bank4
-    ORG $2000
+    SEG Bank12
+    ORG $3000
     RORG $F000
-BANK_4
+BANK_12
     INCLUDE "gen/Entity.asm"
     INCLUDE "gen/Ball.asm"
     INCLUDE "gen/ItemId.asm"
@@ -121,17 +256,17 @@ BANK_4
     INCLUDE "en/bosscucco.asm"
     include "b4.asm"
     
-    LOG_SIZE "-BANK 4- EnemyAI", BANK_4
+    LOG_SIZE "-BANK 12/13- EnemyAI", BANK_12
 
 
 ; ****************************************
-; *               BANK 5                 *
+; *               BANK 14                *
 ; ****************************************
 
-    SEG Bank5
-    ORG $2800
+    SEG Bank14
+    ORG $3800
     RORG $F000
-BANK_5
+BANK_14
     INCLUDE "gen/ms_dung0_note.asm"
     INCLUDE "gen/ms_dung0_dur.asm"
     INCLUDE "gen/ms_dung1_note.asm"
@@ -165,77 +300,29 @@ BANK_5
     INCLUDE "gen/Sfx.asm"
     INCLUDE "b5.asm"
 
-    LOG_SIZE "-BANK 5- Audio", BANK_5
+    LOG_SIZE "-BANK 14/15- Audio", BANK_14
 
-    SEG Bank6
-    ORG $3000
+
+; ****************************************
+; *               BANK 16                *
+; ****************************************
+
+    SEG Bank16
+    ORG $4000
     RORG $F000
 
-
-; ****************************************
-; *               BANK 6                 *
-; ****************************************
-
-BANK_6
+BANK_16
     INCLUDE "gen/RoomScript.asm"
     INCLUDE "b6.asm"
-    LOG_SIZE "-BANK 6- Engine", BANK_6
+    LOG_SIZE "-BANK 16/17- Engine", BANK_16
+    
 
 ; ****************************************
-; *               BANK 7                 *
+; *               BANK 18                *
 ; ****************************************
 
-    SEG Bank7
-    ORG $3800
-    RORG $F800
+    SEG Bank18
+    ORG $4800
+    RORG $FC00
 
-	repeat 512
-	.byte $00
-	repend
-
-ENTRY: SUBROUTINE
-    CLEAN_START
-    
-    lda BANK_RAM7 ; MUST exist as LDA $1FE7 to pass E7 detection
-    tya
-.wipeRam2
-    dex
-    sta $f000,x
-    bne .wipeRam2
-    
-    ; all registers 0
-    ldy #3
-.loRamLoop
-    lda BANK_RAM,y
-    txa
-.wipeRam1
-    dex
-    sta wRAM_SEG,x
-    bne .wipeRam1
-    dey
-    bpl .loRamLoop
-    ; loRamBank = 0
-    
-    ; kernel transfer
-    lda BANK_ROM+1
-    ldy #KERNEL_LEN
-.initWorldKernMem
-    lda KERNEL_WORLD-1,y
-    sta wKERNEL-1,y
-    dey
-    bne .initWorldKernMem
-    LOG_SIZE "ENTRY", ENTRY
     INCLUDE "b7.asm"
-
-    LOG_SIZE "-BANK 7-", ENTRY
-        
-    ORG $3FE0
-    ; This space is reserved to prevent unintentional bank swaps
-    .byte $0, $1, $2, $3, $4, $5, $6, $7, $8, $9, $A, $B, $C, $D, $E, $F
-    .byte $0, $1, $2, $3, $4, $5, $6, $7, $8, $9, $A, $B
-    
-	ORG $3FFC
-	RORG $FFFC
-	.word ENTRY
-	.byte "07"
-    END

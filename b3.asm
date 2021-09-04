@@ -4,9 +4,12 @@
 ; https://atariage.com/forums/topic/317782-text-kernel-approaches/
 ;==============================================================================
 TextKernel: SUBROUTINE
-    sta WSYNC ; Scanlines 56 to 97 (3116) (TIM64T 48)
+    nop ; Scanlines 56 to 97 (3116) (TIM64T 48)
     lda #49
     sta TIM64T
+    
+    lda #SLOT_B3_B
+    sta BANK_SLOT
 ; start
     lda #6
     sta NUSIZ0
@@ -444,3 +447,5 @@ SetHorizPos: SUBROUTINE
     sta RESP0,x ; fix coarse position
     sta HMP0,x  ; set fine offset
     rts     ; return to caller
+
+    LOG_SIZE "TextKernel", TextKernel

@@ -17,6 +17,8 @@ zelda_dep := \
   b5.asm \
   b6.asm \
   b7.asm \
+  b7-2.asm \
+  b7-3.asm \
   vars.asm \
   main.asm
 

@@ -1,6 +1,13 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
+ENTITY_DEL_CONT:
+    ldx enType
+    lda EntityH,x
+    pha
+    lda EntityL,x
+    pha
+    rts
 
 ;==============================================================================
 ; Selects a new direction to move in at random, respecting blocked direction
@@ -292,12 +299,9 @@ EnClearDrop: SUBROUTINE
     lda #EN_NONE
     sta cdAType
     ldx roomId
-    ldy worldBank
-    lda BANK_RAM + 1,y
     lda rRoomFlag,x
     ora #$80
     sta wRoomFlag,x
-    lda BANK_RAM + 0
     ldx roomEX
     jsr GiItemDel
     

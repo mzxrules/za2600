@@ -229,37 +229,35 @@ Text11      ds 1
 ; Level Data Banks 1 and 2
 
     ORG $F000
-WORLD_T_PF1L    ds 256
-WORLD_T_PF1R    ds 256
-WORLD_T_PF2     ds 256
-WORLD_COLOR     ds 256
-WORLD_RS        ds 256 ; Room Script
-WORLD_EX        ds 256 ; Extra Data (Exits, Items)
-WORLD_EN        ds 256 ; Enemy Encounter
-WORLD_WA        ds 256 ; Bombable walls
+WORLD_T_PF1L    ds 128
+WORLD_T_PF1R    ds 128
+WORLD_T_PF2     ds 128
+WORLD_COLOR     ds 128
+WORLD_RS        ds 128 ; Room Script
+WORLD_EX        ds 128 ; Extra Data (Exits, Items)
+WORLD_EN        ds 128 ; Enemy Encounter
+WORLD_WA        ds 128 ; Bombable walls
 
 ; Ram Bank 0
     SEG.U VARS_RAM
-    ORG $F800
+    ORG $FA00
+wRAM_SEG
 wKERNEL     ds KERNEL_LEN
 wPF1RoomL   ds ROOM_PX_HEIGHT
 wPF2Room    ds ROOM_PX_HEIGHT
 wPF1RoomR   ds ROOM_PX_HEIGHT
 wRoomClear  ds 256/8            ; All Enemies Defeated flags
+    ORG $FB00
+wRoomFlag   ds 256
 
-    ORG $F900
+    ORG $F800
+rRAM_SEG
 rKERNEL     ds KERNEL_LEN
 rPF1RoomL   ds ROOM_PX_HEIGHT
 rPF2Room    ds ROOM_PX_HEIGHT
 rPF1RoomR   ds ROOM_PX_HEIGHT
 rRoomClear  ds 256/8            ; All Enemies Defeated flags
-
-; Ram Bank 1 and 2
-    SEG.U VARS_ROOM
-    ORG $F800
-wRAM_SEG
-wRoomFlag   ds 256
-rRAM_SEG
+    ORG $F900
 rRoomFlag   ds 256
     ; all world types
     ; 1xxx_xxxx Got Item
@@ -272,10 +270,6 @@ rRoomFlag   ds 256
 ; ****************************************
 ; * Constants                            *
 ; ****************************************
-
-BANK_ROM    = $1FE0
-BANK_RAM7   = $1FE7
-BANK_RAM    = $1FE8
 
 KERNEL_LEN  = $90   ; World Kernel length
 
@@ -357,3 +351,36 @@ EN_BLOCKDIR_L = 1
 EN_BLOCKDIR_R = 2
 EN_BLOCKDIR_U = 4
 EN_BLOCKDIR_D = 8
+
+RAMSEG_F0 = $00
+RAMSEG_F4 = $40
+RAMSEG_F8 = $80
+RAMSEG_FC = $C0
+
+BANK_SLOT_RAM = $3E
+BANK_SLOT = $3F
+
+SLOT_B7 = RAMSEG_FC | 18
+
+SLOT_B7_C = RAMSEG_F4 | 2
+SLOT_B7_D = RAMSEG_F4 | 3
+
+SLOT_B0_A = RAMSEG_F0 | 4
+SLOT_B0_B = RAMSEG_F0 | 5
+
+SLOT_W0 = RAMSEG_F0 | 6
+SLOT_W1 = RAMSEG_F0 | 7
+SLOT_W2 = RAMSEG_F0 | 8
+SLOT_B2_B = RAMSEG_F4 | 9
+
+SLOT_B3_A = RAMSEG_F0 | 10
+SLOT_B3_B = RAMSEG_F4 | 11
+
+SLOT_B4_A = RAMSEG_F0 | 12
+SLOT_B4_B = RAMSEG_F4 | 13
+
+SLOT_B5_A = RAMSEG_F0 | 14
+SLOT_B5_B = RAMSEG_F4 | 15
+
+SLOT_B6_A = RAMSEG_F0 | 16
+SLOT_B6_B = RAMSEG_F4 | 17

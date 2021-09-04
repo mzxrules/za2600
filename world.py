@@ -9,7 +9,7 @@ files = [
 
 mdata = []
 
-def PackRoomAndDoorData(bankId, levels):
+def PackRoomAndDoorData(bankId, level):
     def PackStep(room, doors, type):
         # Since playfield sprites are 16 bytes long, we store the middle two digits of the PF sprite address
         # We further optimize by swapping the two digits; this lets us use simple AND masks and ORs to
@@ -32,13 +32,8 @@ def PackRoomAndDoorData(bankId, levels):
         room &= roomMask[type]
         return room | doors
         
-    world = []
-    doors = []
-    lvlsets = [levels[0], levels[1]]
-    
-    for a in lvlsets:
-            world += a[0]
-            doors += a[1]
+    world = level[0]
+    doors = level[1]
     
     # stripify and reorder world data
     worldstrip = [
@@ -46,7 +41,7 @@ def PackRoomAndDoorData(bankId, levels):
         [],
         []
     ]
-    for i in range(256):
+    for i in range(128):
         for j in range(3):
             worldstrip[j].append(PackStep(world[i*3+j], doors[i], j))
         
@@ -63,12 +58,9 @@ for worldId in range(3):
             level.append(list(file.read()))
     mdata.append(level)    
 
-lvldata =[
-    (mdata[0], mdata[0]),
-    (mdata[1], mdata[2])
-]
 
-PackRoomAndDoorData(1, lvldata[0])
-PackRoomAndDoorData(2, lvldata[1])
+PackRoomAndDoorData(0, mdata[0])
+PackRoomAndDoorData(1, mdata[1])
+PackRoomAndDoorData(2, mdata[2])
 
 print("WORLD DATA REBUILT")

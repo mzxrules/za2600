@@ -2,13 +2,14 @@
 ; mzxrules 2021
 ;==============================================================================
 LoadRoom_B6: SUBROUTINE
+    lda #SLOT_B6_B
+    sta BANK_SLOT
+
 ; set OR mask for the room top/bottom
     lda worldId
     beq .WorldRoomOrTop
     
 ; sneak in opportunity to update roomDoors
-    ldx worldBank
-    lda BANK_RAM + 1,x
     ldy roomId
     lda rRoomFlag,y
     and #%01010101
@@ -19,7 +20,6 @@ LoadRoom_B6: SUBROUTINE
     eor #$FF
     and roomDoors
     sta roomDoors
-    lda BANK_RAM
     
     lda #$FF
     .byte $2C
@@ -260,10 +260,6 @@ KeydoorCheck_B6: SUBROUTINE
     sta SfxFlags
     ; x = door dir, S/N/E/W
     
-    ; load world bank (RAM)
-    ldy worldBank
-    lda BANK_RAM + 1,y
-    
     ldy roomId
     lda KeydoorFlagA,x
     ora rRoomFlag,y
@@ -275,7 +271,6 @@ KeydoorCheck_B6: SUBROUTINE
     lda KeydoorFlagB,x
     ora rRoomFlag,y
     sta wRoomFlag,y
-    lda BANK_RAM + 0
     rts
 
 FireOffX:
@@ -747,8 +742,6 @@ RsItem: SUBROUTINE
     cmp #EN_CLEAR_DROP
     bne .rts
     ldx roomId
-    ldy worldBank
-    lda BANK_RAM + 1,y
     lda rRoomFlag,x
     bmi .NoLoad
     
@@ -759,7 +752,6 @@ RsItem: SUBROUTINE
     lda #EN_ITEM
     sta cdAType
 .NoLoad
-    lda BANK_RAM + 0
     lda #0
     sta roomRS
 .rts
