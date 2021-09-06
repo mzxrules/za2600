@@ -1,278 +1,6 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-LoadRoom_B6: SUBROUTINE
-    lda #SLOT_B6_B
-    sta BANK_SLOT
-
-; set OR mask for the room top/bottom
-    lda worldId
-    beq .WorldRoomOrTop
-    
-; sneak in opportunity to update roomDoors
-    ldy roomId
-    lda rRoomFlag,y
-    and #%01010101
-    sta Temp6
-    asl
-    clc
-    adc Temp6
-    eor #$FF
-    and roomDoors
-    sta roomDoors
-    
-    lda #$FF
-    .byte $2C
-.WorldRoomOrTop
-    lda #$00
-    
-    sta Temp6
-    ldy #1
-.roomUpDownBorder
-    lda rPF1RoomL+2
-    ora Temp6
-    sta wPF1RoomL,y
-    
-    lda rPF2Room+2
-    ora Temp6
-    sta wPF2Room,y
-    
-    lda rPF1RoomR+2
-    ora Temp6
-    sta wPF1RoomR,y
-    
-    lda rPF1RoomL+ROOM_PX_HEIGHT-3
-    ora Temp6
-    sta wPF1RoomL+ROOM_PX_HEIGHT-2,y
-    
-    lda rPF1RoomR+ROOM_PX_HEIGHT-3
-    ora Temp6
-    sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
-    
-    lda rPF2Room+ROOM_PX_HEIGHT-3
-    ora Temp6
-    sta wPF2Room+ROOM_PX_HEIGHT-2,y
-    dey
-    bpl .roomUpDownBorder
-    lda worldId
-    beq UpdateWorldDoors
-    rts
-    
-UpdateWorldDoors: SUBROUTINE
-    lda roomDoors
-    and #3
-    tax
-    ldy #1
-.Up
-    lda WorldDoorPF2,x
-    ora rPF2Room+ROOM_PX_HEIGHT-2,y
-    sta wPF2Room+ROOM_PX_HEIGHT-2,y
-    lda WorldDoorPF1Up,x
-    ora rPF1RoomL+ROOM_PX_HEIGHT-2,y
-    sta wPF1RoomL+ROOM_PX_HEIGHT-2,y
-    lda WorldDoorPF1Up,x
-    ora rPF1RoomR+ROOM_PX_HEIGHT-2,y
-    sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
-    dey
-    bpl .Up
-    
-    lda roomDoors
-    lsr
-    lsr
-    pha
-    and #3
-    tax
-    ldy #1
-.Down
-    lda WorldDoorPF2,x
-    ora rPF2Room,y
-    sta wPF2Room,y
-    lda WorldDoorPF1Up,x
-    ora rPF1RoomL,y
-    sta wPF1RoomL,y
-    lda WorldDoorPF1Up,x
-    ora rPF1RoomR,y
-    sta wPF1RoomR,y
-    dey
-    bpl .Down
-
-.LeftRight
-    pla
-    lsr
-    lsr
-    tay
-    and #3
-    tax
-    lda WorldDoorPF1A,x
-    sta Temp1
-    lda WorldDoorPF1B,x
-    sta Temp3
-    tya
-    lsr
-    lsr
-    and #3
-    tax
-    lda WorldDoorPF1A,x
-    sta Temp0
-    lda WorldDoorPF1B,x
-    sta Temp2
-    
-    ldy #5
-.LeftRightWorldDoor
-    lda rPF1RoomL+2,y
-    ora Temp0
-    sta wPF1RoomL+2,y
-    
-    lda rPF1RoomL+12,y
-    ora Temp0
-    sta wPF1RoomL+12,y
-    
-    lda rPF1RoomR+2,y
-    ora Temp1
-    sta wPF1RoomR+2,y
-    
-    lda rPF1RoomR+12,y
-    ora Temp1
-    sta wPF1RoomR+12,y
-    dey
-    bpl .LeftRightWorldDoor
-    
-    ldy #3
-.LeftRightWorldDoor2
-    lda rPF1RoomL+8,y
-    ora Temp2
-    sta wPF1RoomL+8,y
-    
-    lda rPF1RoomR+8,y
-    ora Temp3
-    sta wPF1RoomR+8,y
-    dey
-    bpl .LeftRightWorldDoor2
-rts_UpdateDoors:
-    rts
-    
-UpdateDoors_B6: SUBROUTINE
-    lda worldId
-    beq rts_UpdateDoors
-    ldy #$3F
-    ldx #$FF
-    lda roomDoors
-
-    lsr
-    sty wPF2Room+ROOM_PX_HEIGHT-2
-    bcc .skipDown0
-    stx wPF2Room+ROOM_PX_HEIGHT-2
-
-.skipDown0
-    lsr
-    sty wPF2Room+ROOM_PX_HEIGHT-1
-    bcc .skipDown1
-    stx wPF2Room+ROOM_PX_HEIGHT-1
-
-.skipDown1
-    lsr
-    sty wPF2Room+1
-    bcc .skipUp0
-    stx wPF2Room+1
-
-.skipUp0
-    lsr
-    sty wPF2Room+0
-    bcc .skipUp1
-    stx wPF2Room+0
-
-.skipUp1
-    lda roomDoors
-    and #$C0
-    sta Temp0
-    lda roomDoors
-    asl
-    asl
-    and #$C0
-    sta Temp1
-
-    ldy #3
-.lrLoop
-    lda rPF1RoomL+(ROOM_PX_HEIGHT/2)-2,y
-    and #$3F
-    ora Temp0
-    sta wPF1RoomL+(ROOM_PX_HEIGHT/2)-2,y
-    lda rPF1RoomR+(ROOM_PX_HEIGHT/2)-2,y
-    and #$3F
-    ora Temp1
-    sta wPF1RoomR+(ROOM_PX_HEIGHT/2)-2,y
-    dey
-    bpl .lrLoop
-    rts
-   
-KeydoorCheck_B6: SUBROUTINE
-    lda worldId
-    beq .rts1
-    lda itemKeys
-    beq .rts1
-        
-    lda plX
-    ldy plY
-    
-; Up/Down check
-    cmp #BoardKeydoorUDA
-    ; continue if positive
-    bmi .LRCheck
-    cmp #BoardKeydoorUDA + $8+1
-    bpl .LRCheck
-    
-    ldx #0
-    cpy #BoardKeydoorUY
-    beq .UnlockUp
-    cpy #BoardKeydoorDY
-    beq .UnlockDown
-    
-.LRCheck
-    cpy #BoardKeydoorLRA
-    bmi .rts1
-    cpy #BoardKeydoorLRA + $8+1
-    bpl .rts1
-    
-    ldx #2
-    cmp #BoardKeydoorRX
-    beq .UnlockRight
-    cmp #BoardKeydoorLX
-    beq .UnlockLeft
-.rts1
-    rts
-.UnlockUp
-.UnlockLeft
-    inx
-.UnlockDown
-.UnlockRight
-    lda roomDoors
-    ; Verify that door is a "keydoor". This is done by toggling the keydoor bit
-    ; And then masking out just the one door, thus if a is not 0, it's not a keydoor
-    eor #%01010101
-    and KeydoorMask,x
-    bne .rts1
-    lda KeydoorMask,x
-    eor #$FF
-    and roomDoors
-    sta roomDoors
-    dec itemKeys
-    lda #SFX_STAB
-    sta SfxFlags
-    ; x = door dir, S/N/E/W
-    
-    ldy roomId
-    lda KeydoorFlagA,x
-    ora rRoomFlag,y
-    sta wRoomFlag,y
-    tya
-    clc
-    adc KeydoorRoomOff,x
-    tay
-    lda KeydoorFlagB,x
-    ora rRoomFlag,y
-    sta wRoomFlag,y
-    rts
-
 FireOffX:
 BombOffX:
     .byte 10, -4, 3, 3
@@ -285,7 +13,7 @@ BombAnimDeltaX:
     .byte -2, -4,  8, 0, -8, 4, -4,  8, 0, -8, 4
 BombAnimDeltaY:
     
-PlayerArrow_B6: SUBROUTINE
+PlayerArrow: SUBROUTINE
 ; ARROW
     bit plState
     bvc .skipSpawnArrow
@@ -346,7 +74,7 @@ ArrowDeltaX:
 ArrowDeltaY: 
     .byte 0, 0, -2, 2
 
-PlayerFire_B6: SUBROUTINE
+PlayerFire: SUBROUTINE
 ; FIRE
     bit plState
     bvc .skipSpawnFire
@@ -381,7 +109,7 @@ PlayerFire_B6: SUBROUTINE
     rts
     
     
-PlayerBomb_B6: SUBROUTINE
+PlayerBomb: SUBROUTINE
 ; Bombs
     bit plState
     bvc .skipDropBomb
@@ -464,8 +192,8 @@ ArrowOff8Y:
 SwordOff8Y:
     .byte 3, 3, -7, 7
 
-PlayerItem_B6: SUBROUTINE
-PlayerSword_B6: SUBROUTINE
+PlayerItem: SUBROUTINE
+PlayerSword: SUBROUTINE
 ; If Item Button, use item
     bit plState
     bvc .skipSlashSword
@@ -506,32 +234,8 @@ PlayerSword_B6: SUBROUTINE
     sta m0Y
 .endSword
     rts
-    
-    align 4
-KeydoorMask:
-    ; S/N/E/W
-    .byte $0C, $03, $30, $C0
-KeydoorFlagA:
-    .byte $04, $01, $10, $40
-KeydoorFlagB:
-    .byte $01, $04, $40, $10
-KeydoorRoomOff:
-    .byte $10, $F0, $01, $FF
-    
-    align 4
-WorldDoorPF1Up:
-    .byte $C0, $C0, $FF, $FF
-    
-WorldDoorPF1A:
-    .byte $00, $00, $C0, $C0
-    
-WorldDoorPF1B:
-    .byte $00, $C0, $00, $C0
-    
-WorldDoorPF2:
-    .byte $00, $FF, $3F, $FF
 
-ProcessInput_B6: SUBROUTINE
+PlayerInput: SUBROUTINE
     bit INPT1
     bmi .skipTest
     inc itemKeys
@@ -661,7 +365,7 @@ MovePlayerUp:
 
 ContFin:
     rts
-    LOG_SIZE "Input", ProcessInput_B6
+    LOG_SIZE "Input", PlayerInput
 
 RsNone:
 RsFairyFountain:

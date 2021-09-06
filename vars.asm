@@ -95,7 +95,6 @@ blDir       ds 1
 ;BgColor    ds 1
 ;FgColor    ds 1
 worldId     ds 1
-worldBank   ds 1
 worldSX     ds 1 ; respawn X
 worldSY     ds 1 ; respawn Y
 worldSR     ds 1 ; respawn room
@@ -224,11 +223,11 @@ Text9       ds 1
 Text10      ds 1
 Text11      ds 1
 
-	echo "-RAM-",$80,(.)
+    echo "-RAM-",$80,(.)
 
 ; Level Data Banks 1 and 2
 
-    ORG $F000
+    ORG $F400
 WORLD_T_PF1L    ds 128
 WORLD_T_PF1R    ds 128
 WORLD_T_PF2     ds 128
@@ -309,6 +308,7 @@ PlState_ItemButtonRepeat    = $80
 PlState_ItemButton          = $40
 PlState_Stab                = $20
 
+COLOR_BLACK         = $00
 COLOR_DARKNUT_RED   = $42
 COLOR_OCTOROK_BLUE  = $72
 COLOR_DARKNUT_BLUE  = $74
@@ -318,6 +318,7 @@ COLOR_CHOCOLATE     = $F0
 COLOR_EARTH         = $F2
 COLOR_LIGHT_WATER   = $A4
 COLOR_LIGHT_BLUE    = $88
+COLOR_LIGHT_BLUE2   = $86 ; World
 COLOR_DARK_BLUE     = $90
 COLOR_GOLDEN        = $1E
 COLOR_TRIFORCE      = $2A
@@ -360,27 +361,32 @@ RAMSEG_FC = $C0
 BANK_SLOT_RAM = $3E
 BANK_SLOT = $3F
 
-SLOT_B7 = RAMSEG_FC | 18
+SLOT_ALWAYS = RAMSEG_FC | 1
+SLOT_DRAW   = RAMSEG_F4 | 2
+SLOT_ROOM   = RAMSEG_F0 | 3
 
-SLOT_B7_C = RAMSEG_F4 | 2
-SLOT_B7_D = RAMSEG_F4 | 3
+SLOT_PF_A   = RAMSEG_F4 | 4
+SLOT_SP_A   = RAMSEG_F0 | 5
 
-SLOT_B0_A = RAMSEG_F0 | 4
-SLOT_B0_B = RAMSEG_F0 | 5
+SLOT_W0     = RAMSEG_F4 | 6
+SLOT_W1     = RAMSEG_F4 | 7
+SLOT_W2     = RAMSEG_F4 | 8
 
-SLOT_W0 = RAMSEG_F0 | 6
-SLOT_W1 = RAMSEG_F0 | 7
-SLOT_W2 = RAMSEG_F0 | 8
-SLOT_B2_B = RAMSEG_F4 | 9
+SLOT_RW0    = RAMSEG_F8 | 0
+SLOT_RW1    = RAMSEG_F8 | 1
+SLOT_RW2    = RAMSEG_F8 | 2
 
-SLOT_B3_A = RAMSEG_F0 | 10
-SLOT_B3_B = RAMSEG_F4 | 11
+SLOT_TX_A   = RAMSEG_F0 | 10
+SLOT_TX_B   = RAMSEG_F4 | 11
 
-SLOT_B4_A = RAMSEG_F0 | 12
-SLOT_B4_B = RAMSEG_F4 | 13
+SLOT_EN_A   = RAMSEG_F0 | 12
+SLOT_EN_B   = RAMSEG_F4 | 13
 
-SLOT_B5_A = RAMSEG_F0 | 14
-SLOT_B5_B = RAMSEG_F4 | 15
+SLOT_AU_A   = RAMSEG_F0 | 14
+SLOT_AU_B   = RAMSEG_F4 | 15
 
-SLOT_B6_A = RAMSEG_F0 | 16
-SLOT_B6_B = RAMSEG_F4 | 17
+SLOT_RS_A   = RAMSEG_F0 | 16
+SLOT_RS_B   = RAMSEG_F4 | 17
+
+SLOT_PL_A   = RAMSEG_F0 | 16
+SLOT_PL_B   = RAMSEG_F4 | 17

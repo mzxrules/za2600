@@ -1,7 +1,7 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-UpdateAudio_B5: SUBROUTINE
+UpdateAudio: SUBROUTINE
     lda SeqFlags
     bit SeqFlags
     bpl .continueSequence

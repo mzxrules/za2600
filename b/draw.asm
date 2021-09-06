@@ -100,7 +100,7 @@ POSITION_SPRITES:
     sta NUSIZ0 ; clean sword from previous frame
     
     ;lda BANK-ROM + 0
-    lda #SLOT_B0_B
+    lda #SLOT_SP_A
     sta BANK_SLOT
 
 .hud_sprite_setup
@@ -154,9 +154,9 @@ POSITION_SPRITES:
     sta THudDigits+1
 
     jsr PosHudObjects
-; ===================================================    
-;    Pre HUD
-; ===================================================
+;===================================================    
+; Pre HUD
+;===================================================
 .PRE_HUD:
     lda roomId
     lsr
@@ -191,7 +191,158 @@ POSITION_SPRITES:
     
     lda #COLOR_PLAYER_02
     sta COLUPF
-    jmp KERNEL_MAIN
+
+;===================================================
+; Kernel Main
+;===================================================
+KERNEL_MAIN: SUBROUTINE ; 192 scanlines
+    sta WSYNC
+    lda INTIM
+    bne KERNEL_MAIN
+    sta VBLANK
+
+KERNEL_HUD: SUBROUTINE
+    ldy #7 ; Draw Height
+    lda #0
+    sta WSYNC
+    beq .loop
+;=========== Scanline 1A ==============
+.hudScanline1A
+    ldx #3
+    sta WSYNC
+    sta GRP0
+    sta PF1
+.hudShiftDigitLoop
+    lda THudDigits,x
+    sta THudDigits+2,x
+    dex
+    bpl .hudShiftDigitLoop
+    lda THudHealthL
+    sta THudHealthH
+    dey
+    lda #0
+    sta THudHealthL
+    nop ;sta WSYNC
+KERNEL_HUD_LOOP:
+.loop:
+
+;=========== Scanline 0 ==============
+    cpy TMapPosY ; 3
+    bne .skip ; 2/3
+    lda #2    ; 2
+.skip
+    sta ENAM0 ; 3
+    lda (mapSpr),y ; 5
+    sta GRP1 ; 3
+    
+    ldx THudDigits+4 ; 3
+    lda SprN0,x  ; 4
+    and #$F0     ; 2
+    sta THudTemp    ; 3 
+    ldx THudDigits+5; 3
+    lda SprN0,x ; 4
+    and #$0F  ; 2
+    ora THudTemp ; 3
+    sta GRP0 ; 3
+    lda THudHealthH
+    sta PF1
+    lda #0
+    cpy #5
+    beq .hudScanline1A
+    cpy #2
+    beq .hudScanline1A
+    sta WSYNC
+    sta PF1
+;=========== Scanline 1 ==============
+    dec THudDigits+4 ; 5
+    dec THudDigits+5 ; 5
+    
+    ldx THudDigits+4 ; 3
+    lda SprN0,x  ; 4
+    and #$F0     ; 2
+    sta THudTemp    ; 3 
+    ldx THudDigits+5; 3
+    lda SprN0,x ; 4
+    and #$0F  ; 2
+    ora THudTemp ; 3
+    sta GRP0 ; 3
+    lda THudHealthH
+    sta PF1
+    dec THudDigits+4
+    dec THudDigits+5
+    lda #0
+    dey
+    sta WSYNC
+    sta PF1
+;=========== Scanline 0 ==============
+    bpl .loop
+; HUD LOOP End
+    lda #85
+    sta TIM8T ; Delay 8 scanlines
+    lda #0
+    sta ENAM0
+    sta GRP1
+    
+    ldx THudDigits+4 ; 3
+    lda SprN0,x  ; 4
+    and #$F0     ; 2
+    sta THudTemp    ; 3 
+    ldx THudDigits+5; 3
+    lda SprN0,x ; 4
+    and #$0F  ; 2
+    ora THudTemp ; 3
+    sta GRP0 ; 3
+    
+    lda rFgColor
+    sta COLUPF
+    
+    ldx #0
+    stx GRP0
+    stx GRP1
+    LOG_SIZE "-HUD KERNEL-", KERNEL_HUD
+    lda KernelId
+    beq .defaultWorldKernel
+    lda #SLOT_TX_A
+    sta BANK_SLOT
+    jmp TextKernel
+    
+.defaultWorldKernel
+; HMOVE setup
+    jsr PosWorldObjects
+
+.waitTimerLoop
+    lda INTIM
+    bne .waitTimerLoop
+    sta WSYNC
+    
+    ldy #ROOM_HEIGHT
+KERNEL_WORLD_RESUME:
+    
+    lda #SLOT_SP_A
+    sta BANK_SLOT
+
+    lda #$FF
+    sta PF0
+    sta PF1
+    sta PF2
+    lda #1
+    sta VDELP0
+    
+    jsr rKERNEL ; JUMP WORLD KERNEL
+    
+; Post Kernel
+    lda rFgColor
+    sta COLUBK
+    lda #0
+    sta PF1
+    sta PF2
+    sta GRP1
+    sta GRP0
+    sta ENAM0
+    sta PF0
+    rts
+    LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN
+
     .align 256    
 ;==============================================================================
 ; PosHudObjects

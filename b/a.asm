@@ -12,7 +12,7 @@ INIT:
     
     ; seed RNG
     ; lda INTIM
-    ; sta Rand8
+    ; sta Rand16+1
     ; eor #$FF
     sta Rand16
     
@@ -51,207 +51,45 @@ VERTICAL_SYNC: ; 3 SCANLINES
     sta VSYNC
 
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
-    lda roomFlags
-    and #~RF_LOADED_EV
-    sta roomFlags
-    bpl .skipLoadRoom
-    ora #RF_LOADED_EV
-    and #~[RF_LOAD_EV + RF_NO_ENCLEAR + RF_CLEAR]
-    sta roomFlags
-    lda #-$18
-    sta roomTimer
-    lda #$22
-    sta plState
-    lda #SLOT_B7_D
+    lda #SLOT_ROOM
     sta BANK_SLOT
-    jsr LoadRoom
-    lda #EN_NONE
-    sta enType
-    sta blType
-    sta blTemp
-    sta plItemTimer
-    sta KernelId
-.skipLoadRoom
+    jsr RoomUpdate
 
-    ;lda BANK-ROM + 6
-    lda #SLOT_B6_A
-    sta BANK_SLOT
-    lda #SLOT_B6_B
-    sta BANK_SLOT
 
     bit roomFlags
     bvs .roomLoadCpuSkip
-    jsr ProcessInput_B6
+    lda #SLOT_PL_A
+    sta BANK_SLOT
+    lda #SLOT_PL_B
+    sta BANK_SLOT
+    jsr PlayerInput
     jsr Random
-    jsr PlayerItem_B6
+    jsr PlayerItem
 .roomLoadCpuSkip
 
 ; room setup
-    jsr KeydoorCheck_B6
-    jsr UpdateDoors_B6
-    lda #SLOT_B5_A
+    lda #SLOT_ROOM
     sta BANK_SLOT
-    lda #SLOT_B5_B
+    jsr KeydoorCheck
+    jsr UpdateDoors
+
+    lda #SLOT_AU_A
     sta BANK_SLOT
-    jsr UpdateAudio_B5
+    lda #SLOT_AU_B
+    sta BANK_SLOT
+    jsr UpdateAudio
+
+    lda #SLOT_EN_A
+    sta BANK_SLOT
     jsr EntityDel
     
 ;==============================================================================
-; Pre-Position Sprites
+; Pre-Position Sprites and Draw Frame
 ;==============================================================================
 
-    lda #SLOT_B7_C
+    lda #SLOT_DRAW
     sta BANK_SLOT
-    jmp POSITION_SPRITES
-
-; ===================================================
-; Kernel Main
-; ===================================================
-KERNEL_MAIN: SUBROUTINE ; 192 scanlines
-    sta WSYNC
-    lda INTIM
-    bne KERNEL_MAIN
-    sta VBLANK
-
-KERNEL_HUD: SUBROUTINE
-    ldy #7 ; Draw Height
-    lda #0
-    sta WSYNC
-    beq .loop
-;=========== Scanline 1A ==============
-.hudScanline1A
-    ldx #3
-    sta WSYNC
-    sta GRP0
-    sta PF1
-.hudShiftDigitLoop
-    lda THudDigits,x
-    sta THudDigits+2,x
-    dex
-    bpl .hudShiftDigitLoop
-    lda THudHealthL
-    sta THudHealthH
-    dey
-    lda #0
-    sta THudHealthL
-    nop ;sta WSYNC
-KERNEL_HUD_LOOP:
-.loop:
-
-;=========== Scanline 0 ==============
-    cpy TMapPosY ; 3
-    bne .skip ; 2/3
-    lda #2    ; 2
-.skip
-    sta ENAM0 ; 3
-    lda (mapSpr),y ; 5
-    sta GRP1 ; 3
-    
-    ldx THudDigits+4 ; 3
-    lda SprN0,x  ; 4
-    and #$F0     ; 2
-    sta THudTemp    ; 3 
-    ldx THudDigits+5; 3
-    lda SprN0,x ; 4
-    and #$0F  ; 2
-    ora THudTemp ; 3
-    sta GRP0 ; 3
-    lda THudHealthH
-    sta PF1
-    lda #0
-    cpy #5
-    beq .hudScanline1A
-    cpy #2
-    beq .hudScanline1A
-    sta WSYNC
-    sta PF1
-;=========== Scanline 1 ==============
-    dec THudDigits+4 ; 5
-    dec THudDigits+5 ; 5
-    
-    ldx THudDigits+4 ; 3
-    lda SprN0,x  ; 4
-    and #$F0     ; 2
-    sta THudTemp    ; 3 
-    ldx THudDigits+5; 3
-    lda SprN0,x ; 4
-    and #$0F  ; 2
-    ora THudTemp ; 3
-    sta GRP0 ; 3
-    lda THudHealthH
-    sta PF1
-    dec THudDigits+4
-    dec THudDigits+5
-    lda #0
-    dey
-    sta WSYNC
-    sta PF1
-;=========== Scanline 0 ==============
-    bpl .loop
-; HUD LOOP End
-    lda #85
-    sta TIM8T ; Delay 8 scanlines
-    lda #0
-    sta ENAM0
-    sta GRP1
-    
-    ldx THudDigits+4 ; 3
-    lda SprN0,x  ; 4
-    and #$F0     ; 2
-    sta THudTemp    ; 3 
-    ldx THudDigits+5; 3
-    lda SprN0,x ; 4
-    and #$0F  ; 2
-    ora THudTemp ; 3
-    sta GRP0 ; 3
-    
-    lda rFgColor
-    sta COLUPF
-    
-    ldx #0
-    stx GRP0
-    stx GRP1
-    LOG_SIZE "-HUD KERNEL-", KERNEL_HUD
-    lda KernelId
-    beq .defaultWorldKernel
-    lda #SLOT_B3_A
-    sta BANK_SLOT
-    jmp TextKernel
-    
-.defaultWorldKernel
-; HMOVE setup
-    jsr PosWorldObjects
-
-.waitTimerLoop
-    lda INTIM
-    bne .waitTimerLoop
-    sta WSYNC
-    
-    ldy #ROOM_HEIGHT
-KERNEL_WORLD_RESUME:
-    
-    lda #SLOT_B0_B
-    sta BANK_SLOT
-
-    lda #$FF
-    sta PF0
-    sta PF1
-    sta PF2
-    lda #1
-    sta VDELP0
-    
-    jsr rKERNEL ; JUMP WORLD KERNEL
-    
-; Post Kernel
-    lda rFgColor
-    sta COLUBK
-    lda #0
-    sta PF1
-    sta PF2
-    sta GRP1
-    sta GRP0
-    sta ENAM0
-    sta PF0
+    jsr POSITION_SPRITES
     
 OVERSCAN: SUBROUTINE ; 30 scanlines
     sta WSYNC
@@ -341,9 +179,9 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     bpl .posResetLoop
 .skipCollisionPosReset
     
-    lda #SLOT_B4_A
+    lda #SLOT_EN_A
     sta BANK_SLOT
-    lda #SLOT_B4_B
+    lda #SLOT_EN_B
     sta BANK_SLOT
 .ClearDropSystem:
     jsr ClearDropSystem
@@ -352,16 +190,16 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     jsr EnSystem
     
 .RoomScript:
-    lda #SLOT_B6_A
+    lda #SLOT_RS_A
     sta BANK_SLOT
-    lda #SLOT_B6_B
+    lda #SLOT_RS_B
     sta BANK_SLOT
     jsr RoomScriptDel
     
 .BallScript:
-    lda #SLOT_B4_A
+    lda #SLOT_EN_A
     sta BANK_SLOT
-    lda #SLOT_B4_B
+    lda #SLOT_EN_B
     sta BANK_SLOT
     ldx blType
     jsr BallDel
@@ -404,9 +242,9 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 ; Game Over check
     ldy plHealth
     bne .skipGameOver
-    lda #SLOT_B6_A
+    lda #SLOT_RS_A
     sta BANK_SLOT
-    lda #SLOT_B6_B
+    lda #SLOT_RS_B
     sta BANK_SLOT
 
     jsr RsGameOver
@@ -457,14 +295,6 @@ noeor:
     sta Rand16 + 0
     eor Rand16 + 1
     rts
-
-EntityDel:
-    lda #SLOT_B4_A
-    sta BANK_SLOT
-
-    lda #SLOT_B4_B
-    sta BANK_SLOT
-    jmp ENTITY_DEL_CONT
     
 PlMoveDirDel:
     lda PlMoveDirH,x
@@ -499,8 +329,6 @@ WORLD_ENT: ; Initial room spawns for worlds 0-9
     .byte $77, $73, $79, $00, $00, $00, $F3, $00, $00, $FE
 
     ;align 16
-WorldColors:
-    .byte $00, COLOR_DARK_BLUE, $00, COLOR_LIGHT_BLUE-2, $42, $7A, COLOR_PATH, $06, $02, COLOR_LIGHT_BLUE-2, COLOR_GREEN_ROCK, COLOR_LIGHT_WATER, $00, COLOR_CHOCOLATE, COLOR_GOLDEN, $0E
 HealthPattern:
     .byte $00, $01, $03, $07, $0F, $1F, $3F, $7F, $FF 
 
@@ -583,11 +411,11 @@ GiItemColors:
     .byte $0E                   ; GiBoots
     .byte COLOR_DARKNUT_RED     ; GiRing
     .byte COLOR_DARKNUT_BLUE    ; GiPotion
-    .byte $F0                   ; GiRaft
+    .byte COLOR_CHOCOLATE       ; GiRaft
     
     .byte COLOR_TRIFORCE        ; GiFlute
     .byte COLOR_DARKNUT_RED     ; GiFireMagic
-    .byte $F0                   ; GiBow
+    .byte COLOR_CHOCOLATE       ; GiBow
     .byte COLOR_TRIFORCE        ; GiArrows
 
     .byte COLOR_DARKNUT_RED     ; GiBracelet
@@ -620,10 +448,9 @@ EnItemDraw: SUBROUTINE ; y == itemDraw
 
     INCLUDE "gen/mesg_digits.asm"
     
-;BANK_7_FREE:
-;    ORG $07E0-$51
-;    RORG $FFE0-$51
-;        LOG_SIZE "-BANK 7- FREE", BANK_7_FREE
+    LOG_SIZE "a", INIT
+    ORG BANK_ALWAYS_ROM + $400 - $1E-1
+    RORG $FFFF-($1E-1)-1
     
 ;==============================================================================
 ; PosWorldObjects

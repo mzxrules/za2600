@@ -1,6 +1,7 @@
 .PHONY: all
 
 zelda_dep := \
+  zmacros.asm \
   en/bosscucco.asm \
   en/darknut.asm \
   en/likelike.asm \
@@ -12,13 +13,14 @@ zelda_dep := \
   gen/ms_header.asm \
   spr/spr_room_pf1.asm \
   spr/spr_room_pf2.asm \
-  b3.asm \
-  b4.asm \
-  b5.asm \
-  b6.asm \
-  b7.asm \
-  b7-2.asm \
-  b7-3.asm \
+  b/0.asm \
+  b/a.asm \
+  b/draw.asm \
+  b/tx.asm \
+  b/en.asm \
+  b/au.asm \
+  b/rs.asm \
+  b/room.asm \
   vars.asm \
   main.asm
 

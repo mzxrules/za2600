@@ -16,44 +16,7 @@ TIA_BASE_ADDRESS = $00
     ORG $0000
     RORG $F000
     
-    INCLUDE "kworld.asm"
-
-ENTRY: SUBROUTINE
-    CLEAN_START
-    lda 0
-    sta BANK_SLOT
-    jmp ENTRY_INIT
-
-ENTRY_INIT: SUBROUTINE
-    lda #SLOT_B7
-    sta BANK_SLOT
-
-    lda #(RAMSEG_F4 | 1)
-    sta BANK_SLOT
-
-    lda #(RAMSEG_F8 | 0)
-    sta BANK_SLOT_RAM
-
-    lda #0
-.wipeRamA
-    dex
-    sta wRAM_SEG,x
-    bne .wipeRamA
-
-.wipeRamB
-    dex
-    sta wRAM_SEG + $100,x
-    bne .wipeRamB
-
-    ; kernel transfer
-    ldy #KERNEL_LEN
-.initWorldKernMem
-    lda KERNEL_WORLD-1,y
-    sta wKERNEL-1,y
-    dey
-    bne .initWorldKernMem
-
-    jmp INIT
+    INCLUDE "b/0.asm"
 
     LOG_SIZE "-BANK 0- ENTRY", ENTRY
 
@@ -68,10 +31,12 @@ ENTRY_INIT: SUBROUTINE
 
     SEG Bank1
     ORG $0400
-    RORG $F400
+    RORG $FC00
 BANK_1
+BANK_ALWAYS_ROM = $0400
+    INCLUDE "b/a.asm"
 
-    LOG_SIZE "-BANK 1- FREE", BANK_1
+    LOG_SIZE "-BANK 1- Always Loaded", BANK_1
     
 ; ****************************************
 ; *               BANK 2                 *
@@ -82,20 +47,19 @@ BANK_1
     RORG $F400
 BANK_2
 
-    INCLUDE "b7-2.asm"
+    INCLUDE "b/draw.asm"
     LOG_SIZE "-BANK 2-", BANK_2
 
 ; ****************************************
 ; *               BANK 3                 *
 ; ****************************************
 
-    SEG Bank3
+    SEG Bank1
     ORG $0C00
-    RORG $F400
+    RORG $F000
 BANK_3
-
-    INCLUDE "b7-3.asm"
-    LOG_SIZE "-BANK 3-", BANK_3
+    INCLUDE "b/room.asm"
+    LOG_SIZE "-BANK 3- Room Code", BANK_3
 
 ; ****************************************
 ; *               BANK 4                 *
@@ -103,12 +67,13 @@ BANK_3
     
     SEG Bank4
     ORG $1000
-    RORG $F000
-
+    RORG $F400
 BANK_4
+BANK_PF
+
     INCLUDE "spr/spr_room_pf1.asm"
     INCLUDE "spr/spr_room_pf2.asm"
-    LOG_SIZE "-BANK 4- PF Sprites", BANK_4
+    LOG_SIZE "-BANK 4- Sprites PF", BANK_4
     
 ; ****************************************
 ; *               BANK 5                 *
@@ -139,7 +104,7 @@ MINIMAP
 
     SEG Bank6
     ORG $1800
-    RORG $F000
+    RORG $F400
 BANK_6
     INCLUDE "gen/world/b0world.asm"
     INCBIN "world/w0co.bin"
@@ -160,7 +125,7 @@ BANK_6
 ; ****************************************
     
     ORG $1C00
-    RORG $F000
+    RORG $F400
 BANK_7
 
     INCLUDE "gen/world/b1world.asm"
@@ -184,7 +149,7 @@ BANK_7
 
     SEG Bank8
     ORG $2000
-    RORG $F000
+    RORG $F400
 BANK_8
 
     INCLUDE "gen/world/b2world.asm"
@@ -232,8 +197,8 @@ right_text
     include "gen/text_right.asm"
     LOG_SIZE "text_chrset_size", left_text
     align 256
+    include "b/tx.asm"
     include "gen/mesg_data.asm"
-    include "b3.asm"
  
     LOG_SIZE "-BANK 10/11- Text Bank", BANK_10
 
@@ -254,7 +219,7 @@ BANK_12
     INCLUDE "en/octorok.asm"
     INCLUDE "en/likelike.asm"
     INCLUDE "en/bosscucco.asm"
-    include "b4.asm"
+    include "b/en.asm"
     
     LOG_SIZE "-BANK 12/13- EnemyAI", BANK_12
 
@@ -298,7 +263,7 @@ BANK_14
     INCLUDE "gen/ms_header.asm"
     INCLUDE "gen/MusicSeq.asm"
     INCLUDE "gen/Sfx.asm"
-    INCLUDE "b5.asm"
+    INCLUDE "b/au.asm"
 
     LOG_SIZE "-BANK 14/15- Audio", BANK_14
 
@@ -313,16 +278,6 @@ BANK_14
 
 BANK_16
     INCLUDE "gen/RoomScript.asm"
-    INCLUDE "b6.asm"
+    INCLUDE "b/rs.asm"
     LOG_SIZE "-BANK 16/17- Engine", BANK_16
     
-
-; ****************************************
-; *               BANK 18                *
-; ****************************************
-
-    SEG Bank18
-    ORG $4800
-    RORG $FC00
-
-    INCLUDE "b7.asm"

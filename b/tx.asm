@@ -8,7 +8,7 @@ TextKernel: SUBROUTINE
     lda #49
     sta TIM64T
     
-    lda #SLOT_B3_B
+    lda #SLOT_TX_B
     sta BANK_SLOT
 ; start
     lda #6
@@ -427,6 +427,8 @@ FinishVS
 .waitTimerLoop
     lda INTIM
     bne .waitTimerLoop
+    lda #SLOT_DRAW
+    sta BANK_SLOT
     ldy TEXT_ROOM_HEIGHT
     sta WSYNC ; 95
     

@@ -1,10 +1,10 @@
 List of todos, ordered by importance
 
-Status Hud - Mostly Complete
+Status Hud - Needs selected item indicator/possibly improve hp sprite
 Event System
 Door Unlock System - Complete
 Ganon Fight Kernel
-Exits
+Exits - Complete
 Raft System - Complete
 Enemy Spawns - First Implementation
 Wizrobes
@@ -425,4 +425,20 @@ RoomFlag    $100
 Rom
 
 World Data could be packed into $400 bytes per 128 rooms,
-instead of $800 per 256. This would require less bank switching
+instead of $800 per 256. This could require less bank switching
+
+Cart Ram Map Info:
+
+General Layout
+
+ A = F000 - Free
+ B = F400 - Free
+ C = F800 - World # Ram
+ D = FC00 - "Always" bank
+
+ Drawing
+
+ A = F000 - Text Kernel A / Sprites
+ B = F400 - Text Kernel B / Draw
+ C = F800 - World # Ram
+ D = FC00 - "Always" bank
