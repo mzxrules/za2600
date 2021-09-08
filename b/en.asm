@@ -146,6 +146,13 @@ EnShopkeeper: SUBROUTINE
     lda #$30
     sta enY
 
+    lda #4
+    sta shopItem
+    lda #1
+    sta shopItem + 1
+    lda #2
+    sta shopItem + 2
+
     ldy #6
     lda #1
     and Frame

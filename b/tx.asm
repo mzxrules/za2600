@@ -3,6 +3,10 @@
 ; TextKernel is based on text24.asm
 ; https://atariage.com/forums/topic/317782-text-kernel-approaches/
 ;==============================================================================
+ShopKernel:
+    lda #SLOT_SH
+    sta BANK_SLOT
+
 TextKernel: SUBROUTINE
     nop ; Scanlines 56 to 97 (3116) (TIM64T 48)
     lda #49
@@ -419,6 +423,12 @@ FinishVS
     sta GRP0
     sta GRP1
     sta GRP0
+
+    ldy KernelId
+    cpy #2
+    bne .worldKernelReturn
+    jmp ShopKernel
+.worldKernelReturn
     
     lda #COLOR_PLAYER_00
     sta COLUP0
@@ -429,7 +439,7 @@ FinishVS
     bne .waitTimerLoop
     lda #SLOT_DRAW
     sta BANK_SLOT
-    ldy TEXT_ROOM_HEIGHT
+    ldy #TEXT_ROOM_HEIGHT
     sta WSYNC ; 95
     
     jmp KERNEL_WORLD_RESUME

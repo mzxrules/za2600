@@ -333,11 +333,11 @@ HealthPattern:
     .byte $00, $01, $03, $07, $0F, $1F, $3F, $7F, $FF 
 
 Spr8WorldOff:
-    .byte (ROOM_HEIGHT+8), (TEXT_ROOM_HEIGHT+8), (TEXT_ROOM_HEIGHT+8)
+    .byte (ROOM_HEIGHT+8), (TEXT_ROOM_HEIGHT+8), (SHOP_ROOM_HEIGHT+8)
 Spr1WorldOff: 
-    .byte (ROOM_HEIGHT+1), (TEXT_ROOM_HEIGHT+1)
+    .byte (ROOM_HEIGHT+1), (TEXT_ROOM_HEIGHT+1), (SHOP_ROOM_HEIGHT+1)
 RoomWorldOff:
-    .byte (ROOM_PX_HEIGHT-1), (TEXT_ROOM_PX_HEIGHT-1), (TEXT_ROOM_PX_HEIGHT-1)
+    .byte (ROOM_PX_HEIGHT-1), (TEXT_ROOM_PX_HEIGHT-1), (SHOP_ROOM_PX_HEIGHT-1)
     
     INCLUDE "gen/PlMoveDir.asm"
     
@@ -458,10 +458,12 @@ EnItemDraw: SUBROUTINE ; y == itemDraw
 ; Sets X position for all TIA objects within the world view
 ; X position must be between 0-134 ($00 to $86)
 ; Higher values will waste an extra scanline
+; Does not touch Y register
 ;==============================================================================
 PosWorldObjects: SUBROUTINE
-    sec            ; 2
     ldx #4
+PosWorldObjects_X: SUBROUTINE
+    sec            ; 2
 .Loop
     sta WSYNC      ; 3
     lda plX,x      ; 4

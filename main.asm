@@ -89,6 +89,7 @@ BANK_5
     repend
     align $100
     INCLUDE "spr/spr_en.asm"
+    align $100
     INCLUDE "spr/spr_item.asm"
 MINIMAP
     INCLUDE "spr/spr_map.asm"
@@ -191,13 +192,14 @@ BANK_9
     RORG $F000
 BANK_10
 
+    include "b/tx.asm"
+    LOG_SIZE "tx.asm break", BANK_10
+    align 256
 left_text
     include "gen/text_left.asm"
 right_text
     include "gen/text_right.asm"
     LOG_SIZE "text_chrset_size", left_text
-    align 256
-    include "b/tx.asm"
     include "gen/mesg_data.asm"
  
     LOG_SIZE "-BANK 10/11- Text Bank", BANK_10
@@ -267,7 +269,6 @@ BANK_14
 
     LOG_SIZE "-BANK 14/15- Audio", BANK_14
 
-
 ; ****************************************
 ; *               BANK 16                *
 ; ****************************************
@@ -281,3 +282,14 @@ BANK_16
     INCLUDE "b/rs.asm"
     LOG_SIZE "-BANK 16/17- Engine", BANK_16
     
+; ****************************************
+; *               BANK 18                *
+; ****************************************
+
+    SEG Bank18
+    ORG $4800
+    RORG $F400
+
+BANK_18
+    INCLUDE "b/sh.asm"
+    LOG_SIZE "-BANK 18- Shops", BANK_18

@@ -17,6 +17,7 @@ zelda_dep := \
   b/a.asm \
   b/draw.asm \
   b/tx.asm \
+  b/sh.asm \
   b/en.asm \
   b/au.asm \
   b/rs.asm \

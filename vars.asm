@@ -205,6 +205,13 @@ EnSysNext       ds 1
 EnSysClearOff   ds 1 ; offset to byte that room clear is stored at
 EnSysClearMask  ds 1 ; stores bitmask for room clear flag
 
+    SEG.U VARS_SHOP_KERNEL
+    ORG mapSpr
+ShopSpr0    ds 2
+ShopSpr1    ds 2
+ShopSpr2    ds 2
+ShopDrawY   ds 1
+
     SEG.U VARS_TEXT_ZERO
     ORG mapSpr
 TextLoop    ds 1
@@ -278,6 +285,8 @@ ROOM_SPR_SHEET      = 16 ; width of room sprite sheet in 8 bit sprites
 ROOM_HEIGHT         = [(8*ROOM_PX_HEIGHT)/2-1] ; Screen visible height of play
 TEXT_ROOM_PX_HEIGHT = 16 ; height of room in pixels, when text is displayed
 TEXT_ROOM_HEIGHT    = [(8*TEXT_ROOM_PX_HEIGHT)/2-1] ;
+SHOP_ROOM_PX_HEIGHT = 13 ; height of room in pixels
+SHOP_ROOM_HEIGHT    = [(8*SHOP_ROOM_PX_HEIGHT)/2-1] ;
 GRID_STEP           = 4 ; unit grid that the player should snap to
 MAX_LOCKS           = 16
 
@@ -367,6 +376,7 @@ SLOT_ROOM   = RAMSEG_F0 | 3
 
 SLOT_PF_A   = RAMSEG_F4 | 4
 SLOT_SP_A   = RAMSEG_F0 | 5
+SLOT_SP_A2  = RAMSEG_F4 | 5
 
 SLOT_W0     = RAMSEG_F4 | 6
 SLOT_W1     = RAMSEG_F4 | 7
@@ -390,3 +400,5 @@ SLOT_RS_B   = RAMSEG_F4 | 17
 
 SLOT_PL_A   = RAMSEG_F0 | 16
 SLOT_PL_B   = RAMSEG_F4 | 17
+
+SLOT_SH     = RAMSEG_F0 | 18
