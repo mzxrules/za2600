@@ -387,6 +387,7 @@ Bracelet, Bracelet Lv2
 Recorder?
 
 ; ASM TRICKS
+sbc = adc(~arg)
 ; dec to target amount
     lda #$00 ; <- Target Value
     cmp v
@@ -411,6 +412,19 @@ deduplicate the code by using the overflow flag to store whether the delay
 should be 4 or 6 cycles long. A branch takes 2 cycles to execute, 3 if the
 branch is taken, and so a pair of bvs is enough to implement a variable cycle
 delay of 4/6 cycles.
+
+
+   Caves
+Secret
+    Warp
+    Hint
+    Money
+Shops
+    B Pot,  Fairy,  R Pot
+    Key,    Ring,   Meat
+    Shield, Bomb,   Arrow
+    Shield, Meat,   Heart
+    Shield, Key,    Candle
 
 
 E7 -> 3E conversion
@@ -438,7 +452,7 @@ General Layout
 
  Drawing
 
- A = F000 - Text Kernel A / Sprites
- B = F400 - Text Kernel B / Draw
+ A = F000 - Text Kernel A / Shop Kernel    / Sprites (Draw)
+ B = F400 - Text Kernel B / Sprites (Shop) / Draw Kernel
  C = F800 - World # Ram
  D = FC00 - "Always" bank

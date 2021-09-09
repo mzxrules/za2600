@@ -214,7 +214,6 @@ right_text
 BANK_12
     INCLUDE "gen/Entity.asm"
     INCLUDE "gen/Ball.asm"
-    INCLUDE "gen/ItemId.asm"
     INCLUDE "gen/EnMoveDir.asm"
     INCLUDE "en/darknut.asm"
     INCLUDE "en/wallmaster.asm"
@@ -288,8 +287,9 @@ BANK_16
 
     SEG Bank18
     ORG $4800
-    RORG $F400
+    RORG $F000
 
 BANK_18
     INCLUDE "b/sh.asm"
-    LOG_SIZE "-BANK 18- Shops", BANK_18
+    INCLUDE "gen/ItemId.asm"
+    LOG_SIZE "-BANK 18- Shops and Get Items", BANK_18

@@ -326,7 +326,7 @@ Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
     
 WORLD_ENT: ; Initial room spawns for worlds 0-9
-    .byte $77, $73, $79, $00, $00, $00, $F3, $00, $00, $FE
+    .byte $77, $73, $79, $00, $00, $00, $73, $00, $00, $7E
 
     ;align 16
 HealthPattern:
@@ -348,26 +348,32 @@ RoomWorldOff:
 ; A = amount to change health by
 ;==============================================================================
 UPDATE_PL_HEALTH: SUBROUTINE
-    ldy #SFX_PL_HEAL
     cmp #0
-    bpl .playSfx
+    bpl .heal
+
+; damage
     bit plStun
     bmi .rts
     ldx #-48
     stx plStun
     ldy #SFX_PL_DAMAGE
-.playSfx
-    sty SfxFlags
     clc
     adc plHealth
-    bpl .cont
+    bpl .setHp
     lda #0
-.cont
+    beq .setHp
+
+.heal
+    beq .rts
+    ldy #SFX_PL_HEAL
+    clc
+    adc plHealth
     cmp plHealthMax
-    bmi .setHp
+    bcc .setHp
     lda plHealthMax
 .setHp
     sta plHealth
+    sty SfxFlags
 .rts
     rts
     
@@ -445,6 +451,20 @@ EnItemDraw: SUBROUTINE ; y == itemDraw
     sta enSpr
 .rts
     rts
+
+EnClearDrop:
+    lda #SLOT_SH
+    sta BANK_SLOT
+    jmp EnClearDrop_
+EnStairs:
+    lda #SLOT_SH
+    sta BANK_SLOT
+    jmp EnStairs_
+
+EnShopkeeper
+    lda #SLOT_SH
+    sta BANK_SLOT
+    jmp EnShopkeeper_
 
     INCLUDE "gen/mesg_digits.asm"
     

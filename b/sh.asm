@@ -46,6 +46,12 @@ KERNEL_SHOP: SUBROUTINE
     ldx shopItem+1
     lda GiItemColors,x
     sta COLUP0
+    
+; Cycle padding to line up world kernel draw routine    
+    sta WSYNC
+    sta WSYNC
+    sta WSYNC
+    sta WSYNC
 
 ; DRAW
 .draw_loop
@@ -89,9 +95,382 @@ KERNEL_SHOP: SUBROUTINE
     jsr PosWorldObjects
     sta WSYNC
     
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    
     jmp KERNEL_WORLD_RESUME
+
+;==============================================================================
+; GET ITEM
+;==============================================================================
+GiItemDel: SUBROUTINE
+    lda ItemIdH,x
+    pha
+    lda ItemIdL,x
+    pha
+    rts
+    
+GiBomb: SUBROUTINE
+    sed
+    clc
+    lda itemBombs
+    adc #4
+    cmp #$16
+    bmi .skipCap
+    lda #$16
+.skipCap
+    sta itemBombs
+    cld
+    rts
+    
+GiRupee5: SUBROUTINE
+    sed
+    clc
+    lda itemRupees
+    adc #1
+    bcc .skipCap
+    lda #$99
+.skipCap
+    sta itemRupees
+    cld
+    rts
+    
+GiFairy: SUBROUTINE
+    lda #8*5
+    bpl .setHealth
+GiRecoverHeart:
+    lda #8
+.setHealth
+    jmp UPDATE_PL_HEALTH
+
+GiSword2:
+GiSword3:
+GiCandle:
+GiMeat:
+GiBoots:
+GiRing:
+GiPotion:
+GiRaft:
+    lda Bit8-8,x
+    ora itemFlags
+    sta itemFlags
+    lda #MS_PLAY_GI
+    sta SeqFlags
+    rts
+    
+GiFlute:
+GiFireMagic:
+GiBow:
+GiArrows:
+GiBracelet:
+    lda Bit8-8,x
+    ora itemFlags+1
+    sta itemFlags+1
+    lda #MS_PLAY_GI
+    sta SeqFlags
+    rts
+
+GiTriforce:
+    inc itemTri
+    lda #MS_PLAY_GI
+    sta SeqFlags
+    rts
+GiKey:
+    inc itemKeys
+    lda #SFX_ITEM_PICKUP
+    sta SfxFlags
+    rts
+GiMasterKey:
+    lda #$C0
+    sta itemKeys
+    lda #MS_PLAY_GI
+    sta SeqFlags
+    rts
+    
+GiHeart:
+    lda #MS_PLAY_GI
+    sta SeqFlags
+    clc
+    lda #8
+    adc plHealthMax
+    sta plHealthMax
+    lda #8
+    adc plHealth
+    sta plHealth
+    rts
+    
+GiMap:
+    ldy worldId
+    lda Bit8-2,y
+    ora itemMaps
+    sta itemMaps
+    lda #SFX_ITEM_PICKUP
+    sta SfxFlags
+    rts
+
+;==============================================================================
+; En Clear Item Drop System
+;==============================================================================
+
+EnClearDrop_: SUBROUTINE
+    lda enState
+    and #1
+    tay
+    lda Bit8+6,y
+    and enState
+    beq .endCollisionCheck ; Entity not active
+    
+    lda CXPPMM
+    bpl .endCollisionCheck ; Player hasn't collided with Entity
+    
+    cpy #0
+    beq .EnItemCollision ; Potentially collided with permanent item
+    
+    ; Collided with random drop
+    ldx cdBType
+    beq .endCollisionCheck ; Safety check
+    dex ; convert cdBType to GiType
+    lda #SFX_ITEM_PICKUP
+    sta SfxFlags
+    jsr GiItemDel
+    lda #EN_NONE
+    sta cdBType
+    jmp .endCollisionCheck
+
+.EnItemCollision
+    lda cdAType
+    cmp #EN_ITEM
+    bne .endCollisionCheck
+
+    ; item collected
+    lda #EN_NONE
+    sta cdAType
+    ldx roomId
+    lda rRoomFlag,x
+    ora #$80
+    sta wRoomFlag,x
+    ldx roomEX
+    jsr GiItemDel
+    
+.endCollisionCheck
+    ; Select active entity
+    lda #0
+    ldx cdAType
+    beq .ATypeNotLoaded
+    ora #CD_UPDATE_A
+.ATypeNotLoaded
+    ldy cdBType
+    beq .BTypeNotLoaded
+    ora #CD_UPDATE_B
+.BTypeNotLoaded
+    sta enState
+    lda enState
+    bne .execute
+    
+    ; Nothing to execute
+    lda #$F0
+    sta enSpr+1
+    lda #$00
+    sta enSpr
+    rts
+    
+.execute
+    tax ; x = enState
+    lda Frame
+    and #4
+    bne .TryTypeB
+.TryTypeA
+    txa
+    and #CD_UPDATE_A
+    bne .TypeA
+.TypeB
+    jmp EnClearDropTypeB
+.TryTypeB
+    txa
+    and #CD_UPDATE_B
+    bne .TypeB
+.TypeA
+
+EnClearDropTypeA: SUBROUTINE
+    ldx cdAX
+    stx enX
+    ldy cdAY
+    sty enY
+    
+    lda cdAType
+    cmp #EN_STAIRS
+    beq EnStairs_
+    cmp #EN_ITEM
+    bne .rts
+    jmp EnItem
+    
+EnStairs_:
+    lda rFgColor
+    sta enColor
+    lda #<SprE31
+    sta enSpr
+    lda #>SprE31
+    sta enSpr+1
+
+    cpx plX
+    bne .rts
+    cpy plY
+    bne .rts
+    lda roomEX
+    sta roomId
+    lda roomFlags
+    ora #RF_LOAD_EV
+    sta roomFlags
+.rts
+    rts
+    
+; Random Item Drops
+EnClearDropTypeB: SUBROUTINE
+    inc enState
+    lda cdBX
+    sta enX
+    lda cdBY
+    sta enY
+    
+    lda cdBType
+    cmp #CD_ITEM_RAND
+    bne .skipRollItem
+    
+    ldx #EN_NONE
+    jsr Random
+    cmp #255 ;drop rate odds
+    bcs .rollEnd
+    jsr Random
+    and #3
+    tay
+    lda EnRandomDrops,y
+    tax
+    inx
+.rollEnd
+    stx cdBType
+.skipRollItem
+    ldy cdBType
+    dey
+    bmi .rts
+    jmp EnItemDraw
+.rts
+    rts
+    
+EnRandomDrops:
+    .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
+
+
+EnShopkeeper_: SUBROUTINE
+    bit enState
+    bmi .skipInit
+    lda #TEXT3
+    sta mesgId
+    lda #2
+    sta KernelId
+    lda #$80
+    sta enState
+.skipInit
+    bvc .continue
+    lda #$F0
+    sta enY
+    jmp .rts
+.continue
+    ldy #GI_RUPEE5
+    jsr EnItemDraw
+    
+    lda #%0110
+    sta NUSIZ1_T
+    
+    lda #$20
+    sta enX
+    lda #$28
+    sta enY
+
+    lda #$30
+    cmp plY
+    bpl .skipSetPos
+    sta plY
+.skipSetPos
+
+    lda roomEX
+    and #$3F
+    sta shopItem
+    asl
+    clc
+    adc shopItem
+    tax ; shop index * 3
+
+    ldy #2
+.init_shop
+    lda ShopGiItems,x
+    sta shopItem,y
+    lda ShopPrices,x
+    sta shopDigit,y
+    inx
+    dey
+    bpl .init_shop
+    
+; Shop logic
+    bit CXPPMM
+    bpl .shopEnd
+    ldx #0
+    lda plX
+    cmp #$30
+    bmi .itemSelected
+    inx
+    cmp #$50
+    bmi .itemSelected
+    inx
+.itemSelected
+    sed
+    lda itemRupees
+    cmp shopDigit,x
+    bcs .buyItem
+    cld
+    bcc .shopEnd
+.buyItem
+    sec
+    sbc shopDigit,x
+    sta itemRupees
+    cld
+
+    lda #$C0
+    sta enState
+    lda shopItem,x
+    tax
+    jsr GiItemDel
+    lda #0
+    sta KernelId
+
+
+.shopEnd
+; Update shop price display digit
+
+    ldy #2
+    lda #1
+    and Frame
+    beq .tensDigit
+.onesDigit
+    lda shopDigit,y
+    and #$0F
+    sta shopDigit,y
+    dey
+    bpl .onesDigit
+    bmi .rts
+.tensDigit
+    lda shopDigit,y
+    lsr
+    lsr
+    lsr
+    lsr
+    sta shopDigit,y
+    dey
+    bpl .tensDigit
+.rts
+    rts
+
+ShopGiItems:
+    .byte GI_ARROWS, GI_RECOVER_HEART, GI_BOMB
+    
+    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROWS
+
+ShopPrices:
+    .byte $30, $05, $10
+    .byte $20, $05, $40

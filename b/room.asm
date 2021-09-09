@@ -16,11 +16,50 @@ RoomUpdate: SUBROUTINE
     jsr LoadRoom
     lda #0      ;EN_NONE
     sta enType
+    sta enState
     sta blType
     sta blTemp
     sta plItemTimer
     sta KernelId
 .skipLoadRoom
+    rts
+
+LoadSpecialRoom: SUBROUTINE
+    ; Don't overwrite room vars
+    lda #COLOR_CHOCOLATE
+    sta wFgColor
+    lda #COLOR_BLACK
+    sta wBgColor
+    lda #RS_SHOP
+    sta roomRS
+    lda #$F3
+    sta roomDoors
+    lda #MS_PLAY_NONE
+    sta SeqFlags
+
+    lda #$FF
+    ldy #1
+.loadRoomSprite1
+    sta wPF2Room + ROOM_PX_HEIGHT-2,y
+    sta wPF1RoomL + ROOM_PX_HEIGHT-2,y
+    sta wPF1RoomR + ROOM_PX_HEIGHT-2,y
+    dey
+    bpl .loadRoomSprite1
+
+    lda #0
+    ldy #ROOM_PX_HEIGHT-2 -1
+.loadRoomSprite2
+    sta wPF2Room,y
+    dey
+    bpl .loadRoomSprite2
+    
+    lda #$C0
+    ldy #ROOM_PX_HEIGHT-2 -1
+.loadRoomSprite3
+    sta wPF1RoomL,y
+    sta wPF1RoomR,y
+    dey
+    bpl .loadRoomSprite3
     rts
 
 LoadRoom: SUBROUTINE
@@ -40,6 +79,9 @@ LoadRoom: SUBROUTINE
     sta BANK_SLOT
     stx BANK_SLOT_RAM
     lda roomId
+    bpl .skipSpecialRoom
+    jmp LoadSpecialRoom
+.skipSpecialRoom
     and #$7F
     sta roomId
     tay

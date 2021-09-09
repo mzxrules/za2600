@@ -41,6 +41,8 @@ tbl = [
     vals=[
         "EnNone",
         "EnClearDrop",
+        "EnItem",
+        "EnStairs",
         "EnDarknut",
         "EnWallmaster",
         "EnOctorok",
@@ -49,9 +51,7 @@ tbl = [
         "EnDarknutMain",
         "EnOctorokMain",
         "EnLikeLikeMain",
-        "EnStairs",
         "EnSpectacleOpen",
-        "EnItem",
         "EnShopkeeper"
     ]),
     GameEnum("RoomScript", "Rs",
@@ -72,6 +72,7 @@ tbl = [
         "RsFairyFountain",
         "RsText",
         "RsShop",
+        "RsLeftCaveEnt",
         "RsGameOver"
     ]),
     GameEnum("Ball", "Bl",

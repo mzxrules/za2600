@@ -236,7 +236,7 @@ RsNone
 zz0
 RsDiamondBlockStairs
 zz121
-RsNone
+RsLeftCaveEnt
 zz0
 RsItem
 zz15

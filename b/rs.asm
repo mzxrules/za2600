@@ -240,6 +240,7 @@ PlayerInput: SUBROUTINE
     bmi .skipTest
     inc itemKeys
     inc itemBombs
+    inc itemRupees
 .skipTest
     ; test if player locked
     lda #02
@@ -389,16 +390,51 @@ RsNeedTriforce: SUBROUTINE
 .rts
     rts
 
-RsShop:
-    lda #RF_NO_ENCLEAR
-    ora roomFlags
+RsLeftCaveEnt: SUBROUTINE
+    lda plX
+    cmp #$14
+    bne .rts
+    lda plY
+    cmp #$3C
+    bne .rts
+    
+    lda roomId
+    ldx #$14
+    ldy #$38
+    sta worldSR
+    stx worldSX
+    sty worldSY
+
+    ldx #$40
+    ldy #$10
+    stx plX
+    sty plY
+
+    lda roomFlags
+    ora #RF_LOAD_EV
     sta roomFlags
+    lda roomId
+    ora #$80
+    sta roomId
+.rts
+    rts
+
+RsShop: SUBROUTINE
+    lda roomFlags
+    ora #RF_NO_ENCLEAR
+    sta roomFlags
+    and #RF_LOADED_EV
+    beq .skipInit
     lda #EN_SHOPKEEPER
     sta enType
-    lda #TEXT3
-    sta mesgId
-    lda #2
-    sta KernelId
+.skipInit
+    lda plY
+    cmp #$08
+    bne .rts
+    lda #MS_PLAY_THEME_L
+    jmp ReturnWorld
+
+.rts
     rts
     
 RsRaftSpot: SUBROUTINE
@@ -522,6 +558,14 @@ RsDungExit: SUBROUTINE
     lda plY
     cmp #BoardYD
     bne .rts
+    lda #MS_PLAY_THEME_L
+    jmp ReturnWorld
+.rts
+    rts
+
+; A = SeqFlags
+ReturnWorld: SUBROUTINE
+    sta SeqFlags
     lda worldSX
     sta plX
     lda worldSY
@@ -533,9 +577,6 @@ RsDungExit: SUBROUTINE
     lda roomFlags
     ora #RF_LOAD_EV
     sta roomFlags
-    lda #MS_PLAY_THEME_L
-    sta SeqFlags
-.rts
     rts
     
 RsDiamondBlockStairs: SUBROUTINE
