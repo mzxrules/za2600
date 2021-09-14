@@ -2,6 +2,7 @@
 from collections import defaultdict
 import itertools
 import random
+from mesg import mesg_data
 from asmgen import ToAsm, ToAsm2
 
 sprdic = {
@@ -476,22 +477,6 @@ def greedy_quickrand(seq):
             result = r
     return result
 
-mesg_data = [
-    # First line is template, for easy spacing.
-    "012345678901234567890123",
-    "        GAME OVER       ",
-    " PRESS FIRE TO CONTINUE ",
-    "  ONES WHO DO NOT HAVE  ",
-    "  TRIFORCE CAN'T GO IN  ",
-    "  IT'S DANGEROUS TO GO  ",
-    "   ALONE! TAKE THIS.    ",
-    " BUY SOMETHING WILL YA? ",
-    "   99      99      99   ", # 12, 56, 9A
-]
-
-# eliminate the template message.
-mesg_data = mesg_data[1:]
-
 # format messages such that they are fixed width
 for i in range(len(mesg_data)):
     mesg_data[i] = '{:<24}'.format(mesg_data[i])
@@ -579,7 +564,7 @@ with open("gen/mesg_data.asm", "w") as file:
     
 # generate digit lookup table
 raw = []
-for chr in "0123456789":
+for chr in "0123456789 ":
     raw.append(charSprRef[chr][0])
     
 strOut = "MesgDigits:\n" + ToAsm(raw)

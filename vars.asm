@@ -142,20 +142,27 @@ itemKeys    ds 1 ; Sign bit = Master Key
 itemBombs   ds 1
 itemTri     ds 1
 itemMaps    ds 1 ; Level 2-9
-itemFlags   ds 2
-    ITEM SWORD2,    0,$01
-    ITEM SWORD3,    0,$02
-    ITEM CANDLE,    0,$04
-    ITEM MEAT,      0,$08
-    ITEM BOOTS,     0,$10
-    ITEM RING,      0,$20
-    ITEM POTION,    0,$40
-    ITEM RAFT,      0,$80
-    ITEM FLUTE,     1,$01
-    ITEM FIRE_MAGIC,1,$02
-    ITEM BOW,       1,$04
-    ITEM ARROWS,    1,$08
-    ITEM BRACELET,  1,$10
+itemFlags   ds 3
+    ITEM SWORD2,        0,$40
+    ITEM SWORD3,        0,$80
+
+    ITEM BOW,           1,$01
+    ITEM RAFT,          1,$02
+    ITEM BOOTS,         1,$04
+    ITEM FLUTE,         1,$08
+    ITEM FIRE_MAGIC,    1,$10
+    ITEM BRACELET,      1,$20
+    ITEM MEAT,          1,$40
+    ITEM NOTE,          1,$80
+
+    ITEM ARROWS,        2,$01
+    ITEM ARROWS_SILVER, 2,$02
+    ITEM CANDLE_BLUE,   2,$04
+    ITEM CANDLE_RED,    2,$08
+    ITEM RING_BLUE,     2,$10
+    ITEM RING_RED,      2,$20
+    ITEM POTION_BLUE,   2,$40
+    ITEM POTION_RED,    2,$80
 
 mesgId      ds 1
 SeqFlags    ds 1

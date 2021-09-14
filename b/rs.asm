@@ -372,24 +372,6 @@ RsNone:
 RsFairyFountain:
     rts
     
-RsNeedTriforce: SUBROUTINE
-    ldy #7
-    cpy itemTri
-    bmi .rts
-    
-    lda #RF_NO_ENCLEAR
-    ora roomFlags
-    sta roomFlags
-    
-    lda #$FF
-    sta wPF1RoomL,y
-    sta wPF2Room,y
-    sta wPF1RoomR,y
-    lda #TEXT_NEED_TRIFORCE
-    jmp EnableText
-.rts
-    rts
-
 RsLeftCaveEnt: SUBROUTINE
     lda plX
     cmp #$14
@@ -419,7 +401,7 @@ RsLeftCaveEnt: SUBROUTINE
 .rts
     rts
 
-RsShop: SUBROUTINE
+RsCave: SUBROUTINE
     lda roomFlags
     ora #RF_NO_ENCLEAR
     sta roomFlags
@@ -467,8 +449,29 @@ RsRaftSpot: SUBROUTINE
     lda #$40
     sta plX
 .rts
+RsNeedTriforce_rts
     rts
+    
+RsNeedTriforce: SUBROUTINE
+    ldy #7
+    cpy itemTri
+    bmi RsNeedTriforce_rts
+    
+    lda #RF_NO_ENCLEAR
+    ora roomFlags
+    sta roomFlags
+    
+    lda #$30
+    cmp plY
+    bpl .skipSetPos
+    sta plY
+.skipSetPos
+    lda #MESG_NEED_TRIFORCE
+    sta roomEX
 
+RsOldMan: SUBROUTINE
+    lda #EN_OLD_MAN
+    sta enType
 RsText: SUBROUTINE
     lda roomEX
 EnableText: SUBROUTINE ; A = messageId

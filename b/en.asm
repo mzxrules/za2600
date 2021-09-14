@@ -290,6 +290,19 @@ EnSystem: SUBROUTINE
     sta enType
 .rts
     rts
+
+EnOldMan:
+    lda #COLOR_DARKNUT_RED
+    sta enColor
+    lda #<SprS0
+    sta enSpr
+    lda #>SprS0
+    sta enSpr+1
+    lda #$40
+    sta enX
+    lda #$38
+    sta enY
+    rts
     
 EnRandSpawnRetry:
     dec EnSysSpawnTry

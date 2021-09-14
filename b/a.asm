@@ -399,32 +399,40 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     rts
 
 GiItemColors:
+    .byte COLOR_BLACK           ; GiNone
     .byte COLOR_DARKNUT_RED     ; GiRecoverHeart
     .byte COLOR_DARKNUT_RED     ; GiFairy
     .byte COLOR_DARKNUT_BLUE    ; GiBomb
-    .byte COLOR_TRIFORCE        ; GiRupee5
 
+    .byte COLOR_TRIFORCE        ; GiRupee
+    .byte COLOR_DARKNUT_BLUE    ; GiRupee5
     .byte COLOR_TRIFORCE        ; GiTriforce
     .byte COLOR_DARKNUT_RED     ; GiHeart
+
     .byte COLOR_TRIFORCE        ; GiKey
     .byte COLOR_TRIFORCE        ; GiMasterKey
-
     .byte $06                   ; GiSword2
     .byte $0E                   ; GiSword3
-    .byte COLOR_DARKNUT_BLUE    ; GiCandle
-    .byte COLOR_DARKNUT_RED     ; GiMeat
 
-    .byte $0E                   ; GiBoots
-    .byte COLOR_DARKNUT_RED     ; GiRing
-    .byte COLOR_DARKNUT_BLUE    ; GiPotion
-    .byte COLOR_CHOCOLATE       ; GiRaft
-    
-    .byte COLOR_TRIFORCE        ; GiFlute
-    .byte COLOR_DARKNUT_RED     ; GiFireMagic
     .byte COLOR_CHOCOLATE       ; GiBow
-    .byte COLOR_TRIFORCE        ; GiArrows
+    .byte COLOR_CHOCOLATE       ; GiRaft
+    .byte $0E                   ; GiBoots
+    .byte COLOR_TRIFORCE        ; GiFlute
 
+    .byte COLOR_DARKNUT_RED     ; GiFireMagic
     .byte COLOR_DARKNUT_RED     ; GiBracelet
+    .byte COLOR_DARKNUT_RED     ; GiMeat
+    .byte COLOR_DARKNUT_BLUE    ; GiNote
+    
+    .byte COLOR_TRIFORCE        ; GiArrows
+    .byte $0E                   ; GiArrowsSilver
+    .byte COLOR_DARKNUT_BLUE    ; GiRingBlue
+    .byte COLOR_DARKNUT_RED     ; GiRingRed
+    .byte COLOR_DARKNUT_BLUE    ; GiPotionBlue
+    .byte COLOR_DARKNUT_RED     ; GiPotionRed
+    .byte COLOR_DARKNUT_BLUE    ; GiCandleBlue
+    .byte COLOR_DARKNUT_RED     ; GiCandleRed
+
     .byte COLOR_TRIFORCE        ; GiMap
         
 EnItem:; SUBROUTINE
@@ -434,7 +442,7 @@ EnItemDraw: SUBROUTINE ; y == itemDraw
     sta enSpr+1
     lda GiItemColors,y
     tax
-    cpy #5
+    cpy #GI_TRIFORCE+1
     bpl .skipItemColor
     lda Frame
     and #$10

@@ -34,4 +34,13 @@ SprP3:
     .byte $7D ; |.XXXXX.X|
     .byte $7C ; |.XXXXX..|
     .byte $3C ; |..XXXX..|
+SprP4:
+    .byte $66 ; |.XX..XX.|
+    .byte $24 ; |..X..X..|
+    .byte $18 ; |...XX...|
+    .byte $19 ; |...XX..X|
+    .byte $1B ; |...XX.XX|
+    .byte $2E ; |..X.XXX.|
+    .byte $16 ; |...X.XX.|
+    .byte $BD ; |X.XXXX.X|
 

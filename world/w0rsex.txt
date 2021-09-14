@@ -175,7 +175,7 @@ zz0
 RsNone
 zz0
 RsItem
-zz5
+zz7
 RsNone
 zz0
 RsNone
@@ -198,7 +198,7 @@ RsNone
 zz0
 RsNone
 zz0
-RsShop
+RsNone
 zz0
 RsNone
 zz0
@@ -237,9 +237,9 @@ zz0
 RsDiamondBlockStairs
 zz121
 RsLeftCaveEnt
-zz0
+zz25
 RsItem
-zz15
+zz13
 RsDiamondBlockStairs
 zz77
 RsNone

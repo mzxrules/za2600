@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import re
+from mesg import *
 from dataclasses import dataclass, field
 
 def ToAsm(data, n=16):
@@ -52,7 +53,8 @@ tbl = [
         "EnOctorokMain",
         "EnLikeLikeMain",
         "EnSpectacleOpen",
-        "EnShopkeeper"
+        "EnShopkeeper",
+        "EnOldMan"
     ]),
     GameEnum("RoomScript", "Rs",
     genEditorBindings=True,
@@ -71,7 +73,8 @@ tbl = [
         "RsDungExit",
         "RsFairyFountain",
         "RsText",
-        "RsShop",
+        "RsOldMan",
+        "RsCave",
         "RsLeftCaveEnt",
         "RsGameOver"
     ]),
@@ -94,33 +97,42 @@ tbl = [
     genPtrTable=True, 
     genConstants=True,
     vals=[
+        "GiNone",
         "GiRecoverHeart",
         "GiFairy",
         "GiBomb",
+
+        "GiRupee",
         "GiRupee5",
-        
         "GiTriforce",
         "GiHeart",
+
         "GiKey",
         "GiMasterKey",
-        
         "GiSword2",
         "GiSword3",
-        "GiCandle",
-        "GiMeat",
         
-        "GiBoots",
-        "GiRing",
-        "GiPotion",
-        "GiRaft",
-        # 0x10
-        "GiFlute",
-        "GiFireMagic",
         "GiBow",
-        "GiArrows",
+        "GiRaft",
+        "GiBoots",
+        "GiFlute",
         
+        "GiFireMagic",
         "GiBracelet",
-        "GiMap"
+        "GiMeat",
+        "GiNote",
+        
+        "GiArrows",
+        "GiArrowsSilver",
+        "GiCandleBlue",
+        "GiCandleRed",
+
+        "GiRingBlue",
+        "GiRingRed",
+        "GiPotionBlue",
+        "GiPotionRed",
+
+        "GiMap",
     ]),
     GameEnum("MusicSeq", "Ms",
     genEditorBindings=False,
@@ -183,12 +195,7 @@ tbl = [
     genEditorBindings=True,
     genPtrTable=True, 
     genConstants=True,
-    vals=[
-        "TextGameover",
-        "TextNeedTriforce",
-        "Text2",
-        "Text3"
-    ]),
+    vals=mesg_ids),
 ]
 
 def ToSnakeCase(str):

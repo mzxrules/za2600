@@ -119,12 +119,19 @@ GiBomb: SUBROUTINE
     sta itemBombs
     cld
     rts
+
+GiRupee: SUBROUTINE
+    lda #1
+    bne AddRupees
     
 GiRupee5: SUBROUTINE
+    lda #5
+    bne AddRupees
+
+AddRupees: SUBROUTINE
     sed
     clc
-    lda itemRupees
-    adc #1
+    adc itemRupees
     bcc .skipCap
     lda #$99
 .skipCap
@@ -142,27 +149,39 @@ GiRecoverHeart:
 
 GiSword2:
 GiSword3:
-GiCandle:
-GiMeat:
-GiBoots:
-GiRing:
-GiPotion:
-GiRaft:
-    lda Bit8-8,x
+    lda Bit8-6-GI_SWORD2,x
     ora itemFlags
     sta itemFlags
     lda #MS_PLAY_GI
     sta SeqFlags
     rts
     
+GiBow:
+GiRaft:
+GiBoots:
 GiFlute:
 GiFireMagic:
-GiBow:
-GiArrows:
 GiBracelet:
-    lda Bit8-8,x
+GiMeat:
+GiNote:
+    lda Bit8-GI_BOW,x
     ora itemFlags+1
     sta itemFlags+1
+    lda #MS_PLAY_GI
+    sta SeqFlags
+    rts
+    
+GiArrows:
+GiArrowsSilver:
+GiCandleBlue:
+GiCandleRed:
+GiRingBlue:
+GiRingRed:
+GiPotionBlue:
+GiPotionRed:
+    lda Bit8-GI_ARROWS,x
+    ora itemFlags+2
+    sta itemFlags+2
     lda #MS_PLAY_GI
     sta SeqFlags
     rts
@@ -203,6 +222,8 @@ GiMap:
     sta itemMaps
     lda #SFX_ITEM_PICKUP
     sta SfxFlags
+    rts
+GiNone:
     rts
 
 ;==============================================================================
@@ -360,7 +381,8 @@ EnRandomDrops:
 EnShopkeeper_: SUBROUTINE
     bit enState
     bmi .skipInit
-    lda #TEXT3
+    lda roomEX
+    and #$FC
     sta mesgId
     lda #2
     sta KernelId
@@ -372,7 +394,7 @@ EnShopkeeper_: SUBROUTINE
     sta enY
     jmp .rts
 .continue
-    ldy #GI_RUPEE5
+    ldy #GI_RUPEE
     jsr EnItemDraw
     
     lda #%0110
@@ -390,7 +412,7 @@ EnShopkeeper_: SUBROUTINE
 .skipSetPos
 
     lda roomEX
-    and #$3F
+    and #$0F
     sta shopItem
     asl
     clc
@@ -467,10 +489,31 @@ EnShopkeeper_: SUBROUTINE
     rts
 
 ShopGiItems:
+; Cheap
     .byte GI_ARROWS, GI_RECOVER_HEART, GI_BOMB
-    
     .byte GI_KEY, GI_RECOVER_HEART, GI_ARROWS
+    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROWS
+    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROWS
+; Expensive
+    .byte GI_ARROWS, GI_RECOVER_HEART, GI_BOMB
+    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROWS
+    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROWS
+    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROWS
+; Potion
+    .byte GI_NONE, GI_NONE, GI_NONE
+    .byte GI_POTION_BLUE, GI_FAIRY, GI_POTION_RED
 
 ShopPrices:
+; Cheap
     .byte $30, $05, $10
     .byte $20, $05, $40
+    .byte $30, $05, $10
+    .byte $20, $05, $40
+; Expensive    
+    .byte $30, $05, $10
+    .byte $20, $05, $40
+    .byte $30, $05, $10
+    .byte $20, $05, $40
+; Potion
+    .byte $AA, $AA, $AA
+    .byte $20, $10, $20

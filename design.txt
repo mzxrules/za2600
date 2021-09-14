@@ -415,6 +415,15 @@ delay of 4/6 cycles.
 
 
    Caves
+
+   EX bits
+   $FC = Cave Type/Dialog
+   $03 = Variable
+
+   Shop masks are overlapped
+   $FC = Shop Type ($10, $14, $18)
+   $0F = Shop Inventory
+
 Secret
     Warp
     Hint

@@ -8,26 +8,16 @@ loop for 9
 inc "$hexStr" by "ABCDEF"
 
 : "q"
-set "CHAR" to 0
+set "CHAR" to 256
 loop start
 inc "$" by "SprItem&loopcount&:\n"
 set "sp&sp&" to 8
 goto "#dumpchr"
 inc "$" by "$dumpchr"
 inc "CHAR" by 1
-loop for 21
+loop for 31
 set "$sht" to "spr/spr_item.asm"
 goto "#dumpsht"
-
-goto "skip_quest"
-loop start
-inc "$" by "SprQuest&loopcount&:\n"
-set "sp&sp&" to 8
-goto "#dumpchr"
-inc "$" by "$dumpchr"
-inc "CHAR" by 1
-loop for 3
-: "skip_quest"
 
 set "CHAR" to 48
 loop start
@@ -59,8 +49,18 @@ set "sp&sp&" to 8
 goto "#dumpchr"
 inc "$" by "$dumpchr"
 inc "CHAR" by 1
-loop for 3
+loop for 4
 set "$sht" to "spr/spr_pl.asm"
+goto "#dumpsht"
+
+loop start
+inc "$" by "SprS&loopcount&:\n"
+set "sp&sp&" to 8
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 2
+set "$sht" to "spr/spr_sh.asm"
 goto "#dumpsht"
 
 set "CHAR" to 96
@@ -135,17 +135,19 @@ set "char_y" to "('CHAR'/32*14+'yl_')"
 set "yl" to "yl_"
 : "yloop"
 set "$lineb" to ""
+set "byte" to "yl"
+set "b" to "char_byte"
+. "loop for pixel diagram of char_byte line"
 set "xl" to 0
 : "xloop"
-set "chr" to "(88-46*'pixel'+46)"
+set "chr" "('b'a(1<<(7-'xl'))>0)"
+set "chr" to "(88-46*'chr'+46)"
 set "$lineb.('xl')" to "chr"
 inc "char_x" by 1
 inc "xl" by 1
 if "xl" < 8 then "xloop"
 
 set "$lineb" to "|&$lineb&|"
-set "byte" to "yl"
-set "b" to "char_byte"
 if "mirror" != 1 then "skip_invchar"
 inc "$lineb" by " mirrored"
 set "b" to "(('b' a 0x55 << 1) o ('b' a 0xAA >> 1))"

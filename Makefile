@@ -33,13 +33,13 @@ audio.bin: gen/ms_header.asm audio.asm
 zelda.bin: ${zelda_dep}
 	dasm main.asm -f3 -ozelda.bin -szelda.sym -T1
     
-gen/RoomScript.asm: ptr.py
+gen/RoomScript.asm: mesg.py ptr.py
 	python3 ptr.py
     
 gen/ms_header.asm: sound_common.py seq.py sound.py
 	python3 sound.py
     
-gen/mesg_data.asm: text.py
+gen/mesg_data.asm: mesg.py text.py
 	python3 text.py
 
 gen/world/b1world.asm: world/w0.bin world/w1.bin world.py

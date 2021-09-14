@@ -30,7 +30,7 @@ LoadSpecialRoom: SUBROUTINE
     sta wFgColor
     lda #COLOR_BLACK
     sta wBgColor
-    lda #RS_SHOP
+    lda #RS_CAVE
     sta roomRS
     lda #$F3
     sta roomDoors
@@ -70,7 +70,7 @@ LoadRoom: SUBROUTINE
     beq .worldBankSet
     lda #SLOT_W2
     ldx #SLOT_RW2
-    cpy #8
+    cpy #7
     bpl .worldBankSet
     lda #SLOT_W1
     ldx #SLOT_RW1

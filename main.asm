@@ -16,6 +16,7 @@ TIA_BASE_ADDRESS = $00
     ORG $0000
     RORG $F000
     
+    .byte #'T, #'J, #'3, #'E
     INCLUDE "b/0.asm"
 
     LOG_SIZE "-BANK 0- ENTRY", ENTRY
@@ -84,17 +85,15 @@ BANK_PF
     RORG $F000
     
 BANK_5
-    repeat 8
-    .byte $00
-    repend
+    INCLUDE "spr/spr_item.asm"
     align $100
     INCLUDE "spr/spr_en.asm"
     align $100
-    INCLUDE "spr/spr_item.asm"
 MINIMAP
     INCLUDE "spr/spr_map.asm"
     align $20
     INCLUDE "spr/spr_pl.asm"
+    INCLUDE "spr/spr_sh.asm"
     INCLUDE "spr/spr_num.asm"
     
     LOG_SIZE "-BANK 5- Sprites", BANK_5
