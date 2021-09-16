@@ -228,11 +228,31 @@ set "d2" "$w&loopcount&ex.&l&"
 if "d1" >= "RsCount" "#write_rsex_default"
 set "$" "$Rs&d1&"
 set "$" "fwrite"
-set "$" "zz&d2&"
-set "$" "fwrite"
+set "exjump" 0
+if "$" === "RsItem" "#write_ex_RsItem"
+if "exjump" == 0 "#write_ex_default"
 inc "l" 1
 if "l" < 128 "write_rsex_loop"
 set "" "fwrite_open"
+goto "#return"
+
+: "#write_ex_default"
+set "$" "zz&d2&"
+set "$" "fwrite"
+goto "#return"
+
+: "#write_ex_RsItem"
+set "exjump" 1
+set "ex" 0
+: "write_ex_RsItem_l"
+inc "ex" 1
+if "zz&d2&" != "('&$Gi('ex')&')" "write_ex_RsItem_c"
+set "$" "&$Gi('ex')&"
+set "$" "fwrite"
+goto "#return"
+: "write_ex_RsItem_c"
+if "ex" < "GiCount" "write_ex_RsItem_l"
+set "exjump" 0
 goto "#return"
 
 : "#write_rsex_default"

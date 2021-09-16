@@ -106,12 +106,12 @@ PF2Room6:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
-    .byte $38 ; |...XXX..| mirrored
-    .byte $28 ; |...X.X..| mirrored
-    .byte $38 ; |...XXX..| mirrored
-    .byte $28 ; |...X.X..| mirrored
-    .byte $F8 ; |...XXXXX| mirrored
-    .byte $F0 ; |....XXXX| mirrored
+    .byte $78 ; |...XXXX.| mirrored
+    .byte $68 ; |...X.XX.| mirrored
+    .byte $78 ; |...XXXX.| mirrored
+    .byte $E8 ; |...X.XXX| mirrored
+    .byte $B8 ; |...XXX.X| mirrored
+    .byte $30 ; |....XX..| mirrored
     .byte $E0 ; |.....XXX| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
@@ -145,9 +145,9 @@ PF2Room8:
     .byte $60 ; |.....XX.| mirrored
     .byte $E0 ; |.....XXX| mirrored
     .byte $90 ; |....X..X| mirrored
-    .byte $90 ; |....X..X| mirrored
+    .byte $D0 ; |....X.XX| mirrored
     .byte $71 ; |X...XXX.| mirrored
-    .byte $63 ; |XX...XX.| mirrored
+    .byte $E3 ; |XX...XXX| mirrored
     .byte $87 ; |XXX....X| mirrored
     .byte $07 ; |XXX.....| mirrored
     .byte $07 ; |XXX.....| mirrored

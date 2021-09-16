@@ -82,11 +82,34 @@ cdBY        ds 1
 ; EnShopkeeper
 shopItem    ds 3
 shopDigit   ds 3
+    ORG EN_VARIABLES + 1
+enTestDir   ds 1
+enTestFX    ds 1
+enTestFY    ds 1
+enTestTimer ds 1
 
 
     ORG EN_VARIABLES
 En0V        ds 10 ; Zero initialized enemy vars
 EN_0V_END:
+
+atan2Temp   ds 1
+
+; Missile Vars
+mAType      ds 1
+mBType      ds 1
+mAx         ds 1
+mBx         ds 1
+mAxf        ds 1
+mBxf        ds 1
+mAy         ds 1
+mBy         ds 1
+mAyf        ds 1
+mByf        ds 1
+mAMov       ds 1
+mBMov       ds 1
+mATimer     ds 1
+mBTimer     ds 1
 
 blType      ds 1 ;
 blTemp      ds 1 ; Room ball state

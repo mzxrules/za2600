@@ -228,8 +228,11 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     lda roomFlags
     and #RF_CLEAR
     beq .endOpenShutterDoor
+; Check if any doors are shutter doors (bit pattern %10). To do this,
+; take the lsb and msb, bitwise AND them, then compare to the msb.  
+; If msb != result, then the bit pattern is %10 
     lda roomDoors
-    asl ; keydoor/walls have lsb 1, shift to msb to keep high bit
+    asl 
     ora #%01010101 ; always keep low bit 
     and roomDoors
     cmp roomDoors
@@ -475,7 +478,57 @@ EnShopkeeper
     jmp EnShopkeeper_
 
     INCLUDE "gen/mesg_digits.asm"
-    
+
+;==============================================================================
+; Atan2
+;----------
+; X = Delta X
+; Y = Delta Y
+; Returns index to Atan2 tables
+;==============================================================================
+Atan2: SUBROUTINE
+    lda #0
+    sta atan2Temp
+    txa
+    bpl .testYSign
+    eor #$FF
+    sec
+    adc #0
+    tax
+    lda #$80
+    sta atan2Temp
+.testYSign
+    tya
+    bpl .reduceTest
+    eor #$FF
+    sec
+    adc #0
+    tay
+    lda atan2Temp
+    ora #$40
+    sta atan2Temp
+.reduceTest
+    cpx #8
+    bpl .reduce
+    cpy #8
+    bmi .result
+.reduce
+    txa
+    lsr
+    tax
+    tya
+    lsr
+    tay
+    bpl .reduceTest ;always branch
+.result
+    lda Mul8,y
+    clc
+    adc atan2Temp
+    sta atan2Temp
+    txa
+    adc atan2Temp
+    rts
+
     LOG_SIZE "a", INIT
     ORG BANK_ALWAYS_ROM + $400 - $1E-1
     RORG $FFFF-($1E-1)-1

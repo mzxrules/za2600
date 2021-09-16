@@ -146,8 +146,8 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
-zz0
+RsRightCaveEnt
+zz16
 RsNone
 zz0
 RsNone
@@ -175,7 +175,7 @@ zz0
 RsNone
 zz0
 RsItem
-zz7
+GiHeart
 RsNone
 zz0
 RsNone
@@ -222,8 +222,8 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
-zz0
+RsLeftCaveEnt
+zz18
 RsNone
 zz0
 RsNone
@@ -239,7 +239,7 @@ zz121
 RsLeftCaveEnt
 zz25
 RsItem
-zz13
+GiRaft
 RsDiamondBlockStairs
 zz77
 RsNone

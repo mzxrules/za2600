@@ -465,3 +465,41 @@ General Layout
  B = F400 - Text Kernel B / Sprites (Shop) / Draw Kernel
  C = F800 - World # Ram
  D = FC00 - "Always" bank
+
+ World Editor
+
+Q, W, E - inc Room Tile  Left, Mid, Right
+A, S, D - dec Room Tile  Left, Mid, Right
+R, T    - inc, dec Room Script
+F, G    - inc, dec, Room Ex
+P       - Save
+M       - switch active world
+L       - Set Doorflags (4 char string of chars 0-3)
+Z       - copy tile
+Space   - place copied room
+C       - Set room color (hex code)
+Delete  - Delete room
+1, 2, 3, 4 - Change N/S/W/E room door
+
+Atan2 table lookup:
+    dx = plX - mX
+    dy = plY - mY
+
+    if dx is negative
+        xsign |= $80
+        negate dx
+
+    if dy is negative
+        ysign |= $40
+        negate dy
+
+    while (dx > 7 or dy > 7)
+        dx >>= 1
+        dy >>= 1
+
+    index = y * 8 + x
+    index |= xsign
+    index |= ysign
+
+    if x == 0, inc y by $100 ; Solves Atan2 being undefined for 0/0
+    else if y == 0, inc x by $100

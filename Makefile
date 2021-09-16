@@ -7,6 +7,7 @@ zelda_dep := \
   en/likelike.asm \
   en/octorok.asm \
   en/wallmaster.asm \
+  gen/atan2.asm \
   gen/world/b1world.asm \
   gen/RoomScript.asm \
   gen/mesg_data.asm \

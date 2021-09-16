@@ -69,7 +69,7 @@ zz0
 RsNone
 zz0
 RsItem
-zz8
+GiKey
 RsNone
 zz0
 RsNone
@@ -101,13 +101,13 @@ zz0
 RsNone
 zz0
 RsItem
-zz8
+GiKey
 RsNone
 zz0
 RsItem
-zz7
+GiHeart
 RsItem
-zz6
+GiTriforce
 RsNone
 zz0
 RsNone
@@ -137,7 +137,7 @@ zz0
 RsNone
 zz0
 RsItem
-zz8
+GiKey
 RsNone
 zz0
 RsNone
@@ -165,7 +165,7 @@ zz0
 RsNone
 zz0
 RsItem
-zz8
+GiKey
 RsNone
 zz0
 RsNone
@@ -209,7 +209,7 @@ zz0
 RsNone
 zz0
 RsItem
-zz28
+GiMap
 RsNone
 zz0
 RsNone
@@ -227,11 +227,11 @@ zz0
 RsNone
 zz0
 RsItem
-zz8
+GiKey
 RsDungExit
 zz0
 RsItem
-zz8
+GiKey
 RsNone
 zz0
 RsNone

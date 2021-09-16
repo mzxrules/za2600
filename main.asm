@@ -35,6 +35,7 @@ TIA_BASE_ADDRESS = $00
     RORG $FC00
 BANK_1
 BANK_ALWAYS_ROM = $0400
+    INCLUDE "gen/atan2.asm"
     INCLUDE "b/a.asm"
 
     LOG_SIZE "-BANK 1- Always Loaded", BANK_1

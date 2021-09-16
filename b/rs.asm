@@ -13,6 +13,43 @@ BombAnimDeltaX:
     .byte -2, -4,  8, 0, -8, 4, -4,  8, 0, -8, 4
 BombAnimDeltaY:
     
+SpawnEnemyRock: SUBROUTINE
+    ldy #0
+    lda mAType
+    beq .rockInit
+    iny
+    lda mBType
+    beq .rockInit
+    rts
+.rockInit
+    lda #1
+    sta mAType,y
+    lda enX
+    sta mAx,y
+    lda enY
+    sta mAy,y
+    lda #$80
+    sta mAxf,y
+    sta mAyf,y
+    tya
+    pha
+
+    lda plX
+    sec
+    sbc enX
+    tax
+    lda plY
+    sec
+    sbc enY
+    tay
+    jsr Atan2
+    tax
+    pla
+    tay
+    txa
+    sta mAMov,y
+    rts
+
 PlayerArrow: SUBROUTINE
 ; ARROW
     bit plState
@@ -373,16 +410,32 @@ RsFairyFountain:
     rts
     
 RsLeftCaveEnt: SUBROUTINE
-    lda plX
-    cmp #$14
-    bne .rts
-    lda plY
-    cmp #$3C
-    bne .rts
-    
-    lda roomId
     ldx #$14
+    cpx plX
+    bne .rts
+    ldy #$3C
+    cpy plY
+    bne .rts
     ldy #$38
+    jmp EnterCave
+.rts
+    rts
+    
+RsRightCaveEnt: SUBROUTINE
+    ldx #$6C
+    cpx plX
+    bne .rts
+    ldy #$3C
+    cpy plY
+    bne .rts
+    ldy #$38
+    jmp EnterCave
+.rts
+    rts
+
+; X, Y is return world X/Y
+EnterCave:
+    lda roomId
     sta worldSR
     stx worldSX
     sty worldSY
@@ -398,7 +451,6 @@ RsLeftCaveEnt: SUBROUTINE
     lda roomId
     ora #$80
     sta roomId
-.rts
     rts
 
 RsCave: SUBROUTINE
