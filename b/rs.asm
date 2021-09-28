@@ -12,42 +12,118 @@ BombOffY:
 BombAnimDeltaX:
     .byte -2, -4,  8, 0, -8, 4, -4,  8, 0, -8, 4
 BombAnimDeltaY:
-    
-SpawnEnemyRock: SUBROUTINE
-    ldy #0
-    lda mAType
-    beq .rockInit
-    iny
-    lda mBType
-    beq .rockInit
-    rts
-.rockInit
-    lda #1
-    sta mAType,y
-    lda enX
-    sta mAx,y
-    lda enY
-    sta mAy,y
-    lda #$80
-    sta mAxf,y
-    sta mAyf,y
-    tya
-    pha
 
-    lda plX
-    sec
-    sbc enX
+;==============================================================================
+; MiSysUpdatePos
+;----------
+; Updates Missile Position
+; Y = Missile Index
+;==============================================================================
+MiSysUpdatePos: SUBROUTINE
+    lda mADir,y
+    sta MiSysDir
+    and #$3F
     tax
-    lda plY
+    lda Atan2X,x
+    sta MiSysDX
+    lda Atan2Y,x
+    sta MiSysDY
+
+    ldx #1
+; Update X
+.addDouble
+    lda mAxf,y
+    bit MiSysDir
+    bmi .subX
+    clc
+    adc MiSysDX
+    sta mAxf,y
+    lda mAx,y
+    adc #0
+    sta mAx,y
+    jmp .addY
+.subX
     sec
-    sbc enY
+    sbc MiSysDX
+    sta mAxf,y
+    lda mAx,y
+    sbc #0
+    sta mAx,y
+
+; Update Y
+.addY
+    lda mAyf,y
+    bit MiSysDir
+    bvs .subY
+    clc
+    adc MiSysDY
+    sta mAyf,y
+    lda mAy,y
+    adc #0
+    sta mAy,y
+    jmp .checkAddY
+.subY
+    sec
+    sbc MiSysDY
+    sta mAyf,y
+    lda mAy,y
+    sbc #0
+    sta mAy,y
+.checkAddY
+    dex
+    bpl .addDouble
+    rts
+
+MiSystem: SUBROUTINE
+    ldy #1
+.loop 
+    lda mAType,y
+    beq .cont
+    jsr MiSysUpdatePos
+.cont
+    dey
+    bpl .loop
+    
+; Select Missile Draw
+    ldy #1
+    lda mAType
+    beq .draw
+    dey
+    lda mAType+1
+    beq .draw
+    lda Frame
+    and #1
     tay
-    jsr Atan2
+    
+.draw
+    lda NUSIZ1_T
+    ora #$20
+    sta NUSIZ1_T
+    lda #3
+    sta wM1H
+
+    lda mAx,y
+    sta m1X
     tax
-    pla
-    tay
-    txa
-    sta mAMov,y
+    lda mAy,y
+    sta m1Y
+
+    cpx #EnBoardXL
+    bmi .kill
+    cpx #EnBoardXR+1 + 3
+    bpl .kill
+    cmp #EnBoardYU+1 + 2
+    bpl .kill
+    cmp #EnBoardYD - 2
+    bmi .kill
+
+.rts
+    rts
+.kill
+    lda #0
+    sta mAType,y
+    lda #$80
+    sta m1Y
     rts
 
 PlayerArrow: SUBROUTINE

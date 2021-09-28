@@ -43,6 +43,22 @@ EnOctorokMain:
 .endCheckBlocked
 
     lda Frame
+    and #$3F
+    bne .skipFire
+    lda #1
+    sta MiSysAddType
+    clc
+    lda enX
+    adc #3
+    sta MiSysAddX
+    lda enY
+    adc #2
+    sta MiSysAddY
+    ldy enDir
+    lda EN_ATAN2_CARDINAL,y
+    jsr MiSpawn
+.skipFire
+    lda Frame
     and #1
     bne .rts
     jsr EnMoveDirDel
@@ -54,4 +70,6 @@ ENEMY_ROT:
     .byte 2, 3, 1, 0 ; clockwise
     .byte 3, 2, 0, 1 ; counterclock
     
+EN_ATAN2_CARDINAL:
+    .byte DEG_180, DEG_000, DEG_090, DEG_270
     LOG_SIZE "EnOctorok", EnOctorok

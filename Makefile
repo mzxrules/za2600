@@ -45,3 +45,6 @@ gen/mesg_data.asm: mesg.py text.py
 
 gen/world/b1world.asm: world/w0.bin world/w1.bin world.py
 	python3 world.py
+
+gen/atan2.asm: project.py
+	python3 project.py

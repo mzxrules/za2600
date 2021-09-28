@@ -93,8 +93,6 @@ enTestTimer ds 1
 En0V        ds 10 ; Zero initialized enemy vars
 EN_0V_END:
 
-atan2Temp   ds 1
-
 ; Missile Vars
 mAType      ds 1
 mBType      ds 1
@@ -106,8 +104,8 @@ mAy         ds 1
 mBy         ds 1
 mAyf        ds 1
 mByf        ds 1
-mAMov       ds 1
-mBMov       ds 1
+mADir       ds 1
+mBDir       ds 1
 mATimer     ds 1
 mBTimer     ds 1
 
@@ -166,6 +164,8 @@ itemBombs   ds 1
 itemTri     ds 1
 itemMaps    ds 1 ; Level 2-9
 itemFlags   ds 3
+; ITEMV_name = item var
+; ITEMF_name = item flag
     ITEM SWORD2,        0,$40
     ITEM SWORD3,        0,$80
 
@@ -211,6 +211,9 @@ Temp4       ds 1
 Temp5       ds 1
 Temp6       ds 1
 
+    ORG mapSpr
+atan2Temp   ds 1
+
     SEG.U VARS_AUD_ZERO
     ORG Temp4
 AUDCT0      ds 1
@@ -230,10 +233,20 @@ THudDigits  ds 6
     
     SEG.U VARS_EN_SYS
     ORG Temp1
+;Temp0          ds 1
 EnSysSpawnTry   ds 1
 EnSysNext       ds 1
 EnSysClearOff   ds 1 ; offset to byte that room clear is stored at
 EnSysClearMask  ds 1 ; stores bitmask for room clear flag
+    
+    SEG.U VARS_MI_SYS
+    ORG Temp0
+MiSysDir        ds 1
+MiSysDX         ds 1
+MiSysDY         ds 1
+MiSysAddType    ds 1
+MiSysAddX       ds 1
+MiSysAddY       ds 1
 
     SEG.U VARS_SHOP_KERNEL
     ORG mapSpr
@@ -377,6 +390,14 @@ MS_PLAY_THEME_L = $85 ; Overworld Theme without intro
 MS_PLAY_RSEQ    = $40 | MS_PLAY_THEME   ; Plays region local sequence
 MS_PLAY_RSEQ_L  = $40 | MS_PLAY_THEME_L ; Plays region local sequence
 MS_PLAY_FINAL   = $86
+
+; ATAN2 Lookup Constants
+ATAN2_SIGNX     = $80
+ATAN2_SIGNY     = $40
+DEG_000         = $01
+DEG_090         = $08
+DEG_180         = DEG_000 | ATAN2_SIGNX
+DEG_270         = DEG_090 | ATAN2_SIGNY
 
 BIT_01 = Bit8
 BIT_02 = Bit8 + 1

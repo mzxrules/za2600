@@ -195,6 +195,9 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     lda #SLOT_RS_B
     sta BANK_SLOT
     jsr RoomScriptDel
+
+.Missile:
+    jsr MiSystem
     
 .BallScript:
     lda #SLOT_EN_A
@@ -362,7 +365,25 @@ UPDATE_PL_HEALTH: SUBROUTINE
     ldy #SFX_PL_DAMAGE
     clc
     adc plHealth
+    beq .zeroHp
     bpl .setHp
+.zeroHp
+    lda #ITEMF_POTION_RED
+    bit ITEMV_POTION_RED
+    beq .testBluePotion
+    eor ITEMV_POTION_RED
+    sta ITEMV_POTION_RED
+    lda #80
+    bpl .heal
+.testBluePotion
+    lda #ITEMF_POTION_BLUE
+    bit ITEMV_POTION_BLUE
+    beq .die
+    eor ITEMV_POTION_BLUE
+    sta ITEMV_POTION_BLUE
+    lda #80
+    bpl .heal
+.die
     lda #0
     beq .setHp
 
@@ -479,12 +500,54 @@ EnShopkeeper
 
     INCLUDE "gen/mesg_digits.asm"
 
+MiSpawn2: SUBROUTINE
+    lda plX
+    sec
+    sbc MiSysAddX
+    tax
+    lda plY
+    sec
+    sbc MiSysAddY
+    tay
+    jsr Atan2
+
+MiSpawn: SUBROUTINE
+    ldy #1
+    ldx mBType
+    beq .rtsMiSysNext
+    dey
+    ldx mAType
+    beq .rtsMiSysNext
+    dey
+; Y returns next free missile index, or -1 if no slots available
+.rtsMiSysNext
+
+MiSpawnImpl: SUBROUTINE
+    cpy #$FF
+    beq .rts
+.rockInit
+    sta mADir,y
+    lda MiSysAddType
+    sta mAType,y
+    lda MiSysAddX
+    sta mAx,y
+    lda MiSysAddY
+    sta mAy,y
+    lda #$80
+    sta mAxf,y
+    sta mAyf,y
+.rts
+    rts
+
 ;==============================================================================
 ; Atan2
 ;----------
 ; X = Delta X
 ; Y = Delta Y
-; Returns index to Atan2 tables
+; Returns bitpacked value:
+; & $80 = Delta X Sign
+; & $40 = Delta Y Sign
+; & $3F = index to Atan2 tables
 ;==============================================================================
 Atan2: SUBROUTINE
     lda #0
@@ -530,8 +593,8 @@ Atan2: SUBROUTINE
     rts
 
     LOG_SIZE "a", INIT
-    ORG BANK_ALWAYS_ROM + $400 - $1E-1
-    RORG $FFFF-($1E-1)-1
+    ORG BANK_ALWAYS_ROM + $400 - $1E
+    RORG $FFFF-($1E-1)
     
 ;==============================================================================
 ; PosWorldObjects

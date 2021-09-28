@@ -38,7 +38,7 @@ BANK_ALWAYS_ROM = $0400
     INCLUDE "gen/atan2.asm"
     INCLUDE "b/a.asm"
 
-    LOG_SIZE "-BANK 1- Always Loaded", BANK_1
+    LOG_SIZE_M1 "-BANK 1- Always Loaded", BANK_1
     
 ; ****************************************
 ; *               BANK 2                 *

@@ -13,6 +13,10 @@ ITEMF_{1} = {3}
         echo .- {2}+$8000,{2},(.),{1}
     ENDM
     
+    MACRO LOG_SIZE_M1
+        echo .- {2}+$8000,{2},(.-1),{1}
+    ENDM
+    
 ; Rewriteable Kernel Variable
     MACRO VKERNEL1
 r{1} = . - KERNEL_WORLD + rKERNEL + 1

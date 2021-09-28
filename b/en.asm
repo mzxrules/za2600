@@ -396,7 +396,7 @@ ClearDropSystem: SUBROUTINE
     
 .rts
     rts
-
+    
 EnTestMissile: SUBROUTINE
     lda #0
     sta KernelId
