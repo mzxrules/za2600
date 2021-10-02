@@ -588,7 +588,8 @@ RsNeedTriforce: SUBROUTINE
     lda #RF_NO_ENCLEAR
     ora roomFlags
     sta roomFlags
-    
+    and #RF_LOAD_EV
+    bne .skipSetPos
     lda #$30
     cmp plY
     bpl .skipSetPos
