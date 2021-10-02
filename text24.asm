@@ -43,7 +43,7 @@ Start:
     sta VDELP1
    
 NextFrame
-	VERTICAL_SYNC
+    VERTICAL_SYNC
     lda #44
     sta TIM64T
 

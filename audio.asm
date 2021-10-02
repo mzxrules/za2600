@@ -30,7 +30,7 @@ Cool        ds 1
 
 CHAN_1_OFF = 8
 
-	echo "-RAM-",$80,(.)
+    echo "-RAM-",$80,(.)
 
     SEG CODE
     ORG $F000
@@ -382,7 +382,7 @@ ms_none_dur:
     include "gen/ms_intro0_dur.asm"
     include "gen/ms_intro1_dur.asm"
     include "gen/ms_header.asm"
-	echo "-CODE-",$F000,(.)
+    echo "-CODE-",$F000,(.)
     
     
     ORG $FFFA             ; Cart config (so 6507 can start it up).

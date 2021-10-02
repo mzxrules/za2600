@@ -74,15 +74,14 @@ LoadRoom: SUBROUTINE
     bpl .worldBankSet
     lda #SLOT_W1
     ldx #SLOT_RW1
-.worldBankSet
 
+.worldBankSet
     sta BANK_SLOT
     stx BANK_SLOT_RAM
     lda roomId
     bpl .skipSpecialRoom
     jmp LoadSpecialRoom
 .skipSpecialRoom
-    and #$7F
     sta roomId
     tay
     lda WORLD_RS,y
@@ -327,12 +326,14 @@ UpdateWorldDoors: SUBROUTINE
     sta wPF1RoomR+8,y
     dey
     bpl .LeftRightWorldDoor2
-rts_UpdateDoors:
     rts
     
+;==============================================================================
+; UpdateDoors
+;----------
+; Updates dungeon door state
+;==============================================================================
 UpdateDoors: SUBROUTINE
-    lda worldId
-    beq rts_UpdateDoors
     ldy #$3F
     ldx #$FF
     lda roomDoors
@@ -383,12 +384,15 @@ UpdateDoors: SUBROUTINE
     dey
     bpl .lrLoop
     rts
-   
+
+;==============================================================================
+; KeydoorCheck
+;----------
+; Checks if player is touching a keydoor, and unlocks it if they have a key
+;==============================================================================
 KeydoorCheck: SUBROUTINE
-    lda worldId
-    beq .rts1
     lda itemKeys
-    beq .rts1
+    beq .rts
         
     lda plX
     ldy plY
@@ -408,16 +412,16 @@ KeydoorCheck: SUBROUTINE
     
 .LRCheck
     cpy #BoardKeydoorLRA
-    bmi .rts1
+    bmi .rts
     cpy #BoardKeydoorLRA + $8+1
-    bpl .rts1
+    bpl .rts
     
     ldx #2
     cmp #BoardKeydoorRX
     beq .UnlockRight
     cmp #BoardKeydoorLX
     beq .UnlockLeft
-.rts1
+.rts
     rts
 .UnlockUp
 .UnlockLeft
@@ -429,7 +433,7 @@ KeydoorCheck: SUBROUTINE
     ; And then masking out just the one door, thus if a is not 0, it's not a keydoor
     eor #%01010101
     and KeydoorMask,x
-    bne .rts1
+    bne .rts
     lda KeydoorMask,x
     eor #$FF
     and roomDoors

@@ -110,7 +110,7 @@ SprN12:
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
-    .byte $F3 ; |XXXX..XX|
+    .byte $FB ; |XXXXX.XX|
     .byte $74 ; |.XXX.X..|
     .byte $74 ; |.XXX.X..|
     .byte $24 ; |..X..X..|

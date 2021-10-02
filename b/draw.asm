@@ -2,6 +2,9 @@
 ; mzxrules 2021
 ;==============================================================================
     
+HUD_SPLIT_TEST:
+    .byte 0, 0, 1, 0, 0, 1, 0, 0
+
 ;==============================================================================
 ; Pre-Position Sprites
 ;==============================================================================
@@ -85,9 +88,9 @@ POSITION_SPRITES:
     lda #<(MINIMAP) ; Sprite + height-1
     clc
     adc Mul8,x
-    sta mapSpr
+    sta THudMapSpr
     lda #>(MINIMAP)
-    sta mapSpr+1
+    sta THudMapSpr+1
 ; double width map if on overworld
     ldx #5
     lda worldId
@@ -119,7 +122,23 @@ POSITION_SPRITES:
     clc
     adc #7
     sta THudDigits+4
+
+; Triforce display
+    lda worldId
+    bne .hud_key_init
+    bit roomId
+    bmi .hud_key_init
+    ldx itemTri
+    lda Mul8,x
+    clc
+    adc #7
+    sta THudDigits+3
+    lda #<SprN12 - #<SprN0 + 7
+    sta THudDigits+2
+    bne .hud_bomb_init
+
 ; key display
+.hud_key_init
     ldx itemKeys
     bmi .hud_all_keys
     cpx #9
@@ -135,7 +154,9 @@ POSITION_SPRITES:
     sta THudDigits+3
     lda #<SprN10 - #<SprN0 +7
     sta THudDigits+2
-; bomb display    
+
+; bomb display
+.hud_bomb_init
     lda itemBombs
     cmp #$10
     bpl .hud_bomb_digit
@@ -165,14 +186,17 @@ POSITION_SPRITES:
     lsr
     eor #$7
     and #$7
-    sta TMapPosY
-    lda plHealth
+    sta THudMapPosY
+
+    ldy #1
+.hpBarLoop
+    lda plHealthMax,y
     clc
     adc #7
     lsr
     lsr
     lsr
-    sta THudHealthL
+    sta THudHealthMaxL,y
     sec
     sbc #8
     bcs .skipHealthHighClampMin
@@ -180,15 +204,17 @@ POSITION_SPRITES:
 .skipHealthHighClampMin
     tax
     lda HealthPattern,x
-    sta THudHealthH
+    sta THudHealthMaxH,y
     beq .skipHealthClamp
     lda #8
-    sta THudHealthL
+    sta THudHealthMaxL,y
 .skipHealthClamp
-    ldx THudHealthL
+    ldx THudHealthMaxL,y
     lda HealthPattern,x
-    sta THudHealthL
-    
+    sta THudHealthMaxL,y
+    dey
+    bpl .hpBarLoop
+
     lda #COLOR_PLAYER_02
     sta COLUPF
 
@@ -202,74 +228,107 @@ KERNEL_MAIN: SUBROUTINE ; 192 scanlines
     sta VBLANK
 
 KERNEL_HUD: SUBROUTINE
+    ; precalc digits sprite
+    ldx THudDigits+4    ; 3
+    lda SprN0,x         ; 4
+    and #$F8            ; 2
+    sta THudTemp        ; 3
+
     ldy #7 ; Draw Height
     lda #0
     sta WSYNC
     beq .loop
 ;=========== Scanline 1A ==============
 .hudScanline1A
-    ldx #3
+    lda #0
     sta WSYNC
+    stx COLUP0          ; 2
     sta GRP0
     sta PF1
 .hudShiftDigitLoop
-    lda THudDigits,x
-    sta THudDigits+2,x
-    dex
-    bpl .hudShiftDigitLoop
+
+    ldx THudDigits+2
+    stx THudDigits+4
+
+    lda SprN0,x         ; 4
+    and #$F8            ; 2
+    sta THudTemp        ; 3
+
+    ldx THudDigits+3
+    stx THudDigits+5
+    lda THudDigits+1
+    sta THudDigits+3
+    lda THudDigits+0
+    sta THudDigits+2
+
     lda THudHealthL
     sta THudHealthH
+    lda THudHealthMaxL
+    sta THudHealthDisp
     dey
     lda #0
     sta THudHealthL
-    nop ;sta WSYNC
+    sta THudHealthMaxL
+    sta WSYNC
 KERNEL_HUD_LOOP:
 .loop:
 
 ;=========== Scanline 0 ==============
-    cpy TMapPosY ; 3
-    bne .skip ; 2/3
-    lda #2    ; 2
+    cpy THudMapPosY     ; 3
+    bne .skip           ; 2/3
+    lda #2              ; 2
 .skip
-    sta ENAM0 ; 3
-    lda (mapSpr),y ; 5
-    sta GRP1 ; 3
+    sta ENAM0           ; 3
+    lda (THudMapSpr),y  ; 5
+    sta GRP1            ; 3
     
-    ldx THudDigits+4 ; 3
-    lda SprN0,x  ; 4
-    and #$F0     ; 2
-    sta THudTemp    ; 3 
-    ldx THudDigits+5; 3
-    lda SprN0,x ; 4
-    and #$0F  ; 2
-    ora THudTemp ; 3
-    sta GRP0 ; 3
-    lda THudHealthH
+    ; digit 4 precomputed
+
+    ldx THudDigits+5    ; 3
+    lda SprN0,x         ; 4
+    and #$07            ; 2
+    ora THudTemp        ; 3
+    sta GRP0            ; 3
+    lda #COLOR_WHITE    ; 2
+    sta COLUP0          ; 2
+    lda THudHealthDisp
     sta PF1
+    ldx #COLOR_PLAYER_00; 2
+    lda THudHealthH
+    sta THudHealthDisp
+    lda HUD_SPLIT_TEST,y
+    bne .hudScanline1A
     lda #0
-    cpy #5
-    beq .hudScanline1A
-    cpy #2
-    beq .hudScanline1A
+    stx COLUP0          ; 2
+    ldx THudDigits+5    ; 3
     sta WSYNC
     sta PF1
 ;=========== Scanline 1 ==============
-    dec THudDigits+4 ; 5
-    dec THudDigits+5 ; 5
+    dex                 ; 2
+    lda SprN0,x         ; 4
+    dex                 ; 2
+    stx THudDigits+5    ; 3
+    and #$07            ; 2
+    sta THudTemp        ; 3 
+    ldx THudDigits+4    ; 3
+    dex
+    lda SprN0,x         ; 4
+    and #$F8            ; 2
+    ora THudTemp        ; 3
+    sta GRP0            ; 3
+    lda THudHealthDisp  ; 3
+    sta PF1             ; 3
+    lda #COLOR_WHITE    ; 2
+    sta COLUP0          ; 2
     
-    ldx THudDigits+4 ; 3
-    lda SprN0,x  ; 4
-    and #$F0     ; 2
-    sta THudTemp    ; 3 
-    ldx THudDigits+5; 3
-    lda SprN0,x ; 4
-    and #$0F  ; 2
-    ora THudTemp ; 3
-    sta GRP0 ; 3
-    lda THudHealthH
-    sta PF1
-    dec THudDigits+4
-    dec THudDigits+5
+    dex
+    stx THudDigits+4    ; 3
+    lda SprN0,x         ; 4
+    and #$F8
+    sta THudTemp        ; 3
+    lda #COLOR_PLAYER_00
+    sta COLUP0
+
     lda #0
     dey
     sta WSYNC
@@ -282,23 +341,27 @@ KERNEL_HUD_LOOP:
     lda #0
     sta ENAM0
     sta GRP1
+
+    lda #COLOR_WHITE
+    sta COLUP0
     
-    ldx THudDigits+4 ; 3
-    lda SprN0,x  ; 4
-    and #$F0     ; 2
-    sta THudTemp    ; 3 
-    ldx THudDigits+5; 3
-    lda SprN0,x ; 4
-    and #$0F  ; 2
-    ora THudTemp ; 3
-    sta GRP0 ; 3
+    ldx THudDigits+5    ; 3
+    lda SprN0,x         ; 4
+    and #$07            ; 2
+    ora THudTemp        ; 3
+    sta GRP0            ; 3
+    
+    ldx #0
+    ldy #COLOR_PLAYER_00
+    
+    sleep 6
     
     lda rFgColor
     sta COLUPF
     
-    ldx #0
     stx GRP0
     stx GRP1
+    sty COLUP0
     LOG_SIZE "-HUD KERNEL-", KERNEL_HUD
     lda KernelId
     beq .defaultWorldKernel

@@ -54,8 +54,6 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda #SLOT_ROOM
     sta BANK_SLOT
     jsr RoomUpdate
-
-
     bit roomFlags
     bvs .roomLoadCpuSkip
     lda #SLOT_PL_A
@@ -68,10 +66,13 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
 .roomLoadCpuSkip
 
 ; room setup
+    lda worldId
+    beq .skipRoomChecks
     lda #SLOT_ROOM
     sta BANK_SLOT
     jsr KeydoorCheck
     jsr UpdateDoors
+.skipRoomChecks
 
     lda #SLOT_AU_A
     sta BANK_SLOT

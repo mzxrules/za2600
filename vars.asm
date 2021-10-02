@@ -199,10 +199,12 @@ SfxFlags    ds 1
     ; 1xxx_xxxx New Sfx
 SfxCur      ds 1
 
-; Context Temp Vars
 NUSIZ0_T    ds 1
 NUSIZ1_T    ds 1
-mapSpr      ds 2
+
+atan2Temp   ds 1
+
+; Context Temp Vars
 Temp0       ds 1
 Temp1       ds 1
 Temp2       ds 1
@@ -211,11 +213,8 @@ Temp4       ds 1
 Temp5       ds 1
 Temp6       ds 1
 
-    ORG mapSpr
-atan2Temp   ds 1
-
     SEG.U VARS_AUD_ZERO
-    ORG Temp4
+    ORG Temp0 + 4
 AUDCT0      ds 1
 AUDCT1      ds 1
 AUDFT0      ds 1
@@ -225,14 +224,19 @@ AUDVT1      ds 1
 
     SEG.U VARS_HUD_ZERO
     ORG Temp0
-TMapPosY    ds 1
-THudHealthL ds 1
-THudHealthH ds 1
-THudTemp    ds 1
-THudDigits  ds 6
+THudMapSpr      ds 2
+THudMapPosY     ds 1
+THudHealthMaxL  ds 1
+THudHealthL     ds 1
+THudHealthMaxH  ds 1
+THudHealthH     ds 1
+THudTemp        ds 1
+THudDigits      ds 6
+    ORG THudHealthMaxH
+THudHealthDisp  ds 1
     
     SEG.U VARS_EN_SYS
-    ORG Temp1
+    ORG Temp0 + 1
 ;Temp0          ds 1
 EnSysSpawnTry   ds 1
 EnSysNext       ds 1
@@ -249,14 +253,14 @@ MiSysAddX       ds 1
 MiSysAddY       ds 1
 
     SEG.U VARS_SHOP_KERNEL
-    ORG mapSpr
+    ORG Temp0
 ShopSpr0    ds 2
 ShopSpr1    ds 2
 ShopSpr2    ds 2
 ShopDrawY   ds 1
 
     SEG.U VARS_TEXT_ZERO
-    ORG mapSpr
+    ORG Temp0
 TextLoop    ds 1
 TMesgPtr    ds 2
 Temp        ds 1
@@ -361,6 +365,7 @@ PlState_ItemButton          = $40
 PlState_Stab                = $20
 
 COLOR_BLACK         = $00
+COLOR_WHITE         = $0E
 COLOR_DARKNUT_RED   = $42
 COLOR_OCTOROK_BLUE  = $72
 COLOR_DARKNUT_BLUE  = $74
