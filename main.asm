@@ -50,7 +50,7 @@ BANK_ALWAYS_ROM = $0400
 BANK_2
 
     INCLUDE "b/draw.asm"
-    LOG_SIZE "-BANK 2-", BANK_2
+    LOG_SIZE "-BANK 2- Draw", BANK_2
 
 ; ****************************************
 ; *               BANK 3                 *

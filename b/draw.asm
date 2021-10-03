@@ -3,7 +3,11 @@
 ;==============================================================================
     
 HUD_SPLIT_TEST:
-    .byte 0, 0, 1, 0, 0, 1, 0, 0
+    .byte 0, 0, 1, 0, 0, 1, 0 ;, 0
+    
+HealthPattern:
+    .byte $00, $01, $03, $07, $0F, $1F, $3F, $7F
+    .byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
 
 ;==============================================================================
 ; Pre-Position Sprites
@@ -190,28 +194,22 @@ POSITION_SPRITES:
 
     ldy #1
 .hpBarLoop
-    lda plHealthMax,y
+    lda plHealthMax,y ; Load HP
     clc
     adc #7
     lsr
     lsr
     lsr
-    sta THudHealthMaxL,y
-    sec
-    sbc #8
-    bcs .skipHealthHighClampMin
-    lda #0
-.skipHealthHighClampMin
+    ; divide by 8, rounding up
     tax
     lda HealthPattern,x
+    sta THudHealthMaxL,y
+    cpx #8
+    bpl .hpBarLoopCont
+    ldx #8
+.hpBarLoopCont
+    lda HealthPattern-8,x
     sta THudHealthMaxH,y
-    beq .skipHealthClamp
-    lda #8
-    sta THudHealthMaxL,y
-.skipHealthClamp
-    ldx THudHealthMaxL,y
-    lda HealthPattern,x
-    sta THudHealthMaxL,y
     dey
     bpl .hpBarLoop
 
@@ -406,7 +404,7 @@ KERNEL_WORLD_RESUME:
     rts
     LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN
 
-    .align 256    
+    .align 64    
 ;==============================================================================
 ; PosHudObjects
 ;----------

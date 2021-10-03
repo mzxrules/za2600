@@ -335,10 +335,6 @@ Bit8:
 WORLD_ENT: ; Initial room spawns for worlds 0-9
     .byte $77, $73, $79, $00, $00, $00, $73, $00, $00, $7E
 
-    ;align 16
-HealthPattern:
-    .byte $00, $01, $03, $07, $0F, $1F, $3F, $7F, $FF 
-
 Spr8WorldOff:
     .byte (ROOM_HEIGHT+8), (TEXT_ROOM_HEIGHT+8), (SHOP_ROOM_HEIGHT+8)
 Spr1WorldOff: 
