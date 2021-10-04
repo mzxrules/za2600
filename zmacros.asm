@@ -31,3 +31,10 @@ w{1} = . - KERNEL_WORLD + wKERNEL + 1
 .j1
     ENDM
     
+    MACRO COLOR
+    IFCONST PAL60
+COLOR_{1} = {3}
+    ELSE
+COLOR_{1} = {2}
+    ENDIF
+    ENDM

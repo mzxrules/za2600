@@ -364,27 +364,31 @@ PlState_ItemButtonRepeat    = $80
 PlState_ItemButton          = $40
 PlState_Stab                = $20
 
-COLOR_BLACK         = $00
-COLOR_WHITE         = $0E
-COLOR_DARKNUT_RED   = $42
-COLOR_OCTOROK_BLUE  = $72
-COLOR_DARKNUT_BLUE  = $74
-COLOR_PATH          = $3C
-COLOR_GREEN_ROCK    = $D0
-COLOR_CHOCOLATE     = $F0
-COLOR_EARTH         = $F2
-COLOR_LIGHT_WATER   = $A4
-COLOR_LIGHT_BLUE    = $88
-COLOR_LIGHT_BLUE2   = $86 ; World
-COLOR_DARK_BLUE     = $90
-COLOR_GOLDEN        = $1E
-COLOR_TRIFORCE      = $2A
+    COLOR UNDEF,        $00,$00
+    COLOR BLACK,        $00,$00
+    COLOR DARK_GRAY,    $02,$06
+    COLOR GRAY,         $06,$0C
+    COLOR WHITE,        $0E,$DE
+    COLOR DARKNUT_RED,  $42,$64
+    COLOR DARKNUT_BLUE, $74,$B4
+    COLOR OCTOROK_BLUE, $72,$C4
+    COLOR PATH,         $3C,$4C
+    COLOR GREEN_ROCK,   $D0,$52
+    COLOR CHOCOLATE,    $F0,$22
+    COLOR LIGHT_WATER,  $A4,$A4
+    COLOR LIGHT_BLUE,   $88,$D8 ; Item
+    COLOR LIGHT_BLUE2,  $86,$D6 ; World
+    COLOR DARK_BLUE,    $90,$C0
+    COLOR DARK_PURPLE,  $60,$A2
+    COLOR PURPLE,       $64,$A6
+    COLOR SACRED,       $1E,$2E ; No good PAL equivalent
+    COLOR TRIFORCE,     $2A,$2A
 
-COLOR_PLAYER_00 = $C6
-COLOR_PLAYER_01 = $08
-COLOR_PLAYER_02 = $46
+    COLOR PLAYER_00,    $C6,$58
+    COLOR PLAYER_01,    $08,$0C
+    COLOR PLAYER_02,    $46,$64
 
-COLOR_MINIMAP   = $84
+    COLOR MINIMAP,      $84,$08 ; Different colors
 
 MS_PLAY_NONE    = $80
 MS_PLAY_DUNG    = $81

@@ -432,12 +432,12 @@ GiItemColors:
 
     .byte COLOR_TRIFORCE        ; GiKey
     .byte COLOR_TRIFORCE        ; GiMasterKey
-    .byte $06                   ; GiSword2
-    .byte $0E                   ; GiSword3
+    .byte COLOR_GRAY            ; GiSword2
+    .byte COLOR_WHITE           ; GiSword3
 
     .byte COLOR_CHOCOLATE       ; GiBow
     .byte COLOR_CHOCOLATE       ; GiRaft
-    .byte $0E                   ; GiBoots
+    .byte COLOR_WHITE           ; GiBoots
     .byte COLOR_TRIFORCE        ; GiFlute
 
     .byte COLOR_DARKNUT_RED     ; GiFireMagic
@@ -446,7 +446,7 @@ GiItemColors:
     .byte COLOR_DARKNUT_BLUE    ; GiNote
     
     .byte COLOR_TRIFORCE        ; GiArrows
-    .byte $0E                   ; GiArrowsSilver
+    .byte COLOR_WHITE           ; GiArrowsSilver
     .byte COLOR_DARKNUT_BLUE    ; GiRingBlue
     .byte COLOR_DARKNUT_RED     ; GiRingRed
     .byte COLOR_DARKNUT_BLUE    ; GiPotionBlue

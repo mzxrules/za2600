@@ -482,7 +482,19 @@ WorldDoorPF2:
     .byte $00, $FF, $3F, $FF
     
 WorldColors:
-    .byte COLOR_BLACK, COLOR_DARK_BLUE, $00, COLOR_LIGHT_BLUE2
-    .byte $42, $7A, COLOR_PATH, $06
-    .byte $02, COLOR_LIGHT_BLUE2, COLOR_GREEN_ROCK, COLOR_LIGHT_WATER
-    .byte $00, COLOR_CHOCOLATE, COLOR_GOLDEN, $0E
+    /* 00 */ .byte COLOR_BLACK
+    /* 01 */ .byte COLOR_DARK_GRAY
+    /* 02 */ .byte COLOR_GRAY
+    /* 03 */ .byte COLOR_DARK_BLUE
+    /* 04 */ .byte COLOR_LIGHT_BLUE2
+    /* 05 */ .byte COLOR_LIGHT_WATER
+    /* 06 */ .byte COLOR_UNDEF
+    /* 07 */ .byte COLOR_DARK_PURPLE
+    /* 08 */ .byte COLOR_PURPLE
+    /* 09 */ .byte COLOR_GREEN_ROCK
+    /* 0A */ .byte COLOR_UNDEF
+    /* 0B */ .byte COLOR_CHOCOLATE
+    /* 0C */ .byte COLOR_DARKNUT_RED
+    /* 0D */ .byte COLOR_PATH
+    /* 0E */ .byte COLOR_SACRED
+    /* 0F */ .byte COLOR_WHITE

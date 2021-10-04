@@ -18,7 +18,7 @@ TextKernel: SUBROUTINE
     lda #6
     sta NUSIZ0
     sta NUSIZ1
-    lda #$0F
+    lda #COLOR_WHITE
     sta COLUP0
     sta COLUP1
     lda #1
@@ -131,7 +131,7 @@ Frame0Text
     ldx Text7               ; 4     (59)
     ora right_text,x        ; 4     (63)
     
-    ldy #$0F                ; 2     (65)
+    ldy #COLOR_WHITE        ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
@@ -191,7 +191,7 @@ Frame0Text
     ldx Text7               ; 4     (59)
     ora right_text+1,x      ; 4     (63)
     
-    ldy #$0F                ; 2     (65)
+    ldy #COLOR_WHITE        ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
@@ -251,7 +251,7 @@ Frame0Text
     ldx Text7               ; 4     (59)
     ora right_text+2,x      ; 4     (63)
     
-    ldy #$0F                ; 2     (65)
+    ldy #COLOR_WHITE        ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
@@ -311,7 +311,7 @@ Frame0Text
     ldx Text7               ; 4     (59)
     ora right_text+3,x      ; 4     (63)
     
-    ldy #$0F                ; 2     (65)
+    ldy #COLOR_WHITE        ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
@@ -371,7 +371,7 @@ Frame0Text
     ldx Text7               ; 4     (59)
     ora right_text+4,x      ; 4     (63)
     
-    ldy #$0F                ; 2     (65)
+    ldy #COLOR_WHITE        ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
