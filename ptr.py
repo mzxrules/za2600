@@ -196,7 +196,17 @@ tbl = [
     genEditorBindings=True,
     genPtrTable=True, 
     genConstants=True,
-    vals=mesg_ids),
+    vals=mesg_ids),    
+    GameEnum("PlItem", "PlItem",
+    genEditorBindings=False,
+    genPtrTable=True, 
+    genConstants=False,
+    vals=[
+        "PlayerSword",
+        "PlayerArrow",
+        "PlayerBomb",
+        "PlayerFire"
+    ]),
 ]
 
 def ToSnakeCase(str):

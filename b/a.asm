@@ -153,10 +153,13 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     sta roomFlags
 .endSwapRoom
   
+; Perform PF Collision Detection
 ; Phase player through walls if flag set
 .PlayerWallPass
     lda plState
-    and #$20
+    and #~PS_LOCK_AXIS
+    sta plState
+    and #PS_GLIDE
     beq .skipPlayerWallPass
     bit CXP0FB ; if player collided with playfield, keep moving through wall
     bmi .playerWallPassCont
@@ -172,12 +175,49 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 .skipPlayerWallPass
     bit roomFlags
     bmi .skipCollisionPosReset
-    ldx #1
-.posResetLoop
-    lda CXP0FB,x
+
+    ; Check PF Ignore
+    lda roomFlags
+    and #[RF_PF_IGNORE + RF_PF_AXIS]
+    beq .collisionPosReset
+    ldx plX
+    cpx #EnBoardXL
+    bmi .collisionPosReset
+    cpx #EnBoardXR+1
+    bpl .collisionPosReset
+    ldx plY
+    cpx #EnBoardYD
+    bmi .collisionPosReset
+    cpx #EnBoardYU+1
+    bpl .collisionPosReset
+
+    bit RF_PF_AXIS
+    beq .collisionPosReset_SkipPl ; branch on RF_PF_IGNORE
+    bit CXP0FB
+    bpl .collisionPosReset
+    lda ITEMV_BOOTS
+    bit ITEMF_BOOTS
+    beq .collisionPosReset
+    lda plState
+    ora PS_LOCK_AXIS
+    sta plState
+    bne .collisionPosReset_SkipPl ; branch always
+
+.collisionPosReset
+    ldx #0
+    lda CXP0FB
     jsr TestCollisionReset
-    dex
-    bpl .posResetLoop
+
+.collisionPosReset_SkipPl
+    ldx plX
+    stx plXL
+    ldx plY
+    stx plYL
+
+    ldx #1
+    lda CXP1FB
+    jsr TestCollisionReset
+
 .skipCollisionPosReset
     
     lda #SLOT_EN_A

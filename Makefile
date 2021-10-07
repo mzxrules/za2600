@@ -32,6 +32,7 @@ audio.bin: gen/ms_header.asm audio.asm
 	dasm audio.asm -f3 -oaudio.bin -saudio.sym -T1
 
 zelda.bin: ${zelda_dep}
+	dasm main.asm -f3 -ozelda_PAL60.bin -DPAL60
 	dasm main.asm -f3 -ozelda.bin -szelda.sym -T1
     
 gen/RoomScript.asm: mesg.py ptr.py

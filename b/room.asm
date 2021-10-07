@@ -7,11 +7,11 @@ RoomUpdate: SUBROUTINE
     sta roomFlags
     bpl .skipLoadRoom
     ora #RF_LOADED_EV
-    and #~[RF_LOAD_EV + RF_NO_ENCLEAR + RF_CLEAR]
+    and #~[RF_LOAD_EV + RF_NO_ENCLEAR + RF_CLEAR + RF_PF_IGNORE + RF_PF_AXIS + RF_DARK]
     sta roomFlags
     lda #-$18
     sta roomTimer
-    lda #$22
+    lda #[PS_GLIDE | PS_LOCK_ALL]
     sta plState
     jsr LoadRoom
     lda #0      ;EN_NONE
@@ -143,6 +143,15 @@ LoadRoom: SUBROUTINE
     ; PF2
     lda WORLD_T_PF2,y
     tax
+; RF_PF_IGNORE test
+    and #$F3
+    cmp #$32
+    bne .skipPFIgnore
+    lda roomFlags
+    ora #RF_PF_IGNORE
+    sta roomFlags
+    txa
+.skipPFIgnore
     and #$F0
     sta Temp2
     txa
@@ -234,6 +243,17 @@ LoadRoom: SUBROUTINE
     bpl .roomUpDownBorder
     lda worldId
     beq UpdateWorldDoors
+; RF_PF_AXIS test
+    lda rFgColor
+    cmp #COLOR_DARKNUT_RED
+    beq .SetPFAxis
+    cmp #COLOR_LIGHT_WATER
+    bne .rts
+.SetPFAxis
+    lda roomFlags
+    ora #RF_PF_AXIS
+    sta roomFlags
+.rts
     rts
     
 UpdateWorldDoors: SUBROUTINE

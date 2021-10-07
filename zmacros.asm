@@ -10,11 +10,15 @@ ITEMF_{1} = {3}
 
 ; Outputs rom size of a code section
     MACRO LOG_SIZE
+        IFNCONST PAL60
         echo .- {2}+$8000,{2},(.),{1}
+        ENDIF
     ENDM
     
     MACRO LOG_SIZE_M1
+        IFNCONST PAL60
         echo .- {2}+$8000,{2},(.-1),{1}
+        ENDIF
     ENDM
     
 ; Rewriteable Kernel Variable

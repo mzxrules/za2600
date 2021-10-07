@@ -128,6 +128,9 @@ RF_LOADED_EV    = $40 ; 0100_0000 Room Load happened this frame
 RF_ENCLEAR_EV   = $20 ; 0010_0000 Enemy Clear event
 RF_NO_ENCLEAR   = $10 ; 0001_0000 Blocks Enemy Cleared from setting Room Cleared
 RF_CLEAR        = $08 ; 0000_1000 Room Cleared (Enemies dead, or puzzle solved)
+RF_PF_IGNORE    = $04 ; 0000_0100 Room PF ignored in center room
+RF_PF_AXIS      = $02 ; 0000_0010 Room PF triggers axis only movement
+RF_DARK         = $01 ; 0000_0001 Room is dark
 roomDoors   ds 1
     ; xxxx_xx11 N
     ; xxxx_11xx S
@@ -139,14 +142,14 @@ roomENCount ds 1 ; num encounters
 roomEX      ds 1
 roomWA      ds 1
 plState     ds 1
-    ; 1000_0000 Fire Pressed Last Frame
-    ; 0100_0000 Use Current Item Event
-    ; 0010_0000 Move Until Unblocked
-    ; 0001_0000 Swap item event
-    ; 0000_1000 P1 Is Wall
-    ; 0000_0100 Playfield Ignore
-    ; 0000_0010 Lock Player
-    ; 0000_0001 Lock Player Axis - Hover Boots
+INPT_FIRE_PREV  = $80 ; 1000_0000 Fire Pressed Last Frame
+PS_USE_ITEM     = $40 ; 0100_0000 Use Current Item Event
+PS_GLIDE        = $20 ; 0010_0000 Move Until Unblocked
+PS_SWAP_ITEM    = $10 ; 0001_0000 Swap item event
+PS_P1_WALL      = $08 ; 0000_1000 P1 Is Wall
+PS_PF_IGNORE    = $04 ; 0000_0100 Playfield Ignore
+PS_LOCK_ALL     = $02 ; 0000_0010 Lock Player
+PS_LOCK_AXIS    = $01 ; 0000_0001 Lock Player Axis - Hover Boots
 plState2    ds 1
     ; 0000_0011 Active Item
     ;        00 Sword
@@ -375,7 +378,7 @@ PlState_Stab                = $20
     COLOR PATH,         $3C,$4C
     COLOR GREEN_ROCK,   $D0,$52
     COLOR CHOCOLATE,    $F0,$22
-    COLOR LIGHT_WATER,  $A4,$A4
+    COLOR LIGHT_WATER,  $AE,$9E
     COLOR LIGHT_BLUE,   $88,$D8 ; Item
     COLOR LIGHT_BLUE2,  $86,$D6 ; World
     COLOR DARK_BLUE,    $90,$C0

@@ -268,7 +268,7 @@ EnSystem: SUBROUTINE
     beq .rts
     lda enType
     bne .rts
-    lda #2
+    lda #PS_LOCK_ALL
     bit plState
     bne .rts
     

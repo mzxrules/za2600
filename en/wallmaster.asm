@@ -68,7 +68,7 @@ EnWallmaster: SUBROUTINE
     lda #-4
     jsr UPDATE_PL_HEALTH
     lda plState
-    ora #2
+    ora #PS_LOCK_ALL
     sta plState
     lda plX
     sta enX

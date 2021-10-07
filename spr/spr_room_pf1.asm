@@ -373,39 +373,39 @@ PF1Room21:
     .byte $FF ; |XXXXXXXX|
     .byte $FF ; |XXXXXXXX|
 PF1Room22:
-    .byte $F0 ; |XXXX....|
-    .byte $F0 ; |XXXX....|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $03 ; |......XX|
-    .byte $03 ; |......XX|
-    .byte $03 ; |......XX|
-    .byte $03 ; |......XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $0E ; |....XXX.|
+    .byte $0E ; |....XXX.|
+    .byte $0E ; |....XXX.|
+    .byte $0E ; |....XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
 PF1Room23:
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $03 ; |......XX|
-    .byte $03 ; |......XX|
-    .byte $03 ; |......XX|
-    .byte $03 ; |......XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F3 ; |XXXX..XX|
-    .byte $F0 ; |XXXX....|
-    .byte $F0 ; |XXXX....|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $0E ; |....XXX.|
+    .byte $0E ; |....XXX.|
+    .byte $0E ; |....XXX.|
+    .byte $0E ; |....XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
 PF1Room24:
     .byte $80 ; |X.......|
     .byte $86 ; |X....XX.|

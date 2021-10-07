@@ -1,6 +1,7 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
+    INCLUDE "gen/PlItem.asm"
 FireOffX:
 BombOffX:
     .byte 10, -4, 3, 3
@@ -306,6 +307,15 @@ SwordOff8Y:
     .byte 3, 3, -7, 7
 
 PlayerItem: SUBROUTINE
+    lda plState2
+    and #3
+    tax
+    lda PlItemH,x
+    pha
+    lda PlItemL,x
+    pha
+    rts
+
 PlayerSword: SUBROUTINE
 ; If Item Button, use item
     bit plState
@@ -356,23 +366,23 @@ PlayerInput: SUBROUTINE
     inc itemRupees
 .skipTest
     ; test if player locked
-    lda #02
+    lda #PS_LOCK_ALL
     bit plState
     beq .InputContinue
     rts
 .InputContinue
     ; Test and update fire button state and related flags
     lda plState
-    cmp #$80 ; Test if fire pressed last frame, store in carry
-    and #$3F ; ~$80 + ~$40, button held and use current item event
-    ora #$80
+    cmp #INPT_FIRE_PREV ; Test if fire pressed last frame, store in carry
+    and #~[INPT_FIRE_PREV + PS_USE_ITEM] ; mask out button held and use current item event
+    ora #$80 ; INPT_FIRE_PREV
     bit INPT4
     bmi .FireNotHit ; Button not pressed
     eor #$80 ; invert flag
     bcc .FireNotHit ; Button held down
     ldx plItemTimer
     bne .FireNotHit ; Item in use
-    ora #$40
+    ora #PS_USE_ITEM
 .FireNotHit
     sta plState
 
@@ -738,6 +748,13 @@ RsCentralBlock: SUBROUTINE
     stx blY
     lda #BL_PUSH_BLOCK
     sta blType
+    ldy #1
+.loop
+    lda rPF2Room+9,y
+    and #$7F
+    sta wPF2Room+9,y
+    dey
+    bpl .loop
     lda #RS_NONE
     sta roomRS
     rts
