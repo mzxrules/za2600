@@ -266,19 +266,8 @@ ShopDrawY   ds 1
     ORG Temp0
 TextLoop    ds 1
 TMesgPtr    ds 2
-Temp        ds 1
-Text0       ds 1
-Text1       ds 1
-Text2       ds 1
-Text3       ds 1
-Text4       ds 1
-Text5       ds 1
-Text6       ds 1
-Text7       ds 1
-Text8       ds 1
-Text9       ds 1
-Text10      ds 1
-Text11      ds 1
+TextTemp    ds 1
+TextReg     ds 12
 
     echo "-RAM-",$80,(.)
 
