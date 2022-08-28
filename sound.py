@@ -12,12 +12,12 @@ from seq import *
 
 def AdjustDungeonBaseline(seq):
     test = []
-    for note, dir in seq:
-        if dir > 2:
+    for note, dur in seq:
+        if dur > 2:
             test.append((note, 2))
-            test.append(("_", dir-2))
+            test.append(("_", dur-2))
         else:
-            test.append((note,dir))
+            test.append((note,dur))
     return test
 
 seqs = {
@@ -27,11 +27,18 @@ seqs = {
     "intro": Seq("ms_intro", 150, 1, overworld_intro_highline, overworld_intro_baseline),
     "world": Seq("ms_world", 150, 1, overworld_highline, overworld_baseline),
     "final": Seq("ms_final", 150, 1, dung_final_highline, dung_final_baseline),
-    "myst" : Seq("ms_myst", 150, 1/4, empty_channel, myst_baseline)
+    #"tri"  : Seq("ms_tri", 90, 1, ice_baseline, empty_channel),
+    "tri"  : Seq("ms_tri", 150, 1, tri_highline2, tri_baseline2), # tri_baseline
+    #"lost" : Seq("ms_tri", 75, 1, lost_highline, lost_baseline)
+    "myst" : Seq("ms_myst", 150, 1/4, empty_channel, myst_baseline),
 }
 
 for k, seq in seqs.items():
     seq.Flatten()
+    
+#FindBestSeq(seqs["tri"].ch0)
+#FindBestSeq(seqs["tri"].ch1)
+#quit()
 
 seqs["final"].ch0 = seqs["final"].GetShiftChannel(0,9) + seqs["final"].GetShiftChannel(0,15)
 seqs["final"].ch1 = seqs["final"].GetShiftChannel(1,21) + seqs["final"].GetShiftChannel(1,15)
@@ -42,6 +49,12 @@ seqs["world"].ShiftChannel(1,-11)
 seqs["intro"].ShiftChannel(0,-11)
 seqs["intro"].ShiftChannel(1,-11)
 seqs["myst"].ShiftChannel(1,12)
+seqs["tri"].ShiftChannel(0,5) #-8 5
+seqs["tri"].ShiftChannel(1,5)
+seqs["tri"].RepeatLastValidNote(0)
+seqs["tri"].RepeatLastValidNote(1)
+#seqs["lost"].ShiftChannel(0,0)
+#seqs["lost"].ShiftChannel(1,0)
 
 sequences = []
 
@@ -61,7 +74,9 @@ fl = [
     ("{}_dur", 3, "durs")
 ]
 
-header = [0] * 16
+MAX_SEQ = 16
+
+header = [0] * MAX_SEQ * 2
 headerCur = 1
 for seq in sequences:
     for chan in seq:
@@ -73,8 +88,8 @@ for seq in sequences:
             str = f"{n}:\n" + ToAsm(getattr(chan,type))
             with open(f"gen/{n}.asm", "w") as file:
                 file.write(str)
-        headerCur += 8
-        headerCur %= 16
+        headerCur += MAX_SEQ
+        headerCur %= MAX_SEQ * 2
     headerCur += 1
             
 str = "ms_header:\n" + ToAsm(header)

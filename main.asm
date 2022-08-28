@@ -192,15 +192,15 @@ BANK_9
     RORG $F000
 BANK_10
 
-    include "b/tx.asm"
+    INCLUDE "b/tx.asm"
     LOG_SIZE "tx.asm break", BANK_10
     align 256
 left_text
-    include "gen/text_left.asm"
+    INCLUDE "gen/text_left.asm"
 right_text
-    include "gen/text_right.asm"
+    INCLUDE "gen/text_right.asm"
     LOG_SIZE "text_chrset_size", left_text
-    include "gen/mesg_data.asm"
+    INCLUDE "gen/mesg_data.asm"
  
     LOG_SIZE "-BANK 10/11- Text Bank", BANK_10
 
@@ -220,7 +220,7 @@ BANK_12
     INCLUDE "en/octorok.asm"
     INCLUDE "en/likelike.asm"
     INCLUDE "en/bosscucco.asm"
-    include "b/en.asm"
+    INCLUDE "b/en.asm"
     
     LOG_SIZE "-BANK 12/13- EnemyAI", BANK_12
 
@@ -255,6 +255,10 @@ BANK_14
     INCLUDE "gen/ms_final0_note.asm"
     INCLUDE "gen/ms_final0_dur.asm"
     INCLUDE "gen/ms_final1_note.asm"
+    INCLUDE "gen/ms_tri0_note.asm"
+    INCLUDE "gen/ms_tri0_dur.asm"
+    INCLUDE "gen/ms_tri1_note.asm"
+    INCLUDE "gen/ms_tri1_dur.asm"
     INCLUDE "gen/ms_myst0_note.asm"
     INCLUDE "gen/ms_myst0_dur.asm"
     INCLUDE "gen/ms_myst1_note.asm"

@@ -53,10 +53,13 @@ seqs = {
     "over" : Seq("ms_over", 90, 4, game_over_highline, empty_channel),
     "world": Seq("ms_world", 150, 1, overworld_highline, overworld_baseline),
     "intro": Seq("ms_intro", 150, 1, overworld_intro_highline, overworld_intro_baseline),
-    "final": Seq("ms_final", 150, 1, dung_final_highline, dung_final_baseline)
+    "final": Seq("ms_final", 150, 1, dung_final_highline, dung_final_baseline),
+    "tri"  : Seq("ms_tri", 150, 1, tri_highline, tri_baseline),
+    "ice"  : Seq("ms_ice", 90, 1, ice_baseline, empty_channel),
+    "lost" : Seq("ms_lost", 75, 1, lost_highline, lost_baseline)
 }
 
-songKey = "final"
+songKey = "ice"
 
 print("ch0")
 MeasureTest(seqs[songKey].ch0)

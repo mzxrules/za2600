@@ -1,4 +1,6 @@
-.PHONY: all
+.PHONY: all clean
+
+output_bin := zelda.bin zelda_PAL60.bin audio.bin
 
 zelda_dep := \
   zmacros.asm \
@@ -26,12 +28,20 @@ zelda_dep := \
   vars.asm \
   main.asm
 
-all: zelda.bin audio.bin
+all: $(output_bin)
+
+init: 
+	mkdir -p gen/world
+
+clean:
+	echo $(output_bin)
+	$(RM) -r $(output_bin) gen
+	mkdir -p gen/world
 
 audio.bin: gen/ms_header.asm audio.asm
 	dasm audio.asm -f3 -oaudio.bin -saudio.sym -T1
 
-zelda.bin: ${zelda_dep}
+zelda.bin: $(zelda_dep)
 	dasm main.asm -f3 -ozelda_PAL60.bin -DPAL60
 	dasm main.asm -f3 -ozelda.bin -szelda.sym -T1
     

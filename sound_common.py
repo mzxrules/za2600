@@ -24,8 +24,9 @@ N1dic = { #Buzzy
 N6dic = { #Buzzy/Pure
     "D2" : 13,
     "D#2" : 12,
-    "F#2" : 10, 
-    "D3" : 6
+    "F#2" : 10,
+    "D3" : 6,
+    "E4" : 2
 }
 
 N4dic = {
@@ -145,6 +146,12 @@ class Seq:
             self.ch0 = delegate(self.ch0)
         else:
             self.ch1 = delegate(self.ch1)
+
+    def MuteInvalidNotes(self, chan):
+        self.AdjustChannel(chan, MuteInvalidNotesChannel)
+    
+    def RepeatLastValidNote(self, chan):
+        self.AdjustChannel(chan, RepeatLastValidNoteChannel)
             
     def DumpSong(self):
         c0 = DumpSongChannel(f"{self.name}0", self.ch0, self.beat)
@@ -283,6 +290,50 @@ def DumpSongChannel(name, channelNotes, beat):
         note |= tonePackDic[tones[i]]
         notes[i] = note
     return AtariSeq(name, totalNotes, notes, durs)
+
+def RepeatLastValidNoteChannel(chan):
+    out = []
+    lnote = "_"
+    for keyStr, dur in chan:
+        if keyStr == "_":
+            out.append((keyStr,dur))
+            continue
+        dicFind = False
+        for toneVal, dic in toneDics:
+            if keyStr in dic:
+                dicFind = True
+                lnote = keyStr
+                break
+                
+        out.append((lnote,dur))
+    return out
+
+def MuteInvalidNotesChannel(chan):
+    out = []
+    lmute = False
+    lmuteDir = 0
+    for keyStr, dur in chan:
+        if keyStr == "_":
+            lmute = True
+            lmuteDir += dur
+            continue
+        dicFind = False
+        for toneVal, dic in toneDics:
+            if keyStr in dic:
+                dicFind = True
+                break
+        if dicFind == True:
+            if lmute == True:
+                out.append(("_",lmuteDir))
+                lmute = False
+                lmuteDir = 0
+            out.append((keyStr,dur))
+        else:
+            lmute = True
+            lmuteDir += dur
+    if lmute == True and lmuteDir != 0:
+        out.append(("_",lmuteDir))
+    return out
     
 def NoteSpectrumTest():
     testSeq = []

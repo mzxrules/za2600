@@ -171,9 +171,9 @@ SfxDel:
     
 ; x = channel
 AudioChannel: SUBROUTINE
-    lda Mul8,x
+    lda AudioMul16,x
     ora SeqFlags
-    and #$0F
+    and #$1F
     sta Temp0 ; SeqId
     
     ; Test if next note should be played
@@ -339,6 +339,10 @@ MsFinal1: SUBROUTINE
     tax
     lda ms_final1_note,x
     jmp SeqChan1
+
+MsTri0: SUBROUTINE
+MsTri1: SUBROUTINE
+    rts
     
 MsGI0: SUBROUTINE
     ldx SeqCur
@@ -413,3 +417,6 @@ MsMyst1: SUBROUTINE
     ;align 8
 ToneLookup
     .byte 0, 1, 4, 6, 12
+
+AudioMul16
+    .byte 0, 16

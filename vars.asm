@@ -194,8 +194,8 @@ mesgId      ds 1
 SeqFlags    ds 1
     ; 1xxx_xxxx New Sequence
     ; 11xx_xxxx Play Region Sequence
-    ; xxxx_1xxx Reserved for sequence's second channel
-    ; xxxx_x111 Sequence
+    ; xxx1_xxxx Reserved for sequence's second channel
+    ; xxxx_1111 Sequence
 SeqTFrame   ds 2
 SeqCur      ds 2
 SfxFlags    ds 1
@@ -402,6 +402,7 @@ MS_PLAY_THEME_L = $85 ; Overworld Theme without intro
 MS_PLAY_RSEQ    = $40 | MS_PLAY_THEME   ; Plays region local sequence
 MS_PLAY_RSEQ_L  = $40 | MS_PLAY_THEME_L ; Plays region local sequence
 MS_PLAY_FINAL   = $86
+MS_PLAY_TRI     = $87
 
 ; ATAN2 Lookup Constants
 ATAN2_SIGNX     = $80
