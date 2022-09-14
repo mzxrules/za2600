@@ -25,7 +25,7 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     sta ENAM0       ; 3
     stx GRP1        ; 3
 
-    ldx roomSpr     ; 3
+    ldx roomDY      ; 3
     lda rPF1RoomL,x ; 4
     sta PF1         ; 3
     lda rPF2Room,x  ; 4
@@ -86,7 +86,7 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     beq .PFDec      ; 2/3
     .byte $2C       ; 4-5
 .PFDec
-    dec roomSpr     ; 5
+    dec roomDY      ; 5
     
 ; Player Missile    ;    CYCLE 15
     VKERNEL1 M0H

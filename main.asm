@@ -259,10 +259,6 @@ BANK_14
     INCLUDE "gen/ms_tri0_dur.asm"
     INCLUDE "gen/ms_tri1_note.asm"
     INCLUDE "gen/ms_tri1_dur.asm"
-    INCLUDE "gen/ms_myst0_note.asm"
-    INCLUDE "gen/ms_myst0_dur.asm"
-    INCLUDE "gen/ms_myst1_note.asm"
-    INCLUDE "gen/ms_myst1_dur.asm"
     
     align 16
     INCLUDE "gen/ms_header.asm"

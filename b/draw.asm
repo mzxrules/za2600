@@ -17,7 +17,7 @@ POSITION_SPRITES:
 ; room draw start
     ldy KernelId
     lda RoomWorldOff,y
-    sta roomSpr
+    sta roomDY
     
 ; player draw height
     lda Spr8WorldOff,y;#(ROOM_HEIGHT+8)
@@ -51,14 +51,14 @@ POSITION_SPRITES:
     sta enDY
 
 .enemy_sprite_setup
-    lda enSpr; #<(SprE0 + 7)
+    lda enSpr       ; #<(SprE0 + 7)
     clc
-    adc #7;enSpr
+    adc #7
     sec
     sbc enY
     sta enSpr
 
-    lda enSpr + 1;#>(SprE0 + 7)
+    lda enSpr + 1   ; #>(SprE0 + 7)
     sbc #0
     sta enSpr + 1
     

@@ -2,6 +2,7 @@
 ; mzxrules 2021
 ;==============================================================================
 ;ShopKernel:
+; match code in tx.asm to line up PC after bank swap
     lda #SLOT_SH
     sta BANK_SLOT
 
@@ -188,7 +189,7 @@ GiPotionRed:
 
 GiTriforce:
     inc itemTri
-    lda #MS_PLAY_GI
+    lda #MS_PLAY_TRI
     sta SeqFlags
     rts
 GiKey:

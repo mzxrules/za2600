@@ -16,11 +16,6 @@ enY         ds 1
 m0Y         ds 1
 m1Y         ds 1
 blY         ds 1
-plDY        ds 1
-enDY        ds 1
-m0DY        ds 1
-m1DY        ds 1
-blDY        ds 1
 
 ; KERNEL VARS
 ; ENH
@@ -36,82 +31,7 @@ plSpr       ds 2 ; plSprOff
 enSpr       ds 2 ; enSprOff
 plDir       ds 1
 enDir       ds 1
-enType      ds 1
-enColor     ds 1
 
-EN_VARIABLES:
-; EnemyCommon
-enState     ds 1
-enHp        ds 1
-enStun      ds 1
-enBlockDir  ds 1
-EN_ENEMY_VARIABLES:
-    ORG EN_ENEMY_VARIABLES
-; Darknut
-    ORG EN_ENEMY_VARIABLES
-; Wallmaster
-enWallPhase ds 1 ; anim timer for phasing through wall
-enPX        ds 1 ; posX last frame, after collision check
-enPY        ds 1 ; posY last frame, after collision check
-    ORG EN_ENEMY_VARIABLES
-; Octorok
-enTimer     ds 1
-enMDX       ds 1
-enMDY       ds 1
-    ORG EN_ENEMY_VARIABLES
-; LikeLike
-enLLTimer   ds 1
-    ORG EN_VARIABLES
-; Gameover
-enInputDelay ds 1
-    ORG EN_VARIABLES + 1
-; ClearDrop
-;enState     ds 1
-CD_UPDATE_B     = $80
-CD_UPDATE_A     = $40
-CD_LAST_UPDATE  = $01 ; Stores previous frame's active entity
-cdBTimer    ds 1
-cdAType     ds 1 ; Equivalent to enType
-cdBType     ds 1 ; Correspond to GiItems, such that 1 = GiItem 0
-CD_ITEM_RAND = $FF
-cdAX        ds 1
-cdBX        ds 1
-cdAY        ds 1
-cdBY        ds 1
-    ORG EN_VARIABLES + 1
-; EnShopkeeper
-shopItem    ds 3
-shopDigit   ds 3
-    ORG EN_VARIABLES + 1
-enTestDir   ds 1
-enTestFX    ds 1
-enTestFY    ds 1
-enTestTimer ds 1
-
-
-    ORG EN_VARIABLES
-En0V        ds 10 ; Zero initialized enemy vars
-EN_0V_END:
-
-; Missile Vars
-mAType      ds 1
-mBType      ds 1
-mAx         ds 1
-mBx         ds 1
-mAxf        ds 1
-mBxf        ds 1
-mAy         ds 1
-mBy         ds 1
-mAyf        ds 1
-mByf        ds 1
-mADir       ds 1
-mBDir       ds 1
-mATimer     ds 1
-mBTimer     ds 1
-
-blType      ds 1 ;
-blTemp      ds 1 ; Room ball state
-blDir       ds 1        
 
 ;BgColor    ds 1
 ;FgColor    ds 1
@@ -120,7 +40,6 @@ worldSX     ds 1 ; respawn X
 worldSY     ds 1 ; respawn Y
 worldSR     ds 1 ; respawn room
 roomId      ds 1
-roomSpr     ds 1
 roomTimer   ds 1 ; Shutter animation timer
 roomFlags   ds 1
 RF_LOAD_EV      = $80 ; 1000_0000 Force Load Room
@@ -190,7 +109,6 @@ itemFlags   ds 3
     ITEM POTION_BLUE,   2,$40
     ITEM POTION_RED,    2,$80
 
-mesgId      ds 1
 SeqFlags    ds 1
     ; 1xxx_xxxx New Sequence
     ; 11xx_xxxx Play Region Sequence
@@ -202,10 +120,97 @@ SfxFlags    ds 1
     ; 1xxx_xxxx New Sfx
 SfxCur      ds 1
 
+enType      ds 1
+enColor     ds 1
+
+EN_VARIABLES:
+EN_NPC_VARIABLES:
+enState     ds 1
+mesgId      ds 1
+; EnShopkeeper
+shopItem    ds 3
+shopDigit   ds 3
+; Gameover
+enInputDelay ds 1
+
+; EnemyCommon
+    ORG EN_VARIABLES + 1
+enHp        ds 1
+enStun      ds 1
+enBlockDir  ds 1
+EN_ENEMY_VARIABLES:
+    ORG EN_ENEMY_VARIABLES
+; Darknut
+    ORG EN_ENEMY_VARIABLES
+; Wallmaster
+enWallPhase ds 1 ; anim timer for phasing through wall
+enPX        ds 1 ; posX last frame, after collision check
+enPY        ds 1 ; posY last frame, after collision check
+    ORG EN_ENEMY_VARIABLES
+; Octorok
+enTimer     ds 1
+enMDX       ds 1
+enMDY       ds 1
+    ORG EN_ENEMY_VARIABLES
+; LikeLike
+enLLTimer   ds 1
+    ORG EN_VARIABLES + 1
+; ClearDrop
+;enState     ds 1
+CD_UPDATE_B     = $80
+CD_UPDATE_A     = $40
+CD_LAST_UPDATE  = $01 ; Stores previous frame's active entity
+cdBTimer    ds 1
+cdAType     ds 1 ; Equivalent to enType
+cdBType     ds 1 ; Correspond to GiItems, such that 1 = GiItem 0
+CD_ITEM_RAND = $FF
+cdAX        ds 1
+cdBX        ds 1
+cdAY        ds 1
+cdBY        ds 1
+    ORG EN_VARIABLES + 1
+enTestDir   ds 1
+enTestFX    ds 1
+enTestFY    ds 1
+enTestTimer ds 1
+
+
+    ORG EN_VARIABLES
+En0V        ds 10 ; Zero initialized enemy vars
+EN_0V_END:
+
+; Missile Vars
+mAType      ds 1
+mBType      ds 1
+mAx         ds 1
+mBx         ds 1
+mAxf        ds 1
+mBxf        ds 1
+mAy         ds 1
+mBy         ds 1
+mAyf        ds 1
+mByf        ds 1
+mADir       ds 1
+mBDir       ds 1
+mATimer     ds 1
+mBTimer     ds 1
+
+blType      ds 1 ;
+blTemp      ds 1 ; Room ball state
+blDir       ds 1        
+
 NUSIZ0_T    ds 1
 NUSIZ1_T    ds 1
 
 atan2Temp   ds 1
+
+; Kernel_World temps
+plDY        ds 1
+enDY        ds 1
+m0DY        ds 1
+m1DY        ds 1
+blDY        ds 1
+roomDY      ds 1
 
 ; Context Temp Vars
 Temp0       ds 1

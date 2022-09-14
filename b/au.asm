@@ -326,7 +326,7 @@ MsFinal0: SUBROUTINE
 MsFinal1: SUBROUTINE
     ldx SeqCur + 1
     bvc .skipSetDur
-    lda #$0C
+    lda #$0C ; ms_final1_dur
     clc
     adc Frame
     sta SeqTFrame + 1
@@ -341,8 +341,30 @@ MsFinal1: SUBROUTINE
     jmp SeqChan1
 
 MsTri0: SUBROUTINE
+    ldx SeqCur
+    bvc .skipSetDur
+    lda ms_tri0_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame
+.skipSetDur
+    lda ms_tri0_note,x
+    jmp SeqChan0
+    
 MsTri1: SUBROUTINE
-    rts
+    ldx SeqCur + 1
+    bvc .skipSetDur
+    lda ms_tri1_dur,x
+    clc
+    adc Frame
+    sta SeqTFrame + 1
+    cpx #23
+    bne .skipSetDur
+    lda #MS_PLAY_NONE
+    sta SeqFlags
+.skipSetDur
+    lda ms_tri1_note,x
+    jmp SeqChan1
     
 MsGI0: SUBROUTINE
     ldx SeqCur
@@ -390,28 +412,6 @@ MsOver1: SUBROUTINE
     sta SeqTFrame + 1
 .skipSetDur
     lda ms_over1_note,x
-    jmp SeqChan1
-
-MsMyst0: SUBROUTINE
-    ldx SeqCur
-    bvc .skipSetDur
-    lda ms_myst0_dur,x
-    clc
-    adc Frame
-    sta SeqTFrame
-.skipSetDur
-    lda ms_myst0_note,x
-    jmp SeqChan0
-    
-MsMyst1: SUBROUTINE
-    ldx SeqCur + 1
-    bvc .skipSetDur
-    lda ms_myst1_dur,x
-    clc
-    adc Frame
-    sta SeqTFrame + 1
-.skipSetDur
-    lda ms_myst1_note,x
     jmp SeqChan1
     
     ;align 8
