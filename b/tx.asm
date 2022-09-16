@@ -58,13 +58,13 @@ TextDisplayLoop:
     inc TextLoop
     inc TextLoop
     lda Frame
-    and #$01        ; a ==   x1
-    ora TextLoop    ; a ==   11
-    ora mesgId      ; a ==  111
+    and #$01        ; a ==   xxx1
+    ora TextLoop    ; a ==   xx11
+    ora mesgId      ; a == ..1111
     tax
     lda MesgAL,x
     sta TMesgPtr
-    lda MesgAH,x
+    lda MesgAL + $40,x ; MesgAH
     sta TMesgPtr+1
 
     clv ; Overflow stores text a/b

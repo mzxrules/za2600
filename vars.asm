@@ -77,7 +77,7 @@ plState2    ds 1
     ;        11 Flame
 plStun      ds 1
 plHealthMax ds 1
-plHealth    ds 1
+plHealth    ds 1 ; $0 exact for gameover, negative for gameover state is init
 plItemTimer ds 1
 plItemDir   ds 1
 itemRupees  ds 1
@@ -127,11 +127,12 @@ EN_VARIABLES:
 EN_NPC_VARIABLES:
 enState     ds 1
 mesgId      ds 1
+; Gameover
+enInputDelay ds 1
+    ORG EN_NPC_VARIABLES + 2
 ; EnShopkeeper
 shopItem    ds 3
 shopDigit   ds 3
-; Gameover
-enInputDelay ds 1
 
 ; EnemyCommon
     ORG EN_VARIABLES + 1
@@ -445,7 +446,7 @@ SLOT_RW1    = RAMSEG_F8 | 1
 SLOT_RW2    = RAMSEG_F8 | 2
 
 SLOT_TX_A   = RAMSEG_F0 | 10
-SLOT_TX_B   = RAMSEG_F4 | 11
+SLOT_TX_B   = RAMSEG_F4 | 20
 
 SLOT_EN_A   = RAMSEG_F0 | 12
 SLOT_EN_B   = RAMSEG_F4 | 13

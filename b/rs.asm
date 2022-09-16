@@ -640,7 +640,7 @@ RsItem: SUBROUTINE
     rts
 
 RsGameOver: SUBROUTINE
-    lda enInputDelay
+    lda enInputDelay ; replaced if init taken
     ldx plHealth
     bne .skipInit
     dec plHealth

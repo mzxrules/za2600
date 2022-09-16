@@ -199,10 +199,22 @@ left_text
     INCLUDE "gen/text_left.asm"
 right_text
     INCLUDE "gen/text_right.asm"
-    LOG_SIZE "text_chrset_size", left_text
-    INCLUDE "gen/mesg_data.asm"
+    LOG_SIZE "-BANK 10- Text Kernel", BANK_10
+
+; ****************************************
+; *               BANK 11                *
+; ****************************************
+
+    SEG Bank11
+    ORG $2C00
+    RORG $F400
+BANK_11
+
+    repeat 0x400
+    .byte $00
+    repend
  
-    LOG_SIZE "-BANK 10/11- Text Bank", BANK_10
+    LOG_SIZE "-BANK 11- FREE", BANK_11
 
 ; ****************************************
 ; *               BANK 12                *
@@ -293,3 +305,51 @@ BANK_18
     INCLUDE "b/sh.asm"
     INCLUDE "gen/ItemId.asm"
     LOG_SIZE "-BANK 18- Shops and Get Items", BANK_18
+
+; ****************************************
+; *               BANK 19                *
+; ****************************************
+
+    SEG Bank19
+    ORG $4C00
+    RORG $F000
+BANK_19
+
+    repeat 0x400
+    .byte $00
+    repend
+ 
+    LOG_SIZE "-BANK 19- FREE", BANK_19
+
+; ****************************************
+; *               BANK 20                *
+; ****************************************
+
+    SEG Bank20
+    ORG $5000
+    RORG $F400
+BANK_20
+
+MesgAL:
+    INCLUDE "gen/mesg_data_lut.asm"
+Mesg0:
+    INCLUDE "gen/mesg_data_0B.asm"
+    LOG_SIZE "-BANK 20/24- Mesg Data", BANK_20
+    
+    ORG $5400
+    RORG $F400
+    INCLUDE "gen/mesg_data_lut.asm"
+    INCLUDE "gen/mesg_data_0A.asm"
+    
+    ORG $5800
+    RORG $F400
+    INCLUDE "gen/mesg_data_lut.asm"
+    INCLUDE "gen/mesg_data_1B.asm"
+    
+    ORG $5C00
+    RORG $F400
+    INCLUDE "gen/mesg_data_lut.asm"
+    INCLUDE "gen/mesg_data_1A.asm"
+    
+    ORG $5FFF
+    .byte $00

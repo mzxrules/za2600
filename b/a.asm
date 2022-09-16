@@ -272,14 +272,15 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     lda roomFlags
     and #RF_CLEAR
     beq .endOpenShutterDoor
-; Check if any doors are shutter doors (bit pattern %10). To do this,
-; take the lsb and msb, bitwise AND them, then compare to the msb.  
-; If msb != result, then the bit pattern is %10 
+; Open all shutter doors (bit pattern %10)
+; lsb is used check if the msb should be preserved
+; only the %10 case results in a change in the msb
+; converting it to open (bit pattern %00)
     lda roomDoors
-    asl 
-    ora #%01010101 ; always keep low bit 
+    asl
+    ora #%01010101 ; keep low bit 
     and roomDoors
-    cmp roomDoors
+    cmp roomDoors ; if roomDoors changed, at least one shutter opened
     sta roomDoors
     beq .endOpenShutterDoor
     lda #SFX_BOMB
@@ -530,7 +531,7 @@ EnStairs:
     sta BANK_SLOT
     jmp EnStairs_
 
-EnShopkeeper
+EnShopkeeper:
     lda #SLOT_SH
     sta BANK_SLOT
     jmp EnShopkeeper_
