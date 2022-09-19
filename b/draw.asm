@@ -363,7 +363,7 @@ KERNEL_HUD_LOOP:
     LOG_SIZE "-HUD KERNEL-", KERNEL_HUD
     lda KernelId
     beq .defaultWorldKernel
-    lda #SLOT_TX_A
+    lda #SLOT_TX
     sta BANK_SLOT
     jmp TextKernel
     

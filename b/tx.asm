@@ -11,9 +11,6 @@ TextKernel: SUBROUTINE
     nop ; Scanlines 56 to 97 (3116) (TIM64T 48)
     lda #49
     sta TIM64T
-    
-    lda #SLOT_TX_B
-    sta BANK_SLOT
 ; start
     lda #6
     sta NUSIZ0
@@ -28,23 +25,13 @@ TextKernel: SUBROUTINE
 TextSetPosition: SUBROUTINE
     lda Frame
     and #1
-    beq .position_frame_1
-    lda #32
+    tay
+    lda Mul8+4,y ; #32/#40
     ldx #0
     jsr SetHorizPos
-    lda #48
-    ldx #1
+    lda Mul8+6,y ; #48/#56
+    inx
     jsr SetHorizPos
-    jmp .end_position
-
-.position_frame_1
-    lda #40
-    ldx #0
-    jsr SetHorizPos
-    lda #56
-    ldx #1
-    jsr SetHorizPos
-.end_position
 
     sta WSYNC ; To Scanline 59
     sta HMOVE
@@ -58,10 +45,12 @@ TextDisplayLoop:
     inc TextLoop
     inc TextLoop
     lda Frame
-    and #$01        ; a ==   x1
-    ora TextLoop    ; a ==   11
-    ora mesgId      ; a ==  111
-    tax
+    and #1
+    ora TextLoop
+    clc
+    adc #SLOT_MG
+    sta BANK_SLOT
+    ldx mesgId
     lda MesgAL,x
     sta TMesgPtr
     lda MesgAH,x
@@ -71,6 +60,7 @@ TextDisplayLoop:
     ldy #11
     lda Frame
     and #1
+    eor #1
     tax
     bne .loadTextLoop
     bit .SetVFlag

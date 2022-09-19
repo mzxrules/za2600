@@ -12,7 +12,7 @@ zelda_dep := \
   gen/atan2.asm \
   gen/world/b1world.asm \
   gen/RoomScript.asm \
-  gen/mesg_data.asm \
+  gen/mesg_data_0A.asm \
   gen/ms_header.asm \
   spr/spr_room_pf1.asm \
   spr/spr_room_pf2.asm \
@@ -51,7 +51,7 @@ gen/RoomScript.asm: mesg.py ptr.py
 gen/ms_header.asm: sound_common.py seq.py sound.py
 	python3 sound.py
     
-gen/mesg_data.asm: mesg.py text.py
+gen/mesg_data_0A.asm: mesg.py text.py
 	python3 text.py
 
 gen/world/b1world.asm: world/w0.bin world/w1.bin world.py

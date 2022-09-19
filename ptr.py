@@ -30,8 +30,6 @@ class GameEnum:
     def EnumFunc(self, x):
         if self.name == "Sfx":
             return 0x81 + x
-        elif self.name == "Text":
-            return x * 4
         return x
 
 tbl = [

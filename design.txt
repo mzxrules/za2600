@@ -191,18 +191,40 @@ The overworld seems to need more PF2 strips than PF1
 Due to the 2 char overlap, PF1 for full 4x2 room sprites tend to be all 0s
 Thus to better utilize the room sprite sheet, double the room tile budget to 16 bits, over 3 bytes
 
+Playfield sprites are 16 pixels tall (16 bytes), thus a pointer could be calculated as
+
+    SpritePtr + (spriteId * 16)
+
+We can pre-compute the mul 16 by storing the 4 least significant bits of the
+sprite index in the upper 4, and the most significant 1-2 bits in the lower
+1-2 bits. Thus, AND #$F0 gives the pointer's least significant byte, then
+AND #$01/#$03 + #>SpritePtr gives the most significant byte. 
+
            LSB!  MSB
-PF1 Left:  1111 0001
-PF1 Right: 1111 0001
-PF2        1111 0011
+PF1 Left:  1111 xxx1
+PF1 Right: 1111 xxx1
+PF2        1111 xx11
                       unpack algo
-Door Flags: 0000 1110  >> 1
-            0000 1110  << 4
-            0000 1100  << 1
+Door Flags: xxxx 111x  >> 1
+            xxxx 111x  << 4
+            xxxx 11xx  << 1
 
 
 == Door Flags ==
-Generic flags:
+These configure the openings (or lack of) for the room's NSEW exits.
+
+N xxxx xx11
+S xxxx 11xx
+E xx11 xxxx
+W 11xx xxxx
+
+Overworld flags:
+00 = full open
+01 = middle blocked
+10 = middle open
+11 = full wall
+
+Dungeon flags:
 00 = open
 01 = keydoor
 10 = shutter door 
@@ -225,8 +247,10 @@ The above is rather complex. Gonna scrap that for keydoors at least
 Instead, RAM banks 1-3 store room flags
 
 == Room Special ==
-Rooms with PF2 Tri3 enable RF_PF_IGNORE
-Dungeon rooms with RED or WATER colors enable RF_PF_AXIS
+RF_PF_IGNORE disables playfield collision within room center
+ Enabled in all rooms with PF2 Triforce design
+RF_PF_AXIS allows the player to walk over playfield with boots
+ Enabled in dungeon rooms with RED or WATER colors 
 
 set "p_up" "('p_up'+1*('key_pressed'=273o'key72'))"
 
@@ -420,7 +444,7 @@ delay of 4/6 cycles.
    Caves
 
    EX bits
-   $FC = Cave Type/Dialog
+   $FC = Cave Type/MesgId
    $03 = Variable
 
    Shop masks are overlapped

@@ -118,7 +118,7 @@ LoadRoom: SUBROUTINE
     ora #>BANK_PF
     sta Temp5
     txa
-    and #$0E
+    and #%1110 ; Unpack door flags
     asl
     asl
     asl
@@ -135,7 +135,7 @@ LoadRoom: SUBROUTINE
     ora #>BANK_PF
     sta Temp1
     txa
-    and #$0E
+    and #%1110 ; Unpack door flags
     lsr
     ora roomDoors
     sta roomDoors
@@ -143,7 +143,7 @@ LoadRoom: SUBROUTINE
     ; PF2
     lda WORLD_T_PF2,y
     tax
-; RF_PF_IGNORE test
+; Set RF_PF_IGNORE if triforce floor
     and #$F3
     cmp #$32
     bne .skipPFIgnore
@@ -159,7 +159,7 @@ LoadRoom: SUBROUTINE
     ora #>BANK_PF
     sta Temp3
     txa
-    and #$0C
+    and #%1100 ; Unpack door flags
     asl
     ora roomDoors
     sta roomDoors
@@ -196,13 +196,12 @@ LoadRoom: SUBROUTINE
     lda worldId
     beq .WorldRoomOrTop
     
-; sneak in opportunity to update roomDoors
+; Update roomDoors
     ldy roomId
     lda rRoomFlag,y
     and #%01010101
     sta Temp6
     asl
-    clc
     adc Temp6
     eor #$FF
     and roomDoors

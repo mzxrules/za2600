@@ -383,7 +383,8 @@ EnShopkeeper_: SUBROUTINE
     bit enState
     bmi .skipInit
     lda roomEX
-    and #$FC
+    lsr
+    lsr
     sta mesgId
     lda #2
     sta KernelId
@@ -469,7 +470,7 @@ EnShopkeeper_: SUBROUTINE
     ldy #2
     lda #1
     and Frame
-    beq .tensDigit
+    bne .tensDigit
 .onesDigit
     lda shopDigit,y
     and #$0F
