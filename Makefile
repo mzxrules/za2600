@@ -3,7 +3,8 @@
 output_bin := zelda.bin zelda_PAL60.bin audio.bin
 
 zelda_dep := \
-  zmacros.asm \
+  include/zmacros.asm \
+  include/vars.asm \
   en/bosscucco.asm \
   en/darknut.asm \
   en/likelike.asm \
@@ -25,7 +26,6 @@ zelda_dep := \
   b/au.asm \
   b/rs.asm \
   b/room.asm \
-  vars.asm \
   main.asm
 
 all: $(output_bin)
@@ -39,23 +39,23 @@ clean:
 	mkdir -p gen/world
 
 audio.bin: gen/ms_header.asm audio.asm
-	dasm audio.asm -f3 -oaudio.bin -saudio.sym -T1
+	dasm audio.asm -f3 -oaudio.bin -saudio.sym -T1 -Iinclude
 
 zelda.bin: $(zelda_dep)
-	dasm main.asm -f3 -ozelda_PAL60.bin -DPAL60
-	dasm main.asm -f3 -ozelda.bin -szelda.sym -T1
+	dasm main.asm -f3 -ozelda_PAL60.bin -DPAL60  -Iinclude
+	dasm main.asm -f3 -ozelda.bin -szelda.sym -T1  -Iinclude
     
-gen/RoomScript.asm: mesg.py ptr.py
-	python3 ptr.py
+gen/RoomScript.asm: py/mesg.py py/ptr.py
+	python3 py/ptr.py
     
-gen/ms_header.asm: sound_common.py seq.py sound.py
-	python3 sound.py
+gen/ms_header.asm: py/sound_common.py py/seq.py py/sound.py
+	python3 py/sound.py
     
-gen/mesg_data_0A.asm: mesg.py text.py
-	python3 text.py
+gen/mesg_data_0A.asm: py/mesg.py py/text.py
+	python3 py/text.py
 
-gen/world/b1world.asm: world/w0.bin world/w1.bin world.py
-	python3 world.py
+gen/world/b1world.asm: world/w0.bin world/w1.bin py/world.py
+	python3 py/world.py
 
-gen/atan2.asm: project.py
-	python3 project.py
+gen/atan2.asm: py/atan2.py
+	python3 py/atan2.py
