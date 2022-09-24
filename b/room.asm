@@ -24,7 +24,7 @@ RoomUpdate: SUBROUTINE
 .skipLoadRoom
     rts
 
-LoadSpecialRoom: SUBROUTINE
+LoadCaveRoom: SUBROUTINE
     ; Don't overwrite room vars
     lda #COLOR_CHOCOLATE
     sta wFgColor
@@ -79,9 +79,9 @@ LoadRoom: SUBROUTINE
     sta BANK_SLOT
     stx BANK_SLOT_RAM
     lda roomId
-    bpl .skipSpecialRoom
-    jmp LoadSpecialRoom
-.skipSpecialRoom
+    bpl .skipCaveRoom
+    jmp LoadCaveRoom
+.skipCaveRoom
     sta roomId
     tay
     lda WORLD_RS,y

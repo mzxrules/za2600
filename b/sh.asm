@@ -326,9 +326,9 @@ EnClearDropTypeA: SUBROUTINE
 EnStairs_:
     lda rFgColor
     sta enColor
-    lda #<SprE31
+    lda #<SprItem31
     sta enSpr
-    lda #>SprE31
+    lda #>SprItem31
     sta enSpr+1
 
     cpx plX

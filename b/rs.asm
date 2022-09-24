@@ -494,6 +494,56 @@ ContFin:
 RsNone:
 RsFairyFountain:
     rts
+
+RsMaze: SUBROUTINE
+    ldy roomEX
+    lda RsMaze_Type,y
+    tax
+    cmp worldSR
+    beq .skipInit
+    sta worldSR ; room
+    sty worldSY ; check state
+.skipInit
+    bit roomFlags ; check RF_LOAD_EV
+    bpl .rts
+    lda roomId
+    cmp RsMaze_Exit,y 
+    bne .checkPattern
+; exit maze without finding hidden area
+    sta worldSR
+.rts
+    rts
+.checkPattern
+    inc worldSY
+    inc worldSY
+    ldy worldSY
+    lda RsMaze_Pattern-2,y
+    cmp roomId
+    bne .failStep
+    cpy #8
+    bmi .roomLoop
+; maze complete
+    dec worldSR ; force reset
+; play some fanfare?
+    lda #SFX_SURF
+    sta SfxFlags
+    rts
+    
+.failStep
+    sta worldSR
+.roomLoop
+    stx roomId
+    rts
+
+RsMaze_Type: 
+    .byte ROOM_MAZE_1, ROOM_MAZE_2
+RsMaze_Exit
+    .byte <(ROOM_MAZE_1 - #$1), <(ROOM_MAZE_2 + #$1)
+RsMaze_Pattern:
+    .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 - #$10)
+    .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 - #$1)
+    .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 + #$10)
+    .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 - #$1)
     
 RsLeftCaveEnt: SUBROUTINE
     ldx #$14
@@ -618,6 +668,33 @@ EnableText: SUBROUTINE ; A = messageId
     lda #1
     sta KernelId
     rts
+
+RsShoreItem: SUBROUTINE
+    lda #RF_PF_AXIS
+    ora roomFlags
+    sta roomFlags
+    lda #44
+    cmp plX
+    bmi .skipWallback
+    sta plX
+.skipWallback
+    ; check if item should appear
+    lda enType
+    lda enType
+    cmp #EN_CLEAR_DROP
+    bne .rts
+    ldx roomId
+    lda rRoomFlag,x
+    bmi .rts ;.NoLoad
+
+    lda #$6C
+    sta cdAX
+    lda #$2C
+    sta cdAY
+    lda #EN_ITEM
+    sta cdAType
+.rts
+    rts
     
 RsItem: SUBROUTINE
     lda enType
@@ -634,7 +711,7 @@ RsItem: SUBROUTINE
     lda #EN_ITEM
     sta cdAType
 .NoLoad
-    lda #0
+    lda #RS_NONE
     sta roomRS
 .rts
     rts

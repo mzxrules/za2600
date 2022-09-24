@@ -530,3 +530,7 @@ Atan2 table lookup:
 
     if x == 0, inc y by $100 ; Solves Atan2 being undefined for 0/0
     else if y == 0, inc x by $100
+
+RsMaze
+ roomEX 0 is N,N,N,N to Level 5
+ roomEX 1 is N,E,S,E to graveyard

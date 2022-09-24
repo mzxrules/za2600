@@ -374,7 +374,7 @@ Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
     
 WORLD_ENT: ; Initial room spawns for worlds 0-9
-    .byte $77, $73, $79, $00, $00, $00, $73, $00, $00, $7E
+    .byte $77, $73, $79, $00, $71, $00, $73, $00, $00, $7E
 
 Spr8WorldOff:
     .byte (ROOM_HEIGHT+8), (TEXT_ROOM_HEIGHT+8), (SHOP_ROOM_HEIGHT+8)
@@ -648,20 +648,20 @@ PosWorldObjects_X: SUBROUTINE
     sec            ; 2
 .Loop
     sta WSYNC      ; 3
-    lda plX,x      ; 4
+    lda plX,x      ; 4  4 - Offsets by 12 pixels
 DivideLoop
-    sbc #15        ; 2  2 - each time thru this loop takes 5 cycles, which is
-    bcs DivideLoop ; 2  4 - the same amount of time it takes to draw 15 pixels
-    eor #7         ; 2  6 - The EOR & ASL statements convert the remainder
-    asl            ; 2  8 - of position/15 to the value needed to fine tune
-    asl            ; 2 10 - the X position
-    asl            ; 2 12
-    asl            ; 2 14
-    sta.wx HMP0,X  ; 5 19 - store fine tuning of X
-    sta RESP0,X    ; 4 23 - set coarse X position of object
-; scn cycle 67
-    dex ; 69
-    bpl .Loop ; 72
+    sbc #15        ; 2  6 - each time thru this loop takes 5 cycles, which is
+    bcs DivideLoop ; 2  8 - the same amount of time it takes to draw 15 pixels
+    eor #7         ; 2 10 - The EOR & ASL statements convert the remainder
+    asl            ; 2 12 - of position/15 to the value needed to fine tune
+    asl            ; 2 14 - the X position
+    asl            ; 2 16
+    asl            ; 2 18
+    sta.wx HMP0,X  ; 5 23 - store fine tuning of X
+    sta RESP0,X    ; 4 27 - set coarse X position of object
+;                  ;   67, which is max supported scan cycle 
+    dex            ; 2 69
+    bpl .Loop      ; 3 72
     
     sta WSYNC
     sta HMOVE

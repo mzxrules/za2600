@@ -17,32 +17,32 @@ SprMap1:
     .byte $00 ; |........|
     .byte $00 ; |........|
 SprMap2:
-    .byte $7E ; |.XXXXXX.|
-    .byte $40 ; |.X......|
-    .byte $40 ; |.X......|
-    .byte $7E ; |.XXXXXX.|
-    .byte $02 ; |......X.|
-    .byte $02 ; |......X.|
-    .byte $7E ; |.XXXXXX.|
-    .byte $00 ; |........|
+    .byte $06 ; |.....XX.|
+    .byte $0F ; |....XXXX|
+    .byte $03 ; |......XX|
+    .byte $03 ; |......XX|
+    .byte $03 ; |......XX|
+    .byte $03 ; |......XX|
+    .byte $03 ; |......XX|
+    .byte $06 ; |.....XX.|
 SprMap3:
-    .byte $7E ; |.XXXXXX.|
-    .byte $02 ; |......X.|
-    .byte $02 ; |......X.|
-    .byte $7E ; |.XXXXXX.|
-    .byte $02 ; |......X.|
-    .byte $02 ; |......X.|
-    .byte $7E ; |.XXXXXX.|
+    .byte $18 ; |...XX...|
+    .byte $50 ; |.X.X....|
+    .byte $7C ; |.XXXXX..|
+    .byte $7C ; |.XXXXX..|
+    .byte $14 ; |...X.X..|
+    .byte $30 ; |..XX....|
+    .byte $00 ; |........|
     .byte $00 ; |........|
 SprMap4:
-    .byte $02 ; |......X.|
-    .byte $02 ; |......X.|
-    .byte $02 ; |......X.|
-    .byte $7E ; |.XXXXXX.|
-    .byte $42 ; |.X....X.|
-    .byte $42 ; |.X....X.|
-    .byte $42 ; |.X....X.|
-    .byte $00 ; |........|
+    .byte $C0 ; |XX......|
+    .byte $60 ; |.XX.....|
+    .byte $C0 ; |XX......|
+    .byte $80 ; |X.......|
+    .byte $E0 ; |XXX.....|
+    .byte $C0 ; |XX......|
+    .byte $B0 ; |X.XX....|
+    .byte $F0 ; |XXXX....|
 SprMap5:
     .byte $7E ; |.XXXXXX.|
     .byte $02 ; |......X.|

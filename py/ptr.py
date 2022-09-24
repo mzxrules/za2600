@@ -75,6 +75,8 @@ tbl = [
         "RsCave",
         "RsLeftCaveEnt",
         "RsRightCaveEnt",
+        "RsMaze",
+        "RsShoreItem",
         "RsGameOver"
     ]),
     GameEnum("Ball", "Bl",

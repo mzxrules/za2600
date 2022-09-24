@@ -98,7 +98,7 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
+RsDiamondBlockStairs
 zz0
 RsItem
 GiKey
@@ -194,8 +194,8 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
-zz0
+RsItem
+GiRupee
 RsNone
 zz0
 RsNone
@@ -222,9 +222,9 @@ RsNone
 zz0
 RsNone
 zz0
-RsNone
-zz0
-RsNone
+RsItem
+GiKey
+RsDungExit
 zz0
 RsItem
 GiKey
