@@ -1,14 +1,11 @@
-set "commands" to "(40000)"
-set "fread_delimiter" to 10
-set "fwrite_delimiter" to 10
-
+. "build hexadecimal lookup table"
 loop start
 set "$hexStr.&loopcount&" to "('loopcount'+48)"
 loop for 9
 inc "$hexStr" by "ABCDEF"
 
 : "q"
-set "CHAR" to 256
+set "CHAR" to "('SS_ITEM')"
 loop start
 inc "$" by "SprItem&loopcount&:\n"
 set "sp&sp&" to 8
@@ -19,7 +16,7 @@ loop for 31
 set "$sht" to "spr/spr_item.asm"
 goto "#dumpsht"
 
-set "CHAR" to 48
+set "CHAR" to "('SS_N0')"
 loop start
 inc "$" by "SprN&loopcount&:\n"
 set "sp&sp&" to 8
@@ -30,7 +27,7 @@ loop for 15
 set "$sht" to "spr/spr_num.asm"
 goto "#dumpsht"
 
-set "CHAR" to 22
+set "CHAR" to "('SS_MAP')"
 loop start
 inc "$" by "SprMap&loopcount&:\n"
 set "sp&sp&" to 8
@@ -42,7 +39,7 @@ set "$sht" to "spr/spr_map.asm"
 goto "#dumpsht"
 
 
-set "CHAR" to 64
+set "CHAR" to "('SS_PL')"
 loop start
 inc "$" by "SprP&loopcount&:\n"
 set "sp&sp&" to 8
@@ -63,7 +60,7 @@ loop for 2
 set "$sht" to "spr/spr_sh.asm"
 goto "#dumpsht"
 
-set "CHAR" to 96
+set "CHAR" to "('SS_EN')"
 loop start
 inc "$" by "SprE&loopcount&:\n"
 set "$s&s&" to "SprE&loopcount&"
@@ -81,12 +78,12 @@ set "$pf2" to ""
 . "PF1 Sheet"
 loop start
 set "mirror" 0
-set "CHAR" ('loopcount'+128+32)
+set "CHAR" ('loopcount'+'SS_ROOM'+32)
 inc "$pf1" "PF1Room('loopcount'):\n"
 set "sp&sp&" 4
 goto "#dumpchr"
 inc "$pf1" "$dumpchr"
-set "CHAR" ('loopcount'+128)
+set "CHAR" ('loopcount'+'SS_ROOM')
 set "sp&sp&" 14
 set "yl_" 2
 goto "#dumpchr"
@@ -96,12 +93,12 @@ loop 31
 . "PF2 Sheet"
 loop start
 set "mirror" 1
-set "CHAR" ('loopcount'+128+64+32)
+set "CHAR" ('loopcount'+'SS_ROOM'+64+32)
 inc "$pf2" "PF2Room('loopcount'):\n"
 set "sp&sp&" 4
 goto "#dumpchr"
 inc "$pf2" "$dumpchr"
-set "CHAR" ('loopcount'+128+64)
+set "CHAR" ('loopcount'+'SS_ROOM'+64)
 set "sp&sp&" 14
 set "yl_" 2
 goto "#dumpchr"

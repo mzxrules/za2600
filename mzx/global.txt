@@ -1,0 +1,17 @@
+set "commands" to "(8000000)"
+set "fread_delimiter" to 10
+set "fwrite_delimiter" to 10
+
+. "sprite sheet allocations
+set "SS_MAP" (22)
+set "SS_N0" (48)
+set "SS_PL" (64)
+set "SS_EN" (96)
+set "SS_ROOM" (256)
+set "SS_ITEM" (224)
+set "SS_UI" (256*3)
+
+set "SPR_PF1" (256*2)
+set "SPR_PF2" (256*2+128)
+set "SPR_UI" (256*3)
+set "SPR_WORK" (256*6)
