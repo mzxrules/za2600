@@ -257,17 +257,22 @@ LoadRoom: SUBROUTINE
     
 UpdateWorldDoors: SUBROUTINE
     lda roomDoors
-    and #3
+    asl
+    and #6
     tax
     ldy #1
+    lda roomWA
+    and #$01
+    beq .Up
+    inx
 .Up
-    lda WorldDoorPF2,x
+    lda WorldDoorPF2Up,x
     ora rPF2Room+ROOM_PX_HEIGHT-2,y
     sta wPF2Room+ROOM_PX_HEIGHT-2,y
-    lda WorldDoorPF1Up,x
+    lda WorldDoorPF1UpL,x
     ora rPF1RoomL+ROOM_PX_HEIGHT-2,y
     sta wPF1RoomL+ROOM_PX_HEIGHT-2,y
-    lda WorldDoorPF1Up,x
+    lda WorldDoorPF1UpR,x
     ora rPF1RoomR+ROOM_PX_HEIGHT-2,y
     sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
     dey
@@ -275,19 +280,22 @@ UpdateWorldDoors: SUBROUTINE
     
     lda roomDoors
     lsr
-    lsr
     pha
-    and #3
+    and #6
     tax
     ldy #1
+    lda roomWA
+    and #$04
+    beq .Down
+    inx
 .Down
-    lda WorldDoorPF2,x
+    lda WorldDoorPF2Up,x
     ora rPF2Room,y
     sta wPF2Room,y
-    lda WorldDoorPF1Up,x
+    lda WorldDoorPF1UpL,x
     ora rPF1RoomL,y
     sta wPF1RoomL,y
-    lda WorldDoorPF1Up,x
+    lda WorldDoorPF1UpR,x
     ora rPF1RoomR,y
     sta wPF1RoomR,y
     dey
@@ -298,26 +306,40 @@ UpdateWorldDoors: SUBROUTINE
     lsr
     lsr
     tay
-    and #3
+    and #6
     tax
+    lda roomWA
+    and #$10
+    beq .Right
+    inx
+.Right
     lda WorldDoorPF1A,x
     sta Temp1
     lda WorldDoorPF1B,x
     sta Temp3
+    lda WorldDoorPF1C,X
+    sta Temp5
     tya
     lsr
     lsr
-    and #3
+    and #6
     tax
+    lda roomWA
+    and #$40
+    beq .Left
+    inx
+.Left
     lda WorldDoorPF1A,x
     sta Temp0
     lda WorldDoorPF1B,x
     sta Temp2
+    lda WorldDoorPF1C,x
+    sta Temp4
     
     ldy #5
 .LeftRightWorldDoor
     lda rPF1RoomL+2,y
-    ora Temp0
+    ora Temp4
     sta wPF1RoomL+2,y
     
     lda rPF1RoomL+12,y
@@ -329,7 +351,7 @@ UpdateWorldDoors: SUBROUTINE
     sta wPF1RoomR+2,y
     
     lda rPF1RoomR+12,y
-    ora Temp1
+    ora Temp5
     sta wPF1RoomR+12,y
     dey
     bpl .LeftRightWorldDoor
@@ -487,18 +509,32 @@ KeydoorFlagB:
 KeydoorRoomOff:
     .byte $10, $F0, $01, $FF
     
-    align 4
-WorldDoorPF1Up:
-    .byte $C0, $C0, $FF, $FF
+    align 8
+    ; wall types:
+    ; none, central long, left-right long, full
+    ; right long, left long, left-right short, invalid
+
+WorldDoorPF2Up:
+    .byte $00, $FF, $3F, $FF, $FF, $FF, $00, $AB
+
+WorldDoorPF1UpL:
+    .byte $C0, $C0, $FF, $FF, $C0, $FF, $FF, $AB
+
+WorldDoorPF1UpR:
+    .byte $C0, $C0, $FF, $FF, $FF, $C0, $FF, $AB
     
 WorldDoorPF1A:
-    .byte $00, $00, $C0, $C0
+    ; Top
+    .byte $00, $00, $C0, $C0, $00, $C0, $AB, $AB
     
 WorldDoorPF1B:
-    .byte $00, $C0, $00, $C0
+    ; Mid
+    .byte $00, $C0, $00, $C0, $C0, $C0, $AB, $AB
+
+WorldDoorPF1C:
+    ; Bottom
+    .byte $00, $00, $C0, $C0, $C0, $00, $AB, $AB
     
-WorldDoorPF2:
-    .byte $00, $FF, $3F, $FF
     
 WorldColors:
     /* 00 */ .byte COLOR_BLACK

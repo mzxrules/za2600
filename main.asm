@@ -105,16 +105,13 @@ MINIMAP
 
 BANK_6
     INCLUDE "gen/world/b0world.asm"
+    INCBIN "gen/world/b0wa.bin"
     INCBIN "world/w0co.bin"
     INCBIN "world/w0rs.bin"
     INCBIN "world/w0ex.bin"
     
     repeat 0x80
     .byte $01
-    repend
-
-    repeat 0x80
-    .byte $00
     repend
     LOG_SIZE "-BANK 6- World 0", BANK_6
     
@@ -127,6 +124,7 @@ BANK_6
 
 BANK_7
     INCLUDE "gen/world/b1world.asm"
+    INCBIN "gen/world/b1wa.bin"
     INCBIN "world/w1co.bin"
     INCBIN "world/w1rs.bin"
     INCBIN "world/w1ex.bin"
@@ -135,10 +133,6 @@ BANK_7
     .byte $01
     repend
 
-    repeat 0x80
-    .byte $00
-    repend
-    
     LOG_SIZE "-BANK 7- Dungeon 1", BANK_7
     
 ; ****************************************
@@ -150,16 +144,13 @@ BANK_7
 
 BANK_8
     INCLUDE "gen/world/b2world.asm"
+    INCBIN "gen/world/b2wa.bin"
     INCBIN "world/w2co.bin"
     INCBIN "world/w2rs.bin"
     INCBIN "world/w2ex.bin"
     
     repeat 0x80
     .byte $01
-    repend
-
-    repeat 0x80
-    .byte $00
     repend
 
     LOG_SIZE "-BANK 8- Dungeon 2", BANK_8

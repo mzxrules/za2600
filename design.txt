@@ -189,7 +189,8 @@ if last button == not pressed && button == pressed && ItemTimer == 0
 == World Tiles ==
 The overworld seems to need more PF2 strips than PF1
 Due to the 2 char overlap, PF1 for full 4x2 room sprites tend to be all 0s
-Thus to better utilize the room sprite sheet, double the room tile budget to 16 bits, over 3 bytes
+Thus to better utilize the room sprite sheet, double the room tile budget to
+16 bits, over 3 bytes
 
 Playfield sprites are 16 pixels tall (16 bytes), thus a pointer could be calculated as
 
@@ -209,32 +210,59 @@ Door Flags: xxxx 111x  >> 1
             xxxx 111x  << 4
             xxxx 11xx  << 1
 
+== Door and Wall Flags ==
+These configure the openings and behaviors for the room's NSEW exits.
 
-== Door Flags ==
-These configure the openings (or lack of) for the room's NSEW exits.
+The level editor and game implementations differ slightly.
+In the level editor, the door flags for a world bank are split into NSEW arrays,
+with each byte representing one room's door flags for that particular wall.
+This value is a 3 bit maximum enumeration.
+
+When building the game, the enumeration is split into two bytes:
+    roomDoors (door flags), which is packed with PF data
+    roomWA
+
+both bytes have the same general allocation shown below:
 
 N xxxx xx11
 S xxxx 11xx
 E xx11 xxxx
 W 11xx xxxx
 
-Overworld flags:
-00 = full open
-01 = middle blocked
-10 = middle open
-11 = full wall
-
-Dungeon flags:
-00 = open
-01 = keydoor
-10 = shutter door 
-11 = wall
-
   Zero Capture Shift Masks
 N 0xFC  0x03     0
 S 0xF3  0x0C     2    
 E 0xCF  0x30     4
 W 0x3F  0xC0     6
+
+The behavior of door and wall flags depends on whether the current world bank
+is an overworld or a dungeon. 
+
+Overworld flags:
+
+E   D   W   Wall Type
+0  00   0 = None
+1  00   1 = Middle
+2  01   0 = Wall with 4 pixel centered opening
+3  01   1 = Full Wall
+4  10   0 = Wall with top or left open
+5  10   1 = Wall with bottom or right open
+6  11   0 = Wall with 16 pixel centered open (NS only)
+7  11   1 = Unused
+
+Dungeon flags:
+The door flags have been optimized for dungeons, and directly correspond to how
+the wall openings will be drawn.
+
+E   W   D
+0  00  00 = open
+1  00  01 = keydoor
+2  00  10 = shutter door 
+3  00  11 = wall
+4  10  11 = bombable wall
+5  11  11 = false wall
+
+== Legacy keydoor id system considered during 4k days ===
 
 Zero mask used to ID keydoor unlocked flag
 Unlock flag lookup table:

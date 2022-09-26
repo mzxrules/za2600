@@ -2,12 +2,57 @@
 from asmgen import *
 
 files = [
+    'world/w{}door0.bin',
+    'world/w{}door1.bin',
+    'world/w{}door2.bin',
+    'world/w{}door3.bin',
     'world/w{}.bin',
-    'world/w{}door.bin',
-    'world/w{}co.bin'
 ]
 
 mdata = []
+
+def GetDoorWallWorld(c):
+    dw = [
+        (0b00, 0b0),
+        (0b00, 0b1),
+        (0b01, 0b0),
+        (0b01, 0b1),
+        (0b10, 0b0),
+        (0b10, 0b1),
+        (0b11, 0b0),
+        (0b11, 0b1),
+    ]
+    return dw[c & 7]
+
+def GetDoorWallDung(c):
+    d = c & 3
+    w = 0
+    if c >= 3:
+        d = 3
+    if c == 4:
+        w = 0b10
+    if c == 5:
+        w = 0b11
+    return d, w
+
+def GetPackedDoorWallData(bankId, data):
+    doors = []
+    walls = []
+    
+    for value in zip(*data): # n, s, e, w
+        door = 0
+        wall = 0
+
+        for i, c in enumerate(value):
+            if bankId == 0:
+                d, w = GetDoorWallWorld(c)
+            else:
+                d, w = GetDoorWallDung(c)
+            door |= d << (i * 2)
+            wall |= w << (i * 2)
+        doors.append(door)
+        walls.append(wall)
+    return doors, walls
 
 def PackRoomAndDoorData(bankId, level):
     def PackStep(room, doors, type):
@@ -32,9 +77,8 @@ def PackRoomAndDoorData(bankId, level):
         room &= roomMask[type]
         return room | doors
         
-    world = level[0]
-    doors = level[1]
-    
+    world = level[4]
+    doors, walls = GetPackedDoorWallData(bankId, level[0:4])
     # stripify and reorder world data
     worldstrip = [
         [],
@@ -46,21 +90,25 @@ def PackRoomAndDoorData(bankId, level):
             worldstrip[j].append(PackStep(world[i*3+j], doors[i], j))
         
     names = ["PF1L", "PF1R", "PF2"]
-    with open("gen/world/b{}world.asm".format(bankId), "w") as file:
+    with open(f"gen/world/b{bankId}world.asm", "w") as file:
         for i in range(3):
             file.write("; {}\n".format(names[i]))
             file.write(ToAsm(worldstrip[i],16))
+    with open(f"gen/world/b{bankId}wa.bin", "wb") as file:
+        file.write(bytes(walls))
+def Main():
+    for worldId in range(3):
+        level = []
+        for i, filename in enumerate(files):
+            with open(filename.format(worldId), "rb") as file:
+                level.append(list(file.read()))
+        mdata.append(level)
 
-for worldId in range(3):
-    level = []
-    for i in range(3):
-        with open(files[i].format(worldId), "rb") as file:
-            level.append(list(file.read()))
-    mdata.append(level)    
 
+    PackRoomAndDoorData(0, mdata[0])
+    PackRoomAndDoorData(1, mdata[1])
+    PackRoomAndDoorData(2, mdata[2])
 
-PackRoomAndDoorData(0, mdata[0])
-PackRoomAndDoorData(1, mdata[1])
-PackRoomAndDoorData(2, mdata[2])
+Main()
 
 print("WORLD DATA REBUILT")

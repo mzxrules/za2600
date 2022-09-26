@@ -283,11 +283,11 @@ TextReg     ds 12
 WORLD_T_PF1L    ds 128
 WORLD_T_PF1R    ds 128
 WORLD_T_PF2     ds 128
+WORLD_WA        ds 128 ; Extended wall properties
 WORLD_COLOR     ds 128
 WORLD_RS        ds 128 ; Room Script
 WORLD_EX        ds 128 ; Extra Data (Exits, Items)
 WORLD_EN        ds 128 ; Enemy Encounter
-WORLD_WA        ds 128 ; Bombable walls
 
 ; Ram Bank 0
     SEG.U VARS_RAM
