@@ -189,7 +189,7 @@ zz0
 RsNone
 zz0
 RsShoreItem
-zz0
+zz7
 RsNone
 zz0
 RsMaze

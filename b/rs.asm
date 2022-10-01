@@ -680,7 +680,6 @@ RsShoreItem: SUBROUTINE
 .skipWallback
     ; check if item should appear
     lda enType
-    lda enType
     cmp #EN_CLEAR_DROP
     bne .rts
     ldx roomId

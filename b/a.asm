@@ -374,7 +374,7 @@ Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
     
 WORLD_ENT: ; Initial room spawns for worlds 0-9
-    .byte $77, $73, $79, $00, $71, $00, $73, $00, $00, $7E
+    .byte $77, $73, $79, $00, $71, $76, $73, $00, $00, $7E
 
 Spr8WorldOff:
     .byte (ROOM_HEIGHT+8), (TEXT_ROOM_HEIGHT+8), (SHOP_ROOM_HEIGHT+8)
