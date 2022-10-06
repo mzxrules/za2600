@@ -70,7 +70,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     beq .skipRoomChecks
     lda #SLOT_ROOM
     sta BANK_SLOT
-    jsr KeydoorCheck
+    jsr DoorCheck
     jsr UpdateDoors
 .skipRoomChecks
 
@@ -241,12 +241,9 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     jsr MiSystem
     
 .BallScript:
-    lda #SLOT_EN_A
+    lda #SLOT_PU_A
     sta BANK_SLOT
-    lda #SLOT_EN_B
-    sta BANK_SLOT
-    ldx blType
-    jsr BallDel
+    jsr BlSystem
     
 ; Update Room Flags
     lda #RF_NO_ENCLEAR
@@ -302,6 +299,10 @@ OVERSCAN_WAIT:
     sta WSYNC
     lda INTIM
     bne OVERSCAN_WAIT
+    sta WSYNC
+    sta WSYNC
+    sta WSYNC
+    sta WSYNC
 
     jmp VERTICAL_SYNC
 
@@ -374,7 +375,7 @@ Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
     
 WORLD_ENT: ; Initial room spawns for worlds 0-9
-    .byte $77, $73, $79, $00, $71, $76, $73, $00, $00, $7E
+    .byte $77, $73, $7D, $7C, $71, $76, $79, $00, $00, $7E
 
 Spr8WorldOff:
     .byte (ROOM_HEIGHT+8), (TEXT_ROOM_HEIGHT+8), (SHOP_ROOM_HEIGHT+8)
@@ -461,41 +462,41 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     rts
 
 GiItemColors:
-    .byte COLOR_BLACK           ; GiNone
-    .byte COLOR_DARKNUT_RED     ; GiRecoverHeart
-    .byte COLOR_DARKNUT_RED     ; GiFairy
-    .byte COLOR_DARKNUT_BLUE    ; GiBomb
+    .byte COLOR_BLACK       ; GiNone
+    .byte COLOR_EN_RED      ; GiRecoverHeart
+    .byte COLOR_EN_RED      ; GiFairy
+    .byte COLOR_EN_BLUE     ; GiBomb
 
-    .byte COLOR_TRIFORCE        ; GiRupee
-    .byte COLOR_DARKNUT_BLUE    ; GiRupee5
-    .byte COLOR_TRIFORCE        ; GiTriforce
-    .byte COLOR_DARKNUT_RED     ; GiHeart
+    .byte COLOR_EN_TRIFORCE ; GiRupee
+    .byte COLOR_EN_BLUE     ; GiRupee5
+    .byte COLOR_EN_TRIFORCE ; GiTriforce
+    .byte COLOR_EN_RED      ; GiHeart
 
-    .byte COLOR_TRIFORCE        ; GiKey
-    .byte COLOR_TRIFORCE        ; GiMasterKey
-    .byte COLOR_GRAY            ; GiSword2
-    .byte COLOR_WHITE           ; GiSword3
+    .byte COLOR_EN_TRIFORCE ; GiKey
+    .byte COLOR_EN_TRIFORCE ; GiMasterKey
+    .byte COLOR_GRAY        ; GiSword2
+    .byte COLOR_WHITE       ; GiSword3
 
-    .byte COLOR_CHOCOLATE       ; GiBow
-    .byte COLOR_CHOCOLATE       ; GiRaft
-    .byte COLOR_WHITE           ; GiBoots
-    .byte COLOR_TRIFORCE        ; GiFlute
+    .byte COLOR_EN_BROWN    ; GiBow
+    .byte COLOR_EN_BROWN    ; GiRaft
+    .byte COLOR_WHITE       ; GiBoots
+    .byte COLOR_EN_TRIFORCE ; GiFlute
 
-    .byte COLOR_DARKNUT_RED     ; GiFireMagic
-    .byte COLOR_DARKNUT_RED     ; GiBracelet
-    .byte COLOR_DARKNUT_RED     ; GiMeat
-    .byte COLOR_DARKNUT_BLUE    ; GiNote
+    .byte COLOR_EN_RED      ; GiFireMagic
+    .byte COLOR_EN_RED      ; GiBracelet
+    .byte COLOR_EN_RED      ; GiMeat
+    .byte COLOR_EN_BLUE     ; GiNote
     
-    .byte COLOR_TRIFORCE        ; GiArrows
-    .byte COLOR_WHITE           ; GiArrowsSilver
-    .byte COLOR_DARKNUT_BLUE    ; GiRingBlue
-    .byte COLOR_DARKNUT_RED     ; GiRingRed
-    .byte COLOR_DARKNUT_BLUE    ; GiPotionBlue
-    .byte COLOR_DARKNUT_RED     ; GiPotionRed
-    .byte COLOR_DARKNUT_BLUE    ; GiCandleBlue
-    .byte COLOR_DARKNUT_RED     ; GiCandleRed
+    .byte COLOR_EN_TRIFORCE ; GiArrows
+    .byte COLOR_WHITE       ; GiArrowsSilver
+    .byte COLOR_EN_BLUE     ; GiRingBlue
+    .byte COLOR_EN_RED      ; GiRingRed
+    .byte COLOR_EN_BLUE     ; GiPotionBlue
+    .byte COLOR_EN_RED      ; GiPotionRed
+    .byte COLOR_EN_BLUE     ; GiCandleBlue
+    .byte COLOR_EN_RED      ; GiCandleRed
 
-    .byte COLOR_TRIFORCE        ; GiMap
+    .byte COLOR_EN_TRIFORCE ; GiMap
         
 EnItem:; SUBROUTINE
     ldy roomEX
@@ -509,7 +510,7 @@ EnItemDraw: SUBROUTINE ; y == itemDraw
     lda Frame
     and #$10
     beq .skipItemColor
-    ldx #COLOR_LIGHT_BLUE
+    ldx #COLOR_EN_LIGHT_BLUE
 .skipItemColor
     stx enColor
     tya

@@ -153,60 +153,6 @@ EnSpectacleOpen: SUBROUTINE
     lda #(30*8)
     sta enSpr
     rts
-
-
-BlNone:
-    lda #$80
-    sta blY
-    rts
-    
-BlR: SUBROUTINE
-    inc blX
-    rts
-BlL:
-    dec blX
-    rts
-BlU:
-    inc blY
-    rts
-BlD:
-    dec blY
-    rts
-
-BlPushBlock: SUBROUTINE
-    ldx roomENCount
-    bne .rts
-    ldx blTemp
-    inx
-    cpx #16+12 ; full move
-    bpl .pushDone
-    stx blTemp
-    cpx #12
-    bmi .pushCheck
-    lda Frame
-    and #1
-    beq .rts
-    ldx blDir
-    inx
-    jmp BallDel
-
-.pushCheck
-    ; set direction
-    lda plDir
-    sta blDir
-    
-    ldy #0
-    bit CXP0FB
-    bvs .rts
-    sty blTemp
-    rts
-    
-.pushDone
-    lda roomFlags
-    ora #RF_CLEAR
-    sta roomFlags
-.rts
-    rts
     
     
 EnSysEncounter:
@@ -368,13 +314,6 @@ EnMoveDirDel:
     pha
     rts
     
-BallDel:
-    lda BallH,x
-    pha
-    lda BallL,x
-    pha
-    rts
-    
 ClearDropSystem: SUBROUTINE
     lda enType
     bne .rts
@@ -400,7 +339,7 @@ ClearDropSystem: SUBROUTINE
 EnTestMissile: SUBROUTINE
     lda #0
     sta KernelId
-    lda #COLOR_DARKNUT_RED
+    lda #COLOR_EN_RED
     sta enColor
     lda #<SprS0
     sta enSpr
@@ -487,7 +426,7 @@ EnTestMissile: SUBROUTINE
     rts
 
 EnOldMan:
-    lda #COLOR_DARKNUT_RED
+    lda #COLOR_EN_RED
     sta enColor
     lda #<SprS0
     sta enSpr

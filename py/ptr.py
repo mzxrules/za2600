@@ -189,7 +189,8 @@ tbl = [
         "SfxPlHeal",
         "SfxPlDamage",
         "SfxSurf",
-        "SfxArrow"
+        "SfxArrow",
+        "SfxSolve"
     ]),
     GameEnum("PlMoveDir", "PlDir",
     genEditorBindings=False,

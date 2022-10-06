@@ -1,0 +1,11 @@
+color c00
+: "q"
+wait for 1
+loop start
+put c00 CustomFloor p00 at "('thisx'+1+'loopcount')" "thisy"
+loop for 39
+
+loop start
+put c0f CustomFloor "$.&loopcount&" at "('thisx'+1+'loopcount')" "thisy"
+loop for ('$.length'-1)
+goto "q"

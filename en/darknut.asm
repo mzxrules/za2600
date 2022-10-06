@@ -21,7 +21,7 @@ EnDarknutMain:
     sta enStun
     asl
     asl
-    adc #COLOR_DARKNUT_RED
+    adc #COLOR_EN_RED
     sta enColor
     lda #$F0
     jsr EnSetBlockedDir

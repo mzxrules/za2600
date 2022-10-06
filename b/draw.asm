@@ -213,7 +213,7 @@ POSITION_SPRITES:
     dey
     bpl .hpBarLoop
 
-    lda #COLOR_PLAYER_02
+    lda #COLOR_HEALTH
     sta COLUPF
 
 ;===================================================

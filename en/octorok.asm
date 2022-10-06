@@ -10,7 +10,7 @@ EnOctorok: SUBROUTINE
     sta enDir
     lda #1
     sta enHp
-    lda #COLOR_OCTOROK_BLUE
+    lda #COLOR_EN_ROK_BLUE
     sta enColor
     lda #EN_OCTOROK_MAIN
     sta enType

@@ -1,0 +1,102 @@
+set mzx_speed 2
+wait 1
+set "$color_flash0" "COLOR_EN_LIGHT_BLUE"
+set "$color_flash1" "COLOR_EN_RED"
+
+loop start
+set "$color_roomt_&loopcount&" "$color_room_&loopcount&"
+loop 15
+
+. "board colors
+set "CUSTOM0_0" "&$color_roomt_0&_0"
+set "CUSTOM0_0" "&$color_roomt_0&_1"
+set "CUSTOM1_0" "&$color_roomt_0&_0"
+set "CUSTOM1_1" "&$color_roomt_0&_1"
+
+set "$color_room_4" "CUSTOM0"
+set "$color_room_5" "CUSTOM1"
+set "$color_room_6" "CUSTOM2"
+set "$color_room_7" "COLOR_PLAYER_00"
+set "$color_room_8" "COLOR_PLAYER_01"
+set "$color_room_9" "COLOR_PLAYER_02"
+
+
+: "q"
+wait 1
+set "frame" "('frame'+1%256)"
+goto "q"
+
+set "$color_room_7" "COLOR_PLAYER_0('frame'/20%3)"
+
+: "key1"
+set "color_fg" "('color_fg'+1%16)"
+goto "set_fg"
+
+: "key2"
+set "color_fg" "('color_fg'+15%16)"
+goto "set_fg"
+
+: "key3"
+set "color_bg" "('color_bg'+1%16)"
+goto "set_bg"
+
+: "key4"
+set "color_bg" "('color_bg'+15%16)"
+goto "set_bg"
+
+: "set_fg"
+set "$" "&$color_roomt_('color_fg')&"
+set "CUSTOM0_0" "&$&_0"
+set "CUSTOM0_1" "&$&_1"
+goto "q"
+
+: "set_bg"
+set "$" "&$color_roomt_('color_bg')&"
+set "CUSTOM1_0" "&$&_0"
+set "CUSTOM1_1" "&$&_1"
+goto "q"
+
+: "__"
+input string "FG Color Identifier"
+set "$" to "input"
+set "CUSTOM0_0" "COLOR_&$&_0"
+set "CUSTOM0_1" "COLOR_&$&_1"
+goto "q"
+
+: "__"
+input string "BG Color Identifier"
+set "$" to "input"
+set "CUSTOM1_0" "COLOR_&$&_0"
+set "CUSTOM1_1" "COLOR_&$&_1"
+goto "q"
+
+: "keyq"
+set "local" 0
+set "local2" 2
+goto "setco"
+
+: "keyw"
+set "local" 1
+set "local2" 2
+goto "setco"
+: "keye"
+set "local" 2
+set "local2" 2
+goto "setco"
+
+: "keya"
+set "local" 0
+set "local2" 254
+goto "setco"
+: "keys"
+set "local" 1
+set "local2" 254
+goto "setco"
+: "keyd"
+set "local" 2
+set "local2" 254
+goto "setco"
+
+: "setco"
+set "CUSTOM&local&_&atari_reg&" to "('CUSTOM&local&_&atari_reg&'+'local2'%256)"
+goto "q"

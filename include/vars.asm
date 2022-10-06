@@ -60,6 +60,9 @@ roomEN      ds 1 ; encounter type
 roomENCount ds 1 ; num encounters
 roomEX      ds 1
 roomWA      ds 1
+blType      ds 1 ;
+roomPush    ds 1 ; Room ball state
+blDir       ds 1
 plState     ds 1
 INPT_FIRE_PREV  = $80 ; 1000_0000 Fire Pressed Last Frame
 PS_USE_ITEM     = $40 ; 0100_0000 Use Current Item Event
@@ -195,10 +198,6 @@ mADir       ds 1
 mBDir       ds 1
 mATimer     ds 1
 mBTimer     ds 1
-
-blType      ds 1 ;
-blTemp      ds 1 ; Room ball state
-blDir       ds 1        
 
 NUSIZ0_T    ds 1
 NUSIZ1_T    ds 1
@@ -356,37 +355,41 @@ BoardKeydoorLX = $0C-1
 BoardKeydoorRX = $74+1
 
 
-ItemTimerSword  = <-9 ; counts up to 0
-
-PlState_ItemButtonRepeat    = $80
-PlState_ItemButton          = $40
-PlState_Stab                = $20
+;ItemTimerSword  =  ; counts up to 0
 
     COLOR UNDEF,        $00,$00
     COLOR BLACK,        $00,$00
     COLOR DARK_GRAY,    $02,$06
     COLOR GRAY,         $06,$0C
-    COLOR WHITE,        $0E,$DE
-    COLOR DARKNUT_RED,  $42,$64
-    COLOR DARKNUT_BLUE, $74,$B4
-    COLOR OCTOROK_BLUE, $72,$C4
-    COLOR PATH,         $3C,$4C
-    COLOR GREEN_ROCK,   $D0,$52
-    COLOR CHOCOLATE,    $F0,$22
-    COLOR LIGHT_WATER,  $AE,$9E
-    COLOR LIGHT_BLUE,   $88,$D8 ; Item
-    COLOR LIGHT_BLUE2,  $86,$D6 ; World
-    COLOR DARK_BLUE,    $90,$C0
-    COLOR DARK_PURPLE,  $60,$A2
-    COLOR PURPLE,       $64,$A6
-    COLOR SACRED,       $1E,$2E ; No good PAL equivalent
-    COLOR TRIFORCE,     $2A,$2A
+    COLOR WHITE,        $0E,$0E
 
+    COLOR EN_RED,       $42,$64
+    COLOR EN_BLUE,      $74,$B4
+    COLOR EN_ROK_BLUE,  $72,$C4
+    COLOR EN_LIGHT_BLUE,$88,$D8 ; Item secondary flicker
+    COLOR EN_TRIFORCE,  $2A,$2A
+    COLOR EN_BROWN,     $F0,$22
+    
     COLOR PLAYER_00,    $C6,$58
     COLOR PLAYER_01,    $08,$0C
     COLOR PLAYER_02,    $46,$64
 
+    COLOR PATH,         $3C,$4C
+    COLOR GREEN_ROCK,   $D0,$52
+    COLOR RED_ROCK,     $42,$64
+    COLOR CHOCOLATE,    $F0,$22
+    COLOR LIGHT_WATER,  $AE,$9E
+
+    COLOR DARK_BLUE,    $90,$C0
+    COLOR LIGHT_BLUE,   $86,$D6 ; World
+    COLOR DARK_PURPLE,  $60,$A2
+    COLOR PURPLE,       $64,$A6
+    COLOR DARK_TEAL,    $B0,$72
+    COLOR LIGHT_TEAL,   $B2,$74
+    COLOR SACRED,       $1E,$2E ; No good PAL equivalent
+
     COLOR MINIMAP,      $84,$08 ; Different colors
+    COLOR HEALTH,       $46,$64
 
 MS_PLAY_NONE    = $80
 MS_PLAY_DUNG    = $81
@@ -450,6 +453,8 @@ SLOT_RW2    = RAMSEG_F8 | 2
 
 SLOT_TX     = RAMSEG_F0 | 10
 SLOT_MG     = RAMSEG_F4 | 20
+
+SLOT_PU_A   = RAMSEG_F0 | 11
 
 SLOT_EN_A   = RAMSEG_F0 | 12
 SLOT_EN_B   = RAMSEG_F4 | 13

@@ -523,18 +523,19 @@ General Layout
 
  World Editor
 
+1, 2, 3, 4 - Change N/S/W/E room door
 Q, W, E - inc Room Tile  Left, Mid, Right
 A, S, D - dec Room Tile  Left, Mid, Right
 R, T    - inc, dec Room Script
 F, G    - inc, dec, Room Ex
+O       - Toggle Palette
 P       - Save
 M       - switch active world
 L       - Set Doorflags (4 char string of chars 0-3)
 Z       - copy tile
 Space   - place copied room
-C       - Set room color (hex code)
+C       - Set room colors (hex code)
 Delete  - Delete room
-1, 2, 3, 4 - Change N/S/W/E room door
 
 Atan2 table lookup:
     dx = plX - mX

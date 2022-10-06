@@ -32,6 +32,7 @@ all: $(output_bin)
 
 init: 
 	mkdir -p gen/world
+	python3 py/color.py
 
 clean:
 	echo $(output_bin)
@@ -59,3 +60,6 @@ gen/world/b1world.asm: world/w0.bin world/w1.bin py/world.py
 
 gen/atan2.asm: py/atan2.py
 	python3 py/atan2.py
+
+gen/editor_color.txt: py/color.py
+	python3 py/color.py

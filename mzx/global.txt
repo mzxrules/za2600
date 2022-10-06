@@ -5,8 +5,8 @@ set "fwrite_delimiter" to 10
 . "sprite sheet allocations
 set "SS_MAP" (22)
 set "SS_N0" (48)
-set "SS_PL" (64)
-set "SS_EN" (96)
+set "SS_PL" (160)
+set "SS_EN" (192)
 set "SS_ROOM" (256)
 set "SS_ITEM" (224)
 set "SS_UI" (256*3)
@@ -15,3 +15,28 @@ set "SPR_PF1" (256*2)
 set "SPR_PF2" (256*2+128)
 set "SPR_UI" (256*3)
 set "SPR_WORK" (256*6)
+
+loop start
+set "local2" "('loopcount'/16)"
+goto "#hex"
+set "$x2_&loopcount&.0" to "('local2')"
+set "local2" "('loopcount'%16)"
+goto "#hex"
+set "$x2_&loopcount&.1" to "('local2')"
+if "loopcount" >= 16 then "cont_hex_precompute"
+set "$x1_&loopcount&.0" to "('local2')"
+: "cont_hex_precompute"
+loop 255
+end
+
+: "#hex"
+if "local2" >= 10 then "#letter"
+if "local2" < 10 then "#digit"
+goto "#return"
+
+: "#digit"
+set "local2" to "('local2'+48)"
+goto "#return"
+: "#letter"
+set "local2" to "('local2'-10+65)"
+goto "#return"

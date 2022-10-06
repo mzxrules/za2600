@@ -18,7 +18,7 @@ RoomUpdate: SUBROUTINE
     sta enType
     sta enState
     sta blType
-    sta blTemp
+    sta roomPush
     sta plItemTimer
     sta KernelId
 .skipLoadRoom
@@ -244,7 +244,7 @@ LoadRoom: SUBROUTINE
     beq UpdateWorldDoors
 ; RF_PF_AXIS test
     lda rFgColor
-    cmp #COLOR_DARKNUT_RED
+    cmp #COLOR_RED_ROCK
     beq .SetPFAxis
     cmp #COLOR_LIGHT_WATER
     bne .rts
@@ -427,14 +427,12 @@ UpdateDoors: SUBROUTINE
     rts
 
 ;==============================================================================
-; KeydoorCheck
+; DoorCheck
 ;----------
-; Checks if player is touching a keydoor, and unlocks it if they have a key
+; Checks if player is touching a keydoor or fake wall,
+; If it's a keyooor, unlocks it if they have a key
 ;==============================================================================
-KeydoorCheck: SUBROUTINE
-    lda itemKeys
-    beq .rts
-        
+DoorCheck: SUBROUTINE
     lda plX
     ldy plY
     
@@ -469,6 +467,27 @@ KeydoorCheck: SUBROUTINE
     inx
 .UnlockDown
 .UnlockRight
+; DoorCheck passed, x stores door
+; Fake Wall Check
+    lda roomWA
+    eor #$FF
+    and KeydoorMask,x
+    bne .keydoorCheck
+    ; TODO: push check
+    lda plState
+    and #PS_GLIDE
+    bne .rts
+    lda #[PS_GLIDE | PS_LOCK_ALL]
+    ora plState
+    sta plState
+    lda #SFX_SOLVE
+    sta SfxFlags
+    rts
+
+.keydoorCheck
+    lda itemKeys
+    beq .rts
+
     lda roomDoors
     ; Verify that door is a "keydoor". This is done by toggling the keydoor bit
     ; And then masking out just the one door, thus if a is not 0, it's not a keydoor
@@ -541,15 +560,15 @@ WorldColors:
     /* 01 */ .byte COLOR_DARK_GRAY
     /* 02 */ .byte COLOR_GRAY
     /* 03 */ .byte COLOR_DARK_BLUE
-    /* 04 */ .byte COLOR_LIGHT_BLUE2
+    /* 04 */ .byte COLOR_LIGHT_BLUE
     /* 05 */ .byte COLOR_LIGHT_WATER
-    /* 06 */ .byte COLOR_UNDEF
+    /* 06 */ .byte COLOR_DARK_TEAL
     /* 07 */ .byte COLOR_DARK_PURPLE
     /* 08 */ .byte COLOR_PURPLE
     /* 09 */ .byte COLOR_GREEN_ROCK
-    /* 0A */ .byte COLOR_UNDEF
+    /* 0A */ .byte COLOR_LIGHT_TEAL
     /* 0B */ .byte COLOR_CHOCOLATE
-    /* 0C */ .byte COLOR_DARKNUT_RED
+    /* 0C */ .byte COLOR_RED_ROCK
     /* 0D */ .byte COLOR_PATH
     /* 0E */ .byte COLOR_SACRED
     /* 0F */ .byte COLOR_WHITE

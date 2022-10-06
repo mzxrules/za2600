@@ -320,7 +320,7 @@ PlayerSword: SUBROUTINE
 ; If Item Button, use item
     bit plState
     bvc .skipSlashSword
-    lda #ItemTimerSword
+    lda #<-9
     sta plItemTimer
 ; Sfx
     lda #SFX_STAB
@@ -524,8 +524,7 @@ RsMaze: SUBROUTINE
     bmi .roomLoop
 ; maze complete
     dec worldSR ; force reset
-; play some fanfare?
-    lda #SFX_SURF
+    lda #SFX_SOLVE
     sta SfxFlags
     rts
     
@@ -804,12 +803,21 @@ RsDiamondBlockStairs: SUBROUTINE
     lda #0
     sta wPF2Room + 13
     sta wPF2Room + 14
-    lda #$41
-    sta blX
+    ldx #$40
+    ldy #$2C
+    cpx plX
+    bne .initBl
+    cpy plY
+    beq .skipPushBlock
+
+.initBl
+    inx
+    stx blX
     lda #$3C
     sta blY
     lda #BL_PUSH_BLOCK
     sta blType
+.skipPushBlock
     lda #RS_STAIRS
     sta roomRS
     rts

@@ -83,6 +83,7 @@ SfxStop:
     sta SfxFlags
     rts
     
+SfxSolve:
 SfxSurf: SUBROUTINE
     ldx #8
     stx AUDCT1

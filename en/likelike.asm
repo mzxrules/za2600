@@ -31,7 +31,7 @@ EnLikeLikeMain: SUBROUTINE
     sta enStun
     asl
     asl
-    adc #COLOR_DARKNUT_RED
+    adc #COLOR_EN_RED
     sta enColor
     
 .checkDamaged

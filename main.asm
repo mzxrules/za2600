@@ -191,14 +191,13 @@ right_text
 ; ****************************************
     SEG Bank11
     ORG $2C00
-    RORG $F400
+    RORG $F000
 
 BANK_11
-    repeat 0x400
-    .byte $00
-    repend
+    INCLUDE "gen/Ball.asm"
+    INCLUDE "b/pu.asm"
  
-    LOG_SIZE "-BANK 11- FREE", BANK_11
+    LOG_SIZE "-BANK 11- PushSystem", BANK_11
 
 ; ****************************************
 ; *               BANK 12                *
@@ -209,7 +208,6 @@ BANK_11
 
 BANK_12
     INCLUDE "gen/Entity.asm"
-    INCLUDE "gen/Ball.asm"
     INCLUDE "gen/EnMoveDir.asm"
     INCLUDE "en/darknut.asm"
     INCLUDE "en/wallmaster.asm"
