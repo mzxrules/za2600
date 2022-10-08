@@ -61,6 +61,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda #SLOT_PL_B
     sta BANK_SLOT
     jsr PlayerInput
+PAUSE_RETURN:
     jsr Random
     jsr PlayerItem
 .roomLoadCpuSkip
@@ -632,6 +633,14 @@ Atan2: SUBROUTINE
     rts
 
     LOG_SIZE "a", INIT
+    
+    ORG BANK_ALWAYS_ROM + $400 - $1E - $3
+    RORG $FFFF-($1E+$3-1)
+;UNPAUSE:
+    ;lda #SLOT_ALWAYS
+    ;sta BANK_SLOT
+    jmp PAUSE_RETURN
+
     ORG BANK_ALWAYS_ROM + $400 - $1E
     RORG $FFFF-($1E-1)
     

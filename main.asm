@@ -160,12 +160,11 @@ BANK_8
 ; ****************************************
     SEG Bank9
     ORG $2400
-    RORG $F000
+    RORG $FC00
 
 BANK_9
-    repeat 0x400
-    .byte $00
-    repend
+BANK_PAUSE_ROM = $2400
+    INCLUDE "b/p.asm"
     
     LOG_SIZE "-BANK 9- FREE", BANK_9
 

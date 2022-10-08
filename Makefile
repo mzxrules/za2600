@@ -19,6 +19,7 @@ zelda_dep := \
   spr/spr_room_pf2.asm \
   b/0.asm \
   b/a.asm \
+  b/p.asm \
   b/draw.asm \
   b/tx.asm \
   b/sh.asm \

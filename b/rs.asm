@@ -361,9 +361,20 @@ PlayerSword: SUBROUTINE
 PlayerInput: SUBROUTINE
     bit INPT1
     bmi .skipTest
-    inc itemKeys
-    inc itemBombs
-    inc itemRupees
+    lda plItemTimer
+    bmi .skipTest
+    lda plHealth
+    bmi .skipTest
+    lda #SLOT_PAUSE
+    sta BANK_SLOT
+    lda #<(PAUSE_ENTRY - 1)
+    sta PauseSp
+    lda #>(PAUSE_ENTRY - 1)
+    sta PauseSp+1
+    rts
+    ;inc itemKeys
+    ;inc itemBombs
+    ;inc itemRupees
 .skipTest
     ; test if player locked
     lda #PS_LOCK_ALL

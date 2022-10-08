@@ -230,6 +230,10 @@ AUDFT1      ds 1
 AUDVT0      ds 1
 AUDVT1      ds 1
 
+    ;SEG.U VARS_PAUSE
+PFrame          ds 1
+PDelay          ds 1
+
     SEG.U VARS_HUD_ZERO
     ORG Temp0
 THudMapSpr      ds 2
@@ -275,6 +279,8 @@ TextTemp    ds 1
 TextReg     ds 12
 
     echo "-RAM-",$80,(.)
+    ORG $FE
+PauseSp     ds 2
 
 ; Level Data Banks 1 and 2
 
@@ -436,6 +442,7 @@ BANK_SLOT_RAM = $3E
 BANK_SLOT = $3F
 
 SLOT_ALWAYS = RAMSEG_FC | 1
+SLOT_PAUSE  = RAMSEG_FC | 9
 SLOT_DRAW   = RAMSEG_F4 | 2
 SLOT_ROOM   = RAMSEG_F0 | 3
 
