@@ -17,9 +17,12 @@ zelda_dep := \
   gen/ms_header.asm \
   spr/spr_room_pf1.asm \
   spr/spr_room_pf2.asm \
-  b/0.asm \
-  b/a.asm \
-  b/p.asm \
+  b/game_entry.asm \
+  b/game_main.asm \
+  b/game_pause.asm \
+  c/always.asm \
+  c/mi_system.asm \
+  c/player_input.asm \
   b/draw.asm \
   b/tx.asm \
   b/sh.asm \

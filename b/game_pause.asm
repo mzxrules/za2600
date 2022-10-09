@@ -7,6 +7,10 @@ PAUSE_ENTRY: SUBROUTINE
     sta PFrame
     lda #-20
     sta PDelay
+    inc plState2
+    lda plState2
+    and #3
+    sta plState2
     jmp PAUSE_FROM_GAME
 
 PAUSE_VERTICAL_SYNC:
@@ -47,7 +51,7 @@ PAUSE_FROM_GAME:
     sta BANK_SLOT
     lda #SLOT_PL_B
     sta BANK_SLOT
-    jmp UNPAUSE
+    jmp MAIN_UNPAUSE
 
 .skip_game_return
     lda #SLOT_AU_A
@@ -89,10 +93,3 @@ PAUSE_OVERSCAN_WAIT:
     bne PAUSE_OVERSCAN_WAIT
 
     jmp PAUSE_VERTICAL_SYNC
-
-    ORG BANK_PAUSE_ROM + $400 - $1E - $7
-    RORG $FFFF-($1E+$7-1)
-UNPAUSE: SUBROUTINE
-    lda #SLOT_ALWAYS
-    sta BANK_SLOT
-    jmp PAUSE_RETURN

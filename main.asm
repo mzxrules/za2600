@@ -17,7 +17,7 @@ TIA_BASE_ADDRESS = $00
     RORG $F000
     
     .byte #'T, #'J, #'3, #'E
-    INCLUDE "b/0.asm"
+    INCLUDE "b/game_entry.asm"
 
     LOG_SIZE "-BANK 0- ENTRY", ENTRY
 
@@ -34,33 +34,36 @@ TIA_BASE_ADDRESS = $00
     RORG $FC00
 
 BANK_1
-BANK_ALWAYS_ROM = $0400
+    INCLUDE "c/always.asm"
+    LOG_SIZE "Always", BANK_1
     INCLUDE "gen/atan2.asm"
-    INCLUDE "b/a.asm"
+    INCLUDE "b/game_main.asm"
 
-    LOG_SIZE_M1 "-BANK 1- Always Loaded", BANK_1
+    LOG_SIZE_M1 "-BANK 1- Main Game", BANK_1
     
 ; ****************************************
 ; *               BANK 2                 *
 ; ****************************************
     SEG Bank2
     ORG $0800
-    RORG $F400
+    RORG $FC00
 
 BANK_2
-    INCLUDE "b/draw.asm"
-    LOG_SIZE "-BANK 2- Draw", BANK_2
+    INCLUDE "c/always.asm"
+    INCLUDE "b/game_pause.asm"
+    
+    LOG_SIZE_M1 "-BANK 2- Pause Game", BANK_2
 
 ; ****************************************
 ; *               BANK 3                 *
 ; ****************************************
-    SEG Bank1
-    ORG $0C00
-    RORG $F000
 
+    SEG Bank3
+    ORG $0C00
+    RORG $FC00
 BANK_3
-    INCLUDE "b/room.asm"
-    LOG_SIZE "-BANK 3- Room Code", BANK_3
+
+    LOG_SIZE "-BANK 3- Reserved", BANK_3
 
 ; ****************************************
 ; *               BANK 4                 *
@@ -73,16 +76,28 @@ BANK_4
 BANK_PF
     INCLUDE "spr/spr_room_pf1.asm"
     INCLUDE "spr/spr_room_pf2.asm"
-    LOG_SIZE "-BANK 4- Sprites PF", BANK_4
-    
+    LOG_SIZE "-BANK 4- Sprites PF 0", BANK_4
+
 ; ****************************************
 ; *               BANK 5                 *
 ; ****************************************
-    SEG Bank5
+    SEG Bank4
     ORG $1400
+    RORG $F400
+
+BANK_5
+    ;INCLUDE "spr/spr_room_pf1.asm"
+    ;INCLUDE "spr/spr_room_pf2.asm"
+    LOG_SIZE "-BANK 5- Sprites PF 1", BANK_5
+    
+; ****************************************
+; *               BANK 6                 *
+; ****************************************
+    SEG Bank5
+    ORG $1800
     RORG $F000
     
-BANK_5
+BANK_6
     INCLUDE "spr/spr_item.asm"
     align $100
     INCLUDE "spr/spr_en.asm"
@@ -94,16 +109,63 @@ MINIMAP
     INCLUDE "spr/spr_sh.asm"
     INCLUDE "spr/spr_num.asm"
     
-    LOG_SIZE "-BANK 5- Sprites", BANK_5
+    LOG_SIZE "-BANK 6- Sprites", BANK_6
     
 ; ****************************************
-; *               BANK 6                 *
+; *               BANK 7                 *
 ; ****************************************
-    SEG Bank6
-    ORG $1800
+    SEG Bank5
+    ORG $1C00
+    RORG $FC00
+    
+BANK_7
+    LOG_SIZE "-BANK 7- RESERVED", BANK_7
+
+
+    
+
+; ****************************************
+; *               BANK 8                 *
+; ****************************************
+    SEG Bank8
+    ORG $2000,0
     RORG $F400
 
-BANK_6
+BANK_8
+MesgAL
+MesgAH = MesgAL + $40
+    INCLUDE "gen/mesg_data_lut.asm"
+MesgData
+    INCLUDE "gen/mesg_data_0A.asm"
+    LOG_SIZE "-BANK 8/11- Mesg Data", BANK_8
+    
+    ORG $2400
+    RORG $F400
+    INCLUDE "gen/mesg_data_lut.asm"
+    INCLUDE "gen/mesg_data_0B.asm"
+    
+    ORG $2800
+    RORG $F400
+    INCLUDE "gen/mesg_data_lut.asm"
+    INCLUDE "gen/mesg_data_1A.asm"
+    
+    ORG $2C00
+    RORG $F400
+    INCLUDE "gen/mesg_data_lut.asm"
+    INCLUDE "gen/mesg_data_1B.asm"
+    
+    ORG $2FFF
+    .byte $00
+    
+    
+; ****************************************
+; *               BANK 12                *
+; ****************************************
+    SEG Bank12
+    ORG $3000
+    RORG $F400
+
+BANK_12
     INCLUDE "gen/world/b0world.asm"
     INCBIN "gen/world/b0wa.bin"
     INCBIN "world/w0co.bin"
@@ -113,16 +175,16 @@ BANK_6
     repeat 0x80
     .byte $01
     repend
-    LOG_SIZE "-BANK 6- World 0", BANK_6
+    LOG_SIZE "-BANK 12- World 0", BANK_12
     
 ; ****************************************
-; *               BANK 7                 *
+; *               BANK 13                *
 ; ****************************************
-    SEG Bank7
-    ORG $1C00
+    SEG Bank13
+    ORG $3400
     RORG $F400
 
-BANK_7
+BANK_13
     INCLUDE "gen/world/b1world.asm"
     INCBIN "gen/world/b1wa.bin"
     INCBIN "world/w1co.bin"
@@ -133,16 +195,16 @@ BANK_7
     .byte $01
     repend
 
-    LOG_SIZE "-BANK 7- Dungeon 1", BANK_7
+    LOG_SIZE "-BANK 13- Dungeon 1", BANK_13
     
 ; ****************************************
-; *               BANK 8                 *
+; *               BANK 14                *
 ; ****************************************
-    SEG Bank8
-    ORG $2000
+    SEG Bank14
+    ORG $3800
     RORG $F400
 
-BANK_8
+BANK_14
     INCLUDE "gen/world/b2world.asm"
     INCBIN "gen/world/b2wa.bin"
     INCBIN "world/w2co.bin"
@@ -153,59 +215,101 @@ BANK_8
     .byte $01
     repend
 
-    LOG_SIZE "-BANK 8- Dungeon 2", BANK_8
+    LOG_SIZE "-BANK 14- Dungeon 2", BANK_14
 
 ; ****************************************
-; *               BANK 9                 *
+; *               BANK 15                *
 ; ****************************************
-    SEG Bank9
-    ORG $2400
-    RORG $FC00
+    SEG Bank15
+    ORG $3C00
+    RORG $F400
 
-BANK_9
-BANK_PAUSE_ROM = $2400
-    INCLUDE "b/p.asm"
+BANK_15
+    LOG_SIZE "-BANK 15- RESERVED", BANK_15
+
+; ****************************************
+; *               BANK 16                *
+; ****************************************
+    SEG Bank15
+    ORG $4000
+    RORG $F400
+
+BANK_16
+    LOG_SIZE "-BANK 16- RESERVED", BANK_16
+
+; ****************************************
+; *               BANK 17                *
+; ****************************************
+    SEG Bank17
+    ORG $4400
+    RORG $F400
+
+BANK_17
+    LOG_SIZE "-BANK 17- RESERVED", BANK_17
     
-    LOG_SIZE "-BANK 9- FREE", BANK_9
-
 ; ****************************************
-; *               BANK 10                *
+; *               BANK 18                *
 ; ****************************************
-    SEG Bank10
-    ORG $2800
+    SEG Bank18
+    ORG $4800
     RORG $F000
 
-BANK_10
+BANK_18
+    INCLUDE "b/sh.asm"
+    INCLUDE "gen/ItemId.asm"
+    LOG_SIZE "-BANK 18- Shops and Get Items", BANK_18
+
+; ****************************************
+; *               BANK 19                *
+; ****************************************
+    SEG Bank19
+    ORG $4C00
+    RORG $F400
+
+BANK_19
+    INCLUDE "b/draw.asm"
+    LOG_SIZE "-BANK 19- Draw", BANK_19
+
+    SEG Bank1
+    ORG $0C00
+    RORG $F000
+
+; ****************************************
+; *               BANK 20                *
+; ****************************************
+    SEG Bank20
+    ORG $5000
+    RORG $F000
+
+BANK_20
     INCLUDE "b/tx.asm"
-    LOG_SIZE "tx.asm break", BANK_10
+    LOG_SIZE "tx.asm break", BANK_20
     align 256
 left_text
     INCLUDE "gen/text_left.asm"
 right_text
     INCLUDE "gen/text_right.asm"
-    LOG_SIZE "-BANK 10- Text Kernel", BANK_10
-
+    LOG_SIZE "-BANK 20- Text Kernel", BANK_20
+    
 ; ****************************************
-; *               BANK 11                *
+; *               BANK 21                *
 ; ****************************************
-    SEG Bank11
-    ORG $2C00
+    SEG Bank21
+    ORG $5400
     RORG $F000
 
-BANK_11
-    INCLUDE "gen/Ball.asm"
-    INCLUDE "b/pu.asm"
- 
-    LOG_SIZE "-BANK 11- PushSystem", BANK_11
+BANK_21
+    INCLUDE "b/room.asm"
+    LOG_SIZE "-BANK 21- Room Code", BANK_21
 
 ; ****************************************
-; *               BANK 12                *
+; *               BANK 22                *
 ; ****************************************
-    SEG Bank12
-    ORG $3000
+    SEG Bank22
+    ORG $5800
     RORG $F000
 
-BANK_12
+BANK_22
     INCLUDE "gen/Entity.asm"
     INCLUDE "gen/EnMoveDir.asm"
     INCLUDE "en/darknut.asm"
@@ -215,17 +319,17 @@ BANK_12
     INCLUDE "en/bosscucco.asm"
     INCLUDE "b/en.asm"
     
-    LOG_SIZE "-BANK 12/13- EnemyAI", BANK_12
+    LOG_SIZE "-BANK 22/23- EnemyAI", BANK_22
 
 
 ; ****************************************
-; *               BANK 14                *
+; *               BANK 24                *
 ; ****************************************
     SEG Bank14
-    ORG $3800
+    ORG $6000
     RORG $F000
 
-BANK_14
+BANK_24
     INCLUDE "gen/ms_dung0_note.asm"
     INCLUDE "gen/ms_dung0_dur.asm"
     INCLUDE "gen/ms_dung1_note.asm"
@@ -259,75 +363,31 @@ BANK_14
     INCLUDE "gen/Sfx.asm"
     INCLUDE "b/au.asm"
 
-    LOG_SIZE "-BANK 14/15- Audio", BANK_14
+    LOG_SIZE "-BANK 24/25- Audio", BANK_24
 
 ; ****************************************
-; *               BANK 16                *
+; *               BANK 26                *
 ; ****************************************
-    SEG Bank16
-    ORG $4000
+    SEG Bank26
+    ORG $6800
     RORG $F000
 
-BANK_16
+BANK_26
     INCLUDE "gen/RoomScript.asm"
     INCLUDE "b/rs.asm"
-    LOG_SIZE "-BANK 16/17- Engine", BANK_16
-    
+    INCLUDE "c/player_input.asm"
+    INCLUDE "c/mi_system.asm"
+    LOG_SIZE "-BANK 26/27- Engine", BANK_26
+
 ; ****************************************
-; *               BANK 18                *
+; *               BANK 28                *
 ; ****************************************
-    SEG Bank18
-    ORG $4800
+    SEG Bank28
+    ORG $7000
     RORG $F000
 
-BANK_18
-    INCLUDE "b/sh.asm"
-    INCLUDE "gen/ItemId.asm"
-    LOG_SIZE "-BANK 18- Shops and Get Items", BANK_18
-
-; ****************************************
-; *               BANK 19                *
-; ****************************************
-    SEG Bank19
-    ORG $4C00
-    RORG $F000
-
-BANK_19
-    repeat 0x400
-    .byte $00
-    repend
+BANK_28
+    INCLUDE "gen/Ball.asm"
+    INCLUDE "b/pu.asm"
  
-    LOG_SIZE "-BANK 19- FREE", BANK_19
-
-; ****************************************
-; *               BANK 20                *
-; ****************************************
-    SEG Bank20
-    ORG $5000,0
-    RORG $F400
-
-BANK_20
-MesgAL
-MesgAH = MesgAL + $40
-    INCLUDE "gen/mesg_data_lut.asm"
-MesgData
-    INCLUDE "gen/mesg_data_0A.asm"
-    LOG_SIZE "-BANK 20/24- Mesg Data", BANK_20
-    
-    ORG $5400
-    RORG $F400
-    INCLUDE "gen/mesg_data_lut.asm"
-    INCLUDE "gen/mesg_data_0B.asm"
-    
-    ORG $5800
-    RORG $F400
-    INCLUDE "gen/mesg_data_lut.asm"
-    INCLUDE "gen/mesg_data_1A.asm"
-    
-    ORG $5C00
-    RORG $F400
-    INCLUDE "gen/mesg_data_lut.asm"
-    INCLUDE "gen/mesg_data_1B.asm"
-    
-    ORG $5FFF
-    .byte $00
+    LOG_SIZE "-BANK 28- PushSystem", BANK_28

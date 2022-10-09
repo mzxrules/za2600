@@ -9,7 +9,7 @@ ENTRY: SUBROUTINE ; Address FC00
     jmp ENTRY_INIT
 
 ENTRY_INIT: SUBROUTINE ; Address F000
-    ldy #SLOT_ALWAYS
+    ldy #SLOT_MAIN
     sty BANK_SLOT
 
 ENTRY_INIT_RAM: 
