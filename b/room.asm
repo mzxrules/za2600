@@ -429,38 +429,40 @@ UpdateDoors: SUBROUTINE
 ;==============================================================================
 ; DoorCheck
 ;----------
-; Checks if player is touching a keydoor or fake wall,
-; If it's a keyooor, unlocks it if they have a key
+; Tests and applies keydoor, fake wall, bombwall behaviors on dungeon roomDoors
+; If keydoor, unlocks it if they have a key
+; If bombwall, unlocks if a bomb has detonated nearby
+; If fakewall, push player through 
 ;==============================================================================
 DoorCheck: SUBROUTINE
     lda plX
     ldy plY
     
 ; Up/Down check
-    cmp #BoardKeydoorUDA
+    cmp #BoardDungDoorNSX
     ; continue if positive
     bmi .LRCheck
-    cmp #BoardKeydoorUDA + $8+1
+    cmp #BoardDungDoorNSX + $8+1
     bpl .LRCheck
     
     ldx #0
-    cpy #BoardKeydoorUY
+    cpy #BoardDungDoorNY
     beq .UnlockUp
-    cpy #BoardKeydoorDY
+    cpy #BoardDungDoorSY
     beq .UnlockDown
     
 .LRCheck
-    cpy #BoardKeydoorLRA
-    bmi .rts
-    cpy #BoardKeydoorLRA + $8+1
-    bpl .rts
+    cpy #BoardDungDoorEWY
+    bmi .rtsBreakwall
+    cpy #BoardDungDoorEWY + $8+1
+    bpl .rtsBreakwall
     
     ldx #2
-    cmp #BoardKeydoorRX
+    cmp #BoardDungDoorEX
     beq .UnlockRight
-    cmp #BoardKeydoorLX
+    cmp #BoardDungDoorWX
     beq .UnlockLeft
-.rts
+    bne .rtsBreakwall
     rts
 .UnlockUp
 .UnlockLeft
@@ -471,7 +473,7 @@ DoorCheck: SUBROUTINE
 ; Fake Wall Check
     lda roomWA
     eor #$FF
-    and KeydoorMask,x
+    and DungDoorMask,x
     bne .keydoorCheck
     ; TODO: push check
     lda plState
@@ -486,46 +488,99 @@ DoorCheck: SUBROUTINE
 
 .keydoorCheck
     lda itemKeys
-    beq .rts
+    beq .rtsBreakwall
 
     lda roomDoors
     ; Verify that door is a "keydoor". This is done by toggling the keydoor bit
     ; And then masking out just the one door, thus if a is not 0, it's not a keydoor
     eor #%01010101
-    and KeydoorMask,x
-    bne .rts
-    lda KeydoorMask,x
-    eor #$FF
-    and roomDoors
-    sta roomDoors
+    and DungDoorMask,x
+    bne .rtsBreakwall
+    ; Spend a key to unlock a keydoor
+    
     dec itemKeys
     lda #SFX_STAB
     sta SfxFlags
+
+DoorOpen:
     ; x = door dir, S/N/E/W
+    lda DungDoorMask,x
+    eor #$FF
+    and roomDoors
+    sta roomDoors
     
     ldy roomId
-    lda KeydoorFlagA,x
+    lda DungDoorFlagA,x
     ora rRoomFlag,y
     sta wRoomFlag,y
     tya
     clc
-    adc KeydoorRoomOff,x
+    adc DungDoorRoomOff,x
     tay
-    lda KeydoorFlagB,x
+    lda DungDoorFlagB,x
     ora rRoomFlag,y
     sta wRoomFlag,y
+.rts
     rts
+
+.rtsBreakwall
+    lda plState2
+    and #3
+    cmp #PLAYER_BOMB
+    bne .rts
+    ldy plItemTimer
+    cpy #-6
+    bne .rts
     
+CheckBreakwall: SUBROUTINE
+    lda m0X
+    ldy m0Y
     
+; Up/Down check
+    cmp #BoardBreakwallNSX1
+    bmi .LRCheck
+    cmp #BoardBreakwallNSX2 + 1
+    bpl .LRCheck
+    
+    ldx #0
+    cpy #BoardBreakwallNY
+    bpl .UnlockUp
+    cpy #BoardBreakwallSY + 1
+    bmi .UnlockDown
+    
+.LRCheck
+    cpy #BoardBreakwallEWY1
+    bmi .rts
+    cpy #BoardBreakwallEWY2 + 1
+    bpl .rts
+    
+    ldx #2
+    cmp #BoardBreakwallEX
+    bpl .UnlockRight
+    cmp #BoardBreakwallWX + 1
+    bmi .UnlockLeft
+.rts
+    rts
+.UnlockUp
+.UnlockLeft
+    inx
+.UnlockDown
+.UnlockRight
+    lda roomWA
+    eor #%10101010
+    and DungDoorMask,X
+    beq DoorOpen
+    rts
+
     align 4
-KeydoorMask:
+DungDoorMask:
     ; S/N/E/W
     .byte $0C, $03, $30, $C0
-KeydoorFlagA:
+DungDoorFlagA:
     .byte $04, $01, $10, $40
-KeydoorFlagB:
+DungDoorFlagB:
     .byte $01, $04, $40, $10
-KeydoorRoomOff:
+DungDoorRoomOff:
     .byte $10, $F0, $01, $FF
     
     align 8

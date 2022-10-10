@@ -17,8 +17,14 @@ BombAnimDeltaY:
 PlayerArrow: SUBROUTINE
 ; ARROW
     bit plState
-    bvc .skipSpawnArrow
-    ; implement arrow check
+    bvc .skipSpawnArrow ;PS_USE_ITEM
+    lda itemRupees
+    beq .skipSpawnArrow
+    sed
+    sec
+    sbc #1
+    cld
+    sta itemRupees
     lda #-32
     sta plItemTimer
     ldy plDir
@@ -78,7 +84,7 @@ ArrowDeltaY:
 PlayerFire: SUBROUTINE
 ; FIRE
     bit plState
-    bvc .skipSpawnFire
+    bvc .skipSpawnFire ;PS_USE_ITEM
     ; implement fire check
     lda #-32
     sta plItemTimer
@@ -113,7 +119,7 @@ PlayerFire: SUBROUTINE
 PlayerBomb: SUBROUTINE
 ; Bombs
     bit plState
-    bvc .skipDropBomb
+    bvc .skipDropBomb ;PS_USE_ITEM
     lda itemBombs
     beq .skipDropBomb
     sed
@@ -146,7 +152,7 @@ PlayerBomb: SUBROUTINE
 .drawBomb
     cpy #-11
     bmi .rts
-    bne .skipDetonate
+    bne .skipDetonateEffect
     lda #7
     sta wM0H
     lda #$30
@@ -154,7 +160,7 @@ PlayerBomb: SUBROUTINE
     lda #SFX_BOMB
     sta SfxFlags
     
-.skipDetonate
+.skipDetonateEffect
     clc
     lda BombAnimDeltaX-$100,y
     adc m0X
@@ -165,7 +171,7 @@ PlayerBomb: SUBROUTINE
     sta m0Y
 .rts
     rts
-    
+
     
     ;align 4
 ArrowWidth4:
@@ -206,7 +212,7 @@ PlayerItem: SUBROUTINE
 PlayerSword: SUBROUTINE
 ; If Item Button, use item
     bit plState
-    bvc .skipSlashSword
+    bvc .skipSlashSword ;PS_USE_ITEM
     lda #<-9
     sta plItemTimer
 ; Sfx
@@ -247,11 +253,11 @@ PlayerSword: SUBROUTINE
 
 PlayerInput: SUBROUTINE
     bit INPT1
-    bmi .skipTest
+    bmi .skipCheckForPause
     lda plItemTimer
-    bmi .skipTest
+    bmi .skipCheckForPause
     lda plHealth
-    bmi .skipTest
+    bmi .skipCheckForPause
     lda #SLOT_PAUSE
     sta BANK_SLOT
     lda #<(PAUSE_ENTRY - 1)
@@ -262,7 +268,7 @@ PlayerInput: SUBROUTINE
     ;inc itemKeys
     ;inc itemBombs
     ;inc itemRupees
-.skipTest
+.skipCheckForPause
     ; test if player locked
     lda #PS_LOCK_ALL
     bit plState

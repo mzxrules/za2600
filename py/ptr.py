@@ -220,7 +220,7 @@ tbl = [
     GameEnum("PlItem", "PlItem",
     genEditorBindings=False,
     genPtrTable=True, 
-    genConstants=False,
+    genConstants=True,
     vals=[
         "PlayerSword",
         "PlayerArrow",

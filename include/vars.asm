@@ -353,12 +353,27 @@ EN_V0_COUNT = EN_0V_END - EN_VARIABLES
 
 ; U/D, pX $3C-$44
 ; L/R, pY $28-$30
-BoardKeydoorUDA = $3C
-BoardKeydoorLRA = $28
-BoardKeydoorUY = $48+1
-BoardKeydoorDY = $10-1
-BoardKeydoorLX = $0C-1
-BoardKeydoorRX = $74+1
+BoardDungDoorNSX = $3C ; leftmost plX to pass N/S door check
+BoardDungDoorEWY = $28 ; bottom plY to pass E/W door check
+BoardDungDoorNY = $48+1
+BoardDungDoorSY = $10-1
+BoardDungDoorWX = $0C-1
+BoardDungDoorEX = $74+1
+
+; BombWall dimensions
+; check wall at frame -6
+; N wall, y >= $45. x mid is $41 so +-12?
+; S wall, y <= $13
+; E wall, x >= $76. y mid is $2C so +-12?
+; W wall, x <= $10
+BoardBreakwallNSX1 = $35      ; leftmost m0X for N/S breakwall
+BoardBreakwallNSX2 = $35 + 24 ; rightmost m0X for N/S breakwall
+BoardBreakwallEWY1 = $20      ; bottom most m0Y for E/W breakwall
+BoardBreakwallEWY2 = $20 + 24 ; top most    m0Y for E/W breakwall
+BoardBreakwallNY = $45
+BoardBreakwallSY = $13
+BoardBreakwallWX = $10
+BoardBreakwallEX = $76
 
 
 ;ItemTimerSword  =  ; counts up to 0
