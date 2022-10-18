@@ -48,7 +48,7 @@ PlayerArrow: SUBROUTINE
     
 .skipSpawnArrow
     ldy plItemTimer
-    beq .offScreen
+    beq .endArrow
     lda m0X
     cmp #BoardXL
     bmi .offScreen
@@ -59,6 +59,12 @@ PlayerArrow: SUBROUTINE
     bmi .offScreen
     cmp #BoardYU
     bmi .drawArrow
+.endArrow
+    lda itemRupees
+    bne .offScreen
+    lda plState2
+    and #~3
+    sta plState2
 .offScreen
     lda #$80
     sta m0Y
@@ -146,6 +152,12 @@ PlayerBomb: SUBROUTINE
 .skipDropBomb
     ldy plItemTimer
     bne .drawBomb
+    lda itemBombs
+    bne .skipEquipSword
+    lda plState2
+    and #~3
+    sta plState2
+.skipEquipSword
     lda #$80
     sta m0Y
     bmi .rts

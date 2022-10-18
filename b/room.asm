@@ -3,11 +3,11 @@
 ;==============================================================================
 RoomUpdate: SUBROUTINE
     lda roomFlags
-    and #~RF_LOADED_EV
+    and #~RF_EV_LOADED
     sta roomFlags
     bpl .skipLoadRoom
-    ora #RF_LOADED_EV
-    and #~[RF_LOAD_EV + RF_NO_ENCLEAR + RF_CLEAR + RF_PF_IGNORE + RF_PF_AXIS + RF_DARK]
+    ora #RF_EV_LOADED
+    and #~[RF_EV_LOAD + RF_NO_ENCLEAR + RF_EV_CLEAR + RF_PF_IGNORE + RF_PF_AXIS + RF_PF_DARK]
     sta roomFlags
     lda #-$18
     sta roomTimer
@@ -347,11 +347,11 @@ UpdateWorldDoors: SUBROUTINE
     sta wPF1RoomL+12,y
     
     lda rPF1RoomR+2,y
-    ora Temp1
+    ora Temp5
     sta wPF1RoomR+2,y
     
     lda rPF1RoomR+12,y
-    ora Temp5
+    ora Temp1
     sta wPF1RoomR+12,y
     dey
     bpl .LeftRightWorldDoor

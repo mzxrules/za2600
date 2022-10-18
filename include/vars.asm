@@ -42,14 +42,14 @@ worldSR     ds 1 ; respawn room
 roomId      ds 1
 roomTimer   ds 1 ; Shutter animation timer
 roomFlags   ds 1
-RF_LOAD_EV      = $80 ; 1000_0000 Force Load Room
-RF_LOADED_EV    = $40 ; 0100_0000 Room Load happened this frame
-RF_ENCLEAR_EV   = $20 ; 0010_0000 Enemy Clear event
+RF_EV_LOAD      = $80 ; 1000_0000 Force Load Room
+RF_EV_LOADED    = $40 ; 0100_0000 Room Load happened this frame
+RF_EV_ENCLEAR   = $20 ; 0010_0000 Enemy Clear event
 RF_NO_ENCLEAR   = $10 ; 0001_0000 Blocks Enemy Cleared from setting Room Cleared
-RF_CLEAR        = $08 ; 0000_1000 Room Cleared (Enemies dead, or puzzle solved)
+RF_EV_CLEAR     = $08 ; 0000_1000 Room Cleared (Enemies dead, or puzzle solved)
 RF_PF_IGNORE    = $04 ; 0000_0100 Room PF ignored in center room
 RF_PF_AXIS      = $02 ; 0000_0010 Room PF triggers axis only movement
-RF_DARK         = $01 ; 0000_0001 Room is dark
+RF_PF_DARK      = $01 ; 0000_0001 Room is dark
 roomDoors   ds 1
     ; xxxx_xx11 N
     ; xxxx_11xx S
@@ -166,7 +166,7 @@ CD_UPDATE_A     = $40
 CD_LAST_UPDATE  = $01 ; Stores previous frame's active entity
 cdBTimer    ds 1
 cdAType     ds 1 ; Equivalent to enType
-cdBType     ds 1 ; Correspond to GiItems, such that 1 = GiItem 0
+cdBType     ds 1 ; Correspond to GiItems
 CD_ITEM_RAND = $FF
 cdAX        ds 1
 cdBX        ds 1
@@ -316,7 +316,7 @@ rRoomClear  ds 256/8            ; All Enemies Defeated flags
     ORG $F900
 rRoomFlag   ds 256
     ; all world types
-    ; 1xxx_xxxx Got Item
+RF_SV_ITEM_GET  = $80 ; 1xxx_xxxx Got Item
     ; dungeons only
     ; xxxx_xxx1 N open
     ; xxxx_x1xx S open

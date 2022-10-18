@@ -36,7 +36,6 @@ TIA_BASE_ADDRESS = $00
 BANK_1
     INCLUDE "c/always.asm"
     LOG_SIZE "Always", BANK_1
-    INCLUDE "gen/atan2.asm"
     INCLUDE "b/game_main.asm"
 
     LOG_SIZE_M1 "-BANK 1- Main Game", BANK_1
@@ -377,6 +376,8 @@ BANK_26
     INCLUDE "b/rs.asm"
     INCLUDE "c/player_input.asm"
     INCLUDE "c/mi_system.asm"
+    INCLUDE "gen/atan2.asm"
+    INCLUDE "c/atan2.asm"
     LOG_SIZE "-BANK 26/27- Engine", BANK_26
 
 ; ****************************************

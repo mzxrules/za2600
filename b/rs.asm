@@ -41,7 +41,7 @@ RsMaze: SUBROUTINE
     sta worldSR ; room
     sty worldSY ; check state
 .skipInit
-    bit roomFlags ; check RF_LOAD_EV
+    bit roomFlags ; check RF_EV_LOAD
     bpl .rts
     lda roomId
     cmp RsMaze_Exit,y 
@@ -118,7 +118,7 @@ EnterCave:
     sty plY
 
     lda roomFlags
-    ora #RF_LOAD_EV
+    ora #RF_EV_LOAD
     sta roomFlags
     lda roomId
     ora #$80
@@ -129,7 +129,7 @@ RsCave: SUBROUTINE
     lda roomFlags
     ora #RF_NO_ENCLEAR
     sta roomFlags
-    and #RF_LOADED_EV
+    and #RF_EV_LOADED
     beq .skipInit
     lda #EN_SHOPKEEPER
     sta enType
@@ -184,7 +184,7 @@ RsNeedTriforce: SUBROUTINE
     lda #RF_NO_ENCLEAR
     ora roomFlags
     sta roomFlags
-    and #RF_LOAD_EV
+    and #RF_EV_LOAD
     bne .skipSetPos
     lda #$30
     cmp plY
@@ -220,7 +220,7 @@ RsShoreItem: SUBROUTINE
     bne .rts
     ldx roomId
     lda rRoomFlag,x
-    bmi .rts ;.NoLoad
+    bmi .rts ; RF_SV_ITEM_GET ;.NoLoad
 
     lda #$6C
     sta cdAX
@@ -329,7 +329,7 @@ ReturnWorld: SUBROUTINE
     lda #0
     sta worldId
     lda roomFlags
-    ora #RF_LOAD_EV
+    ora #RF_EV_LOAD
     sta roomFlags
     rts
     
@@ -382,7 +382,7 @@ RsCentralBlock: SUBROUTINE
     
 RsStairs:
     lda roomFlags
-    and #RF_CLEAR
+    and #RF_EV_CLEAR
     beq .rts
     lda #$40
     sta cdAX

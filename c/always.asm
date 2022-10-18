@@ -9,6 +9,8 @@ Lazy8:
 Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
 
+    INCLUDE "gen/mesg_digits.asm"
+    
 MAIN_UNPAUSE:
     lda #SLOT_MAIN
     sta BANK_SLOT

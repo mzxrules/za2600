@@ -59,7 +59,7 @@ BlPushBlock: SUBROUTINE
     
 .pushDone
     lda roomFlags
-    ora #RF_CLEAR
+    ora #RF_EV_CLEAR
     sta roomFlags
 .rts
     rts

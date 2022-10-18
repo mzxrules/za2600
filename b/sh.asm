@@ -248,7 +248,6 @@ EnClearDrop_: SUBROUTINE
     ; Collided with random drop
     ldx cdBType
     beq .endCollisionCheck ; Safety check
-    dex ; convert cdBType to GiType
     lda #SFX_ITEM_PICKUP
     sta SfxFlags
     jsr GiItemDel
@@ -266,7 +265,7 @@ EnClearDrop_: SUBROUTINE
     sta cdAType
     ldx roomId
     lda rRoomFlag,x
-    ora #$80
+    ora #RF_SV_ITEM_GET
     sta wRoomFlag,x
     ldx roomEX
     jsr GiItemDel
@@ -338,7 +337,7 @@ EnStairs_:
     lda roomEX
     sta roomId
     lda roomFlags
-    ora #RF_LOAD_EV
+    ora #RF_EV_LOAD
     sta roomFlags
 .rts
     rts
@@ -355,25 +354,19 @@ EnClearDropTypeB: SUBROUTINE
     cmp #CD_ITEM_RAND
     bne .skipRollItem
     
-    ldx #EN_NONE
+    inc cdBType ; set GI_NONE
     jsr Random
-    cmp #255 ;drop rate odds
-    bcs .rollEnd
+    cmp #255 ; drop rate odds, N out of 256
+    bcs .skipRollItem
     jsr Random
     and #3
     tay
     lda EnRandomDrops,y
-    tax
-    inx
-.rollEnd
-    stx cdBType
+    sta cdBType
 .skipRollItem
     ldy cdBType
-    dey
-    bmi .rts
     jmp EnItemDraw
-.rts
-    rts
+    ; rts
     
 EnRandomDrops:
     .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
@@ -434,7 +427,7 @@ EnShopkeeper_: SUBROUTINE
 ; Shop logic
     bit CXPPMM
     bpl .shopEnd
-    ldx #0
+    ldx #0 ; selected item index
     lda plX
     cmp #$30
     bmi .itemSelected

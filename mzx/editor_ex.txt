@@ -1,0 +1,39 @@
+char ' '
+: "q"
+wait for 1
+set "local1" to "$lvlrs.('roomId')"
+set "local2" to "$lvlex.('roomId')"
+set "$$" to "$Rs&local1&"
+
+loop start
+put c0f CustomBlock p20 at "('thisx'+1+'loopcount')" "thisy"
+loop for 32
+if "&$$&" === "RsItem" then "RsItem"
+
+set "local10" to "('local2'/16)"
+goto "#hexchar"
+put c0f CustomBlock "local10" at "('thisx'+1)" "thisy"
+set "local10" to "local2"
+goto "#hexchar"
+put c0f CustomBlock "local10" at "('thisx'+2)" "thisy"
+goto "q"
+
+: "RsItem"
+loop start
+put c0f CustomBlock "$Gi&local2&.&loopcount&" at "('thisx'+1+'loopcount')" "thisy"
+loop for "('$Gi&local2&.length'-1)"
+goto "q"
+
+
+: "#hexchar"
+set "local10" to "('local10'%16)"
+if "local10" >= 10 then "#letter"
+if "local10" < 10 then "#digit"
+goto "#return"
+
+: "#digit"
+set "local10" to "('local10'+48)"
+goto "#return"
+: "#letter"
+set "local10" to "('local10'-10+65)"
+goto "#return"

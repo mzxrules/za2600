@@ -114,3 +114,43 @@ MiSystem: SUBROUTINE
     lda #$80
     sta m1Y
     rts
+
+
+MiSpawn2: SUBROUTINE
+    lda plX
+    sec
+    sbc MiSysAddX
+    tax
+    lda plY
+    sec
+    sbc MiSysAddY
+    tay
+    jsr Atan2
+
+MiSpawn: SUBROUTINE
+    ldy #1
+    ldx mBType
+    beq .rtsMiSysNext
+    dey
+    ldx mAType
+    beq .rtsMiSysNext
+    dey
+; Y returns next free missile index, or -1 if no slots available
+.rtsMiSysNext
+
+MiSpawnImpl: SUBROUTINE
+    cpy #$FF
+    beq .rts
+.rockInit
+    sta mADir,y
+    lda MiSysAddType
+    sta mAType,y
+    lda MiSysAddX
+    sta mAx,y
+    lda MiSysAddY
+    sta mAy,y
+    lda #$80
+    sta mAxf,y
+    sta mAyf,y
+.rts
+    rts

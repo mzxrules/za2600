@@ -145,7 +145,7 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 
     cpy roomId
     beq .endSwapRoom
-    lda #RF_LOAD_EV
+    lda #RF_EV_LOAD
     ora roomFlags
     sta roomFlags
 .endSwapRoom
@@ -245,12 +245,12 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 ; Update Room Flags
     lda #RF_NO_ENCLEAR
     bit roomFlags
-    bvs .endUpdateRoomFlags ; RF_LOADED_EV
+    bvs .endUpdateRoomFlags ; RF_EV_LOADED
     bne .endUpdateRoomFlags ; RF_NO_ENCLEAR
     lda roomENCount
     bne .endUpdateRoomFlags
     lda roomFlags
-    ora #RF_CLEAR
+    ora #RF_EV_CLEAR
     sta roomFlags
 .endUpdateRoomFlags
     
@@ -264,7 +264,7 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     sta roomTimer
     bmi .endOpenShutterDoor
     lda roomFlags
-    and #RF_CLEAR
+    and #RF_EV_CLEAR
     beq .endOpenShutterDoor
 ; Open all shutter doors (bit pattern %10)
 ; lsb is used check if the msb should be preserved
@@ -329,6 +329,7 @@ TestCollisionReset:
 ; Generate Random Number
 ;-----------------------
 ;   A - returns the randomly generated value
+;   X, Y untouched
 ;   Cycles = 23 per call
 ;==============================================================================
 Random:
@@ -448,7 +449,7 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     ldy worldId
     lda WORLD_ENT,y
     sta roomId
-    lda #RF_LOAD_EV
+    lda #RF_EV_LOAD
     sta roomFlags
     rts
         
@@ -474,7 +475,6 @@ EnItemDraw: SUBROUTINE ; y == itemDraw
     clc
     adc #<SprItem0
     sta enSpr
-.rts
     rts
 
 EnClearDrop:
@@ -490,98 +490,3 @@ EnShopkeeper:
     lda #SLOT_SH
     sta BANK_SLOT
     jmp EnShopkeeper_
-
-    INCLUDE "gen/mesg_digits.asm"
-
-MiSpawn2: SUBROUTINE
-    lda plX
-    sec
-    sbc MiSysAddX
-    tax
-    lda plY
-    sec
-    sbc MiSysAddY
-    tay
-    jsr Atan2
-
-MiSpawn: SUBROUTINE
-    ldy #1
-    ldx mBType
-    beq .rtsMiSysNext
-    dey
-    ldx mAType
-    beq .rtsMiSysNext
-    dey
-; Y returns next free missile index, or -1 if no slots available
-.rtsMiSysNext
-
-MiSpawnImpl: SUBROUTINE
-    cpy #$FF
-    beq .rts
-.rockInit
-    sta mADir,y
-    lda MiSysAddType
-    sta mAType,y
-    lda MiSysAddX
-    sta mAx,y
-    lda MiSysAddY
-    sta mAy,y
-    lda #$80
-    sta mAxf,y
-    sta mAyf,y
-.rts
-    rts
-
-;==============================================================================
-; Atan2
-;----------
-; X = Delta X
-; Y = Delta Y
-; Returns bitpacked value:
-; & $80 = Delta X Sign
-; & $40 = Delta Y Sign
-; & $3F = index to Atan2 tables
-;==============================================================================
-Atan2: SUBROUTINE
-    lda #0
-    sta atan2Temp
-    txa
-    bpl .testYSign
-    eor #$FF
-    sec
-    adc #0
-    tax
-    lda #$80
-    sta atan2Temp
-.testYSign
-    tya
-    bpl .reduceTest
-    eor #$FF
-    sec
-    adc #0
-    tay
-    lda atan2Temp
-    ora #$40
-    sta atan2Temp
-.reduceTest
-    cpx #8
-    bpl .reduce
-    cpy #8
-    bmi .result
-.reduce
-    txa
-    lsr
-    tax
-    tya
-    lsr
-    tay
-    bpl .reduceTest ;always branch
-.result
-    lda Mul8,y
-    clc
-    adc atan2Temp
-    sta atan2Temp
-    txa
-    adc atan2Temp
-    rts
-    

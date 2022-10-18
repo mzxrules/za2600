@@ -180,11 +180,11 @@ EnSystem: SUBROUTINE
     
     ; If room load this frame, setup new encounter
     bit roomFlags
-    bvs .checkRoomClear ; #RF_LOADED_EV
+    bvs .checkRoomClear ; #RF_EV_LOADED
     
     ; Else, if enemy clear event flag set, set enemy clear flag
     lda roomFlags
-    and #RF_ENCLEAR_EV
+    and #RF_EV_ENCLEAR
     beq .runEncounter ; flag not set, run encounter
     
     lda rRoomClear,x
@@ -206,7 +206,7 @@ EnSystem: SUBROUTINE
     
 .runEncounter
     ; toggle off enemy clear event
-    lda #~RF_ENCLEAR_EV
+    lda #~RF_EV_ENCLEAR
     and roomFlags
     sta roomFlags
     
@@ -289,7 +289,7 @@ EnSysEnDie:
     dec roomENCount
     bne .continueEncounter
     ; Set room clear flag
-    lda #RF_ENCLEAR_EV
+    lda #RF_EV_ENCLEAR
     ora roomFlags
     sta roomFlags
     
@@ -318,7 +318,7 @@ ClearDropSystem: SUBROUTINE
     lda enType
     bne .rts
     lda roomFlags
-    and #RF_ENCLEAR_EV | #RF_CLEAR
+    and #RF_EV_ENCLEAR | #RF_EV_CLEAR
     beq .rts
     
     ldy #EN_CLEAR_DROP
@@ -329,9 +329,9 @@ ClearDropSystem: SUBROUTINE
     stx cdAType
     stx cdBType
     
-    and #RF_ENCLEAR_EV
+    and #RF_EV_ENCLEAR
     beq .rts
-    dec cdBType
+    dec cdBType ; CD_ITEM_RAND
     
 .rts
     rts
