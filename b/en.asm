@@ -1,7 +1,7 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-EntityDel:
+En_Del:
     lda #SLOT_EN_B
     sta BANK_SLOT
     ldx enType
@@ -137,23 +137,6 @@ EnNone:
 ;==============================================================================
 ; ENTITY
 ;==============================================================================
-    
-EnSpectacleOpen: SUBROUTINE
-    ldy #$6
-    lda rPF2Room,y
-    and #$F9
-    sta wPF2Room,y
-    sta wPF2Room+1,y
-    lda #$58
-    sta enX
-    lda #$20
-    sta enY
-    lda rFgColor
-    sta enColor
-    lda #(30*8)
-    sta enSpr
-    rts
-    
     
 EnSysEncounter:
     .byte EN_NONE, EN_DARKNUT, EN_LIKE_LIKE, EN_OCTOROK, EN_WALLMASTER, EN_BOSS_CUCCO
@@ -423,17 +406,4 @@ EnTestMissile: SUBROUTINE
     ;lda #0
     ;sta enState
 .rts
-    rts
-
-EnOldMan:
-    lda #COLOR_EN_RED
-    sta enColor
-    lda #<SprS0
-    sta enSpr
-    lda #>SprS0
-    sta enSpr+1
-    lda #$40
-    sta enX
-    lda #$38
-    sta enY
     rts

@@ -23,7 +23,6 @@ Game Loop:
     Check Keydoor unlock
     Update Doors
     Process Audio
-    Process Entity
     Preconfig Sprites
     Draw HUD
     if TextKernel
@@ -34,6 +33,8 @@ Game Loop:
     Process ClearDrop
     Process Enemy System
     Process Room Script
+    Process Entity
+    Process Missile System
     Process Ball Script
     Update Room Clear
     Update Shutter Door

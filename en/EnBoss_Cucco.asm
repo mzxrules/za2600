@@ -2,7 +2,7 @@
 ; mzxrules 2021
 ;==============================================================================
 
-EnBossCucco: SUBROUTINE
+EnBoss_Cucco: SUBROUTINE
     lda #>SprE24
     sta enSpr+1
     lda #<SprE24
@@ -31,4 +31,4 @@ EnBossCucco: SUBROUTINE
 .rts 
     rts
 
-    LOG_SIZE "EnBossCucco", EnBossCucco
+    LOG_SIZE "EnBoss_Cucco", EnBoss_Cucco

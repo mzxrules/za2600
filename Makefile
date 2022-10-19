@@ -5,11 +5,12 @@ output_bin := zelda.bin zelda_PAL60.bin audio.bin
 zelda_dep := \
   include/zmacros.asm \
   include/vars.asm \
-  en/bosscucco.asm \
-  en/darknut.asm \
-  en/likelike.asm \
-  en/octorok.asm \
-  en/wallmaster.asm \
+  en/EnBoss_Cucco.asm \
+  en/EnDraw_ClearDrop.asm \
+  en/En_Darknut.asm \
+  en/En_LikeLike.asm \
+  en/En_Octorok.asm \
+  en/En_Wallmaster.asm \
   gen/atan2.asm \
   gen/world/b1world.asm \
   gen/RoomScript.asm \

@@ -1,7 +1,7 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-RoomScriptDel:
+Rs_Del:
     ldx roomRS
     lda RoomScriptH,x
     pha
@@ -281,7 +281,7 @@ RsGameOver: SUBROUTINE
     bne .rts
     bit INPT4
     bmi .rts
-    jsr RESPAWN
+    jmp RESPAWN
 .rts
     rts
 
@@ -360,24 +360,6 @@ RsDiamondBlockStairs: SUBROUTINE
     rts
 
 RsCentralBlock: SUBROUTINE
-    lda roomFlags
-    ora #RF_NO_ENCLEAR
-    sta roomFlags
-    ldx #$40+1
-    stx blX
-    ldx #$2C
-    stx blY
-    lda #BL_PUSH_BLOCK
-    sta blType
-    ldy #1
-.loop
-    lda rPF2Room+9,y
-    and #$7F
-    sta wPF2Room+9,y
-    dey
-    bpl .loop
-    lda #RS_NONE
-    sta roomRS
     rts
     
 RsStairs:

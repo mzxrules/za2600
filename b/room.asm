@@ -78,12 +78,10 @@ LoadRoom: SUBROUTINE
 .worldBankSet
     sta BANK_SLOT
     stx BANK_SLOT_RAM
-    lda roomId
+    ldy roomId
     bpl .skipCaveRoom
     jmp LoadCaveRoom
 .skipCaveRoom
-    sta roomId
-    tay
     lda WORLD_RS,y
     sta roomRS
     lda WORLD_EX,y
@@ -112,11 +110,11 @@ LoadRoom: SUBROUTINE
     lda WORLD_T_PF1R,y
     tax
     and #$F0
-    sta Temp4
+    sta Temp4+0
     txa
     and #$01
     ora #>BANK_PF
-    sta Temp5
+    sta Temp4+1
     txa
     and #%1110 ; Unpack door flags
     asl
@@ -129,11 +127,11 @@ LoadRoom: SUBROUTINE
     lda WORLD_T_PF1L,y
     tax
     and #$F0
-    sta Temp0
+    sta Temp0+0
     txa
     and #$01
     ora #>BANK_PF
-    sta Temp1
+    sta Temp0+1
     txa
     and #%1110 ; Unpack door flags
     lsr
@@ -153,50 +151,80 @@ LoadRoom: SUBROUTINE
     txa
 .skipPFIgnore
     and #$F0
-    sta Temp2
+    sta Temp2+0
     txa
     and #$03
     ora #>BANK_PF
-    sta Temp3
+    sta Temp2+1
     txa
     and #%1100 ; Unpack door flags
     asl
     ora roomDoors
     sta roomDoors
     
-; set OR mask for the room sides    
-    lda worldId
-    beq .WorldRoomOrSides
-    lda #$C0
-    .byte $2C
-.WorldRoomOrSides
-    lda #$00
-    sta Temp6
-    
+; Load playfield data
     ldy #ROOM_SPR_HEIGHT-1
-.roomInitMem
     lda #SLOT_PF_A
     sta BANK_SLOT
 
-.roomInitMemLoop
+    lda worldId
+    bne .dungRoomInitMemLoop
+
+; Load World Room Sprites
+.worldRoomInitMem
     lda (Temp0),y ; PF1L
-    ora Temp6
     sta wPF1RoomL+2,y
     lda (Temp4),y ; PF1R
-    ora Temp6
     sta wPF1RoomR+2,y
     lda (Temp2),y ; PF2
     sta wPF2Room+2,y
     dey
-    bpl .roomInitMemLoop
+    bpl .worldRoomInitMem
+
+; Set room top/bottom exit walls
+
+    lda rPF1RoomL+2
+    sta wPF1RoomL+0
+    sta wPF1RoomL+1
+    
+    lda rPF2Room+2
+    sta wPF2Room+0
+    sta wPF2Room+1
+    
+    lda rPF1RoomR+2
+    sta wPF1RoomR+0
+    sta wPF1RoomR+1
+
+    lda rPF1RoomL+ROOM_PX_HEIGHT-3
+    sta wPF1RoomL+ROOM_PX_HEIGHT-2
+    sta wPF1RoomL+ROOM_PX_HEIGHT-1
+
+    lda rPF1RoomR+ROOM_PX_HEIGHT-3
+    sta wPF1RoomR+ROOM_PX_HEIGHT-2
+    sta wPF1RoomR+ROOM_PX_HEIGHT-1
+
+    lda rPF2Room+ROOM_PX_HEIGHT-3
+    sta wPF2Room+ROOM_PX_HEIGHT-2
+    sta wPF2Room+ROOM_PX_HEIGHT-1
+
+    jmp UpdateWorldDoors
+
+; Load Dung Room Sprites
+.dungRoomInitMemLoop
+    lda (Temp0),y ; PF1L
+    ora #$C0
+    sta wPF1RoomL+2,y
+    lda (Temp4),y ; PF1R
+    ora #$C0
+    sta wPF1RoomR+2,y
+    lda (Temp2),y ; PF2
+    sta wPF2Room+2,y
+    dey
+    bpl .dungRoomInitMemLoop
 
 ; All room sprite data has been read
-
-; set OR mask for the room top/bottom
-    lda worldId
-    beq .WorldRoomOrTop
     
-; Update roomDoors
+; Update Dungeon roomDoors
     ldy roomId
     lda rRoomFlag,y
     and #%01010101
@@ -207,41 +235,35 @@ LoadRoom: SUBROUTINE
     and roomDoors
     sta roomDoors
     
-    lda #$FF
-    .byte $2C
-.WorldRoomOrTop
-    lda #$00
+; set room top/bottom exit walls
     
-    sta Temp6
     ldy #1
-.roomUpDownBorder
+.dungRoomUpDownBorder
     lda rPF1RoomL+2
-    ora Temp6
+    ora #$FF
     sta wPF1RoomL,y
     
     lda rPF2Room+2
-    ora Temp6
+    ora #$FF
     sta wPF2Room,y
     
     lda rPF1RoomR+2
-    ora Temp6
+    ora #$FF
     sta wPF1RoomR,y
     
     lda rPF1RoomL+ROOM_PX_HEIGHT-3
-    ora Temp6
+    ora #$FF
     sta wPF1RoomL+ROOM_PX_HEIGHT-2,y
     
     lda rPF1RoomR+ROOM_PX_HEIGHT-3
-    ora Temp6
+    ora #$FF
     sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
     
     lda rPF2Room+ROOM_PX_HEIGHT-3
-    ora Temp6
+    ora #$FF
     sta wPF2Room+ROOM_PX_HEIGHT-2,y
     dey
-    bpl .roomUpDownBorder
-    lda worldId
-    beq UpdateWorldDoors
+    bpl .dungRoomUpDownBorder
 ; RF_PF_AXIS test
     lda rFgColor
     cmp #COLOR_RED_ROCK

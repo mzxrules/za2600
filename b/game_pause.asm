@@ -59,6 +59,10 @@ PAUSE_FROM_GAME:
     lda #SLOT_AU_B
     sta BANK_SLOT
     jsr UpdateAudio
+    
+    lda #SLOT_EN_D
+    sta BANK_SLOT
+    jsr EnDraw_Del
 
 
 PAUSE_KERNEL_MAIN: SUBROUTINE ; 192 scanlines

@@ -1,7 +1,7 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-EnOctorok: SUBROUTINE
+En_Octorok: SUBROUTINE
     jsr Random
     and #$7F
     ora #$10
@@ -15,7 +15,7 @@ EnOctorok: SUBROUTINE
     lda #EN_OCTOROK_MAIN
     sta enType
     
-EnOctorokMain:
+En_OctorokMain:
     lda #>SprE4
     sta enSpr+1
     ldx enDir
@@ -72,4 +72,4 @@ ENEMY_ROT:
     
 EN_ATAN2_CARDINAL:
     .byte DEG_180, DEG_000, DEG_090, DEG_270
-    LOG_SIZE "EnOctorok", EnOctorok
+    LOG_SIZE "En_Octorok", En_Octorok

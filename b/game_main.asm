@@ -51,7 +51,13 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta BANK_SLOT
     jsr RoomUpdate
     bit roomFlags
-    bvs .roomLoadCpuSkip
+    bvc .roomSkipInit
+    lda #SLOT_RS_INIT
+    sta BANK_SLOT
+    jsr RsInit_Del
+    lda #0
+    beq .roomLoadCpuSkip
+.roomSkipInit
     lda #SLOT_PL_A
     sta BANK_SLOT
     lda #SLOT_PL_B
@@ -77,9 +83,9 @@ PAUSE_RETURN:
     sta BANK_SLOT
     jsr UpdateAudio
 
-    lda #SLOT_EN_A
+    lda #SLOT_EN_D
     sta BANK_SLOT
-    jsr EntityDel
+    jsr EnDraw_Del
     
 ;==============================================================================
 ; Pre-Position Sprites and Draw Frame
@@ -232,9 +238,18 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     sta BANK_SLOT
     lda #SLOT_RS_B
     sta BANK_SLOT
-    jsr RoomScriptDel
+    jsr Rs_Del
+    
+.Entity
+    lda #SLOT_EN_A
+    sta BANK_SLOT
+    jsr En_Del
 
 .Missile:
+    lda #SLOT_RS_A
+    sta BANK_SLOT
+    lda #SLOT_RS_B
+    sta BANK_SLOT
     jsr MiSystem
     
 .BallScript:
@@ -453,8 +468,6 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     sta roomFlags
     rts
         
-EnItem: ; SUBROUTINE
-    ldy roomEX
 EnItemDraw: SUBROUTINE ; y == itemDraw
     lda #>SprItem0
     sta enSpr+1
@@ -475,6 +488,7 @@ EnItemDraw: SUBROUTINE ; y == itemDraw
     clc
     adc #<SprItem0
     sta enSpr
+EnItem:
     rts
 
 EnClearDrop:

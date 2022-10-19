@@ -2,7 +2,7 @@
 ; mzxrules 2021
 ;==============================================================================
 
-EnWallmasterCapture: SUBROUTINE
+En_WallmasterCapture: SUBROUTINE
     inc enWallPhase
     ldx enWallPhase
     cpx #33
@@ -11,7 +11,7 @@ EnWallmasterCapture: SUBROUTINE
 .rts
     rts
 
-EnWallmaster: SUBROUTINE
+En_Wallmaster: SUBROUTINE
     ; draw sprite
     lda #>SprE10
     sta enSpr+1
@@ -24,7 +24,7 @@ EnWallmaster: SUBROUTINE
     sta enColor
     
     bit enState
-    bvs EnWallmasterCapture
+    bvs En_WallmasterCapture
     bmi .runMain
     
 ; calculate initial position
@@ -114,4 +114,4 @@ EnWallmaster: SUBROUTINE
 .rts
     rts
 
-    LOG_SIZE "EnWallmaster", EnWallmasterCapture
+    LOG_SIZE "En_Wallmaster", En_WallmasterCapture

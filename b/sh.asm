@@ -271,8 +271,8 @@ EnClearDrop_: SUBROUTINE
     jsr GiItemDel
     
 .endCollisionCheck
-    ; Select active entity
-    lda #0
+    ; Update active entity flags
+    lda #0 ; EN_NONE / GI_NONE
     ldx cdAType
     beq .ATypeNotLoaded
     ora #CD_UPDATE_A
@@ -282,6 +282,7 @@ EnClearDrop_: SUBROUTINE
     ora #CD_UPDATE_B
 .BTypeNotLoaded
     sta enState
+    ; Execute routine
     lda enState
     bne .execute
     
@@ -320,7 +321,8 @@ EnClearDropTypeA: SUBROUTINE
     beq EnStairs_
     cmp #EN_ITEM
     bne .rts
-    jmp EnItem
+    ldy roomEX
+    jmp EnItemDraw
     
 EnStairs_:
     lda rFgColor
@@ -364,9 +366,7 @@ EnClearDropTypeB: SUBROUTINE
     lda EnRandomDrops,y
     sta cdBType
 .skipRollItem
-    ldy cdBType
-    jmp EnItemDraw
-    ; rts
+    rts
     
 EnRandomDrops:
     .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
@@ -389,16 +389,6 @@ EnShopkeeper_: SUBROUTINE
     sta enY
     jmp .rts
 .continue
-    ldy #GI_RUPEE
-    jsr EnItemDraw
-    
-    lda #%0110
-    sta NUSIZ1_T
-    
-    lda #$20
-    sta enX
-    lda #$28
-    sta enY
 
     lda #$30
     cmp plY
@@ -463,7 +453,7 @@ EnShopkeeper_: SUBROUTINE
     ldy #2
     lda #1
     and Frame
-    bne .tensDigit
+    beq .tensDigit
 .onesDigit
     lda shopDigit,y
     and #$0F

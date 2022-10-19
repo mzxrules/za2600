@@ -42,17 +42,36 @@ tbl = [
         "EnClearDrop",
         "EnItem",
         "EnStairs",
-        "EnDarknut",
-        "EnWallmaster",
-        "EnOctorok",
-        "EnLikeLike",
-        "EnBossCucco",
-        "EnDarknutMain",
-        "EnOctorokMain",
-        "EnLikeLikeMain",
-        "EnSpectacleOpen",
+        "En_Darknut",
+        "En_Wallmaster",
+        "En_Octorok",
+        "En_LikeLike",
+        "EnBoss_Cucco",
+        "En_DarknutMain",
+        "En_OctorokMain",
+        "En_LikeLikeMain",
         "EnShopkeeper",
-        "EnOldMan"
+        "En_OldMan"
+    ]),
+    GameEnum("EntityDraw", "EnDraw",
+    genEditorBindings=False,
+    genPtrTable=True, 
+    genConstants=False,
+    vals=[
+        "EnDraw_None",
+        "EnDraw_ClearDrop",
+        "EnDraw_None",# "EnDrawItem",
+        "EnDraw_None",# "EnDrawStairs",
+        "EnDraw_Darknut",
+        "EnDraw_Wallmaster",
+        "EnDraw_Octorok",
+        "EnDraw_LikeLike",
+        "EnDraw_None",# "EnDrawBossCucco",
+        "EnDraw_Darknut",
+        "EnDraw_Octorok",
+        "EnDraw_LikeLike",
+        "EnDraw_Shopkeeper",
+        "EnDraw_OldMan"
     ]),
     GameEnum("RoomScript", "Rs",
     genEditorBindings=True,
@@ -78,6 +97,31 @@ tbl = [
         "RsMaze",
         "RsShoreItem",
         "RsGameOver"
+    ]),
+    GameEnum("RoomScriptInit", "RsInit",
+    genEditorBindings=False,
+    genPtrTable=True, 
+    genConstants=False,
+    vals=[
+        "RsInit_None",
+        "RsInit_CentralBlock",
+        "RsInit_None",
+        "RsInit_None",
+        "RsInit_None",
+        "RsInit_None", #"RsDiamondBlockStairs",
+        "RsInit_None",
+        "RsInit_None",
+        "RsInit_None",
+        "RsInit_None",
+        "RsInit_None",
+        "RsInit_None",
+        "RsInit_None",
+        "RsInit_None",
+        "RsInit_None",
+        "RsInit_None",
+        "RsInit_None",
+        "RsInit_None",
+        "RsInit_None"
     ]),
     GameEnum("Ball", "Bl",
     genEditorBindings=False,
@@ -229,8 +273,9 @@ tbl = [
     ]),
 ]
 
-def ToSnakeCase(str):
-    return re.sub(r'(?<!^)(?=[A-Z])', '_', str).upper()
+def ToSnakeCase(s):
+    cust = s.replace('_', '')
+    return re.sub(r'(?<!^)(?=[A-Z])', '_', cust).upper()
 
 def GetEditorBindings(sn, list):
     out = f'set "{sn}Count" to {len(list)}\n'

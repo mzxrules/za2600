@@ -2,37 +2,19 @@
 ; mzxrules 2021
 ;==============================================================================
 
-EnLikeLike: SUBROUTINE
+En_LikeLike: SUBROUTINE
     jsr SeekDir
     lda #6
     sta enHp
     lda #EN_LIKE_LIKE_MAIN
     sta enType
     
-EnLikeLikeMain: SUBROUTINE
-    ; Draw Routine
-    lda #>SprE16
-    sta enSpr+1
-    lda Frame
-    lsr
-    lsr
-    lsr
-    and #1
-    tax
-    lda Mul8,x
-    clc 
-    adc #<SprE16
-    sta enSpr
-    
+En_LikeLikeMain: SUBROUTINE
 ; update stun timer
     lda enStun
     cmp #1
     adc #0
     sta enStun
-    asl
-    asl
-    adc #COLOR_EN_RED
-    sta enColor
     
 .checkDamaged
 ; if collided with weapon && stun == 0,
@@ -101,4 +83,4 @@ EnLikeLikeMain: SUBROUTINE
     sta plY
     rts
     
-    LOG_SIZE "EnLikeLike", EnLikeLike
+    LOG_SIZE "En_LikeLike", En_LikeLike

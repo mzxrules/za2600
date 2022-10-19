@@ -2,7 +2,7 @@
 ; mzxrules 2021
 ;==============================================================================
 
-EnDarknut: SUBROUTINE
+En_Darknut: SUBROUTINE
     lda #EN_DARKNUT_MAIN
     sta enType
     jsr Random
@@ -11,18 +11,12 @@ EnDarknut: SUBROUTINE
     lda #1
     sta enHp
     
-EnDarknutMain:
-    lda #>SprE0
-    sta enSpr+1
+En_DarknutMain:
 ; update stun timer
     lda enStun
     cmp #1
     adc #0
     sta enStun
-    asl
-    asl
-    adc #COLOR_EN_RED
-    sta enColor
     lda #$F0
     jsr EnSetBlockedDir
 
@@ -79,14 +73,11 @@ EnDarknutMain:
     jsr NextDir
 
 .move
-    ldx enDir
-    ldy Mul8,x
-    sty enSpr
-
     lda Frame
     and #1
     beq .rts
+    ldx enDir
     jmp EnMoveDirDel
 .rts
     rts
-    LOG_SIZE "EnDarknut", EnDarknut
+    LOG_SIZE "En_Darknut", En_Darknut

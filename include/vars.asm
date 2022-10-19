@@ -163,7 +163,7 @@ enLLTimer   ds 1
 ;enState     ds 1
 CD_UPDATE_B     = $80
 CD_UPDATE_A     = $40
-CD_LAST_UPDATE  = $01 ; Stores previous frame's active entity
+CD_LAST_UPDATE  = $01 ; Stores last update's active entity
 cdBTimer    ds 1
 cdAType     ds 1 ; Equivalent to enType
 cdBType     ds 1 ; Correspond to GiItems
@@ -491,3 +491,6 @@ SLOT_PL_A   = RAMSEG_F0 | 26
 SLOT_PL_B   = RAMSEG_F4 | 27
 
 SLOT_PU_A   = RAMSEG_F0 | 28
+SLOT_EN_D   = RAMSEG_F0 | 28
+
+SLOT_RS_INIT = RAMSEG_F0 | 29
