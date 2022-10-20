@@ -161,23 +161,23 @@ SprItem17:
     .byte $4A ; |.X..X.X.|
     .byte $3C ; |..XXXX..|
 SprItem18:
-    .byte $3E ; |..XXXXX.|
-    .byte $41 ; |.X.....X|
-    .byte $1C ; |...XXX..|
-    .byte $2A ; |..X.X.X.|
-    .byte $2E ; |..X.XXX.|
-    .byte $14 ; |...X.X..|
-    .byte $08 ; |....X...|
-    .byte $00 ; |........|
+    .byte $38 ; |..XXX...|
+    .byte $44 ; |.X...X..|
+    .byte $82 ; |X.....X.|
+    .byte $9A ; |X..XX.X.|
+    .byte $A6 ; |X.X..XX.|
+    .byte $5A ; |.X.XX.X.|
+    .byte $3C ; |..XXXX..|
+    .byte $18 ; |...XX...|
 SprItem19:
-    .byte $7E ; |.XXXXXX.|
-    .byte $66 ; |.XX..XX.|
-    .byte $7A ; |.XXXX.X.|
-    .byte $6A ; |.XX.X.X.|
-    .byte $52 ; |.X.X..X.|
-    .byte $6E ; |.XX.XXX.|
-    .byte $52 ; |.X.X..X.|
-    .byte $7E ; |.XXXXXX.|
+    .byte $38 ; |..XXX...|
+    .byte $44 ; |.X...X..|
+    .byte $82 ; |X.....X.|
+    .byte $9A ; |X..XX.X.|
+    .byte $A6 ; |X.X..XX.|
+    .byte $5A ; |.X.XX.X.|
+    .byte $3C ; |..XXXX..|
+    .byte $18 ; |...XX...|
 SprItem20:
     .byte $0A ; |....X.X.|
     .byte $54 ; |.X.X.X..|
@@ -215,23 +215,23 @@ SprItem23:
     .byte $08 ; |....X...|
     .byte $00 ; |........|
 SprItem24:
-    .byte $38 ; |..XXX...|
-    .byte $44 ; |.X...X..|
-    .byte $82 ; |X.....X.|
-    .byte $9A ; |X..XX.X.|
-    .byte $A6 ; |X.X..XX.|
-    .byte $5A ; |.X.XX.X.|
-    .byte $3C ; |..XXXX..|
-    .byte $18 ; |...XX...|
+    .byte $3E ; |..XXXXX.|
+    .byte $41 ; |.X.....X|
+    .byte $1C ; |...XXX..|
+    .byte $2A ; |..X.X.X.|
+    .byte $2E ; |..X.XXX.|
+    .byte $14 ; |...X.X..|
+    .byte $08 ; |....X...|
+    .byte $00 ; |........|
 SprItem25:
-    .byte $38 ; |..XXX...|
-    .byte $44 ; |.X...X..|
-    .byte $82 ; |X.....X.|
-    .byte $9A ; |X..XX.X.|
-    .byte $A6 ; |X.X..XX.|
-    .byte $5A ; |.X.XX.X.|
-    .byte $3C ; |..XXXX..|
-    .byte $18 ; |...XX...|
+    .byte $7E ; |.XXXXXX.|
+    .byte $66 ; |.XX..XX.|
+    .byte $7A ; |.XXXX.X.|
+    .byte $6A ; |.XX.X.X.|
+    .byte $52 ; |.X.X..X.|
+    .byte $6E ; |.XX.XXX.|
+    .byte $52 ; |.X.X..X.|
+    .byte $7E ; |.XXXXXX.|
 SprItem26:
     .byte $00 ; |........|
     .byte $3C ; |..XXXX..|

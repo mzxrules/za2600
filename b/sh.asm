@@ -157,15 +157,18 @@ GiSword3:
     sta SeqFlags
     rts
     
+GiRingRed:
+    lda #[ITEMF_RING_RED | ITEMF_RING_BLUE]
+    bmi .cGiRedRing
 GiBow:
 GiRaft:
 GiBoots:
 GiFlute:
 GiFireMagic:
 GiBracelet:
-GiMeat:
-GiNote:
+GiRingBlue:
     lda Bit8-GI_BOW,x
+.cGiRedRing
     ora itemFlags+1
     sta itemFlags+1
     lda #MS_PLAY_GI
@@ -176,8 +179,8 @@ GiArrows:
 GiArrowsSilver:
 GiCandleBlue:
 GiCandleRed:
-GiRingBlue:
-GiRingRed:
+GiMeat:
+GiNote:
 GiPotionBlue:
 GiPotionRed:
     lda Bit8-GI_ARROWS,x

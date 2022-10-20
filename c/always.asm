@@ -72,16 +72,16 @@ GiItemColors:
 
     .byte COLOR_EN_RED      ; GiFireMagic
     .byte COLOR_EN_RED      ; GiBracelet
-    .byte COLOR_EN_RED      ; GiMeat
-    .byte COLOR_EN_BLUE     ; GiNote
-    
-    .byte COLOR_EN_TRIFORCE ; GiArrows
-    .byte COLOR_WHITE       ; GiArrowsSilver
     .byte COLOR_EN_BLUE     ; GiRingBlue
     .byte COLOR_EN_RED      ; GiRingRed
-    .byte COLOR_EN_BLUE     ; GiPotionBlue
-    .byte COLOR_EN_RED      ; GiPotionRed
+
+    .byte COLOR_EN_TRIFORCE ; GiArrows
+    .byte COLOR_WHITE       ; GiArrowsSilver
     .byte COLOR_EN_BLUE     ; GiCandleBlue
     .byte COLOR_EN_RED      ; GiCandleRed
+    .byte COLOR_EN_RED      ; GiMeat
+    .byte COLOR_EN_BLUE     ; GiNote
+    .byte COLOR_EN_BLUE     ; GiPotionBlue
+    .byte COLOR_EN_RED      ; GiPotionRed
 
     .byte COLOR_EN_TRIFORCE ; GiMap

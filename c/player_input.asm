@@ -227,6 +227,8 @@ PlayerSword: SUBROUTINE
     bvc .skipSlashSword ;PS_USE_ITEM
     lda #<-9
     sta plItemTimer
+    lda plDir
+    sta plItemDir
 ; Sfx
     lda #SFX_STAB
     sta SfxFlags

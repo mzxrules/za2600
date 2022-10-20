@@ -164,16 +164,16 @@ tbl = [
         
         "GiFireMagic",
         "GiBracelet",
-        "GiMeat",
-        "GiNote",
+        "GiRingBlue",
+        "GiRingRed",
         
         "GiArrows",
         "GiArrowsSilver",
         "GiCandleBlue",
         "GiCandleRed",
 
-        "GiRingBlue",
-        "GiRingRed",
+        "GiMeat",
+        "GiNote",
         "GiPotionBlue",
         "GiPotionRed",
 

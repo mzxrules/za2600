@@ -26,7 +26,7 @@ En_DarknutMain:
     bpl .endCheckDamaged
     lda enStun
     bne .endCheckDamaged
-    lda plDir
+    lda plItemDir
     cmp enDir
     beq .defSfx
     lda #-32

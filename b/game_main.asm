@@ -408,6 +408,15 @@ UPDATE_PL_HEALTH: SUBROUTINE
     bmi .rts
     ldx #-48
     stx plStun
+    bit ITEMV_RING_BLUE
+    bvc .addDamage ; #ITEMF_RING_BLUE
+    sec
+    ror
+    bit ITEMV_RING_RED
+    bpl .addDamage ; #ITEMF_RING_RED
+    sec
+    ror
+.addDamage
     ldy #SFX_PL_DAMAGE
     clc
     adc plHealth

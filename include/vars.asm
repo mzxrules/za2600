@@ -82,6 +82,7 @@ plStun      ds 1
 plHealthMax ds 1
 plHealth    ds 1 ; $0 exact for gameover, negative for gameover state is init
 plItemTimer ds 1
+    ; Bombs -11 is active detonation
 plItemDir   ds 1
 itemRupees  ds 1
 itemKeys    ds 1 ; Sign bit = Master Key
@@ -100,15 +101,15 @@ itemFlags   ds 3
     ITEM FLUTE,         1,$08
     ITEM FIRE_MAGIC,    1,$10
     ITEM BRACELET,      1,$20
-    ITEM MEAT,          1,$40
-    ITEM NOTE,          1,$80
+    ITEM RING_BLUE,     1,$40
+    ITEM RING_RED,      1,$80
 
     ITEM ARROWS,        2,$01
     ITEM ARROWS_SILVER, 2,$02
     ITEM CANDLE_BLUE,   2,$04
     ITEM CANDLE_RED,    2,$08
-    ITEM RING_BLUE,     2,$10
-    ITEM RING_RED,      2,$20
+    ITEM MEAT,          2,$10
+    ITEM NOTE,          2,$20
     ITEM POTION_BLUE,   2,$40
     ITEM POTION_RED,    2,$80
 
