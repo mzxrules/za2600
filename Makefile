@@ -2,42 +2,27 @@
 
 output_bin := zelda.bin zelda_PAL60.bin audio.bin
 
-zelda_dep := \
-  include/zmacros.asm \
-  include/vars.asm \
-  en/EnBoss_Cucco.asm \
-  en/EnDraw_ClearDrop.asm \
-  en/En_Darknut.asm \
-  en/En_LikeLike.asm \
-  en/En_Octorok.asm \
-  en/En_Wallmaster.asm \
+zelda_dep := main.asm \
+  $(wildcard include/*.asm) \
+  $(wildcard b/*.asm) \
+  $(wildcard c/*.asm) \
+  $(wildcard en/*.asm) \
+  $(wildcard rs/*.asm) \
+  $(wildcard spr/*.asm) \
   gen/atan2.asm \
   gen/world/b1world.asm \
   gen/RoomScript.asm \
   gen/mesg_data_0A.asm \
   gen/ms_header.asm \
-  spr/spr_room_pf1.asm \
-  spr/spr_room_pf2.asm \
-  b/game_entry.asm \
-  b/game_main.asm \
-  b/game_pause.asm \
-  c/always.asm \
-  c/mi_system.asm \
-  c/player_input.asm \
-  b/draw.asm \
-  b/tx.asm \
-  b/sh.asm \
-  b/en.asm \
-  b/au.asm \
-  b/rs.asm \
-  b/room.asm \
-  main.asm
 
 all: $(output_bin)
 
 init: 
 	mkdir -p gen/world
 	python3 py/color.py
+
+deptest: 
+	echo $(zelda_dep)
 
 clean:
 	echo $(output_bin)
