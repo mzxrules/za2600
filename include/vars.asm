@@ -67,17 +67,18 @@ plState     ds 1
 INPT_FIRE_PREV  = $80 ; 1000_0000 Fire Pressed Last Frame
 PS_USE_ITEM     = $40 ; 0100_0000 Use Current Item Event
 PS_GLIDE        = $20 ; 0010_0000 Move Until Unblocked
-PS_SWAP_ITEM    = $10 ; 0001_0000 Swap item event
+PS_LOCK_MOVE    = $10 ; 0001_0000 Lock Player Movement
 PS_P1_WALL      = $08 ; 0000_1000 P1 Is Wall
 PS_PF_IGNORE    = $04 ; 0000_0100 Playfield Ignore
 PS_LOCK_ALL     = $02 ; 0000_0010 Lock Player
 PS_LOCK_AXIS    = $01 ; 0000_0001 Lock Player Axis - Hover Boots
 plState2    ds 1
-    ; 0000_0011 Active Item
-    ;        00 Sword
-    ;        01 Bombs
-    ;        10 Bow
-    ;        11 Flame
+PS_HOLD_ITEM    = $80 ; 1000_0000
+                      ; 0000_0011 Active Item
+                      ;        00 Sword
+                      ;        01 Bombs
+                      ;        10 Bow
+                      ;        11 Flame
 plStun      ds 1
 plHealthMax ds 1
 plHealth    ds 1 ; $0 exact for gameover, negative for gameover state is init
@@ -124,12 +125,25 @@ SfxFlags    ds 1
     ; 1xxx_xxxx New Sfx
 SfxCur      ds 1
 
+;==============================================================================
+; Entity Variables
+;==============================================================================
 enType      ds 1
 enColor     ds 1
+EN_VARS:    ds 10 ; Zero initialized enemy vars
+EN_VARS_END:
+EN_VARS_COUNT = EN_VARS_END - EN_VARS
 
-EN_VARIABLES:
+    ORG EN_VARS
 EN_NPC_VARIABLES:
 enState     ds 1
+; EnShopkeeper enState
+                      ; 1xxx_xxxx Init
+                      ; x1xx_xxxx Item Bought
+GI_EVENT_SHOP   = $20 ; xx1x_xxxx
+GI_EVENT_CD     = $10 ; xxx1_xxxx
+GI_EVENT_TRI    = $08 ; xxxx_1xxx
+GI_EVENT_INIT   = $04 ; xxxx_x1xx
 mesgId      ds 1
 ; Gameover
 enInputDelay ds 1
@@ -138,8 +152,24 @@ enInputDelay ds 1
 shopItem    ds 3
 shopDigit   ds 3
 
+    ORG EN_VARS + 1
+; En_ClearDrop and En_ItemGet
+;enState     ds 1
+CD_UPDATE_B     = $80 ; 1xxx_xxxx
+CD_UPDATE_A     = $40 ; x1xx_xxxx
+                      ; xx11_11xx GI_EVENT reserved
+CD_LAST_UPDATE  = $01 ; Stores last update's active entity
+cdBTimer    ds 1
+cdAType     ds 1 ; EnType value for ClearDrop, GiItem for ItemGet
+cdBType     ds 1 ; GiItem value
+CD_ITEM_RAND = $FF
+cdAX        ds 1
+cdBX        ds 1
+cdAY        ds 1
+cdBY        ds 1
+
 ; EnemyCommon
-    ORG EN_VARIABLES + 1
+    ORG EN_VARS + 1
 enHp        ds 1
 enStun      ds 1
 enBlockDir  ds 1
@@ -159,30 +189,15 @@ enMDY       ds 1
     ORG EN_ENEMY_VARIABLES
 ; LikeLike
 enLLTimer   ds 1
-    ORG EN_VARIABLES + 1
-; ClearDrop
-;enState     ds 1
-CD_UPDATE_B     = $80
-CD_UPDATE_A     = $40
-CD_LAST_UPDATE  = $01 ; Stores last update's active entity
-cdBTimer    ds 1
-cdAType     ds 1 ; Equivalent to enType
-cdBType     ds 1 ; Correspond to GiItems
-CD_ITEM_RAND = $FF
-cdAX        ds 1
-cdBX        ds 1
-cdAY        ds 1
-cdBY        ds 1
-    ORG EN_VARIABLES + 1
+    ORG EN_VARS + 1
 enTestDir   ds 1
 enTestFX    ds 1
 enTestFY    ds 1
 enTestTimer ds 1
 
+    ORG EN_VARS_END
 
-    ORG EN_VARIABLES
-En0V        ds 10 ; Zero initialized enemy vars
-EN_0V_END:
+;==============================================================================
 
 ; Missile Vars
 mAType      ds 1
@@ -220,10 +235,9 @@ Temp2       ds 1
 Temp3       ds 1
 Temp4       ds 1
 Temp5       ds 1
-Temp6       ds 1
 
     SEG.U VARS_AUD_ZERO
-    ORG Temp0 + 4
+    ORG Temp0 + 1
 AUDCT0      ds 1
 AUDCT1      ds 1
 AUDFT0      ds 1
@@ -318,6 +332,8 @@ rRoomClear  ds 256/8            ; All Enemies Defeated flags
 rRoomFlag   ds 256
     ; all world types
 RF_SV_ITEM_GET  = $80 ; 1xxx_xxxx Got Item
+    ; overworld only
+RF_SV_DESTROY   = $40 ; x1xx_xxxx
     ; dungeons only
     ; xxxx_xxx1 N open
     ; xxxx_x1xx S open
@@ -349,8 +365,6 @@ EnBoardXL = BoardXL+8
 EnBoardXR = BoardXR-8
 EnBoardYU = BoardYU-8
 EnBoardYD = BoardYD+8
-
-EN_V0_COUNT = EN_0V_END - EN_VARIABLES
 
 ; U/D, pX $3C-$44
 ; L/R, pY $28-$30

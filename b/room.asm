@@ -228,9 +228,9 @@ LoadRoom: SUBROUTINE
     ldy roomId
     lda rRoomFlag,y
     and #%01010101
-    sta Temp6
+    sta Temp0
     asl
-    adc Temp6
+    adc Temp0
     eor #$FF
     and roomDoors
     sta roomDoors

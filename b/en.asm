@@ -208,10 +208,10 @@ EnSystem: SUBROUTINE
     jsr EnRandSpawn
     lda EnSysSpawnTry
     beq .rts
-    ldy #EN_V0_COUNT-1
+    ldy #EN_VARS_COUNT-1
     lda #0
 .EnInitLoop:
-    sta EN_VARIABLES,y
+    sta EN_VARS,y
     dey
     bpl .EnInitLoop
     
@@ -275,7 +275,7 @@ EnSysEnDie:
     lda #RF_EV_ENCLEAR
     ora roomFlags
     sta roomFlags
-    
+    ; set random item drop position
     lda enX
     sta cdBX
     lda enY

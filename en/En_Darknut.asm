@@ -8,7 +8,7 @@ En_Darknut: SUBROUTINE
     jsr Random
     and #3
     sta enDir
-    lda #1
+    lda #2 -1
     sta enHp
     
 En_DarknutMain:
@@ -29,10 +29,14 @@ En_DarknutMain:
     lda plItemDir
     cmp enDir
     beq .defSfx
-    lda #-32
-    sta enStun
-    dec enHp
-    bne .endCheckDamaged
+    jsr EnSys_Damage
+    bpl .defSfx
+    ldx #-32
+    stx enStun
+    clc
+    adc enHp
+    sta enHp
+    bpl .endCheckDamaged
     jmp EnSysEnDie
 .defSfx
     lda #SFX_DEF

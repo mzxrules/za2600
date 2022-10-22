@@ -303,12 +303,17 @@ PlayerInput: SUBROUTINE
     ora #PS_USE_ITEM
 .FireNotHit
     sta plState
+    tax
 
     ; update player item timer
     lda plItemTimer
     cmp #1
     adc #0
     sta plItemTimer
+
+    txa
+    and #PS_LOCK_MOVE
+    bne .rts
     
     lda SWCHA
     and #$F0

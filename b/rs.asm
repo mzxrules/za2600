@@ -7,10 +7,10 @@ Rs_Del:
     pha
     lda RoomScriptL,x
     pha
-RsNone:
+Rs_None:
     rts
     
-RsFairyFountain: SUBROUTINE
+Rs_FairyFountain: SUBROUTINE
     ldy plY
     cpy #$1C
     bmi .rts
@@ -32,9 +32,9 @@ RsFairyFountain: SUBROUTINE
 .rts
     rts
 
-RsMaze: SUBROUTINE
+Rs_Maze: SUBROUTINE
     ldy roomEX
-    lda RsMaze_Type,y
+    lda Rs_Maze_Type,y
     tax
     cmp worldSR
     beq .skipInit
@@ -44,7 +44,7 @@ RsMaze: SUBROUTINE
     bit roomFlags ; check RF_EV_LOAD
     bpl .rts
     lda roomId
-    cmp RsMaze_Exit,y 
+    cmp Rs_Maze_Exit,y 
     bne .checkPattern
 ; exit maze without finding hidden area
     sta worldSR
@@ -54,7 +54,7 @@ RsMaze: SUBROUTINE
     inc worldSY
     inc worldSY
     ldy worldSY
-    lda RsMaze_Pattern-2,y
+    lda Rs_Maze_Pattern-2,y
     cmp roomId
     bne .failStep
     cpy #8
@@ -71,17 +71,17 @@ RsMaze: SUBROUTINE
     stx roomId
     rts
 
-RsMaze_Type: 
+Rs_Maze_Type: 
     .byte ROOM_MAZE_1, ROOM_MAZE_2
-RsMaze_Exit
+Rs_Maze_Exit
     .byte <(ROOM_MAZE_1 - #$1), <(ROOM_MAZE_2 + #$1)
-RsMaze_Pattern:
+Rs_Maze_Pattern:
     .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 - #$10)
     .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 - #$1)
     .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 + #$10)
     .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 - #$1)
     
-RsLeftCaveEnt: SUBROUTINE
+Rs_EntCaveLeft: SUBROUTINE
     ldx #$14
     cpx plX
     bne .rts
@@ -93,7 +93,7 @@ RsLeftCaveEnt: SUBROUTINE
 .rts
     rts
     
-RsRightCaveEnt: SUBROUTINE
+Rs_EntCaveRight: SUBROUTINE
     ldx #$6C
     cpx plX
     bne .rts
@@ -125,7 +125,7 @@ EnterCave:
     sta roomId
     rts
 
-RsCave: SUBROUTINE
+Rs_Cave: SUBROUTINE
     lda roomFlags
     ora #RF_NO_ENCLEAR
     sta roomFlags
@@ -143,7 +143,7 @@ RsCave: SUBROUTINE
 .rts
     rts
     
-RsRaftSpot: SUBROUTINE
+Rs_RaftSpot: SUBROUTINE
     lda plState
     and #$20
     bne .fixPos
@@ -173,13 +173,12 @@ RsRaftSpot: SUBROUTINE
     lda #$40
     sta plX
 .rts
-RsNeedTriforce_rts
     rts
     
-RsNeedTriforce: SUBROUTINE
+Rs_NpcTriforce: SUBROUTINE
     ldy #7
     cpy itemTri
-    bmi RsNeedTriforce_rts
+    bmi .rts
     
     lda #RF_NO_ENCLEAR
     ora roomFlags
@@ -194,18 +193,19 @@ RsNeedTriforce: SUBROUTINE
     lda #MESG_NEED_TRIFORCE
     sta roomEX
 
-RsOldMan: SUBROUTINE
+Rs_Npc: ; SUBROUTINE
     lda #EN_OLD_MAN
     sta enType
-RsText: SUBROUTINE
+Rs_Text: ; SUBROUTINE
     lda roomEX
-EnableText: SUBROUTINE ; A = messageId
+EnableText: ; SUBROUTINE ; A = messageId
     sta mesgId
     lda #1
     sta KernelId
+.rts
     rts
 
-RsShoreItem: SUBROUTINE
+Rs_ShoreItem: SUBROUTINE
     lda #RF_PF_AXIS
     ora roomFlags
     sta roomFlags
@@ -231,7 +231,7 @@ RsShoreItem: SUBROUTINE
 .rts
     rts
     
-RsItem: SUBROUTINE
+Rs_Item: SUBROUTINE
     lda enType
     cmp #EN_CLEAR_DROP
     bne .rts
@@ -251,7 +251,7 @@ RsItem: SUBROUTINE
 .rts
     rts
 
-RsGameOver: SUBROUTINE
+Rs_GameOver: SUBROUTINE
     lda enInputDelay ; replaced if init taken
     ldx plHealth
     bne .skipInit
@@ -285,8 +285,8 @@ RsGameOver: SUBROUTINE
 .rts
     rts
 
-RsWorldMidEnt:  
-RsDungMidEnt: SUBROUTINE
+Rs_EntMidWorld:  
+Rs_EntMidDung: SUBROUTINE
     lda plX
     cmp #$40
     bne .rts
@@ -306,12 +306,13 @@ RsDungMidEnt: SUBROUTINE
 .rts
     rts
     
-RsDungExit: SUBROUTINE
+Rs_ExitDung: SUBROUTINE
     bit roomFlags
-    bmi .rts
+    bmi .rts ; RF_EV_LOAD
     lda plY
     cmp #BoardYD
     bne .rts
+Rs_ExitDung2:
     lda #MS_PLAY_THEME_L
     jmp ReturnWorld
 .rts
@@ -331,38 +332,67 @@ ReturnWorld: SUBROUTINE
     lda roomFlags
     ora #RF_EV_LOAD
     sta roomFlags
+    lda plState
+    and #~PS_LOCK_ALL
+    sta plState
+    lda plState2
+    and #~PS_HOLD_ITEM
+    sta plState2
+    lda #PL_DIR_D
+    sta plDir
     rts
     
-RsDiamondBlockStairs: SUBROUTINE
-    lda #RF_NO_ENCLEAR
-    ora roomFlags
-    sta roomFlags
-    lda #0
-    sta wPF2Room + 13
-    sta wPF2Room + 14
-    ldx #$40
-    ldy #$2C
-    cpx plX
-    bne .initBl
-    cpy plY
-    beq .skipPushBlock
-
-.initBl
-    inx
-    stx blX
-    lda #$3C
-    sta blY
-    lda #BL_PUSH_BLOCK
-    sta blType
-.skipPushBlock
+Rs_BlockDiamondStairs: SUBROUTINE
     lda #RS_STAIRS
     sta roomRS
     rts
 
-RsCentralBlock: SUBROUTINE
+Rs_EntCaveLeftBlocked: SUBROUTINE
+    ldx #RS_ENT_CAVE_LEFT
+    bne .main
+Rs_EntCaveRightBlocked:
+    ldx #RS_ENT_CAVE_RIGHT
+.main
+    bit CXM0FB
+    bvc .rts
+    lda plState2
+    and #3
+    cmp #PLAYER_BOMB
+    bne .rts
+    ldy plItemTimer
+    cpy #-6
+    bmi .rts
+; opening destroyed
+    stx roomRS
+    lda #SFX_SOLVE
+    sta SfxFlags
+    ldy roomId
+    lda rRoomFlag,y
+    ora #RF_SV_DESTROY
+    sta wRoomFlag,y
+    lda #$80
+    sta blY
+    
+    lda #$F3
+    cpx #RS_ENT_CAVE_LEFT
+    bne .right
+
+    sta wPF1RoomL + 12
+    sta wPF1RoomL + 13
+    sta wPF1RoomL + 14
+    rts
+.right
+    sta wPF1RoomR + 12
+    sta wPF1RoomR + 13
+    sta wPF1RoomR + 14
+
+.rts
+    rts
+
+Rs_BlockCentral: SUBROUTINE
     rts
     
-RsStairs:
+Rs_Stairs:
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts

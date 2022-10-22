@@ -109,6 +109,12 @@ GiItemDel: SUBROUTINE
     rts
     
 GiBomb: SUBROUTINE
+    lda enType
+    cmp #EN_ITEM_GET
+    beq .skipSfx
+    lda #SFX_ITEM_PICKUP
+    sta SfxFlags
+.skipSfx
     sed
     clc
     lda itemBombs
@@ -130,6 +136,8 @@ GiRupee5: SUBROUTINE
     bne AddRupees
 
 AddRupees: SUBROUTINE
+    lda #SFX_ITEM_PICKUP
+    sta SfxFlags
     sed
     clc
     adc itemRupees
@@ -153,8 +161,6 @@ GiSword3:
     lda Bit8-6-GI_SWORD2,x
     ora itemFlags
     sta itemFlags
-    lda #MS_PLAY_GI
-    sta SeqFlags
     rts
     
 GiRingRed:
@@ -171,8 +177,6 @@ GiRingBlue:
 .cGiRedRing
     ora itemFlags+1
     sta itemFlags+1
-    lda #MS_PLAY_GI
-    sta SeqFlags
     rts
     
 GiArrows:
@@ -186,30 +190,26 @@ GiPotionRed:
     lda Bit8-GI_ARROWS,x
     ora itemFlags+2
     sta itemFlags+2
-    lda #MS_PLAY_GI
-    sta SeqFlags
     rts
 
 GiTriforce:
     inc itemTri
-    lda #MS_PLAY_TRI
-    sta SeqFlags
     rts
 GiKey:
     inc itemKeys
-    lda #SFX_ITEM_PICKUP
+    lda enType
+    cmp #EN_ITEM_GET
+    beq .rts
+    lda #SFX_ITEM_PICKUP_KEY
     sta SfxFlags
+.rts
     rts
 GiMasterKey:
     lda #$C0
     sta itemKeys
-    lda #MS_PLAY_GI
-    sta SeqFlags
     rts
     
 GiHeart:
-    lda #MS_PLAY_GI
-    sta SeqFlags
     clc
     lda #8
     adc plHealthMax
@@ -224,9 +224,6 @@ GiMap:
     lda Bit8-2,y
     ora itemMaps
     sta itemMaps
-    lda #SFX_ITEM_PICKUP
-    sta SfxFlags
-    rts
 GiNone:
     rts
 
@@ -235,24 +232,25 @@ GiNone:
 ;==============================================================================
 
 EnClearDrop_: SUBROUTINE
+; process last drawn entity
     lda enState
-    and #1
+    and #1 ; CD_LAST_UPDATE
     tay
     lda Bit8+6,y
-    and enState
+    and enState ; CD_UPDATE_B / CD_UPDATE_A
     beq .endCollisionCheck ; Entity not active
     
     lda CXPPMM
     bpl .endCollisionCheck ; Player hasn't collided with Entity
     
-    cpy #0
+    cpy #0 ; Check if CD_UPDATE_A
     beq .EnItemCollision ; Potentially collided with permanent item
     
     ; Collided with random drop
     ldx cdBType
     beq .endCollisionCheck ; Safety check
-    lda #SFX_ITEM_PICKUP
-    sta SfxFlags
+    ;lda #SFX_ITEM_PICKUP
+    ;sta SfxFlags
     jsr GiItemDel
     lda #EN_NONE
     sta cdBType
@@ -264,17 +262,24 @@ EnClearDrop_: SUBROUTINE
     bne .endCollisionCheck
 
     ; item collected
-    lda #EN_NONE
-    sta cdAType
     ldx roomId
     lda rRoomFlag,x
     ora #RF_SV_ITEM_GET
     sta wRoomFlag,x
     ldx roomEX
+    cpx #GI_TRIFORCE
+    bmi .EnItem_GiItem
+    cpx #GI_KEY
+    beq .EnItem_GiItem
+    stx cdAType
+    jmp ItemGet
+.EnItem_GiItem
+    lda #EN_NONE
+    sta cdAType
     jsr GiItemDel
     
 .endCollisionCheck
-    ; Update active entity flags
+    ; Update enState flags
     lda #0 ; EN_NONE / GI_NONE
     ldx cdAType
     beq .ATypeNotLoaded
@@ -290,10 +295,6 @@ EnClearDrop_: SUBROUTINE
     bne .execute
     
     ; Nothing to execute
-    lda #$F0
-    sta enSpr+1
-    lda #$00
-    sta enSpr
     rts
     
 .execute
@@ -321,20 +322,9 @@ EnClearDropTypeA: SUBROUTINE
     
     lda cdAType
     cmp #EN_STAIRS
-    beq EnStairs_
-    cmp #EN_ITEM
     bne .rts
-    ldy roomEX
-    jmp EnItemDraw
     
 EnStairs_:
-    lda rFgColor
-    sta enColor
-    lda #<SprItem31
-    sta enSpr
-    lda #>SprItem31
-    sta enSpr+1
-
     cpx plX
     bne .rts
     cpy plY
@@ -373,7 +363,6 @@ EnClearDropTypeB: SUBROUTINE
     
 EnRandomDrops:
     .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
-
 
 EnShopkeeper_: SUBROUTINE
     bit enState
@@ -441,13 +430,38 @@ EnShopkeeper_: SUBROUTINE
     sta itemRupees
     cld
 
-    lda #$C0
+    lda #[$C0 | GI_EVENT_SHOP]
     sta enState
-    lda shopItem,x
-    tax
-    jsr GiItemDel
     lda #0
     sta KernelId
+    lda shopItem,x
+    sta cdAType
+    
+    
+; Special entity for making Link hold up items.
+ItemGet:
+    lda #PS_HOLD_ITEM
+    ora plState2
+    sta plState2
+    lda plX
+    sta enX
+    lda plY
+    clc
+    adc #9
+    sta enY
+    lda #EN_ITEM_GET
+    sta enType
+    ldy #MS_PLAY_TRI
+    ldx cdAType
+    cpx #GI_TRIFORCE
+    beq .skipGiTheme
+    ldy #MS_PLAY_GI
+.skipGiTheme
+    sty SeqFlags
+    lda plState
+    ora #PS_LOCK_ALL
+    sta plState
+    jmp GiItemDel
 
 
 .shopEnd

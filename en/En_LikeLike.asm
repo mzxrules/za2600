@@ -4,7 +4,7 @@
 
 En_LikeLike: SUBROUTINE
     jsr SeekDir
-    lda #6
+    lda #6 -1
     sta enHp
     lda #EN_LIKE_LIKE_MAIN
     sta enType
@@ -23,12 +23,19 @@ En_LikeLikeMain: SUBROUTINE
     lda enStun
     cmp #-8
     bmi .endCheckDamaged
-    lda #-32
-    sta enStun
-    lda #SFX_DEF
-    sta SfxFlags
-    dec enHp
-    bne .endCheckDamaged
+    jsr EnSys_Damage
+    bpl .endCheckDamaged
+    ldx #-32
+    stx enStun
+    ldx #SFX_EN_DAMAGE
+    stx SfxFlags
+    clc
+    adc enHp
+    sta enHp
+    bpl .endCheckDamaged
+    lda plState
+    and #~PS_LOCK_MOVE
+    sta plState
     jmp EnSysEnDie
 .endCheckDamaged
     
@@ -69,6 +76,10 @@ En_LikeLikeMain: SUBROUTINE
     rts
     
 .lockInPlace
+    lda plState
+    ora #PS_LOCK_MOVE
+    sta plState
+
     lda Frame
     and #$3F
     cmp enLLTimer

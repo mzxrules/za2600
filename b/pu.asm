@@ -12,8 +12,6 @@ BallDel:
 
     
 BlNone:
-    lda #$80
-    sta blY
     rts
     
 BlR: SUBROUTINE
@@ -29,7 +27,22 @@ BlD:
     dec blY
     rts
 
-BlPushBlock: SUBROUTINE
+
+BlDiamondPushBlock: SUBROUTINE
+    ldx roomENCount
+    bne .rts
+    ldx #$41
+    stx blX
+    lda #$3C
+    sta blY
+    lda #BL_PUSH_BLOCK
+    sta blType
+    lda #0
+    sta wPF2Room + 13
+    sta wPF2Room + 14
+
+
+BlPushBlock: ; SUBROUTINE
     ldx roomENCount
     bne .rts
     ldx roomPush

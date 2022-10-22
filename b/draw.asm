@@ -32,16 +32,17 @@ POSITION_SPRITES:
     sta m0DY
 
 .player_sprite_setup
-    lda #<(SprP0 + 7) ; Sprite + height-1
-    clc
     ldx plDir
-    adc Mul8,x
+    bit plState2
+    bpl .loadSprP ; #PS_HOLD_ITEM
+    ldx #4
+.loadSprP
+    lda plSpriteL,x
     sec
     sbc plY
     sta plSpr
 
     lda #>(SprP0 + 7)
-    sbc #0
     sta plSpr+1
 
 ; enemy draw height
@@ -458,3 +459,9 @@ PosHudObjects: SUBROUTINE
     sta WSYNC
     sta HMOVE
     rts
+
+    .align 8
+    
+plSpriteL:
+    .byte #<(SprP0 + 7), #<(SprP1 + 7), #<(SprP2 + 7), #<(SprP3 + 7)
+    .byte #<(SprP4 + 7)

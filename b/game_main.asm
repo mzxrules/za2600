@@ -155,47 +155,65 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     ora roomFlags
     sta roomFlags
 .endSwapRoom
-  
+
+;==============================================================================
 ; Perform PF Collision Detection
-; Phase player through walls if flag set
-.PlayerWallPass
+;==============================================================================
+    ldy #0 ; PFCollision
     lda plState
     and #~PS_LOCK_AXIS
     sta plState
+
+    bit roomFlags
+    bmi endPFCollision ; RF_EV_LOAD
+
+; Player Collision Detection
     and #PS_GLIDE
     beq .skipPlayerWallPass
+; Check if player should be pushed through wall
     bit CXP0FB ; if player collided with playfield, keep moving through wall
-    bmi .playerWallPassCont
-    lda #$00
-    sta plState
-    .bpl .skipPlayerWallPass
-    
-.playerWallPassCont
+    bpl .completePlayerWallPass
     ldx plDir
     jsr PlMoveDirDel
-    jmp .skipCollisionPosReset
+; Skip player PFCollision
+    ldy #1
+    bne PFCollision
+
+.completePlayerWallPass
+    lda #$00
+    sta plState
     
 .skipPlayerWallPass
-    bit roomFlags
-    bmi .skipCollisionPosReset
+    
+;==============================================================================
+; PFCollision
+;----------
+; y = Player (0), Enemy (1)
+;==============================================================================
+PFCollision: SUBROUTINE
 
-    ; Check PF Ignore
-    lda roomFlags
-    and #[RF_PF_IGNORE + RF_PF_AXIS]
+    ; Check RF_PF_IGNORE
+    lda RoomFlagPFCollision,y
+    and roomFlags
     beq .collisionPosReset
-    ldx plX
+    ldx plX,y
     cpx #EnBoardXL
     bmi .collisionPosReset
     cpx #EnBoardXR+1
     bpl .collisionPosReset
-    ldx plY
+    ldx plY,y
     cpx #EnBoardYD
     bmi .collisionPosReset
     cpx #EnBoardYU+1
     bpl .collisionPosReset
 
+    ; If entity, skip collision
+    cpy #1
+    beq .SkipPFCollision
+    
+    ; Else check if RF_PF_AXIS should be in effect for the player
     bit RF_PF_AXIS
-    beq .collisionPosReset_SkipPl ; branch on RF_PF_IGNORE
+    beq .SkipPFCollision ; branch on RF_PF_IGNORE
     bit CXP0FB
     bpl .collisionPosReset
     lda ITEMV_BOOTS
@@ -204,24 +222,27 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     lda plState
     ora PS_LOCK_AXIS
     sta plState
-    bne .collisionPosReset_SkipPl ; branch always
+    bne .SkipPFCollision ; branch always
 
 .collisionPosReset
-    ldx #0
-    lda CXP0FB
-    jsr TestCollisionReset
+    lda CXP0FB,y ; CXP1FB
+    and #$C0
+    beq .SkipPFCollision
+    
+    lda plXL,y
+    sta plX,y
+    lda plYL,y
+    sta plY,y
+.SkipPFCollision:
+    lda plX,y
+    sta plXL,y
+    lda plY,y
+    sta plYL,y
 
-.collisionPosReset_SkipPl
-    ldx plX
-    stx plXL
-    ldx plY
-    stx plYL
-
-    ldx #1
-    lda CXP1FB
-    jsr TestCollisionReset
-
-.skipCollisionPosReset
+    iny
+    cpy #2
+    bmi PFCollision
+endPFCollision
     
     lda #SLOT_EN_A
     sta BANK_SLOT
@@ -304,7 +325,7 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     lda #SLOT_RS_B
     sta BANK_SLOT
 
-    jsr RsGameOver
+    jsr Rs_GameOver
 .skipGameOver
 
 OVERSCAN_WAIT:
@@ -317,28 +338,6 @@ OVERSCAN_WAIT:
     sta WSYNC
 
     jmp MAIN_VERTICAL_SYNC
-
-
-;==============================================================================
-; CollisionReset
-;----------
-; N = reset collision
-; x = Player (0), Enemy (1)
-;==============================================================================
-TestCollisionReset:
-    and #$C0
-    beq .SkipPFCollision
-    
-    lda plXL,x
-    sta plX,x
-    lda plYL,x
-    sta plY,x
-.SkipPFCollision:
-    lda plX,x
-    sta plXL,x
-    lda plY,x
-    sta plYL,x
-    rts
         
 ;==============================================================================
 ; Generate Random Number
@@ -393,6 +392,9 @@ RoomWorldOff:
     
     INCLUDE "gen/PlMoveDir.asm"
     
+RoomFlagPFCollision
+    .byte #[RF_PF_IGNORE + RF_PF_AXIS], #[RF_PF_IGNORE]
+
 ;==============================================================================
 ; UPDATE_PL_HEALTH
 ;----------
@@ -408,12 +410,13 @@ UPDATE_PL_HEALTH: SUBROUTINE
     bmi .rts
     ldx #-48
     stx plStun
-    bit ITEMV_RING_BLUE
-    bvc .addDamage ; #ITEMF_RING_BLUE
+    bit ITEMV_RING_RED
+    bpl .checkBlueRing ; #ITEMF_RING_RED
     sec
     ror
-    bit ITEMV_RING_RED
-    bpl .addDamage ; #ITEMF_RING_RED
+    ;bit ITEMV_RING_BLUE
+.checkBlueRing
+    bvc .addDamage ; #ITEMF_RING_BLUE
     sec
     ror
 .addDamage
@@ -475,29 +478,6 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     sta roomId
     lda #RF_EV_LOAD
     sta roomFlags
-    rts
-        
-EnItemDraw: SUBROUTINE ; y == itemDraw
-    lda #>SprItem0
-    sta enSpr+1
-    lda GiItemColors,y
-    tax
-    cpy #GI_TRIFORCE+1
-    bpl .skipItemColor
-    lda Frame
-    and #$10
-    beq .skipItemColor
-    ldx #COLOR_EN_LIGHT_BLUE
-.skipItemColor
-    stx enColor
-    tya
-    asl
-    asl
-    asl
-    clc
-    adc #<SprItem0
-    sta enSpr
-EnItem:
     rts
 
 EnClearDrop:

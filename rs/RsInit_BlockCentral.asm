@@ -2,7 +2,7 @@
 ; mzxrules 2022
 ;==============================================================================
 
-RsInit_CentralBlock: SUBROUTINE
+RsInit_BlockCentral: SUBROUTINE
     lda roomFlags
     ora #RF_NO_ENCLEAR
     sta roomFlags
@@ -22,4 +22,4 @@ RsInit_CentralBlock: SUBROUTINE
     lda #RS_NONE
     sta roomRS
     rts
-    LOG_SIZE "RsInit_CentralBlock", RsInit_CentralBlock
+    LOG_SIZE "RsInit_BlockCentral", RsInit_BlockCentral

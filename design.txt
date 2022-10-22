@@ -353,6 +353,11 @@ EnClearDrop:
         a = Frame & 1
         if a == 0, run CD_UPDATE_A, x == 2
         else run CD_UPDATE_B, x == 2
+
+Additionally, the ItemGet system allows for Link to hold items above his head. 
+Affects EnClearDrop and EnShopkeeper var allocation
+enState stores ItemGet trigger, for restoring EnClearDrop and playing MS
+cdAType stores GiItem to hold overhead
     
 Enemy Spawn Routine: 
 
@@ -561,6 +566,6 @@ Atan2 table lookup:
     if x == 0, inc y by $100 ; Solves Atan2 being undefined for 0/0
     else if y == 0, inc x by $100
 
-RsMaze
+Rs_Maze
  roomEX 0 is N,N,N,N to Level 5
  roomEX 1 is N,E,S,E to graveyard

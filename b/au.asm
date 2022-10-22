@@ -78,11 +78,6 @@ SfxStab: SUBROUTINE
     bpl SfxStop
     rts
     
-SfxStop:
-    lda #0
-    sta SfxFlags
-    rts
-    
 SfxSolve:
 SfxSurf: SUBROUTINE
     ldx #8
@@ -108,8 +103,37 @@ SfxBomb: SUBROUTINE
     sta AUDCT1
     rts
     
+SfxItemPickupKey: SUBROUTINE
+    lda SfxCur
+    cmp #8
+    bpl SfxStop
+    lsr
+    tax
+    lda #4
+    sta AUDCT1
+    lda #8
+    sta AUDVT1
+    lda .SfxPickupTone,x
+    sta AUDFT1
+    rts
+.SfxPickupTone
+    .byte 8, 8, 2, 2
+
 SfxPlHeal:
-SfxItemPickup: SUBROUTINE
+    lda SfxCur
+    cmp #9
+    bpl SfxStop
+    eor #$FF
+    sec 
+    adc #18
+    sta AUDFT1
+    lda #4
+    sta AUDCT1
+    ldx #8
+    stx AUDVT1
+    rts
+
+SfxItemPickup:
     lda SfxCur
     cmp #4
     bpl SfxStop
@@ -120,7 +144,13 @@ SfxItemPickup: SUBROUTINE
     ldx #9
     stx AUDFT1
     rts
+
+SfxStop:
+    lda #0
+    sta SfxFlags
+    rts
     
+SfxEnDamage:
 SfxDef: SUBROUTINE
     lda SfxCur
     cmp #4
@@ -363,6 +393,8 @@ MsTri1: SUBROUTINE
     bne .skipSetDur
     lda #MS_PLAY_NONE
     sta SeqFlags
+    lda #RS_EXIT_DUNG2
+    sta roomRS
 .skipSetDur
     lda ms_tri1_note,x
     jmp SeqChan1

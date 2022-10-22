@@ -85,3 +85,26 @@ GiItemColors:
     .byte COLOR_EN_RED      ; GiPotionRed
 
     .byte COLOR_EN_TRIFORCE ; GiMap
+
+EnItemDraw: SUBROUTINE ; y == itemDraw
+    lda #>SprItem0
+    sta enSpr+1
+    lda GiItemColors,y
+    tax
+    cpy #GI_TRIFORCE+1
+    bpl .skipItemColor
+    lda Frame
+    and #$10
+    beq .skipItemColor
+    ldx #COLOR_EN_LIGHT_BLUE
+.skipItemColor
+    stx enColor
+    tya
+    asl
+    asl
+    asl
+    clc
+    adc #<SprItem0
+    sta enSpr
+EnItem:
+    rts

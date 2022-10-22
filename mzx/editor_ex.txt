@@ -8,7 +8,7 @@ set "$$" to "$Rs&local1&"
 loop start
 put c0f CustomBlock p20 at "('thisx'+1+'loopcount')" "thisy"
 loop for 32
-if "&$$&" === "RsItem" then "RsItem"
+if "&$$&" === "Rs_Item" then "Rs_Item"
 
 set "local10" to "('local2'/16)"
 goto "#hexchar"
@@ -18,7 +18,7 @@ goto "#hexchar"
 put c0f CustomBlock "local10" at "('thisx'+2)" "thisy"
 goto "q"
 
-: "RsItem"
+: "Rs_Item"
 loop start
 put c0f CustomBlock "$Gi&local2&.&loopcount&" at "('thisx'+1+'loopcount')" "thisy"
 loop for "('$Gi&local2&.length'-1)"

@@ -318,6 +318,8 @@ BANK_22
     INCLUDE "en/EnBoss_Cucco.asm"
     INCLUDE "en/En_Oldman.asm"
     INCLUDE "b/en.asm"
+    INCLUDE "en/En_ItemGet.asm"
+    INCLUDE "en/EnSys_Damage.asm"
     
     LOG_BANK_SIZE "-BANK 22/23- EnemyAI", BANK_22
 
@@ -395,6 +397,7 @@ BANK_28
     INCLUDE "en/EnDraw_Del.asm"
     INCLUDE "en/EnDraw_None.asm"
     INCLUDE "en/EnDraw_ClearDrop.asm"
+    INCLUDE "en/EnDraw_ItemGet.asm"
     INCLUDE "en/EnDraw_Darknut.asm"
     INCLUDE "en/EnDraw_LikeLike.asm"
     INCLUDE "en/EnDraw_OldMan.asm"
@@ -415,6 +418,9 @@ BANK_29
     INCLUDE "gen/RoomScriptInit.asm"
     INCLUDE "rs/RsInit_Del.asm"
     INCLUDE "rs/RsInit_None.asm"
-    INCLUDE "rs/RsInit_CentralBlock.asm"
+    INCLUDE "rs/RsInit_BlockCentral.asm"
+    INCLUDE "rs/RsInit_BlockDiamondStairs.asm"
+    INCLUDE "rs/RsInit_EntCaveLeftBlocked.asm"
+    INCLUDE "rs/RsInit_EntCaveRightBlocked.asm"
  
     LOG_BANK_SIZE "-BANK 29- RoomScriptInit", BANK_28
