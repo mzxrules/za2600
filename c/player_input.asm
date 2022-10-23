@@ -68,7 +68,7 @@ PlayerArrow: SUBROUTINE
 .offScreen
     lda #$80
     sta m0Y
-    bmi .rts
+    rts
 .drawArrow
     ldy plItemDir
     lda ArrowDeltaX,y
@@ -212,6 +212,12 @@ SwordOff8Y:
     .byte 3, 3, -7, 7
 
 PlayerItem: SUBROUTINE
+    ; update player item timer
+    lda plItemTimer
+    cmp #1
+    adc #0
+    sta plItemTimer
+
     lda plState2
     and #3
     tax
@@ -287,6 +293,13 @@ PlayerInput: SUBROUTINE
     lda #PS_LOCK_ALL
     bit plState
     beq .InputContinue
+    lda plState
+    and #~PS_USE_ITEM
+    sta plState
+    lda plState2
+    and #3
+    bne .rts
+    sta plItemTimer
     rts
 .InputContinue
     ; Test and update fire button state and related flags
@@ -303,15 +316,6 @@ PlayerInput: SUBROUTINE
     ora #PS_USE_ITEM
 .FireNotHit
     sta plState
-    tax
-
-    ; update player item timer
-    lda plItemTimer
-    cmp #1
-    adc #0
-    sta plItemTimer
-
-    txa
     and #PS_LOCK_MOVE
     bne .rts
     

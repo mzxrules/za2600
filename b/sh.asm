@@ -136,8 +136,6 @@ GiRupee5: SUBROUTINE
     bne AddRupees
 
 AddRupees: SUBROUTINE
-    lda #SFX_ITEM_PICKUP
-    sta SfxFlags
     sed
     clc
     adc itemRupees
@@ -146,6 +144,8 @@ AddRupees: SUBROUTINE
 .skipCap
     sta itemRupees
     cld
+    lda #SFX_ITEM_PICKUP
+    sta SfxFlags
     rts
     
 GiFairy: SUBROUTINE
@@ -445,10 +445,12 @@ ItemGet:
     sta plState2
     lda plX
     sta enX
+    sta enXL
     lda plY
     clc
     adc #9
     sta enY
+    sta enYL
     lda #EN_ITEM_GET
     sta enType
     ldy #MS_PLAY_TRI
