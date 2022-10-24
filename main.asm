@@ -314,6 +314,7 @@ BANK_22
     INCLUDE "en/En_Darknut.asm"
     INCLUDE "en/En_Wallmaster.asm"
     INCLUDE "en/En_Octorok.asm"
+    INCLUDE "en/En_Rope.asm"
     INCLUDE "en/En_LikeLike.asm"
     INCLUDE "en/EnBoss_Cucco.asm"
     INCLUDE "en/En_Oldman.asm"
@@ -403,6 +404,7 @@ BANK_28
     INCLUDE "en/EnDraw_OldMan.asm"
     INCLUDE "en/EnDraw_Wallmaster.asm"
     INCLUDE "en/EnDraw_Octorok.asm"
+    INCLUDE "en/EnDraw_Rope.asm"
     INCLUDE "en/EnDraw_Shopkeeper.asm"
  
     LOG_BANK_SIZE "-BANK 28- PushSystem", BANK_28

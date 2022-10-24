@@ -52,6 +52,8 @@ tbl = [
         "En_LikeLikeMain",
         "En_Octorok",
         "En_OctorokMain",
+        "En_Rope",
+        "En_RopeMain",
         "En_Wallmaster",
 
         "EnBoss_Cucco"
@@ -75,6 +77,8 @@ tbl = [
         "EnDraw_LikeLike",
         "EnDraw_Octorok",
         "EnDraw_Octorok",
+        "EnDraw_Rope",
+        "EnDraw_Rope",
         "EnDraw_Wallmaster",
 
         "EnDraw_None" # "EnDrawBossCucco",

@@ -30,6 +30,8 @@ NextDir: SUBROUTINE
     
 ;==============================================================================
 ; Selects a new direction based on the shortest path to the player
+; X = returns left/right direction towards player
+; Y = returns up/down direction towards player
 ;==============================================================================
 SeekDir: SUBROUTINE
     ldx #EN_DIR_L

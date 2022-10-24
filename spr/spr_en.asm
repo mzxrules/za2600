@@ -179,23 +179,23 @@ SprE19:
     .byte $08 ; |....X...|
     .byte $08 ; |....X...|
 SprE20:
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $7F ; |.XXXXXXX|
+    .byte $F8 ; |XXXXX...|
+    .byte $7E ; |.XXXXXX.|
+    .byte $07 ; |.....XXX|
+    .byte $57 ; |.X.X.XXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $AF ; |X.X.XXXX|
+    .byte $7E ; |.XXXXXX.|
 SprE21:
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $FE ; |XXXXXXX.|
+    .byte $1F ; |...XXXXX|
+    .byte $7E ; |.XXXXXX.|
+    .byte $E0 ; |XXX.....|
+    .byte $EA ; |XXX.X.X.|
+    .byte $FF ; |XXXXXXXX|
+    .byte $F5 ; |XXXX.X.X|
+    .byte $7E ; |.XXXXXX.|
 SprE22:
     .byte $A5 ; |X.X..X.X|
     .byte $A5 ; |X.X..X.X|

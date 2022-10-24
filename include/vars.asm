@@ -189,6 +189,9 @@ enMDY       ds 1
     ORG EN_ENEMY_VARIABLES
 ; LikeLike
 enLLTimer   ds 1
+    ORG EN_ENEMY_VARIABLES
+; Rope
+enRopeTimer ds 1
     ORG EN_VARS + 1
 enTestDir   ds 1
 enTestFX    ds 1
