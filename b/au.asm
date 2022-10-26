@@ -393,8 +393,6 @@ MsTri1: SUBROUTINE
     bne .skipSetDur
     lda #MS_PLAY_NONE
     sta SeqFlags
-    lda #RS_EXIT_DUNG2
-    sta roomRS
 .skipSetDur
     lda ms_tri1_note,x
     jmp SeqChan1

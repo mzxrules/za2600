@@ -5,7 +5,7 @@
 ; Start by checking weapon type
 EnSys_Damage: SUBROUTINE
     lda plState2
-    and #3
+    and #PS_ACTIVE_ITEM_T
     beq .sword ; 0
     cmp #2
     bpl .highItem ; 2-3

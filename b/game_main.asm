@@ -58,9 +58,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda #0
     beq .roomLoadCpuSkip
 .roomSkipInit
-    lda #SLOT_PL_A
-    sta BANK_SLOT
-    lda #SLOT_PL_B
+    lda #SLOT_PL
     sta BANK_SLOT
     jsr PlayerInput
 PAUSE_RETURN:
@@ -155,6 +153,16 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     ora roomFlags
     sta roomFlags
 .endSwapRoom
+
+; Check Warp in
+    lda plState2
+    and #PS_ACTIVE_ITEM
+    cmp #PLAYER_FLUTE
+    bne .runCollision
+    bit plItemDir
+    bpl .runCollision
+    jmp endPFCollision
+.runCollision
 
 ;==============================================================================
 ; Perform PF Collision Detection

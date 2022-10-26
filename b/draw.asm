@@ -108,7 +108,7 @@ POSITION_SPRITES:
     sta NUSIZ0 ; clean sword from previous frame
     
     ;lda BANK-ROM + 0
-    lda #SLOT_SP_A
+    lda #SLOT_SPR_A
     sta BANK_SLOT
 
 .hud_sprite_setup
@@ -133,7 +133,12 @@ POSITION_SPRITES:
     bne .hud_key_init
     bit roomId
     bmi .hud_key_init
-    ldx itemTri
+    lda itemTri
+    lsr
+    tax
+    lda draw_bitcount,x
+    adc #0
+    tax
     lda Mul8,x
     clc
     adc #7
@@ -380,7 +385,7 @@ KERNEL_HUD_LOOP:
     ldy #ROOM_HEIGHT
 KERNEL_WORLD_RESUME:
     
-    lda #SLOT_SP_A
+    lda #SLOT_SPR_A
     sta BANK_SLOT
 
     lda #$FF
@@ -465,3 +470,7 @@ PosHudObjects: SUBROUTINE
 plSpriteL:
     .byte #<(SprP0 + 7), #<(SprP1 + 7), #<(SprP2 + 7), #<(SprP3 + 7)
     .byte #<(SprP4 + 7)
+
+    .align 128
+draw_bitcount:
+    INCLUDE "gen/bitcount.asm"

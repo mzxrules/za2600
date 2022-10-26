@@ -286,7 +286,8 @@ tbl = [
         "PlayerSword",
         "PlayerBomb",
         "PlayerArrow",
-        "PlayerFire"
+        "PlayerFire",
+        "PlayerFlute",
     ]),
 ]
 

@@ -7,4 +7,13 @@ En_OldMan:
     sta enX
     lda #$38
     sta enY
+    
+    lda roomFlags
+    and #RF_EV_LOAD
+    bne .skipSetPos
+    lda #$30
+    cmp plY
+    bpl .skipSetPos
+    sta plY
+.skipSetPos
     rts

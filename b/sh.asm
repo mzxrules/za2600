@@ -8,7 +8,7 @@
 
 KERNEL_SHOP: SUBROUTINE
 ; Load Sprites
-    lda #SLOT_SP_A2
+    lda #SLOT_SPR_A2
     sta BANK_SLOT
 
 ; Position P0 in the middle of the screen
@@ -193,7 +193,10 @@ GiPotionRed:
     rts
 
 GiTriforce:
-    inc itemTri
+    ldx worldId
+    lda Bit8-1,x
+    ora itemTri
+    sta itemTri
     rts
 GiKey:
     inc itemKeys
@@ -453,12 +456,12 @@ ItemGet:
     sta enYL
     lda #EN_ITEM_GET
     sta enType
-    ldy #MS_PLAY_TRI
+    ldy #MS_PLAY_GI
     ldx cdAType
     cpx #GI_TRIFORCE
-    beq .skipGiTheme
-    ldy #MS_PLAY_GI
-.skipGiTheme
+    bne .defaultGi
+    ldy #MS_PLAY_TRI
+.defaultGi
     sty SeqFlags
     lda plState
     ora #PS_LOCK_ALL

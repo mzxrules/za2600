@@ -14,6 +14,7 @@ zelda_dep := main.asm \
   gen/RoomScript.asm \
   gen/mesg_data_0A.asm \
   gen/ms_header.asm \
+  gen/bitcount.asm \
 
 all: $(output_bin)
 
@@ -53,3 +54,6 @@ gen/atan2.asm: py/atan2.py
 
 gen/editor_color.txt: py/color.py
 	python3 py/color.py
+
+gen/bitcount.asm: py/bitcount.py
+	python3 py/bitcount.py

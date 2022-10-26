@@ -37,8 +37,8 @@ enDir       ds 1
 ;FgColor    ds 1
 worldId     ds 1
 worldSX     ds 1 ; respawn X
-worldSY     ds 1 ; respawn Y
-worldSR     ds 1 ; respawn room
+worldSY     ds 1 ; respawn Y / Rs_Maze state
+worldSR     ds 1 ; respawn room / Rs_Maze init
 roomId      ds 1
 roomTimer   ds 1 ; Shutter animation timer
 roomFlags   ds 1
@@ -74,11 +74,16 @@ PS_LOCK_ALL     = $02 ; 0000_0010 Lock Player
 PS_LOCK_AXIS    = $01 ; 0000_0001 Lock Player Axis - Hover Boots
 plState2    ds 1
 PS_HOLD_ITEM    = $80 ; 1000_0000
-                      ; 0000_0011 Active Item
-                      ;        00 Sword
-                      ;        01 Bombs
-                      ;        10 Bow
-                      ;        11 Flame
+                      ; xxxx_1xxx RESERVED
+PS_ACTIVE_ITEM  = $07 ; 0000_0111 Mask to fetch current active item
+PS_ACTIVE_ITEM_T = $03; placeholder until implemented
+                      ;       000 Sword
+                      ;       001 Bombs
+                      ;       010 Bow
+                      ;       011 Flame
+                      ;       100 Flute
+                      ;       101 Wand
+                      ;       110 Meat?
 plStun      ds 1
 plHealthMax ds 1
 plHealth    ds 1 ; $0 exact for gameover, negative for gameover state is init
@@ -161,7 +166,7 @@ CD_UPDATE_A     = $40 ; x1xx_xxxx
 CD_LAST_UPDATE  = $01 ; Stores last update's active entity
 cdBTimer    ds 1
 cdAType     ds 1 ; EnType value for ClearDrop, GiItem for ItemGet
-cdBType     ds 1 ; GiItem value
+cdBType     ds 1 ; GiItem value for ClearDrop, Timer for ItemGet Tri
 CD_ITEM_RAND = $FF
 cdAX        ds 1
 cdBX        ds 1
@@ -172,10 +177,17 @@ cdBY        ds 1
     ORG EN_VARS + 1
 enHp        ds 1
 enStun      ds 1
-enBlockDir  ds 1
+enBlockDir  ds 1 ; blocked direction
+EN_BLOCKDIR_L = 1
+EN_BLOCKDIR_R = 2
+EN_BLOCKDIR_U = 4
+EN_BLOCKDIR_D = 8
+
 EN_ENEMY_VARIABLES:
     ORG EN_ENEMY_VARIABLES
 ; Darknut
+;enBlockDir
+                ; xx1x_xxxx = new direction toggle
     ORG EN_ENEMY_VARIABLES
 ; Wallmaster
 enWallPhase ds 1 ; anim timer for phasing through wall
@@ -458,28 +470,24 @@ BIT_20 = Bit8 + 5
 BIT_40 = Bit8 + 6
 BIT_80 = Bit8 + 7
 
-EN_BLOCKDIR_L = 1
-EN_BLOCKDIR_R = 2
-EN_BLOCKDIR_U = 4
-EN_BLOCKDIR_D = 8
 
-ROOM_MAZE_1     = $1B
-ROOM_MAZE_2     = $61
+ROOM_MAZE_1 = $1B
+ROOM_MAZE_2 = $61
 
 RAMSEG_F0 = $00
 RAMSEG_F4 = $40
 RAMSEG_F8 = $80
 RAMSEG_FC = $C0
 
-BANK_SLOT_RAM = $3E
-BANK_SLOT = $3F
+BANK_SLOT_RAM   = $3E
+BANK_SLOT       = $3F
 
 SLOT_MAIN   = RAMSEG_FC | 1
 SLOT_PAUSE  = RAMSEG_FC | 2
 
 SLOT_PF_A   = RAMSEG_F4 | 4
-SLOT_SP_A   = RAMSEG_F0 | 6 ; 6
-SLOT_SP_A2  = RAMSEG_F4 | 6 ; 6
+SLOT_SPR_A  = RAMSEG_F0 | 6
+SLOT_SPR_A2 = RAMSEG_F4 | 6
 
 SLOT_W0     = RAMSEG_F4 | 12
 SLOT_W1     = RAMSEG_F4 | 13
@@ -494,7 +502,7 @@ SLOT_DRAW   = RAMSEG_F4 | 19
 SLOT_TX     = RAMSEG_F0 | 20
 SLOT_MG     = RAMSEG_F4 | 8 ; Requires bank divisible by 4
 
-SLOT_ROOM   = RAMSEG_F0 | 21 ;
+SLOT_ROOM   = RAMSEG_F0 | 21
 
 SLOT_EN_A   = RAMSEG_F0 | 22
 SLOT_EN_B   = RAMSEG_F4 | 23
@@ -505,10 +513,9 @@ SLOT_AU_B   = RAMSEG_F4 | 25
 SLOT_RS_A   = RAMSEG_F0 | 26
 SLOT_RS_B   = RAMSEG_F4 | 27
 
-SLOT_PL_A   = RAMSEG_F0 | 26
-SLOT_PL_B   = RAMSEG_F4 | 27
-
 SLOT_PU_A   = RAMSEG_F0 | 28
 SLOT_EN_D   = RAMSEG_F0 | 28
 
 SLOT_RS_INIT = RAMSEG_F0 | 29
+
+SLOT_PL     = RAMSEG_F0 | 30

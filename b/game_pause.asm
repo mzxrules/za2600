@@ -9,8 +9,17 @@ PAUSE_ENTRY: SUBROUTINE
     sta PDelay
     inc plState2
     lda plState2
-    and #3
+    tax ; plState
+    and #PS_ACTIVE_ITEM
+    tay ; active item
+    txa
+    cpy #5
+    bne .skipReset
+    and #$F0
+.skipReset
     sta plState2
+    lda #0
+    sta plItemDir
     jmp PAUSE_FROM_GAME
 
 PAUSE_VERTICAL_SYNC:
@@ -47,9 +56,7 @@ PAUSE_FROM_GAME:
     cmp #20
     bne .skip_game_return
     
-    lda #SLOT_PL_A
-    sta BANK_SLOT
-    lda #SLOT_PL_B
+    lda #SLOT_PL
     sta BANK_SLOT
     jmp MAIN_UNPAUSE
 

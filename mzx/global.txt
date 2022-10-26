@@ -27,6 +27,15 @@ if "loopcount" >= 16 then "cont_hex_precompute"
 set "$x1_&loopcount&.0" to "('local2')"
 : "cont_hex_precompute"
 loop 255
+
+loop start
+set "local2" "('loopcount'/10)"
+goto "#digit"
+set "$d2_&loopcount&.0" "local2"
+set "local2" "('loopcount'%10)"
+goto "#digit"
+set "$d2_&loopcount&.1" "local2"
+loop 99
 end
 
 : "#hex"

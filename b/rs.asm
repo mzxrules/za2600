@@ -176,20 +176,13 @@ Rs_RaftSpot: SUBROUTINE
     rts
     
 Rs_NpcTriforce: SUBROUTINE
-    ldy #7
+    ldy #$FF
     cpy itemTri
-    bmi .rts
+    beq .rts
     
     lda #RF_NO_ENCLEAR
     ora roomFlags
     sta roomFlags
-    and #RF_EV_LOAD
-    bne .skipSetPos
-    lda #$30
-    cmp plY
-    bpl .skipSetPos
-    sta plY
-.skipSetPos
     lda #MESG_NEED_TRIFORCE
     sta roomEX
 
@@ -356,7 +349,7 @@ Rs_EntCaveRightBlocked:
     bit CXM0FB
     bvc .rts
     lda plState2
-    and #3
+    and #PS_ACTIVE_ITEM
     cmp #PLAYER_BOMB
     bne .rts
     ldy plItemTimer

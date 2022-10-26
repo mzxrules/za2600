@@ -63,7 +63,7 @@ PlayerArrow: SUBROUTINE
     lda itemRupees
     bne .offScreen
     lda plState2
-    and #~3
+    and #~PS_ACTIVE_ITEM
     sta plState2
 .offScreen
     lda #$80
@@ -113,7 +113,7 @@ PlayerFire: SUBROUTINE
     bne .drawFire
     lda #$80
     sta m0Y
-    bmi .rts
+    rts
 .drawFire
     tya
     and #3
@@ -155,12 +155,12 @@ PlayerBomb: SUBROUTINE
     lda itemBombs
     bne .skipEquipSword
     lda plState2
-    and #~3
+    and #~PS_ACTIVE_ITEM
     sta plState2
 .skipEquipSword
     lda #$80
     sta m0Y
-    bmi .rts
+    rts
 .drawBomb
     cpy #-11
     bmi .rts
@@ -219,7 +219,7 @@ PlayerItem: SUBROUTINE
     sta plItemTimer
 
     lda plState2
-    and #3
+    and #PS_ACTIVE_ITEM
     tax
     lda PlItemH,x
     pha
@@ -243,7 +243,7 @@ PlayerSword: SUBROUTINE
     bne .drawSword
     lda #$80
     sta m0Y
-    bmi .endSword
+    rts
 
 .drawSword
     lda #0
@@ -271,6 +271,158 @@ PlayerSword: SUBROUTINE
 .endSword
     rts
 
+PlayerFlute: SUBROUTINE
+    lda plItemTimer
+    bne .drawTornado
+    bit plItemDir
+    bvs .ContinueTornado ;from transition
+    bmi .SpawnPlayer
+    bit plState
+    bvs .SpawnTornado ;PS_USE_ITEM
+.noDraw
+    lda #$80
+    sta m0Y
+    rts
+.SpawnPlayer
+    lda plState
+    and #~PS_LOCK_ALL
+    sta plState
+    lda plItemDir
+    and #~$C0
+    sta plItemDir
+    lda #$40
+    sta plX
+    lda #$10
+    sta plY
+    bpl .noDraw ; jmp
+
+.ContinueTornado
+    lda plState
+    ora #PS_LOCK_ALL
+    sta plState
+    lda plItemDir
+    and #~$40
+    sta plItemDir
+    lda #$10
+    sta m0Y
+    lda #0
+    sta m0X
+    lda #-40
+    sta plItemTimer
+    bmi .drawTornado ; jmp
+
+.SpawnTornado
+    lda plY
+    sta m0Y
+    lda #0
+    sta m0X
+    lda #-84
+    sta plItemTimer
+
+.drawTornado
+    cmp #-1
+    beq .lastFrame
+    and #3
+    tax
+    bne .contDraw
+    inc plItemTimer
+    inx
+.contDraw
+    lda m0Y
+    clc
+    adc .tornadoAnimDeltaY-1,X
+    sta m0Y
+    lda .tornadoAnimWidth-1,x
+    sta NUSIZ0_T
+    lda .tornadoAnimHeight-1,x
+    sta wM0H
+    lda m0X
+    clc
+    adc .tornadoAnimDeltaX-1,x
+    sta m0X
+; Check player collision
+; Have fun analyzing this one
+    ; x
+    sbc plX
+    adc #7
+    bmi .rts
+    cmp #14
+    bpl .rts
+    ; y
+    lda m0Y
+    adc .tornadoHitDeltaY,x
+    sbc plY
+    adc #2
+    bmi .rts
+    cmp #9
+    bpl .rts
+    lda plState
+    ora #PS_LOCK_ALL
+    sta plState
+    lda #$40
+    sta plX
+    lda #$C0
+    sta plY
+    ora plItemDir
+    sta plItemDir
+.rts
+    rts
+.lastFrame
+    bit plItemDir
+    bvc .rts
+.warp
+    lda #$77
+    ldx itemTri
+    beq .NoDest
+    lda plItemDir
+    and #7
+    tax
+.loop
+
+    lda Bit8,X
+    and itemTri
+    bne .foundDest
+    inx
+    cpx #8
+    bne .loop
+    ldx #0
+    beq .loop
+
+.foundDest
+    lda .tornadoDest,X
+.NoDest
+    sta roomId
+    inx
+    txa
+    and #7
+    sta Temp0
+    lda plItemDir
+    and #$F0
+    ora Temp0
+    sta plItemDir
+    lda #RF_EV_LOAD
+    ora roomFlags
+    sta roomFlags
+    rts
+
+.tornadoDest:
+    .byte $37, $3C, $74, $45, $0B, $22, $42, $5C
+
+.tornadoAnimDeltaX:
+    .byte 2 + 2, 2 - 2, 2
+
+.tornadoAnimDeltaY:
+    .byte 2, 2, -4
+
+.tornadoHitDeltaY:
+    .byte -2, -4, 0
+
+.tornadoAnimHeight:
+    .byte 2, 2, 1
+
+.tornadoAnimWidth:
+    .byte $20, $30, $10
+
 PlayerInput: SUBROUTINE
     bit INPT1
     bmi .skipCheckForPause
@@ -297,7 +449,7 @@ PlayerInput: SUBROUTINE
     and #~PS_USE_ITEM
     sta plState
     lda plState2
-    and #3
+    and #PS_ACTIVE_ITEM
     bne .rts
     sta plItemTimer
     rts

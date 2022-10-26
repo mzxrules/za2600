@@ -1,0 +1,38 @@
+set "commands" to "(8000000)"
+load char set "@48digits.chr"
+load char set "@65letters2.chr"
+load char set "@96lowcase.chr"
+
+
+: "q"
+wait for 1
+
+set "dx" to "('playerx'-'thisx')"
+set "dy" to "('playery'-'thisy')"
+set "dx2" to "('dx'/4)"
+set "dy2" to "('dy'/4)"
+
+set "$f0" "playerx"
+set "$f1" "playery"
+set "$f2" "dx"
+set "$f3" "dy"
+set "$f4" "dx2"
+set "$f5" "dy2"
+goto "#format"
+
+* "~f P&$f0&&$f1& DELTA &$f2& &$f3& &$f4& &$f5&"
+goto "q"
+
+: "#format"
+loop start
+set "$" "$f&loopcount&"
+set "local" to "('&$&'<0 + 44)"
+set "local2" to "abs('&$&')"
+set "$f&loopcount&" " "
+set "$f&loopcount&.0" "local"
+inc "$f&loopcount&" "$d2_&local2&"
+loop 5
+goto "#return"
+
+: "#routine"
+goto "#return"

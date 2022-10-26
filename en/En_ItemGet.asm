@@ -5,7 +5,7 @@
 En_ItemGet: SUBROUTINE
     lda cdAType
     cmp #GI_TRIFORCE
-    beq .rts
+    beq .triforce
     lda SeqFlags
     and #$0F
     cmp #[MS_PLAY_GI & $0F]
@@ -27,4 +27,38 @@ En_ItemGet: SUBROUTINE
 .end
     stx enType
 .rts 
+    rts
+.triforce
+    lda #GI_EVENT_TRI
+    bit enState
+    bne .skipTriInit
+    ora enState
+    sta enState
+    ldy #-40
+    sty cdBType
+.skipTriInit
+    lda plHealth
+    cmp plHealthMax
+    beq .skipHeal
+    lda #0
+    sta SfxFlags
+    lda Frame
+    and #1
+    bne .rts
+    lda #SFX_PL_HEAL
+    sta SfxFlags
+
+    inc plHealth
+    rts
+.skipHeal
+    lda SeqFlags
+    bne .rts ; MS_PLAY_NONE
+    lda cdBType
+    cmp #1
+    adc #0
+    sta cdBType
+    bmi .rts
+
+    lda #RS_EXIT_DUNG2
+    sta roomRS
     rts

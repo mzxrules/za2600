@@ -120,9 +120,6 @@ MINIMAP
 BANK_7
     LOG_BANK_SIZE "-BANK 7- RESERVED", BANK_7
 
-
-    
-
 ; ****************************************
 ; *               BANK 8                 *
 ; ****************************************
@@ -311,14 +308,17 @@ BANK_21
 BANK_22
     INCLUDE "gen/Entity.asm"
     INCLUDE "gen/EnMoveDir.asm"
+    INCLUDE "b/en.asm"
+
     INCLUDE "en/En_Darknut.asm"
-    INCLUDE "en/En_Wallmaster.asm"
+    INCLUDE "en/En_LikeLike.asm"
     INCLUDE "en/En_Octorok.asm"
     INCLUDE "en/En_Rope.asm"
-    INCLUDE "en/En_LikeLike.asm"
+    INCLUDE "en/En_Wallmaster.asm"
+
     INCLUDE "en/EnBoss_Cucco.asm"
+    
     INCLUDE "en/En_Oldman.asm"
-    INCLUDE "b/en.asm"
     INCLUDE "en/En_ItemGet.asm"
     INCLUDE "en/EnSys_Damage.asm"
     
@@ -378,7 +378,6 @@ BANK_24
 BANK_26
     INCLUDE "gen/RoomScript.asm"
     INCLUDE "b/rs.asm"
-    INCLUDE "c/player_input.asm"
     INCLUDE "c/mi_system.asm"
     INCLUDE "gen/atan2.asm"
     INCLUDE "c/atan2.asm"
@@ -425,4 +424,16 @@ BANK_29
     INCLUDE "rs/RsInit_EntCaveLeftBlocked.asm"
     INCLUDE "rs/RsInit_EntCaveRightBlocked.asm"
  
-    LOG_BANK_SIZE "-BANK 29- RoomScriptInit", BANK_28
+    LOG_BANK_SIZE "-BANK 29- RoomScriptInit", BANK_29
+
+; ****************************************
+; *               BANK 30                *
+; ****************************************
+    SEG Bank28
+    ORG $7800
+    RORG $F000
+
+BANK_30
+    INCLUDE "c/player_input.asm"
+ 
+    LOG_BANK_SIZE "-BANK 30- Player", BANK_30
