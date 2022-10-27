@@ -90,6 +90,8 @@ plHealth    ds 1 ; $0 exact for gameover, negative for gameover state is init
 plItemTimer ds 1
     ; Bombs -11 is active detonation
 plItemDir   ds 1
+    ORG plItemDir
+PauseState  ds 1
 itemRupees  ds 1
 itemKeys    ds 1 ; Sign bit = Master Key
 itemBombs   ds 1
@@ -262,7 +264,8 @@ AUDVT1      ds 1
 
     ;SEG.U VARS_PAUSE
 PFrame          ds 1
-PDelay          ds 1
+PAnim           ds 1
+PTemp           ds 1
 
     SEG.U VARS_HUD_ZERO
     ORG Temp0
@@ -519,3 +522,4 @@ SLOT_EN_D   = RAMSEG_F0 | 28
 SLOT_RS_INIT = RAMSEG_F0 | 29
 
 SLOT_PL     = RAMSEG_F0 | 30
+SLOT_DRAW_PAUSE_WORLD = RAMSEG_F4 | 31

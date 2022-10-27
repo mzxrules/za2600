@@ -5,8 +5,6 @@
 PAUSE_ENTRY: SUBROUTINE
     lda Frame
     sta PFrame
-    lda #-20
-    sta PDelay
     inc plState2
     lda plState2
     tax ; plState
@@ -19,7 +17,9 @@ PAUSE_ENTRY: SUBROUTINE
 .skipReset
     sta plState2
     lda #0
-    sta plItemDir
+    sta PauseState
+    lda #20
+    sta PAnim
     jmp PAUSE_FROM_GAME
 
 PAUSE_VERTICAL_SYNC:
@@ -45,22 +45,38 @@ PAUSE_VERTICAL_SYNC:
     sta VSYNC
 
 PAUSE_FROM_GAME:
-    ; Check if game should be unpaused
-    lda PDelay
-    bne .pauseInc
-    bit INPT1
-    bmi .skip_game_return
+    ; Check game pause status
+    bit PauseState
+    bvs .runPauseMenu
+    bpl .pauseAnimScrollDown
+    bmi .pauseAnimScrollUp
 
-.pauseInc
-    inc PDelay
-    cmp #20
-    bne .skip_game_return
+.pauseAnimScrollDown
+    dec PAnim
+    bne .runPauseUpdate
+    lda PauseState
+    ora #$40
+    sta PauseState
+    jmp .runPauseMenu
     
+.pauseAnimScrollUp
+    inc PAnim
+    lda PAnim
+    cmp #20
+    bne .runPauseUpdate
+    lda #0
+    sta PauseState
     lda #SLOT_PL
     sta BANK_SLOT
     jmp MAIN_UNPAUSE
 
-.skip_game_return
+.runPauseMenu
+    bit INPT1
+    bmi .runPauseUpdate
+    lda #$80
+    sta PauseState
+
+.runPauseUpdate
     lda #SLOT_AU_A
     sta BANK_SLOT
     lda #SLOT_AU_B
@@ -71,18 +87,9 @@ PAUSE_FROM_GAME:
     sta BANK_SLOT
     jsr EnDraw_Del
 
-
-PAUSE_KERNEL_MAIN: SUBROUTINE ; 192 scanlines
-    sta WSYNC
-    lda INTIM
-    bne PAUSE_KERNEL_MAIN
-    sta VBLANK
-    ldy #[192/2]-1
-PAUSE_KERNEL_LOOP:
-    sta WSYNC
-    dey
-    sta WSYNC
-    bpl PAUSE_KERNEL_LOOP
+    lda #SLOT_DRAW_PAUSE_WORLD
+    sta BANK_SLOT
+    jsr DRAW_PAUSE_WORLD
 
 
 PAUSE_OVERSCAN: SUBROUTINE ; 30 scanlines

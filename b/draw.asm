@@ -2,79 +2,27 @@
 ; mzxrules 2021
 ;==============================================================================
     
-HUD_SPLIT_TEST:
-    .byte 0, 0, 1, 0, 0, 1, 0 ;, 0
-    
-HealthPattern:
-    .byte $00, $01, $03, $07, $0F, $1F, $3F, $7F
-    .byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+    INCLUDE "c/draw_data.asm"
 
 ;==============================================================================
 ; Pre-Position Sprites
 ;==============================================================================
 POSITION_SPRITES:
-
+    
+    lda #SLOT_SPR_A
+    sta BANK_SLOT
+    
 ; room draw start
     ldy KernelId
     lda RoomWorldOff,y
     sta roomDY
+    tay
+
+    INCLUDE "c/draw_world_init.asm"
     
-; player draw height
-    lda Spr8WorldOff,y;#(ROOM_HEIGHT+8)
-    sec
-    sbc plY
-    sta plDY
-
-; player missile draw height
-    lda Spr8WorldOff,y;#(ROOM_HEIGHT+8)
-    sec
-    sbc m0Y
-    sta m0DY
-
-.player_sprite_setup
-    ldx plDir
-    bit plState2
-    bpl .loadSprP ; #PS_HOLD_ITEM
-    ldx #4
-.loadSprP
-    lda plSpriteL,x
-    sec
-    sbc plY
-    sta plSpr
-
-    lda #>(SprP0 + 7)
-    sta plSpr+1
-
-; enemy draw height
-    lda Spr8WorldOff,y
-    sec
-    sbc enY
-    sta enDY
-
-.enemy_sprite_setup
-    lda enSpr       ; #<(SprE0 + 7)
-    clc
-    adc #7
-    sec
-    sbc enY
-    sta enSpr
-
-    lda enSpr + 1   ; #>(SprE0 + 7)
-    sbc #0
-    sta enSpr + 1
-    
-.enemy_missile_setup
-    lda Spr8WorldOff,y
-    sec
-    sbc m1Y
-    sta m1DY
-    
-.ball_sprite_setup
-; ball draw height
-    lda Spr8WorldOff,y
-    sec
-    sbc blY
-    sta blDY
+;==============================================================================
+; HUD Draw Setup
+;==============================================================================
     
 .minimap_setup
 ; map color and sprite id
@@ -106,10 +54,6 @@ POSITION_SPRITES:
     lda #0
     sta COLUBK
     sta NUSIZ0 ; clean sword from previous frame
-    
-    ;lda BANK-ROM + 0
-    lda #SLOT_SPR_A
-    sta BANK_SLOT
 
 .hud_sprite_setup
 ; rupee display
@@ -117,14 +61,13 @@ POSITION_SPRITES:
     and #$0F
     asl
     asl
-    asl
+    asl 
     clc
     adc #7
     sta THudDigits+5
     lda itemRupees
     and #$F0
-    lsr
-    clc
+    lsr ;clc
     adc #7
     sta THudDigits+4
 
@@ -464,12 +407,6 @@ PosHudObjects: SUBROUTINE
     sta WSYNC
     sta HMOVE
     rts
-
-    .align 8
-    
-plSpriteL:
-    .byte #<(SprP0 + 7), #<(SprP1 + 7), #<(SprP2 + 7), #<(SprP3 + 7)
-    .byte #<(SprP4 + 7)
 
     .align 128
 draw_bitcount:

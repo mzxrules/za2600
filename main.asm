@@ -437,3 +437,15 @@ BANK_30
     INCLUDE "c/player_input.asm"
  
     LOG_BANK_SIZE "-BANK 30- Player", BANK_30
+
+
+; ****************************************
+; *               BANK 31                *
+; ****************************************
+    SEG Bank19
+    ORG $7C00
+    RORG $F400
+
+BANK_31
+    INCLUDE "b/draw_pause_world.asm"
+    LOG_BANK_SIZE "-BANK 31- Draw Paused World", BANK_31

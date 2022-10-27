@@ -77,7 +77,7 @@ VERSION_MACRO         = 105
 ;-------------------------------------------------------------------------------
 ; VERTICAL_SYNC
 ; Original author: Manuel Polik
-; Inserts the code required for a proper 3 scannline 
+; Inserts the code required for a proper 3 scanline 
 ; vertical sync sequence
 ;
 ; Note: Alters the accumulator

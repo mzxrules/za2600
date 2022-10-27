@@ -21,3 +21,14 @@ def ToAsm2(data, n=16):
         result += "    .byte " + ", ".join(b) + "\n"
         cur += n
     return result
+
+def ToAsmD(data, n=16):
+    result = ""
+    cur = 0
+    while cur < len(data):
+        b = []
+        for i in data[cur:cur+n]:
+            b.append('{:02d}'.format(int(i)))
+        result += "    .byte " + ", ".join(b) + "\n"
+        cur += n
+    return result

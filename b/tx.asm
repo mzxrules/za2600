@@ -381,7 +381,7 @@ Frame0Text
     ora right_text+4,x      ; 4     (35)
     
     ldx TextTemp            ; 3     (38)
-    VSLEEP; sleep 4
+    VSLEEP ; sleep 4 or 6
     sty GRP1                ; 3     (41)
     stx GRP0                ; 3     (44)
     sta GRP1                ; 3     (47)
@@ -401,12 +401,12 @@ FinishVS
     sta GRP0
     sta GRP1
     
-    lda TextLoop
+    ldx TextLoop
     bne .end
     jmp TextDisplayLoop
     
 .end
-    lda #0
+    ;lda #0
     sta VDELP0
     sta VDELP1
     sta GRP0

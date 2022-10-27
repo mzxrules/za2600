@@ -257,7 +257,7 @@ Rs_GameOver: SUBROUTINE
     inx
     stx KernelId
     inx
-    stx plState
+    stx plState ; PS_LOCK_ALL
     
     ldx #RS_GAME_OVER
     stx roomRS

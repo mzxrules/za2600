@@ -390,13 +390,6 @@ PlDirL:
     
 WORLD_ENT: ; Initial room spawns for worlds 0-9
     .byte $77, $73, $7D, $7C, $71, $76, $79, $00, $00, $7E
-
-Spr8WorldOff:
-    .byte (ROOM_HEIGHT+8), (TEXT_ROOM_HEIGHT+8), (SHOP_ROOM_HEIGHT+8)
-Spr1WorldOff: 
-    .byte (ROOM_HEIGHT+1), (TEXT_ROOM_HEIGHT+1), (SHOP_ROOM_HEIGHT+1)
-RoomWorldOff:
-    .byte (ROOM_PX_HEIGHT-1), (TEXT_ROOM_PX_HEIGHT-1), (SHOP_ROOM_PX_HEIGHT-1)
     
     INCLUDE "gen/PlMoveDir.asm"
     
