@@ -17,16 +17,21 @@ Rs_FairyFountain: SUBROUTINE
     lda plState
     ldy plHealthMax
     cpy plHealth
-    beq .unlock
+    beq .skipHeal
     ora #PS_LOCK_ALL
     sta plState
-    lda #$07
-    and Frame
+    
+    lda #0
+    sta SfxFlags
+    lda Frame
+    and #1
     bne .rts
+    lda #SFX_PL_HEAL
+    sta SfxFlags
 
-    lda #$8
-    jmp UPDATE_PL_HEALTH
-.unlock
+    inc plHealth
+    rts
+.skipHeal
     and #~PS_LOCK_ALL
     sta plState
 .rts

@@ -262,10 +262,25 @@ AUDFT1      ds 1
 AUDVT0      ds 1
 AUDVT1      ds 1
 
-    ;SEG.U VARS_PAUSE
+    SEG.U VARS_PAUSE
+; Pause perms must come after VARS_AUD_ZERO temps
+    ORG plSpr
+PItemSpr0       ds 2
+    ORG enSpr
+PItemSpr1       ds 2
+    ORG plDY
+PItemSpr2       ds 2
+PItemColors     ds 4
+    ORG Temp0 + 1
+PCursorLast     ds 1
+PCursorFirst    ds 1
+PCursor         ds 1
+    ORG Temp0 + 1
+PItemSpr3       ds 2
+PGiItems        ds 4
+
 PFrame          ds 1
 PAnim           ds 1
-PTemp           ds 1
 
     SEG.U VARS_HUD_ZERO
     ORG Temp0
@@ -279,7 +294,8 @@ THudTemp        ds 1
 THudDigits      ds 6
     ORG THudHealthMaxH
 THudHealthDisp  ds 1
-    
+; == 14 == 
+
     SEG.U VARS_EN_SYS
     ORG Temp0 + 1
 ;Temp0          ds 1

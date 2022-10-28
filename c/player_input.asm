@@ -227,6 +227,9 @@ PlayerItem: SUBROUTINE
     pha
     rts
 
+PlayerWand:
+PlayerMeat:
+PlayerPotion:
 PlayerSword: SUBROUTINE
 ; If Item Button, use item
     bit plState
@@ -428,7 +431,8 @@ PlayerInput: SUBROUTINE
     bmi .skipCheckForPause
     lda plItemTimer
     bmi .skipCheckForPause
-    lda plHealth
+    ldx plHealth
+    dex
     bmi .skipCheckForPause
     lda #SLOT_PAUSE
     sta BANK_SLOT

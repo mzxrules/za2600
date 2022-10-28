@@ -225,7 +225,7 @@ PFCollision: SUBROUTINE
     bit CXP0FB
     bpl .collisionPosReset
     lda ITEMV_BOOTS
-    bit ITEMF_BOOTS
+    bit ITEMF_BOOTS ; Is this a bug?
     beq .collisionPosReset
     lda plState
     ora PS_LOCK_AXIS

@@ -8,13 +8,13 @@
 ;==============================================================================
     
 ; player draw height
-    lda Spr8WorldOff,y ;#(ROOM_HEIGHT+8)
+    lda .Spr8WorldOff,y ;#(ROOM_HEIGHT+8)
     sec
     sbc plY
     sta plDY
 
 ; player missile draw height
-    lda Spr8WorldOff,y ;#(ROOM_HEIGHT+8)
+    lda .Spr8WorldOff,y
     sec
     sbc m0Y
     sta m0DY
@@ -25,7 +25,7 @@
     bpl .loadSprP ; #PS_HOLD_ITEM
     ldx #4
 .loadSprP
-    lda plSpriteL,x
+    lda .plSpriteL,x
     sec
     sbc plY
     sta plSpr
@@ -34,7 +34,7 @@
     sta plSpr+1
 
 ; enemy draw height
-    lda Spr8WorldOff,y
+    lda .Spr8WorldOff,y
     sec
     sbc enY
     sta enDY
@@ -52,14 +52,14 @@
     sta enSpr + 1
     
 .enemy_missile_setup
-    lda Spr8WorldOff,y
+    lda .Spr8WorldOff,y
     sec
     sbc m1Y
     sta m1DY
     
 .ball_sprite_setup
 ; ball draw height
-    lda Spr8WorldOff,y
+    lda .Spr8WorldOff,y
     sec
     sbc blY
     sta blDY

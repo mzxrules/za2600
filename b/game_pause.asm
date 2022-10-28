@@ -5,17 +5,6 @@
 PAUSE_ENTRY: SUBROUTINE
     lda Frame
     sta PFrame
-    inc plState2
-    lda plState2
-    tax ; plState
-    and #PS_ACTIVE_ITEM
-    tay ; active item
-    txa
-    cpy #5
-    bne .skipReset
-    and #$F0
-.skipReset
-    sta plState2
     lda #0
     sta PauseState
     lda #20
@@ -71,10 +60,6 @@ PAUSE_FROM_GAME:
     jmp MAIN_UNPAUSE
 
 .runPauseMenu
-    bit INPT1
-    bmi .runPauseUpdate
-    lda #$80
-    sta PauseState
 
 .runPauseUpdate
     lda #SLOT_AU_A
@@ -89,7 +74,13 @@ PAUSE_FROM_GAME:
 
     lda #SLOT_DRAW_PAUSE_WORLD
     sta BANK_SLOT
+    bit PauseState
+    bvs .draw_menu
     jsr DRAW_PAUSE_WORLD
+    jmp PAUSE_OVERSCAN
+.draw_menu
+    jsr Pause_Menu_Input
+    jsr DRAW_PAUSE_MENU
 
 
 PAUSE_OVERSCAN: SUBROUTINE ; 30 scanlines
@@ -111,3 +102,168 @@ PAUSE_OVERSCAN_WAIT:
     bne PAUSE_OVERSCAN_WAIT
 
     jmp PAUSE_VERTICAL_SYNC
+
+Pause_Menu_Input: SUBROUTINE
+
+; Update Fire button state flag
+    lda plState
+    cmp #INPT_FIRE_PREV
+    ora #INPT_FIRE_PREV
+    bit INPT4
+    bmi .FireNotHit
+    eor #$80
+    sta plState
+    jmp .endPause
+.FireNotHit
+    sta plState
+
+    bit INPT1
+    bmi .skipEndPause
+.endPause
+    lda #$80
+    sta PauseState
+    lda #0
+    sta PAnim
+    rts 
+.skipEndPause
+    lda PAnim
+    cmp #1
+    adc #0
+    sta PAnim
+    beq .selectItem
+    rts
+.selectItem
+    lda plState2
+    and #PS_ACTIVE_ITEM
+    sta PCursorLast
+    sta PCursor
+
+    lda SWCHA
+    and #$F0
+
+.ContRight
+    asl
+    bcs .ContLeft
+    bcc .pickRight ; jmp
+.ContLeft
+    asl
+    bcs .ContDown
+    bcc .pickLeft ; jmp
+.ContDown
+    asl
+    bcs .ContUp
+    ;clc 
+    ;lda PCursor
+    ;adc #4-1
+    ;sta PCursor
+    jmp .pickRight
+.ContUp
+    asl
+    bcs .rts
+    ;clc
+    ;lda PCursor
+    ;adc #-4+1
+    ;sta PCursor
+    jmp .pickLeft
+    rts
+
+.pickRight
+    lda PCursor
+    and #PS_ACTIVE_ITEM
+    tay
+    lda Pause_Menu_Item_Next+1,y
+    tay
+    sta PCursor
+    jsr PickItemDel
+    beq .pickRight
+    bne .selectedItem
+    
+.pickLeft
+    lda PCursor
+    and #PS_ACTIVE_ITEM
+    tay
+    lda Pause_Menu_Item_Next-1,y
+    tay
+    sta PCursor
+    jsr PickItemDel
+    beq .pickLeft
+
+.selectedItem
+    lda plState2
+    and #$F8
+    ora PCursor
+    sta plState2
+
+    lda PCursor
+    cmp PCursorLast
+    beq .skipSfx
+    lda #SFX_STAB
+    sta SfxFlags
+.skipSfx
+    lda #-12
+    sta PAnim
+.rts
+    rts
+
+
+PickSword: SUBROUTINE
+    lda ITEMV_SWORD3
+    and #[ITEMF_SWORD3 | ITEMF_SWORD2]
+    bne .rts
+    lda #1
+.rts
+    rts
+
+PickBomb: SUBROUTINE
+    lda itemBombs
+    rts
+
+PickBow: SUBROUTINE
+    lda ITEMV_BOW
+    and #ITEMF_BOW
+    beq .rts
+    lda ITEMV_ARROWS
+    and #[ITEMF_ARROWS | ITEMF_ARROWS_SILVER]
+    beq .rts
+    lda itemRupees
+.rts
+    rts
+
+PickCandle: SUBROUTINE
+    lda ITEMV_CANDLE_RED
+    and #[ITEMF_CANDLE_BLUE | ITEMF_CANDLE_RED]
+    rts
+
+PickFlute: SUBROUTINE
+    lda ITEMV_FLUTE
+    and #ITEMF_FLUTE
+    rts
+
+PickWand: SUBROUTINE
+    lda ITEMV_FIRE_MAGIC
+    and #ITEMF_FIRE_MAGIC
+    rts
+
+PickMeat: SUBROUTINE
+    lda ITEMV_MEAT
+    and #ITEMF_MEAT
+    rts
+
+PickPotion: SUBROUTINE
+    lda ITEMV_POTION_RED
+    and #[ITEMF_POTION_RED | ITEMF_POTION_BLUE | ITEMF_NOTE]
+    rts
+
+PickItemDel:
+    lda PlItemPickH,y
+    pha
+    lda PlItemPickL,y
+    pha
+    rts
+
+
+    INCLUDE "gen/PlItemPick.asm"
+    .byte 7
+Pause_Menu_Item_Next:
+    .byte 0, 1, 2, 3, 4, 5, 6, 7
+    .byte 0

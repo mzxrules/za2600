@@ -1,20 +1,17 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-    
-    INCLUDE "c/draw_data.asm"
-
 ;==============================================================================
 ; Pre-Position Sprites
 ;==============================================================================
-POSITION_SPRITES:
+POSITION_SPRITES: SUBROUTINE
     
     lda #SLOT_SPR_A
     sta BANK_SLOT
     
 ; room draw start
     ldy KernelId
-    lda RoomWorldOff,y
+    lda .RoomWorldOff,y
     sta roomDY
     tay
 
@@ -151,13 +148,13 @@ POSITION_SPRITES:
     lsr
     ; divide by 8, rounding up
     tax
-    lda HealthPattern,x
+    lda .HealthPattern,x
     sta THudHealthMaxL,y
     cpx #8
     bpl .hpBarLoopCont
     ldx #8
 .hpBarLoopCont
-    lda HealthPattern-8,x
+    lda .HealthPattern-8,x
     sta THudHealthMaxH,y
     dey
     bpl .hpBarLoop
@@ -168,13 +165,13 @@ POSITION_SPRITES:
 ;===================================================
 ; Kernel Main
 ;===================================================
-KERNEL_MAIN: SUBROUTINE ; 192 scanlines
+KERNEL_MAIN:  ; 192 scanlines
     sta WSYNC
     lda INTIM
     bne KERNEL_MAIN
     sta VBLANK
 
-KERNEL_HUD: SUBROUTINE
+KERNEL_HUD:
     ; precalc digits sprite
     ldx THudDigits+4    ; 3
     lda SprN0,x         ; 4
@@ -184,7 +181,7 @@ KERNEL_HUD: SUBROUTINE
     ldy #7 ; Draw Height
     lda #0
     sta WSYNC
-    beq .loop
+    beq KERNEL_HUD_LOOP
 ;=========== Scanline 1A ==============
 .hudScanline1A
     lda #0
@@ -218,7 +215,6 @@ KERNEL_HUD: SUBROUTINE
     sta THudHealthMaxL
     sta WSYNC
 KERNEL_HUD_LOOP:
-.loop:
 
 ;=========== Scanline 0 ==============
     cpy THudMapPosY     ; 3
@@ -243,7 +239,7 @@ KERNEL_HUD_LOOP:
     ldx #COLOR_PLAYER_00; 2
     lda THudHealthH
     sta THudHealthDisp
-    lda HUD_SPLIT_TEST,y
+    lda .HUD_SPLIT_TEST,y
     bne .hudScanline1A
     lda #0
     stx COLUP0          ; 2
@@ -281,7 +277,7 @@ KERNEL_HUD_LOOP:
     sta WSYNC
     sta PF1
 ;=========== Scanline 0 ==============
-    bpl .loop
+    bpl KERNEL_HUD_LOOP
 ; HUD LOOP End
     lda #85
     sta TIM8T ; Delay 8 scanlines
@@ -352,6 +348,8 @@ KERNEL_WORLD_RESUME:
     sta PF0
     rts
     LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN
+    
+    INCLUDE "c/draw_data.asm"
 
     .align 64    
 ;==============================================================================
