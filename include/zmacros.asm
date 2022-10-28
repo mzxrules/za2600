@@ -14,7 +14,7 @@ ITEMF_{1} = {3}
         echo .- {2}+$8000,{2},(.),{1}
         ENDIF
     ENDM
-    
+
     MACRO LOG_BANK_SIZE_M1
         IFNCONST PAL60
         echo .- {2}+$8000,{2},(.-1),{1}
@@ -28,13 +28,13 @@ ITEMF_{1} = {3}
             ENDIF
         ENDIF
     ENDM
-    
+
 ; Rewriteable Kernel Variable
     MACRO VKERNEL1
 r{1} = . - KERNEL_WORLD + rKERNEL + 1
 w{1} = . - KERNEL_WORLD + wKERNEL + 1
     ENDM
-    
+
 ; Text Kernel sleep macro
     MACRO VSLEEP
     bvs .j0
@@ -42,7 +42,7 @@ w{1} = . - KERNEL_WORLD + wKERNEL + 1
     bvs .j1
 .j1
     ENDM
-    
+
     MACRO COLOR
     IFCONST PAL60
 COLOR_{1} = {3}

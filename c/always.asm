@@ -10,7 +10,7 @@ Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
 
     INCLUDE "gen/mesg_digits.asm"
-    
+
 MAIN_UNPAUSE:
     lda #SLOT_MAIN
     sta BANK_SLOT
@@ -41,14 +41,14 @@ DivideLoop
     asl            ; 2 18
     sta.wx HMP0,X  ; 5 23 - store fine tuning of X
     sta RESP0,X    ; 4 27 - set coarse X position of object
-;                  ;   67, which is max supported scan cycle 
+;                  ;   67, which is max supported scan cycle
     dex            ; 2 69
     bpl .Loop      ; 3 72
-    
+
     sta WSYNC
     sta HMOVE
     rts
-    
+
 GiItemColors:
     .byte COLOR_BLACK       ; GiNone
     .byte COLOR_EN_RED      ; GiRecoverHeart

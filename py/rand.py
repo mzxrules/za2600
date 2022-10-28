@@ -15,7 +15,7 @@ def RESET_FLAGS():
 def ADC(acc):
     if a_C:
         acc = acc + 1
-    
+
 
 def lfsr_rand(val):
     carry = (val & 1) == 1
@@ -33,14 +33,14 @@ def getnext(l):
         if not l[i][2]:
             return l[i]
     return None
-    
+
 def main():
     test = []
     result = []
     for i in range(256):
         test.append([i, lcg_rand(i), False])
         #print(f"{i:02X} -> {test[i][0]:02X}")
-        
+
     next = getnext(test)
     while next != None:
         print(next)

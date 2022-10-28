@@ -15,7 +15,7 @@ TIA_BASE_ADDRESS = $00
     SEG Bank0
     ORG $0000
     RORG $F000
-    
+
     .byte #'T, #'J, #'3, #'E
     INCLUDE "b/game_entry.asm"
 
@@ -39,7 +39,7 @@ BANK_1
     INCLUDE "b/game_main.asm"
 
     LOG_BANK_SIZE_M1 "-BANK 1- Main Game", BANK_1
-    
+
 ; ****************************************
 ; *               BANK 2                 *
 ; ****************************************
@@ -50,7 +50,7 @@ BANK_1
 BANK_2
     INCLUDE "c/always.asm"
     INCLUDE "b/game_pause.asm"
-    
+
     LOG_BANK_SIZE_M1 "-BANK 2- Pause Game", BANK_2
 
 ; ****************************************
@@ -88,14 +88,14 @@ BANK_5
     ;INCLUDE "spr/spr_room_pf1.asm"
     ;INCLUDE "spr/spr_room_pf2.asm"
     LOG_BANK_SIZE "-BANK 5- Sprites PF 1", BANK_5
-    
+
 ; ****************************************
 ; *               BANK 6                 *
 ; ****************************************
     SEG Bank5
     ORG $1800
     RORG $F000
-    
+
 BANK_6
     INCLUDE "spr/spr_item.asm"
     align $100
@@ -107,16 +107,16 @@ MINIMAP
     INCLUDE "spr/spr_pl.asm"
     INCLUDE "spr/spr_sh.asm"
     INCLUDE "spr/spr_num.asm"
-    
+
     LOG_BANK_SIZE "-BANK 6- Sprites", BANK_6
-    
+
 ; ****************************************
 ; *               BANK 7                 *
 ; ****************************************
     SEG Bank5
     ORG $1C00
     RORG $FC00
-    
+
 BANK_7
     LOG_BANK_SIZE "-BANK 7- RESERVED", BANK_7
 
@@ -134,26 +134,25 @@ MesgAH = MesgAL + $40
 MesgData
     INCLUDE "gen/mesg_data_0A.asm"
     LOG_BANK_SIZE "-BANK 8/11- Mesg Data", BANK_8
-    
+
     ORG $2400
     RORG $F400
     INCLUDE "gen/mesg_data_lut.asm"
     INCLUDE "gen/mesg_data_0B.asm"
-    
+
     ORG $2800
     RORG $F400
     INCLUDE "gen/mesg_data_lut.asm"
     INCLUDE "gen/mesg_data_1A.asm"
-    
+
     ORG $2C00
     RORG $F400
     INCLUDE "gen/mesg_data_lut.asm"
     INCLUDE "gen/mesg_data_1B.asm"
-    
+
     ORG $2FFF
     .byte $00
-    
-    
+
 ; ****************************************
 ; *               BANK 12                *
 ; ****************************************
@@ -167,12 +166,12 @@ BANK_12
     INCBIN "world/w0co.bin"
     INCBIN "world/w0rs.bin"
     INCBIN "world/w0ex.bin"
-    
+
     repeat 0x80
     .byte $01
     repend
     LOG_BANK_SIZE "-BANK 12- World 0", BANK_12
-    
+
 ; ****************************************
 ; *               BANK 13                *
 ; ****************************************
@@ -186,13 +185,13 @@ BANK_13
     INCBIN "world/w1co.bin"
     INCBIN "world/w1rs.bin"
     INCBIN "world/w1ex.bin"
-    
+
     repeat 0x80
     .byte $01
     repend
 
     LOG_BANK_SIZE "-BANK 13- Dungeon 1", BANK_13
-    
+
 ; ****************************************
 ; *               BANK 14                *
 ; ****************************************
@@ -206,7 +205,7 @@ BANK_14
     INCBIN "world/w2co.bin"
     INCBIN "world/w2rs.bin"
     INCBIN "world/w2ex.bin"
-    
+
     repeat 0x80
     .byte $01
     repend
@@ -242,7 +241,7 @@ BANK_16
 
 BANK_17
     LOG_BANK_SIZE "-BANK 17- RESERVED", BANK_17
-    
+
 ; ****************************************
 ; *               BANK 18                *
 ; ****************************************
@@ -286,7 +285,7 @@ left_text
 right_text
     INCLUDE "gen/text_right.asm"
     LOG_BANK_SIZE "-BANK 20- Text Kernel", BANK_20
-    
+
 ; ****************************************
 ; *               BANK 21                *
 ; ****************************************
@@ -317,11 +316,11 @@ BANK_22
     INCLUDE "en/En_Wallmaster.asm"
 
     INCLUDE "en/EnBoss_Cucco.asm"
-    
+
     INCLUDE "en/En_Oldman.asm"
     INCLUDE "en/En_ItemGet.asm"
     INCLUDE "en/EnSys_Damage.asm"
-    
+
     LOG_BANK_SIZE "-BANK 22/23- EnemyAI", BANK_22
 
 
@@ -359,7 +358,7 @@ BANK_24
     INCLUDE "gen/ms_tri0_dur.asm"
     INCLUDE "gen/ms_tri1_note.asm"
     INCLUDE "gen/ms_tri1_dur.asm"
-    
+
     align 16
     INCLUDE "gen/ms_header.asm"
     INCLUDE "gen/MusicSeq.asm"
@@ -405,7 +404,7 @@ BANK_28
     INCLUDE "en/EnDraw_Octorok.asm"
     INCLUDE "en/EnDraw_Rope.asm"
     INCLUDE "en/EnDraw_Shopkeeper.asm"
- 
+
     LOG_BANK_SIZE "-BANK 28- PushSystem", BANK_28
 
 ; ****************************************
@@ -423,7 +422,7 @@ BANK_29
     INCLUDE "rs/RsInit_BlockDiamondStairs.asm"
     INCLUDE "rs/RsInit_EntCaveLeftBlocked.asm"
     INCLUDE "rs/RsInit_EntCaveRightBlocked.asm"
- 
+
     LOG_BANK_SIZE "-BANK 29- RoomScriptInit", BANK_29
 
 ; ****************************************
@@ -435,7 +434,7 @@ BANK_29
 
 BANK_30
     INCLUDE "c/player_input.asm"
- 
+
     LOG_BANK_SIZE "-BANK 30- Player", BANK_30
 
 

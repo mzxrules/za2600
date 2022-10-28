@@ -9,7 +9,7 @@ DRAW_PAUSE_WORLD:
     ldy PAnim
     sty roomDY
     INCLUDE "c/draw_world_init.asm"
-    
+
 
 KERNEL_PAUSE_WORLD_MAIN: SUBROUTINE ; 192 scanlines
     sta WSYNC
@@ -29,7 +29,7 @@ KERNEL_PAUSE_WORLD_MAIN: SUBROUTINE ; 192 scanlines
     dey
     bne .loop
 
-; Pad with black above world view    
+; Pad with black above world view
     ldx PAnim
     cpx #19
     bpl .skipVerticalShift
@@ -65,9 +65,9 @@ KERNEL_PAUSE_WORLD_RESUME:
     sta PF2
     lda #1
     sta VDELP0
-    
+
     jsr rKERNEL ; JUMP WORLD KERNEL
-    
+
 ; Post Kernel
     lda rFgColor
     sta COLUBK
@@ -89,4 +89,4 @@ KERNEL_PAUSE_WORLD_RESUME:
 
 .RoomHeight
     .byte 03, 07, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63
-    .byte 67, 71, 75, 79    
+    .byte 67, 71, 75, 79

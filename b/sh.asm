@@ -47,8 +47,8 @@ KERNEL_SHOP: SUBROUTINE
     ldx shopItem+1
     lda GiItemColors,x
     sta COLUP0
-    
-; Cycle padding to line up world kernel draw routine    
+
+; Cycle padding to line up world kernel draw routine
     sta WSYNC
     sta WSYNC
     sta WSYNC
@@ -66,11 +66,11 @@ KERNEL_SHOP: SUBROUTINE
     ldx shopItem
     lda GiItemColors,x
     sta COLUP1
-    
+
     lda (ShopSpr1),y
     sta GRP0
 
-    
+
     ldx shopItem+2
     lda GiItemColors,x
     sta COLUP1
@@ -79,8 +79,8 @@ KERNEL_SHOP: SUBROUTINE
     sta GRP1
     dec ShopDrawY
     bne .draw_loop
-    
-    
+
+
 ; KERNEL_SHOP RETURN
     ldx #0
     stx GRP0
@@ -88,14 +88,14 @@ KERNEL_SHOP: SUBROUTINE
 
     lda #COLOR_PLAYER_00
     sta COLUP0
-    
+
 .waitTimerLoop
     lda #SLOT_DRAW
     sta BANK_SLOT
     ldy #SHOP_ROOM_HEIGHT
     jsr PosWorldObjects
     sta WSYNC
-    
+
     jmp KERNEL_WORLD_RESUME
 
 ;==============================================================================
@@ -107,7 +107,7 @@ GiItemDel: SUBROUTINE
     lda ItemIdL,x
     pha
     rts
-    
+
 GiBomb: SUBROUTINE
     lda enType
     cmp #EN_ITEM_GET
@@ -130,7 +130,7 @@ GiBomb: SUBROUTINE
 GiRupee: SUBROUTINE
     lda #1
     bne AddRupees
-    
+
 GiRupee5: SUBROUTINE
     lda #5
     bne AddRupees
@@ -147,7 +147,7 @@ AddRupees: SUBROUTINE
     lda #SFX_ITEM_PICKUP
     sta SfxFlags
     rts
-    
+
 GiFairy: SUBROUTINE
     lda #8*5
     bpl .setHealth
@@ -162,7 +162,7 @@ GiSword3:
     ora itemFlags
     sta itemFlags
     rts
-    
+
 GiRingRed:
     lda #[ITEMF_RING_RED | ITEMF_RING_BLUE]
     bmi .cGiRedRing
@@ -178,7 +178,7 @@ GiRingBlue:
     ora itemFlags+1
     sta itemFlags+1
     rts
-    
+
 GiArrows:
 GiArrowsSilver:
 GiCandleBlue:
@@ -211,7 +211,7 @@ GiMasterKey:
     lda #$C0
     sta itemKeys
     rts
-    
+
 GiHeart:
     clc
     lda #8
@@ -221,7 +221,7 @@ GiHeart:
     adc plHealth
     sta plHealth
     rts
-    
+
 GiMap:
     ldy worldId
     lda Bit8-2,y
@@ -242,13 +242,13 @@ EnClearDrop_: SUBROUTINE
     lda Bit8+6,y
     and enState ; CD_UPDATE_B / CD_UPDATE_A
     beq .endCollisionCheck ; Entity not active
-    
+
     lda CXPPMM
     bpl .endCollisionCheck ; Player hasn't collided with Entity
-    
+
     cpy #0 ; Check if CD_UPDATE_A
     beq .EnItemCollision ; Potentially collided with permanent item
-    
+
     ; Collided with random drop
     ldx cdBType
     beq .endCollisionCheck ; Safety check
@@ -280,7 +280,7 @@ EnClearDrop_: SUBROUTINE
     lda #EN_NONE
     sta cdAType
     jsr GiItemDel
-    
+
 .endCollisionCheck
     ; Update enState flags
     lda #0 ; EN_NONE / GI_NONE
@@ -296,10 +296,10 @@ EnClearDrop_: SUBROUTINE
     ; Execute routine
     lda enState
     bne .execute
-    
+
     ; Nothing to execute
     rts
-    
+
 .execute
     tax ; x = enState
     lda Frame
@@ -322,11 +322,11 @@ EnClearDropTypeA: SUBROUTINE
     stx enX
     ldy cdAY
     sty enY
-    
+
     lda cdAType
     cmp #EN_STAIRS
     bne .rts
-    
+
 EnStairs_:
     cpx plX
     bne .rts
@@ -339,7 +339,7 @@ EnStairs_:
     sta roomFlags
 .rts
     rts
-    
+
 ; Random Item Drops
 EnClearDropTypeB: SUBROUTINE
     inc enState
@@ -347,11 +347,11 @@ EnClearDropTypeB: SUBROUTINE
     sta enX
     lda cdBY
     sta enY
-    
+
     lda cdBType
     cmp #CD_ITEM_RAND
     bne .skipRollItem
-    
+
     inc cdBType ; set GI_NONE
     jsr Random
     cmp #255 ; drop rate odds, N out of 256
@@ -363,7 +363,7 @@ EnClearDropTypeB: SUBROUTINE
     sta cdBType
 .skipRollItem
     rts
-    
+
 EnRandomDrops:
     .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
 
@@ -408,7 +408,7 @@ EnShopkeeper_: SUBROUTINE
     inx
     dey
     bpl .init_shop
-    
+
 ; Shop logic
     bit CXPPMM
     bpl .shopEnd
@@ -439,8 +439,8 @@ EnShopkeeper_: SUBROUTINE
     sta KernelId
     lda shopItem,x
     sta cdAType
-    
-    
+
+
 ; Special entity for making Link hold up items.
 ItemGet:
     lda #PS_HOLD_ITEM
@@ -516,7 +516,7 @@ ShopPrices:
     .byte $20, $05, $40
     .byte $30, $05, $10
     .byte $20, $05, $40
-; Expensive    
+; Expensive
     .byte $30, $05, $10
     .byte $20, $05, $40
     .byte $30, $05, $10

@@ -1,4 +1,4 @@
- 
+
 KERNEL_SIMPLE: SUBROUTINE
 ; y = boardHeight
 ; Player
@@ -7,7 +7,7 @@ KERNEL_SIMPLE: SUBROUTINE
     bcs .DrawP0
     lda #0
     .byte $2C ; BIT compare hack to skip 2 byte op
-    
+
 .DrawP0:
     lda (plSpr),y
     sta GRP0
@@ -17,7 +17,7 @@ KERNEL_SIMPLE: SUBROUTINE
     lsr
     lsr
     tax
-    
+
     lda PF1Room0,x
     sta PF1
     lda PF2Room0,x
@@ -25,4 +25,4 @@ KERNEL_SIMPLE: SUBROUTINE
 
     dey
     sta WSYNC
-    bne KERNEL_SIMPLE    
+    bne KERNEL_SIMPLE

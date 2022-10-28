@@ -15,7 +15,7 @@ RsInit_BlockDiamondStairs: SUBROUTINE
     bne .initPos
     cpy plY
     bne .initPos
-    
+
     lda #0
     sta wPF2Room + 13
     sta wPF2Room + 14

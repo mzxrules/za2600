@@ -21,7 +21,7 @@ TextKernel: SUBROUTINE
     lda #1
     sta VDELP0
     sta VDELP1
-    
+
 TextSetPosition: SUBROUTINE
     lda Frame
     and #1
@@ -35,7 +35,7 @@ TextSetPosition: SUBROUTINE
 
     sta WSYNC ; To Scanline 59
     sta HMOVE
-    
+
     lda #$FE
     sta TextLoop
 
@@ -64,7 +64,7 @@ TextDisplayLoop:
     tax
     bne .loadTextLoop
     bit .SetVFlag
-    
+
 .loadTextLoop
     lda (TMesgPtr),y
     sta TextReg+0,y
@@ -95,7 +95,7 @@ TextDisplayLoop:
     ldy #0
 Frame0Text
     ; Text line 1 / 5
- 
+
     ;line 1
     sta WSYNC               ; 3     (0)
     sty COLUP0              ; 3     (3)
@@ -108,24 +108,24 @@ Frame0Text
     ora right_text,x        ; 4     (25*)
     sleep 2
     sta GRP1                ; 3     (28)
-    
+
     ldx TextReg+4           ; 4     (32)
     lda left_text,x         ; 4     (36)
     ldx TextReg+5           ; 4     (40)
     ora right_text,x        ; 4     (44)
     sleep 2
     sta GRP0                ; 3     (47)
-    
+
     ldx TextReg+6           ; 4     (51)
     lda left_text,x         ; 4     (55)
     ldx TextReg+7           ; 4     (59)
     ora right_text,x        ; 4     (63)
-    
+
     ldy #COLOR_WHITE        ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
-    
+
     ;line 2
     sta WSYNC               ; 3     (0)
 
@@ -139,7 +139,7 @@ Frame0Text
     lda left_text,x         ; 4     (27)
     ldx TextReg+11          ; 4     (31)
     ora right_text,x        ; 4     (35)
-    
+
     ldx TextTemp            ; 3     (38)
     VSLEEP;sleep 4
     sty GRP1                ; 3     (41)
@@ -155,7 +155,7 @@ Frame0Text
     ora right_text+1,x      ; 4     (69)
 
     ; Text line 2 / 5
-    
+
     ;line 1
     sta WSYNC               ; 3     (0)
     sty COLUP0              ; 3     (3)
@@ -168,24 +168,24 @@ Frame0Text
     ora right_text+1,x      ; 4     (25*)
     sleep 2
     sta GRP1                ; 3     (28)
-    
+
     ldx TextReg+4           ; 4     (32)
     lda left_text+1,x       ; 4     (36)
     ldx TextReg+5           ; 4     (40)
     ora right_text+1,x      ; 4     (44)
     sleep 2
     sta GRP0                ; 3     (47)
-    
+
     ldx TextReg+6           ; 4     (51)
     lda left_text+1,x       ; 4     (55)
     ldx TextReg+7           ; 4     (59)
     ora right_text+1,x      ; 4     (63)
-    
+
     ldy #COLOR_WHITE        ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
-    
+
     ;line 2
     sta WSYNC               ; 3     (0)
 
@@ -199,7 +199,7 @@ Frame0Text
     lda left_text+1,x       ; 4     (27)
     ldx TextReg+11          ; 4     (31)
     ora right_text+1,x      ; 4     (35)
-    
+
     ldx TextTemp            ; 3     (38)
     VSLEEP;sleep 4
     sty GRP1                ; 3     (41)
@@ -215,7 +215,7 @@ Frame0Text
     ora right_text+2,x      ; 4     (69)
 
     ; Text line 3 / 5
-    
+
     ;line 1
     sta WSYNC               ; 3     (0)
     sty COLUP0              ; 3     (3)
@@ -228,24 +228,24 @@ Frame0Text
     ora right_text+2,x      ; 4     (25*)
     sleep 2
     sta GRP1                ; 3     (28)
-    
+
     ldx TextReg+4           ; 4     (32)
     lda left_text+2,x       ; 4     (36)
     ldx TextReg+5           ; 4     (40)
     ora right_text+2,x      ; 4     (44)
     sleep 2
     sta GRP0                ; 3     (47)
-    
+
     ldx TextReg+6           ; 4     (51)
     lda left_text+2,x       ; 4     (55)
     ldx TextReg+7           ; 4     (59)
     ora right_text+2,x      ; 4     (63)
-    
+
     ldy #COLOR_WHITE        ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
-    
+
     ;line 2
     sta WSYNC               ; 3     (0)
 
@@ -259,7 +259,7 @@ Frame0Text
     lda left_text+2,x       ; 4     (27)
     ldx TextReg+11          ; 4     (31)
     ora right_text+2,x      ; 4     (35)
-    
+
     ldx TextTemp            ; 3     (38)
     VSLEEP; sleep 4
     sty GRP1                ; 3     (41)
@@ -275,7 +275,7 @@ Frame0Text
     ora right_text+3,x      ; 4     (69)
 
     ; Text line 4 / 5
-    
+
     ;line 1
     sta WSYNC               ; 3     (0)
     sty COLUP0              ; 3     (3)
@@ -288,24 +288,24 @@ Frame0Text
     ora right_text+3,x      ; 4     (25*)
     sleep 2
     sta GRP1                ; 3     (28)
-    
+
     ldx TextReg+4           ; 4     (32)
     lda left_text+3,x       ; 4     (36)
     ldx TextReg+5           ; 4     (40)
     ora right_text+3,x      ; 4     (44)
     sleep 2
     sta GRP0                ; 3     (47)
-    
+
     ldx TextReg+6           ; 4     (51)
     lda left_text+3,x       ; 4     (55)
     ldx TextReg+7           ; 4     (59)
     ora right_text+3,x      ; 4     (63)
-    
+
     ldy #COLOR_WHITE        ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
-    
+
     ;line 2
     sta WSYNC               ; 3     (0)
 
@@ -319,7 +319,7 @@ Frame0Text
     lda left_text+3,x       ; 4     (27)
     ldx TextReg+11          ; 4     (31)
     ora right_text+3,x      ; 4     (35)
-    
+
     ldx TextTemp            ; 3     (38)
     VSLEEP; sleep 4
     sty GRP1                ; 3     (41)
@@ -335,7 +335,7 @@ Frame0Text
     ora right_text+4,x      ; 4     (69)
 
     ; Text line 5 / 5
-    
+
     ;line 1
     sta WSYNC               ; 3     (0)
     sty COLUP0              ; 3     (3)
@@ -348,24 +348,24 @@ Frame0Text
     ora right_text+4,x      ; 4     (25*)
     sleep 2
     sta GRP1                ; 3     (28)
-    
+
     ldx TextReg+4           ; 4     (32)
     lda left_text+4,x       ; 4     (36)
     ldx TextReg+5           ; 4     (40)
     ora right_text+4,x      ; 4     (44)
     sleep 2
     sta GRP0                ; 3     (47)
-    
+
     ldx TextReg+6           ; 4     (51)
     lda left_text+4,x       ; 4     (55)
     ldx TextReg+7           ; 4     (59)
     ora right_text+4,x      ; 4     (63)
-    
+
     ldy #COLOR_WHITE        ; 2     (65)
     sty COLUP0              ; 3     (68)
     sty COLUP1              ; 3     (71)
     tay                     ; 2     (73)
-    
+
     ;line 2
     sta WSYNC               ; 3     (0)
 
@@ -379,7 +379,7 @@ Frame0Text
     lda left_text+4,x       ; 4     (27)
     ldx TextReg+11          ; 4     (31)
     ora right_text+4,x      ; 4     (35)
-    
+
     ldx TextTemp            ; 3     (38)
     VSLEEP ; sleep 4 or 6
     sty GRP1                ; 3     (41)
@@ -393,18 +393,18 @@ Frame0Text
     sta GRP0
     sta GRP1
     sta GRP0
-    
+
 FinishVS
     sleep 13
     lda #0
     sta GRP1
     sta GRP0
     sta GRP1
-    
+
     ldx TextLoop
     bne .end
     jmp TextDisplayLoop
-    
+
 .end
     ;lda #0
     sta VDELP0
@@ -418,11 +418,11 @@ FinishVS
     bne .worldKernelReturn
     jmp ShopKernel
 .worldKernelReturn
-    
+
     lda #COLOR_PLAYER_00
     sta COLUP0
     jsr PosWorldObjects
-    
+
 .waitTimerLoop
     lda INTIM
     bne .waitTimerLoop
@@ -430,7 +430,7 @@ FinishVS
     sta BANK_SLOT
     ldy #TEXT_ROOM_HEIGHT
     sta WSYNC ; 95
-    
+
     jmp KERNEL_WORLD_RESUME
 
 SetHorizPos: SUBROUTINE

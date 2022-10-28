@@ -6,7 +6,7 @@
 ; World Draw Setup
 ; Y = World View Height, in PF pixels -1
 ;==============================================================================
-    
+
 ; player draw height
     lda .Spr8WorldOff,y ;#(ROOM_HEIGHT+8)
     sec
@@ -50,13 +50,13 @@
     lda enSpr + 1   ; #>(SprE0 + 7)
     sbc #0
     sta enSpr + 1
-    
+
 .enemy_missile_setup
     lda .Spr8WorldOff,y
     sec
     sbc m1Y
     sta m1DY
-    
+
 .ball_sprite_setup
 ; ball draw height
     lda .Spr8WorldOff,y

@@ -23,7 +23,7 @@ for y in range(WIDTH):
         computeDY.append((x, y, dy, i, radians))
 
 
-def GenAtan2Table(name, data):    
+def GenAtan2Table(name, data):
     output = f'{name}:\n'
     for x, y, d, i, radians in data:
         deg = math.degrees(radians)

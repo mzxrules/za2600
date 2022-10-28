@@ -9,9 +9,9 @@ EnDraw_Octorok: SUBROUTINE
     sta enSpr+1
     ldx enDir
     lda Mul8,x
-    clc 
+    clc
     adc #<SprE4
     sta enSpr
     rts
-    
+
     LOG_SIZE "EnDraw_Octorok", EnDraw_Octorok

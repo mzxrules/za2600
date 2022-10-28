@@ -27,7 +27,7 @@ NextDir: SUBROUTINE
     and #3
     sta enDir
     rts
-    
+
 ;==============================================================================
 ; Selects a new direction based on the shortest path to the player
 ; X = returns left/right direction towards player
@@ -73,7 +73,7 @@ SeekDir: SUBROUTINE
     sty enDir
 .rts
     rts
-    
+
 ;==============================================================================
 ; Updates enemy's enBlockDir flags
 ; A = flag reset mask. Set to $F0 to reset blocked direction flags
@@ -108,7 +108,7 @@ EnSetBlockedDir: SUBROUTINE
 .setBlockDir
     sta enBlockDir
     rts
-    
+
 EnDirR2: SUBROUTINE
     inc enX
 EnDirR: SUBROUTINE
@@ -129,22 +129,22 @@ EnDirU2: SUBROUTINE
 EnDirU: SUBROUTINE
     inc enY
     rts
-    
+
 EnNone:
     lda #$F0
     sta enSpr+1
     sta enY
     rts
-    
+
 ;==============================================================================
 ; ENTITY
 ;==============================================================================
-    
+
 EnSysEncounter:
     .byte EN_NONE, EN_DARKNUT, EN_LIKE_LIKE, EN_OCTOROK, EN_WALLMASTER, EN_BOSS_CUCCO
 EnSysEncounterCount:
     .byte 0, 1, 2, 1, 1
-    
+
 EnSystem: SUBROUTINE
     ; precompute room clear flag helpers because it's annoying
     lda roomId
@@ -157,26 +157,26 @@ EnSystem: SUBROUTINE
     tax
     lda Bit8,x
     sta EnSysClearMask
-    
+
     ; Set x to clear flag offset
     ldx EnSysClearOff
     ; Set y to encounterId
     ldy roomEN
-    
+
     ; If room load this frame, setup new encounter
     bit roomFlags
     bvs .checkRoomClear ; #RF_EV_LOADED
-    
+
     ; Else, if enemy clear event flag set, set enemy clear flag
     lda roomFlags
     and #RF_EV_ENCLEAR
     beq .runEncounter ; flag not set, run encounter
-    
+
     lda rRoomClear,x
     ora EnSysClearMask
     sta wRoomClear,x
     bne .runEncounter ; should always branch
-    
+
     ; Test if room wasn't cleared
 .checkRoomClear
     lda #0
@@ -185,16 +185,16 @@ EnSystem: SUBROUTINE
     lda rRoomClear,x ; get room clear byte
     and EnSysClearMask
     bne .runEncounter
-    
+
     lda EnSysEncounterCount,y
     sta roomENCount
-    
+
 .runEncounter
     ; toggle off enemy clear event
     lda #~RF_EV_ENCLEAR
     and roomFlags
     sta roomFlags
-    
+
     lda roomENCount
     beq .rts
     lda enType
@@ -202,7 +202,7 @@ EnSystem: SUBROUTINE
     lda #PS_LOCK_ALL
     bit plState
     bne .rts
-    
+
     lda EnSysEncounter,y
     sta EnSysNext
     lda #4
@@ -216,13 +216,13 @@ EnSystem: SUBROUTINE
     sta EN_VARS,y
     dey
     bpl .EnInitLoop
-    
+
     lda EnSysNext
     sta enType
 .rts
     rts
 
-    
+
 EnRandSpawnRetry:
     dec EnSysSpawnTry
     beq .rts
@@ -264,12 +264,12 @@ EnRandSpawn: SUBROUTINE
     sta enX
     sta enXL
     rts
-    
+
 EnSpawnPF2Mask:
     .byte $80, $60, $18, $06
-   
+
     LOG_SIZE "EnRandSpawn", EnRandSpawn
-    
+
 EnSysEnDie:
     dec roomENCount
     bne .continueEncounter
@@ -282,7 +282,7 @@ EnSysEnDie:
     sta cdBX
     lda enY
     sta cdBY
-    
+
 .continueEncounter
     lda #$80
     sta enY
@@ -290,7 +290,7 @@ EnSysEnDie:
     sta enType
 .rts
     rts
-    
+
 EnMoveDirDel:
     ldx enDir
     lda EnMoveDirH,x
@@ -298,14 +298,14 @@ EnMoveDirDel:
     lda EnMoveDirL,x
     pha
     rts
-    
+
 ClearDropSystem: SUBROUTINE
     lda enType
     bne .rts
     lda roomFlags
     and #RF_EV_ENCLEAR | #RF_EV_CLEAR
     beq .rts
-    
+
     ldy #EN_CLEAR_DROP
     sty enType
     ldx #0
@@ -313,10 +313,10 @@ ClearDropSystem: SUBROUTINE
     stx cdBTimer
     stx cdAType
     stx cdBType
-    
+
     and #RF_EV_ENCLEAR
     beq .rts
     dec cdBType ; CD_ITEM_RAND
-    
+
 .rts
     rts

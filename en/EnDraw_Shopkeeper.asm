@@ -8,10 +8,10 @@ EnDraw_Shopkeeper: SUBROUTINE
     bvs .noDraw
     ldy #GI_RUPEE
     jsr EnItemDraw
-    
+
     lda #%0110
     sta NUSIZ1_T
-    
+
     lda #$20
     sta enX
     ldy #$28

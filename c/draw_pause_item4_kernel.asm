@@ -5,7 +5,7 @@
     ldx PItemColors+2
 .draw_loop
     sta WSYNC
-    
+
     lda PItemColors+0
     sta COLUP0
     lda (PItemSpr0),y ; 5
@@ -24,7 +24,7 @@
     sta COLUP1
 
     sta WSYNC
-    
+
     lda PItemColors+0
     sta COLUP0
     lda (PItemSpr0),y ; 5

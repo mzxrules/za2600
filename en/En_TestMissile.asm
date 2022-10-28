@@ -34,7 +34,7 @@ EnTestMissile: SUBROUTINE
     sec
     sbc enX
     tax
-    
+
     lda plY
     sec
     sbc enY

@@ -22,11 +22,11 @@ En_Wallmaster: SUBROUTINE
     sta enSpr
     lda #0
     sta enColor
-    
+
     bit enState
     bvs En_WallmasterCapture
     bmi .runMain
-    
+
 ; calculate initial position
     lda #0 ; up wall phase
     ldy #EnBoardYU
@@ -47,10 +47,10 @@ En_Wallmaster: SUBROUTINE
     stx enX
     sty enY
     sta enWallPhase
-    
+
     lda #$80
     sta enState
-    
+
 .runMain
     ldx enWallPhase
     cpx #16
@@ -61,7 +61,7 @@ En_Wallmaster: SUBROUTINE
 .incWallPhase
     inc enWallPhase
     bpl .rts ; always branch
-    
+
 .next
     bit CXPPMM
     bpl .handleMovement
@@ -86,7 +86,7 @@ En_Wallmaster: SUBROUTINE
     bne .skipSetDir
     bit enY
     bne .skipSetDir
-    
+
     ; test if position changed since last update
     lda #$F0 ; clear blocked direction
     ldx enPX

@@ -8,14 +8,14 @@ En_LikeLike: SUBROUTINE
     sta enHp
     lda #EN_LIKE_LIKE_MAIN
     sta enType
-    
+
 En_LikeLikeMain: SUBROUTINE
 ; update stun timer
     lda enStun
     cmp #1
     adc #0
     sta enStun
-    
+
 .checkDamaged
 ; if collided with weapon && stun == 0,
     lda CXM0P
@@ -38,11 +38,11 @@ En_LikeLikeMain: SUBROUTINE
     sta plState
     jmp EnSysEnDie
 .endCheckDamaged
-    
+
     ; Check if player was sucked in
     bit enState
     bvs .lockInPlace
-    
+
     ; Check player hit
     bit enStun
     bmi .endCheckHit
@@ -57,7 +57,7 @@ En_LikeLikeMain: SUBROUTINE
     and #$3F
     sta enLLTimer
 .endCheckHit
-    
+
     ; Movement Routine
     lda #$F0
     jsr EnSetBlockedDir
@@ -74,7 +74,7 @@ En_LikeLikeMain: SUBROUTINE
     jsr EnMoveDirDel
 .rts
     rts
-    
+
 .lockInPlace
     lda plState
     ora #PS_LOCK_MOVE
@@ -93,5 +93,5 @@ En_LikeLikeMain: SUBROUTINE
     lda enY
     sta plY
     rts
-    
+
     LOG_SIZE "En_LikeLike", En_LikeLike

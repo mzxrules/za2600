@@ -8,7 +8,7 @@ EnDraw_LikeLike: SUBROUTINE
     sta enSpr+1
     lda Frame
     and #8
-    clc 
+    clc
     adc #<SprE16
     sta enSpr
     lda enStun
@@ -17,5 +17,5 @@ EnDraw_LikeLike: SUBROUTINE
     adc #COLOR_EN_RED
     sta enColor
     rts
-    
+
     LOG_SIZE "EnDraw_LikeLike", EnDraw_LikeLike

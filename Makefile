@@ -19,11 +19,11 @@ zelda_dep := main.asm \
 
 all: $(output_bin)
 
-init: 
+init:
 	mkdir -p gen/world
 	python3 py/color.py
 
-deptest: 
+deptest:
 	echo $(zelda_dep)
 
 clean:
@@ -37,13 +37,13 @@ audio.bin: gen/ms_header.asm audio.asm
 zelda.bin: $(zelda_dep)
 	dasm main.asm -f3 -ozelda_PAL60.bin -DPAL60  -Iinclude
 	dasm main.asm -f3 -ozelda.bin -szelda.sym -T1  -Iinclude
-    
+
 gen/RoomScript.asm: py/mesg.py py/ptr.py
 	python3 py/ptr.py
-    
+
 gen/ms_header.asm: py/sound_common.py py/seq.py py/sound.py
 	python3 py/sound.py
-    
+
 gen/mesg_data_0A.asm: py/mesg.py py/text.py
 	python3 py/text.py
 

@@ -6,7 +6,7 @@ UpdateAudio: SUBROUTINE
     bit SeqFlags
     bpl .continueSequence
     bvc .continueSeqSwitch
-    
+
     ; Play region dependent sequence
     ldy worldId
     bne .playDungeonTheme
@@ -21,7 +21,7 @@ UpdateAudio: SUBROUTINE
     cpy #9
     bmi .continueSeqSwitch
     lda #MS_PLAY_FINAL
-    
+
 .continueSeqSwitch
     and #$3F
     sta SeqFlags
@@ -49,24 +49,24 @@ UpdateAudio: SUBROUTINE
     jsr SfxDel
 .sfxEnd
     ldy #5
-    
+
 .set_audio_loop
     lda AUDCT0,y
     sta AUDC0,y
     dey
     bpl .set_audio_loop
     rts
-    
+
 SfxStabPattern:
     .byte $01, $02, $03, $02, $01
-    
+
 SfxSurfVPattern:
     .byte 1, 1, 2, 3, 4, 5, 5, 5, 5, 4, 4, 3, 2, 1, 1, 1
-    
+
 SfxSurfFPattern:
     .byte 2, 2, 3, 3, 5, 5, 7, 7, 1, 1, 1, 1, 1, 1, 1, 1
     /* .byte 02, 03, 05, 07, 05, 10, 10, 10 */
-    
+
 SfxStab: SUBROUTINE
     ldx #8
     stx AUDVT1
@@ -77,13 +77,13 @@ SfxStab: SUBROUTINE
     cpy #4
     bpl SfxStop
     rts
-    
+
 SfxSolve:
 SfxSurf: SUBROUTINE
     ldx #8
     stx AUDCT1
     ldy SfxCur
-    
+
     lda SfxSurfVPattern,y
     sta AUDVT1
     lda SfxSurfFPattern,y
@@ -91,7 +91,7 @@ SfxSurf: SUBROUTINE
     cpy #(SfxSurfFPattern-SfxSurfVPattern)
     bpl SfxStop
     rts
-    
+
 SfxBomb: SUBROUTINE
     lda SfxCur
     cmp #16
@@ -102,7 +102,7 @@ SfxBomb: SUBROUTINE
     sta AUDVT1
     sta AUDCT1
     rts
-    
+
 SfxItemPickupKey: SUBROUTINE
     lda SfxCur
     cmp #8
@@ -124,7 +124,7 @@ SfxPlHeal:
     cmp #9
     bpl SfxStop
     eor #$FF
-    sec 
+    sec
     adc #18
     sta AUDFT1
     lda #4
@@ -149,7 +149,7 @@ SfxStop:
     lda #0
     sta SfxFlags
     rts
-    
+
 SfxEnDamage:
 SfxDef: SUBROUTINE
     lda SfxCur
@@ -162,10 +162,10 @@ SfxDef: SUBROUTINE
     ldx #4
     stx AUDFT1
     rts
-    
+
 SfxArrowFreq:
     .byte 2, 6, 11
-    
+
 SfxArrow: SUBROUTINE
     ldx SfxCur
     cpx #3
@@ -177,7 +177,7 @@ SfxArrow: SUBROUTINE
     lda SfxArrowFreq,x
     sta AUDFT1
     rts
-    
+
 SfxPlDamage: SUBROUTINE
     ldx SfxCur
     cpx #7
@@ -199,14 +199,14 @@ SfxDel:
     lda SfxL-1,x
     pha
     rts
-    
+
 ; x = channel
 AudioChannel: SUBROUTINE
     lda AudioMul16,x
     ora SeqFlags
     and #$1F
     sta Temp0 ; SeqId
-    
+
     ; Test if next note should be played
     clv
     ldy SeqTFrame,x
@@ -229,13 +229,13 @@ AudioChannel: SUBROUTINE
     lda MusicSeqL,x
     pha
     rts
-    
+
 MsNone: SUBROUTINE
     lda #0
     sta AUDVT0
     sta AUDVT1
     rts
-    
+
 MsDung0: SUBROUTINE
     ldx SeqCur
     bvc .skipSetDur
@@ -266,7 +266,7 @@ SeqChan:
     lda #2
     sta AUDVT0,y
     rts
-    
+
 SeqMuteChan0:
     ldy #0
     beq SeqMuteChan
@@ -287,8 +287,8 @@ MsDung1: SUBROUTINE
 .skipSetDir
     lda ms_dung1_note,x
     jmp SeqChan1
-    
-    
+
+
 MsIntro0: SUBROUTINE
     ldx SeqCur
     bvc .skipSetDur
@@ -300,7 +300,7 @@ MsIntro0: SUBROUTINE
 .skipSetDur
     lda ms_intro0_note,x
     jmp SeqChan0
-    
+
 MsIntro1: SUBROUTINE
     ldx SeqCur + 1
     bvc .skipSetDur
@@ -329,7 +329,7 @@ MsWorld0: SUBROUTINE
 .skipSetDur
     lda ms_world0_note,x
     jmp SeqChan0
-    
+
 MsWorld1: SUBROUTINE
     ldx SeqCur + 1
     bvc .skipSetDur
@@ -341,7 +341,7 @@ MsWorld1: SUBROUTINE
 .skipSetDur
     lda ms_world1_note,x
     jmp SeqChan1
-    
+
 MsFinal0: SUBROUTINE
     ldx SeqCur
     bvc .skipSetDur
@@ -353,7 +353,7 @@ MsFinal0: SUBROUTINE
 .skipSetDur
     lda ms_final0_note,x
     jmp SeqChan0
-    
+
 MsFinal1: SUBROUTINE
     ldx SeqCur + 1
     bvc .skipSetDur
@@ -381,7 +381,7 @@ MsTri0: SUBROUTINE
 .skipSetDur
     lda ms_tri0_note,x
     jmp SeqChan0
-    
+
 MsTri1: SUBROUTINE
     ldx SeqCur + 1
     bvc .skipSetDur
@@ -396,7 +396,7 @@ MsTri1: SUBROUTINE
 .skipSetDur
     lda ms_tri1_note,x
     jmp SeqChan1
-    
+
 MsGI0: SUBROUTINE
     ldx SeqCur
     bvc .skipSetDur
@@ -407,7 +407,7 @@ MsGI0: SUBROUTINE
 .skipSetDur
     lda ms_gi0_note,x
     jmp SeqChan0
-    
+
 MsGI1: SUBROUTINE
     ldx SeqCur + 1
     bvc .skipSetDur
@@ -422,7 +422,7 @@ MsGI1: SUBROUTINE
 .skipSetDur
     lda ms_gi1_note,x
     jmp SeqChan1
-    
+
 MsOver0: SUBROUTINE
     ldx SeqCur
     bvc .skipSetDur
@@ -433,7 +433,7 @@ MsOver0: SUBROUTINE
 .skipSetDur
     lda ms_over0_note,x
     jmp SeqChan0
-    
+
 MsOver1: SUBROUTINE
     ldx SeqCur + 1
     bvc .skipSetDur
@@ -444,7 +444,7 @@ MsOver1: SUBROUTINE
 .skipSetDur
     lda ms_over1_note,x
     jmp SeqChan1
-    
+
     ;align 8
 ToneLookup
     .byte 0, 1, 4, 6, 12

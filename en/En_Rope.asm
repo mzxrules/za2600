@@ -21,7 +21,7 @@ En_RopeMain: SUBROUTINE
     sta enStun
     lda #$F0
     jsr EnSetBlockedDir
-    
+
 .checkDamaged
 ; if collided with weapon && stun == 0,
     lda CXM0P
@@ -78,7 +78,7 @@ En_RopeMain: SUBROUTINE
     lsr
     sta Temp0
     lda enY
-    lsr 
+    lsr
     cmp Temp0
     bne .checkBlocked
     asl
@@ -117,7 +117,7 @@ En_RopeMain: SUBROUTINE
 .moveNow
     ldx enDir
     jsr EnMoveDirDel
-    
+
 ; Since we're potentially moving 2 pixels per frame, clamp enX/enY
 .clampPos
 ; left/right

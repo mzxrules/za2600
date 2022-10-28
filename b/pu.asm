@@ -10,10 +10,10 @@ BallDel:
     pha
     rts
 
-    
+
 BlNone:
     rts
-    
+
 BlR: SUBROUTINE
     inc blX
     rts
@@ -63,13 +63,13 @@ BlPushBlock: ; SUBROUTINE
     ; set direction
     lda plDir
     sta blDir
-    
+
     ldy #0
     bit CXP0FB
     bvs .rts
     sty roomPush
     rts
-    
+
 .pushDone
     lda roomFlags
     ora #RF_EV_CLEAR

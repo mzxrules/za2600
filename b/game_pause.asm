@@ -47,7 +47,7 @@ PAUSE_FROM_GAME:
     ora #$40
     sta PauseState
     jmp .runPauseMenu
-    
+
 .pauseAnimScrollUp
     inc PAnim
     lda PAnim
@@ -67,7 +67,7 @@ PAUSE_FROM_GAME:
     lda #SLOT_AU_B
     sta BANK_SLOT
     jsr UpdateAudio
-    
+
     lda #SLOT_EN_D
     sta BANK_SLOT
     jsr EnDraw_Del
@@ -124,7 +124,7 @@ Pause_Menu_Input: SUBROUTINE
     sta PauseState
     lda #0
     sta PAnim
-    rts 
+    rts
 .skipEndPause
     lda PAnim
     cmp #1
@@ -152,7 +152,7 @@ Pause_Menu_Input: SUBROUTINE
 .ContDown
     asl
     bcs .ContUp
-    ;clc 
+    ;clc
     ;lda PCursor
     ;adc #4-1
     ;sta PCursor
@@ -177,7 +177,7 @@ Pause_Menu_Input: SUBROUTINE
     jsr PickItemDel
     beq .pickRight
     bne .selectedItem
-    
+
 .pickLeft
     lda PCursor
     and #PS_ACTIVE_ITEM

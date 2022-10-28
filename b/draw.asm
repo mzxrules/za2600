@@ -5,10 +5,10 @@
 ; Pre-Position Sprites
 ;==============================================================================
 POSITION_SPRITES: SUBROUTINE
-    
+
     lda #SLOT_SPR_A
     sta BANK_SLOT
-    
+
 ; room draw start
     ldy KernelId
     lda .RoomWorldOff,y
@@ -16,11 +16,11 @@ POSITION_SPRITES: SUBROUTINE
     tay
 
     INCLUDE "c/draw_world_init.asm"
-    
+
 ;==============================================================================
 ; HUD Draw Setup
 ;==============================================================================
-    
+
 .minimap_setup
 ; map color and sprite id
     ldx worldId
@@ -58,7 +58,7 @@ POSITION_SPRITES: SUBROUTINE
     and #$0F
     asl
     asl
-    asl 
+    asl
     clc
     adc #7
     sta THudDigits+5
@@ -114,7 +114,7 @@ POSITION_SPRITES: SUBROUTINE
     .byte $2C
 .hud_bomb_digit
     lda #<SprN1 - #<SprN0 +7
-    sta THudDigits+0 
+    sta THudDigits+0
     lda itemBombs
     and #$0F
     asl
@@ -125,7 +125,7 @@ POSITION_SPRITES: SUBROUTINE
     sta THudDigits+1
 
     jsr PosHudObjects
-;===================================================    
+;===================================================
 ; Pre HUD
 ;===================================================
 .PRE_HUD:
@@ -224,7 +224,7 @@ KERNEL_HUD_LOOP:
     sta ENAM0           ; 3
     lda (THudMapSpr),y  ; 5
     sta GRP1            ; 3
-    
+
     ; digit 4 precomputed
 
     ldx THudDigits+5    ; 3
@@ -252,7 +252,7 @@ KERNEL_HUD_LOOP:
     dex                 ; 2
     stx THudDigits+5    ; 3
     and #$07            ; 2
-    sta THudTemp        ; 3 
+    sta THudTemp        ; 3
     ldx THudDigits+4    ; 3
     dex
     lda SprN0,x         ; 4
@@ -263,7 +263,7 @@ KERNEL_HUD_LOOP:
     sta PF1             ; 3
     lda #COLOR_WHITE    ; 2
     sta COLUP0          ; 2
-    
+
     dex
     stx THudDigits+4    ; 3
     lda SprN0,x         ; 4
@@ -287,21 +287,21 @@ KERNEL_HUD_LOOP:
 
     lda #COLOR_WHITE
     sta COLUP0
-    
+
     ldx THudDigits+5    ; 3
     lda SprN0,x         ; 4
     and #$07            ; 2
     ora THudTemp        ; 3
     sta GRP0            ; 3
-    
+
     ldx #0
     ldy #COLOR_PLAYER_00
-    
+
     sleep 6
-    
+
     lda rFgColor
     sta COLUPF
-    
+
     stx GRP0
     stx GRP1
     sty COLUP0
@@ -311,7 +311,7 @@ KERNEL_HUD_LOOP:
     lda #SLOT_TX
     sta BANK_SLOT
     jmp TextKernel
-    
+
 .defaultWorldKernel
 ; HMOVE setup
     jsr PosWorldObjects
@@ -320,10 +320,10 @@ KERNEL_HUD_LOOP:
     lda INTIM
     bne .waitTimerLoop
     sta WSYNC
-    
+
     ldy #ROOM_HEIGHT
 KERNEL_WORLD_RESUME:
-    
+
     lda #SLOT_SPR_A
     sta BANK_SLOT
 
@@ -333,9 +333,9 @@ KERNEL_WORLD_RESUME:
     sta PF2
     lda #1
     sta VDELP0
-    
+
     jsr rKERNEL ; JUMP WORLD KERNEL
-    
+
 ; Post Kernel
     lda rFgColor
     sta COLUBK
@@ -348,10 +348,10 @@ KERNEL_WORLD_RESUME:
     sta PF0
     rts
     LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN
-    
+
     INCLUDE "c/draw_data.asm"
 
-    .align 64    
+    .align 64
 ;==============================================================================
 ; PosHudObjects
 ;----------
@@ -365,7 +365,7 @@ KERNEL_WORLD_RESUME:
 PosHudObjects: SUBROUTINE
     sta WSYNC
     ; 26 cycles start
-    
+
     lda worldId         ; 3
     ; 7 cycle start
     bne .dungeon        ; 2/3
@@ -376,7 +376,7 @@ PosHudObjects: SUBROUTINE
     nop                 ; 2
 .roomIdMask
     ; 7 cycle end
-    
+
     and roomId          ; 3
     eor #7              ; 2
     asl                 ; 2
@@ -401,7 +401,7 @@ PosHudObjects: SUBROUTINE
     sta HMP0            ; 3
     ; 18 cycles end
     sta RESP0           ;  - Inventory Sprites
-    
+
     sta WSYNC
     sta HMOVE
     rts

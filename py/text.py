@@ -8,7 +8,7 @@ from asmgen import ToAsm, ToAsm2
 sprdic = {
     "A" : [
 
-    0b0010, 
+    0b0010,
     0b0101,
     0b0111,
     0b0101,
@@ -440,7 +440,7 @@ def overlap(a, b, min_length=1):
         if b.startswith(a[start:]):
             return len(a)-start
         start += 1
-        
+
 def pick_maximal_overlap(reads, k=1):
     reada, readb = None, None
     best_olen = 0
@@ -450,7 +450,7 @@ def pick_maximal_overlap(reads, k=1):
             reada, readb = a, b
             best_olen = olen
     return reada, readb, best_olen
-    
+
 def greedy_scs(reads, k=1):
     read_a, read_b, olen = pick_maximal_overlap(reads, k)
     while olen > 0:
@@ -465,7 +465,7 @@ def UsedChars(mesg_data):
     for mesg in mesg_data:
         strSet |= set(mesg)
     return strSet
-    
+
 def greedy_quickrand(seq):
     copy = seq.copy()
     result = greedy_scs(copy,1)
@@ -516,7 +516,7 @@ for char in usedChars:
     seqStr = "".join([str(int) for int in sprdic[char]])
     sprSeqs.append(seqStr)
     charSprRef[char] = [-1, seqStr]
-    
+
 sprScs = greedy_quickrand(sprSeqs)
 
 # get char offsets for message data
@@ -538,18 +538,18 @@ left_chr = []
 right_chr = []
 for char in sprScs:
     right_chr.append(helpme[char])
-    
+
 for char in right_chr:
     left_chr.append(char<<4)
 
 with open("gen/text_left.asm", "w") as file:
     file.write(ToAsm(left_chr, 16))
-    
+
 with open("gen/text_right.asm", "w") as file:
     file.write(ToAsm(right_chr, 16))
 
 # convert mesg_data to reference sprite offsets
-# and split each 24 char line into frame A, frame B pairs 
+# and split each 24 char line into frame A, frame B pairs
 mesgRawInfo =  [[], [], [], []]
 mesgBankInfo = ["0A", "0B", "1A", "1B"]
 index = 0
@@ -571,18 +571,18 @@ for i in range(4):
     dump_text_bank(mesgRawInfo[i], mesgBankInfo[i])
 
 dump_mesg_lut()
-    
+
 # generate digit lookup table
 raw = []
 strOut = ""
 for char in "0123456789 ":
     raw.append(charSprRef[char][0])
-    
+
 strOut = "MesgDigits:\n" + ToAsm(raw)
 
 with open("gen/mesg_digits.asm", "w") as file:
     file.write(strOut)
 
-print(sorted(usedChars)) 
+print(sorted(usedChars))
 print(sprScs)
 print(len(sprScs))

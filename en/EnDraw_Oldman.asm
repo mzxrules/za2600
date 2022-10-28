@@ -11,5 +11,5 @@ EnDraw_OldMan: SUBROUTINE
     lda #>SprS0
     sta enSpr+1
     rts
-    
+
     LOG_SIZE "EnDraw_OldMan", EnDraw_OldMan

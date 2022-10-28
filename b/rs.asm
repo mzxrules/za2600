@@ -9,7 +9,7 @@ Rs_Del:
     pha
 Rs_None:
     rts
-    
+
 Rs_FairyFountain: SUBROUTINE
     ldy plY
     cpy #$1C
@@ -20,7 +20,7 @@ Rs_FairyFountain: SUBROUTINE
     beq .skipHeal
     ora #PS_LOCK_ALL
     sta plState
-    
+
     lda #0
     sta SfxFlags
     lda Frame
@@ -49,7 +49,7 @@ Rs_Maze: SUBROUTINE
     bit roomFlags ; check RF_EV_LOAD
     bpl .rts
     lda roomId
-    cmp Rs_Maze_Exit,y 
+    cmp Rs_Maze_Exit,y
     bne .checkPattern
 ; exit maze without finding hidden area
     sta worldSR
@@ -69,14 +69,14 @@ Rs_Maze: SUBROUTINE
     lda #SFX_SOLVE
     sta SfxFlags
     rts
-    
+
 .failStep
     sta worldSR
 .roomLoop
     stx roomId
     rts
 
-Rs_Maze_Type: 
+Rs_Maze_Type:
     .byte ROOM_MAZE_1, ROOM_MAZE_2
 Rs_Maze_Exit
     .byte <(ROOM_MAZE_1 - #$1), <(ROOM_MAZE_2 + #$1)
@@ -85,7 +85,7 @@ Rs_Maze_Pattern:
     .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 - #$1)
     .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 + #$10)
     .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 - #$1)
-    
+
 Rs_EntCaveLeft: SUBROUTINE
     ldx #$14
     cpx plX
@@ -97,7 +97,7 @@ Rs_EntCaveLeft: SUBROUTINE
     jmp EnterCave
 .rts
     rts
-    
+
 Rs_EntCaveRight: SUBROUTINE
     ldx #$6C
     cpx plX
@@ -147,7 +147,7 @@ Rs_Cave: SUBROUTINE
 
 .rts
     rts
-    
+
 Rs_RaftSpot: SUBROUTINE
     lda plState
     and #$20
@@ -179,12 +179,12 @@ Rs_RaftSpot: SUBROUTINE
     sta plX
 .rts
     rts
-    
+
 Rs_NpcTriforce: SUBROUTINE
     ldy #$FF
     cpy itemTri
     beq .rts
-    
+
     lda #RF_NO_ENCLEAR
     ora roomFlags
     sta roomFlags
@@ -228,7 +228,7 @@ Rs_ShoreItem: SUBROUTINE
     sta cdAType
 .rts
     rts
-    
+
 Rs_Item: SUBROUTINE
     lda enType
     cmp #EN_CLEAR_DROP
@@ -236,7 +236,7 @@ Rs_Item: SUBROUTINE
     ldx roomId
     lda rRoomFlag,x
     bmi .NoLoad
-    
+
     lda #$40
     sta cdAX
     lda #$2C
@@ -263,12 +263,12 @@ Rs_GameOver: SUBROUTINE
     stx KernelId
     inx
     stx plState ; PS_LOCK_ALL
-    
+
     ldx #RS_GAME_OVER
     stx roomRS
     ldx #$80
     stx plY
-    
+
     ldx #MS_PLAY_OVER
     stx SeqFlags
     lda #-$20 ; input delay timer
@@ -283,7 +283,7 @@ Rs_GameOver: SUBROUTINE
 .rts
     rts
 
-Rs_EntMidWorld:  
+Rs_EntMidWorld:
 Rs_EntMidDung: SUBROUTINE
     lda plX
     cmp #$40
@@ -297,13 +297,13 @@ Rs_EntMidDung: SUBROUTINE
     sta worldSY
     lda roomId
     sta worldSR
-    
+
     ldy roomEX
     sty worldId
     jmp SPAWN_AT_DEFAULT
 .rts
     rts
-    
+
 Rs_ExitDung: SUBROUTINE
     bit roomFlags
     bmi .rts ; RF_EV_LOAD
@@ -339,7 +339,7 @@ ReturnWorld: SUBROUTINE
     lda #PL_DIR_D
     sta plDir
     rts
-    
+
 Rs_BlockDiamondStairs: SUBROUTINE
     lda #RS_STAIRS
     sta roomRS
@@ -370,7 +370,7 @@ Rs_EntCaveRightBlocked:
     sta wRoomFlag,y
     lda #$80
     sta blY
-    
+
     lda #$F3
     cpx #RS_ENT_CAVE_LEFT
     bne .right
@@ -389,7 +389,7 @@ Rs_EntCaveRightBlocked:
 
 Rs_BlockCentral: SUBROUTINE
     rts
-    
+
 Rs_Stairs:
     lda roomFlags
     and #RF_EV_CLEAR

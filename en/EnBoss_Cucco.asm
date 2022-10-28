@@ -28,7 +28,7 @@ EnBoss_Cucco: SUBROUTINE
     jsr EnSysEnDie
     lda #0
     sta NUSIZ1_T
-.rts 
+.rts
     rts
 
     LOG_SIZE "EnBoss_Cucco", EnBoss_Cucco

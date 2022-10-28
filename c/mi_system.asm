@@ -65,14 +65,14 @@ MiSysUpdatePos: SUBROUTINE
 
 MiSystem: SUBROUTINE
     ldy #1
-.loop 
+.loop
     lda mAType,y
     beq .cont
     jsr MiSysUpdatePos
 .cont
     dey
     bpl .loop
-    
+
 ; Select Missile Draw
     ldy #1
     lda mAType
@@ -83,7 +83,7 @@ MiSystem: SUBROUTINE
     lda Frame
     and #1
     tay
-    
+
 .draw
     lda NUSIZ1_T
     ora #$20

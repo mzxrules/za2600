@@ -10,7 +10,7 @@ def ToAsm(data, n=16):
         result += "    .byte " + ", ".join(b) + "\n"
         cur += n
     return result
-    
+
 def ToAsm2(data, n=16):
     result = ""
     cur = 0

@@ -88,7 +88,7 @@ INPT5   ds 1    ;$0D     Misc input #1
         ORG      $280
 SWCHA   ds 1    ;$280    Port A data register for joysticks
 SWACNT  ds 1    ;$281    Part A data direction register (DDR)
-SWCHB   ds 1    ;$282    Port B data (console switches) 
+SWCHB   ds 1    ;$282    Port B data (console switches)
 SWBCNT  ds 1    ;$283    Port B data direction register (DDR)
 INTIM   ds 1    ;$284    Timer output
         ORG      $294

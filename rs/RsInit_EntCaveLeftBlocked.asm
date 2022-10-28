@@ -7,7 +7,7 @@ RsInit_EntCaveLeftBlocked: SUBROUTINE
     lda rRoomFlag,y
     and #RF_SV_DESTROY
     bne .open
-    
+
     lda #$FF
     sta wPF1RoomL + 12
     sta wPF1RoomL + 13
@@ -17,7 +17,7 @@ RsInit_EntCaveLeftBlocked: SUBROUTINE
     lda #$38
     sta blY
     rts
-.open 
+.open
     lda #$80
     sta blY
     lda #RS_ENT_CAVE_LEFT

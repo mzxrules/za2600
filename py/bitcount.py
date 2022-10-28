@@ -9,8 +9,8 @@ for i in range(128):
         if work & 1 == 1:
             count += 1
         work = work >> 1
-        
-    
+
+
     #print(f'{i:02X} {count}')
     table.append(count)
 

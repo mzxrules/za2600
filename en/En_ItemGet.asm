@@ -26,7 +26,7 @@ En_ItemGet: SUBROUTINE
     ldx #EN_CLEAR_DROP
 .end
     stx enType
-.rts 
+.rts
     rts
 .triforce
     lda #GI_EVENT_TRI

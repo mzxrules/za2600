@@ -10,15 +10,15 @@ KERNEL_WORLD: SUBROUTINE ; rKERNEL
     sta COLUPF
     lda enColor
     sta COLUP1
-    
+
     ldx NUSIZ1_T
     stx NUSIZ1
     lda NUSIZ0_T
     sta NUSIZ0
-    
+
     lda #0
     tax
-    
+
     sta WSYNC       ; 3
     sta CXCLR       ; 3
 KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
@@ -30,7 +30,7 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     sta PF1         ; 3
     lda rPF2Room,x  ; 4
     sta PF2         ; 3
-    
+
 ; Player            ;    CYCLE 15
     lda #7          ; 2 player height
     dcp plDY        ; 5
@@ -39,12 +39,12 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     .byte $2C       ; 4-5 BIT compare hack to skip 2 byte op
 .DrawP0:
     lda (plSpr),y   ; 5
-    
+
     sta GRP0        ; 3
 ; PF1R first line
     lda rPF1RoomR,x ; 4
     sta PF1         ; 3
-    
+
 ; Ball
     VKERNEL1 BLH
     lda #7          ; 2 ball height
@@ -52,7 +52,7 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     lda #1          ; 2
     adc #0          ; 2
     sta ENABL       ; 3
-    
+
 ; Enemy Missile     ;    CYCLE 15
     VKERNEL1 M1H
     lda #7          ; 3 enM height
@@ -77,7 +77,7 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
 .DrawE0:
     lda (enSpr),y   ; 5
     tax             ; 2
-    
+
     pla             ; 4
     sta PF1         ; 3
 ; Playfield
@@ -87,14 +87,14 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     .byte $2C       ; 4-5
 .PFDec
     dec roomDY      ; 5
-    
+
 ; Player Missile    ;    CYCLE 15
     VKERNEL1 M0H
     lda #7          ; 2 plM height
     dcp m0DY        ; 5
     lda #1          ; 2
     adc #0          ; 2
-    
+
     dey             ; 2
     sta WSYNC       ; 3
     bpl KERNEL_LOOP ; 3/2

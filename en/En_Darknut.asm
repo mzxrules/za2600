@@ -10,7 +10,7 @@ En_Darknut: SUBROUTINE
     sta enDir
     lda #2 -1
     sta enHp
-    
+
 En_DarknutMain:
 ; update stun timer
     lda enStun

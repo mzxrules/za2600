@@ -20,13 +20,13 @@ quarter_bf = 1   # beats per quarter note
 
 def GetBeat(bpm):
     # 0.5e3 = 120 bpm
-    return gensound_minute_ticks / bpm 
+    return gensound_minute_ticks / bpm
 
-def SeqToGenSound(seq):    
+def SeqToGenSound(seq):
     dl = SeqChannelToGenSound(seq.ch0, seq.bpm, seq.qbeat)
     dr = SeqChannelToGenSound(seq.ch1, seq.bpm, seq.qbeat)
     return dl * Pan(50) + dr * Pan(-50)
-    
+
 def SeqChannelToGenSound(seq, bpm, qbf = 1):
     gSeqStr = ""
     gRestDur = (1/ag_ratio)

@@ -7,8 +7,8 @@ BombOffX:
     .byte 10, -4, 3, 3
 FireOffY:
 BombOffY:
-    .byte 2, 2, -5, 9 
-    
+    .byte 2, 2, -5, 9
+
     .byte -2,  4, -8, 8, -8, 4,  4, -8, 8, -8, 4
 BombAnimDeltaX:
     .byte -2, -4,  8, 0, -8, 4, -4,  8, 0, -8, 4
@@ -45,7 +45,7 @@ PlayerArrow: SUBROUTINE
     adc plY
     sta m0Y
     rts
-    
+
 .skipSpawnArrow
     ldy plItemTimer
     beq .endArrow
@@ -84,7 +84,7 @@ PlayerArrow: SUBROUTINE
 
 ArrowDeltaX:
     .byte 2, -2
-ArrowDeltaY: 
+ArrowDeltaY:
     .byte 0, 0, -2, 2
 
 PlayerFire: SUBROUTINE
@@ -120,8 +120,8 @@ PlayerFire: SUBROUTINE
     sta wM0H
 .rts
     rts
-    
-    
+
+
 PlayerBomb: SUBROUTINE
 ; Bombs
     bit plState
@@ -171,7 +171,7 @@ PlayerBomb: SUBROUTINE
     sta NUSIZ0_T
     lda #SFX_BOMB
     sta SfxFlags
-    
+
 .skipDetonateEffect
     clc
     lda BombAnimDeltaX-$100,y
@@ -184,7 +184,7 @@ PlayerBomb: SUBROUTINE
 .rts
     rts
 
-    
+
     ;align 4
 ArrowWidth4:
 SwordWidth4:
@@ -474,7 +474,7 @@ PlayerInput: SUBROUTINE
     sta plState
     and #PS_LOCK_MOVE
     bne .rts
-    
+
     lda SWCHA
     and #$F0
 

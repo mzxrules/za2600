@@ -14,16 +14,16 @@ En_Octorok: SUBROUTINE
     sta enColor
     lda #EN_OCTOROK_MAIN
     sta enType
-    
+
 En_OctorokMain:
     lda #>SprE4
     sta enSpr+1
     ldx enDir
     lda Mul8,x
-    clc 
+    clc
     adc #<SprE4
     sta enSpr
-    
+
     lda #1
     bit Frame
     beq .checkBlocked
@@ -31,7 +31,7 @@ En_OctorokMain:
     bpl .checkBlocked
     dex
     rts
-    
+
 .checkBlocked
     lda #$F0
     jsr EnSetBlockedDir
@@ -64,12 +64,12 @@ En_OctorokMain:
     jsr EnMoveDirDel
 .rts
     rts
-    
+
 ENEMY_ROT:
    ;.byte 0, 2, 1, 3 ; enemy direction sprite indices
     .byte 2, 3, 1, 0 ; clockwise
     .byte 3, 2, 0, 1 ; counterclock
-    
+
 EN_ATAN2_CARDINAL:
     .byte DEG_180, DEG_000, DEG_090, DEG_270
     LOG_SIZE "En_Octorok", En_Octorok

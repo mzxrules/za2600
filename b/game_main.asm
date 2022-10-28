@@ -5,22 +5,22 @@ INIT:
     lda #%00110001 ; ball size 8, reflect playfield
     sta CTRLPF
     sta VDELBL
-    
+
     ; seed RNG
     ; lda INTIM
     ; sta Rand16+1
     ; eor #$FF
     sta Rand16
-    
+
     ; set ball
     lda #$60
     sta blY
     sta m1Y
-    
+
     ; set player stats
     lda #$18
     sta plHealthMax
-    
+
     jsr RESPAWN
 
 ;TOP_FRAME ;3 37 192 30
@@ -84,7 +84,7 @@ PAUSE_RETURN:
     lda #SLOT_EN_D
     sta BANK_SLOT
     jsr EnDraw_Del
-    
+
 ;==============================================================================
 ; Pre-Position Sprites and Draw Frame
 ;==============================================================================
@@ -92,7 +92,7 @@ PAUSE_RETURN:
     lda #SLOT_DRAW
     sta BANK_SLOT
     jsr POSITION_SPRITES
-    
+
 OVERSCAN: SUBROUTINE ; 30 scanlines
     sta WSYNC
     lda #2
@@ -104,7 +104,7 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     sta wENH
     lda #0
     sta NUSIZ1_T
-    
+
 ; update player stun timer
     lda plStun
     cmp #1
@@ -190,9 +190,9 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 .completePlayerWallPass
     lda #$00
     sta plState
-    
+
 .skipPlayerWallPass
-    
+
 ;==============================================================================
 ; PFCollision
 ;----------
@@ -218,7 +218,7 @@ PFCollision: SUBROUTINE
     ; If entity, skip collision
     cpy #1
     beq .SkipPFCollision
-    
+
     ; Else check if RF_PF_AXIS should be in effect for the player
     bit RF_PF_AXIS
     beq .SkipPFCollision ; branch on RF_PF_IGNORE
@@ -236,7 +236,7 @@ PFCollision: SUBROUTINE
     lda CXP0FB,y ; CXP1FB
     and #$C0
     beq .SkipPFCollision
-    
+
     lda plXL,y
     sta plX,y
     lda plYL,y
@@ -251,24 +251,24 @@ PFCollision: SUBROUTINE
     cpy #2
     bmi PFCollision
 endPFCollision
-    
+
     lda #SLOT_EN_A
     sta BANK_SLOT
     lda #SLOT_EN_B
     sta BANK_SLOT
 .ClearDropSystem:
     jsr ClearDropSystem
-    
+
 .EnSystem:
     jsr EnSystem
-    
+
 .RoomScript:
     lda #SLOT_RS_A
     sta BANK_SLOT
     lda #SLOT_RS_B
     sta BANK_SLOT
     jsr Rs_Del
-    
+
 .Entity
     lda #SLOT_EN_A
     sta BANK_SLOT
@@ -280,12 +280,12 @@ endPFCollision
     lda #SLOT_RS_B
     sta BANK_SLOT
     jsr MiSystem
-    
+
 .BallScript:
     lda #SLOT_PU_A
     sta BANK_SLOT
     jsr BlSystem
-    
+
 ; Update Room Flags
     lda #RF_NO_ENCLEAR
     bit roomFlags
@@ -297,7 +297,7 @@ endPFCollision
     ora #RF_EV_CLEAR
     sta roomFlags
 .endUpdateRoomFlags
-    
+
 ; Update Shutter Doors
 .RoomOpenShutterDoor
     lda worldId
@@ -316,7 +316,7 @@ endPFCollision
 ; converting it to open (bit pattern %00)
     lda roomDoors
     asl
-    ora #%01010101 ; keep low bit 
+    ora #%01010101 ; keep low bit
     and roomDoors
     cmp roomDoors ; if roomDoors changed, at least one shutter opened
     sta roomDoors
@@ -346,7 +346,7 @@ OVERSCAN_WAIT:
     sta WSYNC
 
     jmp MAIN_VERTICAL_SYNC
-        
+
 ;==============================================================================
 ; Generate Random Number
 ;-----------------------
@@ -364,7 +364,7 @@ noeor:
     sta Rand16 + 0
     eor Rand16 + 1
     rts
-    
+
 PlMoveDirDel:
     lda PlMoveDirH,x
     pha
@@ -387,12 +387,12 @@ PlDirL:
     rts
 
     ;align 16
-    
+
 WORLD_ENT: ; Initial room spawns for worlds 0-9
     .byte $77, $73, $7D, $7C, $71, $76, $79, $00, $00, $7E
-    
+
     INCLUDE "gen/PlMoveDir.asm"
-    
+
 RoomFlagPFCollision
     .byte #[RF_PF_IGNORE + RF_PF_AXIS], #[RF_PF_IGNORE]
 
@@ -459,7 +459,7 @@ UPDATE_PL_HEALTH: SUBROUTINE
     sty SfxFlags
 .rts
     rts
-    
+
 RESPAWN: SUBROUTINE
     lda #$18
     sta plHealth
@@ -468,12 +468,12 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     sta plState
     lda #MS_PLAY_RSEQ
     sta SeqFlags
-    
+
     lda #$40
     sta plX
     lda #$10
     sta plY
-    
+
     ldy worldId
     lda WORLD_ENT,y
     sta roomId

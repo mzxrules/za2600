@@ -35,14 +35,14 @@ seqs = {
 
 for k, seq in seqs.items():
     seq.Flatten()
-    
+
 #FindBestSeq(seqs["tri"].ch0)
 #FindBestSeq(seqs["tri"].ch1)
 #quit()
 
 seqs["final"].ch0 = seqs["final"].GetShiftChannel(0,9) + seqs["final"].GetShiftChannel(0,15)
 seqs["final"].ch1 = seqs["final"].GetShiftChannel(1,21) + seqs["final"].GetShiftChannel(1,15)
-seqs["dung"].AdjustChannel(0, AdjustDungeonBaseline) 
+seqs["dung"].AdjustChannel(0, AdjustDungeonBaseline)
 seqs["over"].ShiftChannel(0,-10)
 seqs["world"].ShiftChannel(0,-11)
 seqs["world"].ShiftChannel(1,-11)
@@ -67,7 +67,7 @@ for c0, c1 in sequences:
         c0.totalNotes += 1
         c1.totalNotes += 1
     if c0.name == "ms_final0":
-        c1.notes = c1.notes[::8] # return every 8th note 
+        c1.notes = c1.notes[::8] # return every 8th note
 
 fl = [
     ("{}_note",2, "notes"),
@@ -91,7 +91,7 @@ for seq in sequences:
         headerCur += MAX_SEQ
         headerCur %= MAX_SEQ * 2
     headerCur += 1
-            
+
 str = "ms_header:\n" + ToAsm(header)
 with open("gen/ms_header.asm", "w") as file:
     file.write(str)

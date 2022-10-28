@@ -105,7 +105,7 @@ class AtariSeq:
     totalNotes: int = 0
     notes: list = field(default_factory=list)
     durs: list = field(default_factory=list)
-    
+
     def GetDuration(self):
         total = 0
         for dur in self.durs:
@@ -120,27 +120,27 @@ class Seq:
     ch0: list
     ch1: list
     beat: int = 0 # Atari timesteps per beat
-    
+
     def __post_init__(self):
         # BPM to frames:
         # frames = 1 beat * (1 min/BPM) * (60 seconds /1 min) * (60 fps)
         self.beat = 3600 / self.bpm / self.qbeat
-        
+
     def Flatten(self, bars=None):
         self.ch0, self.ch1 = FlattenStrSeq(self.ch0, self.ch1, bars)
-        
+
     def ShiftChannel(self, chan, shift):
         if chan == 0:
             self.ch0 = ShiftStrSeq(self.ch0, shift)
         else:
             self.ch1 = ShiftStrSeq(self.ch1, shift)
-            
+
     def GetShiftChannel(self, chan, shift):
         if chan == 0:
             return ShiftStrSeq(self.ch0, shift)
         else:
             return ShiftStrSeq(self.ch1, shift)
-            
+
     def AdjustChannel(self, chan, delegate):
         if chan == 0:
             self.ch0 = delegate(self.ch0)
@@ -149,15 +149,15 @@ class Seq:
 
     def MuteInvalidNotes(self, chan):
         self.AdjustChannel(chan, MuteInvalidNotesChannel)
-    
+
     def RepeatLastValidNote(self, chan):
         self.AdjustChannel(chan, RepeatLastValidNoteChannel)
-            
+
     def DumpSong(self):
         c0 = DumpSongChannel(f"{self.name}0", self.ch0, self.beat)
         c1 = DumpSongChannel(f"{self.name}1", self.ch1, self.beat)
         return (c0, c1)
-        
+
 def SeqPlayableTest(seq):
     score = 0
     for note, dur in seq:
@@ -169,7 +169,7 @@ def SeqPlayableTest(seq):
                     score += 1
                     break
     return score
-    
+
 def SeqNoteExistTest(seq):
     score = 0
     noteSet = set()
@@ -194,7 +194,7 @@ def StrSeqToDecSeq(seq):
                 newSeq.append((noteDigit * 12 + i, dur))
                 break
     return newSeq
-    
+
 def DecSeqToStrSeq(seq):
     newSeq = []
     for note, dur in seq:
@@ -205,7 +205,7 @@ def DecSeqToStrSeq(seq):
         p = note // 12
         newSeq.append((f"{notes[i]}{p}", dur))
     return newSeq
-    
+
 def ShiftDecSeq(seq, shift):
     newSeq = []
     for note, dur in seq:
@@ -214,7 +214,7 @@ def ShiftDecSeq(seq, shift):
             continue
         newSeq.append((note+shift, dur))
     return newSeq
-    
+
 def ShiftStrSeq(seq, shift):
     d = StrSeqToDecSeq(seq)
     return DecSeqToStrSeq(ShiftDecSeq(d, shift))
@@ -227,12 +227,12 @@ def FindBestSeq(seq, scoreDiff = 0):
         s = ShiftDecSeq(dSeq, shift)
         nSeq = DecSeqToStrSeq(s)
         scores.append((SeqNoteExistTest(nSeq),SeqPlayableTest(nSeq),shift))
-        
+
     scores.sort(reverse=True)
     maxScore = scores[0][0]
     scores = list(filter(lambda x: x[0] >= maxScore-scoreDiff, scores))
     print(scores)
-    
+
 def ListToND(list, dim):
     r = []
     for i in range(0,len(list),dim):
@@ -244,7 +244,7 @@ def ListToND(list, dim):
 
 def FlattenStrSeq(a0, a1, bars=None):
     if bars is not None:
-        a0 = a0[0:bars] 
+        a0 = a0[0:bars]
         a1 = a1[0:bars]
     a0 = [item for sublist in a0 for item in sublist]
     a1 = [item for sublist in a1 for item in sublist]
@@ -272,18 +272,18 @@ def DumpSongChannel(name, channelNotes, beat):
             print("Error {} {}".format(keyStr, dur))
             tone = 1
             note = 31
-            
+
         d = beat*dur
         while d > 256:
             d -= 256
             notes.append(note)
             durs.append(0)
             tones.append(tone)
-            
+
         notes.append(note)
         durs.append((d//1)%256)
         tones.append(tone)
-        
+
     totalNotes = len(notes)
     for i in range(len(notes)):
         note = notes[i] << 3
@@ -304,7 +304,7 @@ def RepeatLastValidNoteChannel(chan):
                 dicFind = True
                 lnote = keyStr
                 break
-                
+
         out.append((lnote,dur))
     return out
 
@@ -334,7 +334,7 @@ def MuteInvalidNotesChannel(chan):
     if lmute == True and lmuteDir != 0:
         out.append(("_",lmuteDir))
     return out
-    
+
 def NoteSpectrumTest():
     testSeq = []
     for i in range(1, 9*12):

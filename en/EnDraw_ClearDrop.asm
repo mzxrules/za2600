@@ -26,7 +26,7 @@ EnDraw_ClearDrop: SUBROUTINE
     bne .noDraw
     ldy roomEX
     jmp EnItemDraw
-    
+
 .EnStairs:
     lda rFgColor
     sta enColor

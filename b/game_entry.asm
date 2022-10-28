@@ -12,7 +12,7 @@ ENTRY_INIT: SUBROUTINE ; Address F000
     ldy #SLOT_MAIN
     sty BANK_SLOT
 
-ENTRY_INIT_RAM: 
+ENTRY_INIT_RAM:
     ldy #2 ; ram banks to init
 
 .init_ram_loop

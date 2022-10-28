@@ -52,7 +52,7 @@ LoadCaveRoom: SUBROUTINE
     sta wPF2Room,y
     dey
     bpl .loadRoomSprite2
-    
+
     lda #$C0
     ldy #ROOM_PX_HEIGHT-2 -1
 .loadRoomSprite3
@@ -90,7 +90,7 @@ LoadRoom: SUBROUTINE
     sta roomEN
     lda WORLD_WA,y
     sta roomWA
-    
+
     ; set fg/bg color
     lda WORLD_COLOR,y
     and #$0F
@@ -105,7 +105,7 @@ LoadRoom: SUBROUTINE
     tax
     lda WorldColors,x
     sta wBgColor
-    
+
     ; PF1 Right
     lda WORLD_T_PF1R,y
     tax
@@ -122,7 +122,7 @@ LoadRoom: SUBROUTINE
     asl
     asl
     sta roomDoors
-    
+
     ; PF1 Left
     lda WORLD_T_PF1L,y
     tax
@@ -137,7 +137,7 @@ LoadRoom: SUBROUTINE
     lsr
     ora roomDoors
     sta roomDoors
-    
+
     ; PF2
     lda WORLD_T_PF2,y
     tax
@@ -161,7 +161,7 @@ LoadRoom: SUBROUTINE
     asl
     ora roomDoors
     sta roomDoors
-    
+
 ; Load playfield data
     ldy #ROOM_SPR_HEIGHT-1
     lda #SLOT_PF_A
@@ -186,11 +186,11 @@ LoadRoom: SUBROUTINE
     lda rPF1RoomL+2
     sta wPF1RoomL+0
     sta wPF1RoomL+1
-    
+
     lda rPF2Room+2
     sta wPF2Room+0
     sta wPF2Room+1
-    
+
     lda rPF1RoomR+2
     sta wPF1RoomR+0
     sta wPF1RoomR+1
@@ -223,7 +223,7 @@ LoadRoom: SUBROUTINE
     bpl .dungRoomInitMemLoop
 
 ; All room sprite data has been read
-    
+
 ; Update Dungeon roomDoors
     ldy roomId
     lda rRoomFlag,y
@@ -234,31 +234,31 @@ LoadRoom: SUBROUTINE
     eor #$FF
     and roomDoors
     sta roomDoors
-    
+
 ; set room top/bottom exit walls
-    
+
     ldy #1
 .dungRoomUpDownBorder
     lda rPF1RoomL+2
     ora #$FF
     sta wPF1RoomL,y
-    
+
     lda rPF2Room+2
     ora #$FF
     sta wPF2Room,y
-    
+
     lda rPF1RoomR+2
     ora #$FF
     sta wPF1RoomR,y
-    
+
     lda rPF1RoomL+ROOM_PX_HEIGHT-3
     ora #$FF
     sta wPF1RoomL+ROOM_PX_HEIGHT-2,y
-    
+
     lda rPF1RoomR+ROOM_PX_HEIGHT-3
     ora #$FF
     sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
-    
+
     lda rPF2Room+ROOM_PX_HEIGHT-3
     ora #$FF
     sta wPF2Room+ROOM_PX_HEIGHT-2,y
@@ -276,7 +276,7 @@ LoadRoom: SUBROUTINE
     sta roomFlags
 .rts
     rts
-    
+
 UpdateWorldDoors: SUBROUTINE
     lda roomDoors
     asl
@@ -299,7 +299,7 @@ UpdateWorldDoors: SUBROUTINE
     sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
     dey
     bpl .Up
-    
+
     lda roomDoors
     lsr
     pha
@@ -357,40 +357,40 @@ UpdateWorldDoors: SUBROUTINE
     sta Temp2
     lda WorldDoorPF1C,x
     sta Temp4
-    
+
     ldy #5
 .LeftRightWorldDoor
     lda rPF1RoomL+2,y
     ora Temp4
     sta wPF1RoomL+2,y
-    
+
     lda rPF1RoomL+12,y
     ora Temp0
     sta wPF1RoomL+12,y
-    
+
     lda rPF1RoomR+2,y
     ora Temp5
     sta wPF1RoomR+2,y
-    
+
     lda rPF1RoomR+12,y
     ora Temp1
     sta wPF1RoomR+12,y
     dey
     bpl .LeftRightWorldDoor
-    
+
     ldy #3
 .LeftRightWorldDoor2
     lda rPF1RoomL+8,y
     ora Temp2
     sta wPF1RoomL+8,y
-    
+
     lda rPF1RoomR+8,y
     ora Temp3
     sta wPF1RoomR+8,y
     dey
     bpl .LeftRightWorldDoor2
     rts
-    
+
 ;==============================================================================
 ; UpdateDoors
 ;----------
@@ -454,31 +454,31 @@ UpdateDoors: SUBROUTINE
 ; Tests and applies keydoor, fake wall, bombwall behaviors on dungeon roomDoors
 ; If keydoor, unlocks it if they have a key
 ; If bombwall, unlocks if a bomb has detonated nearby
-; If fakewall, push player through 
+; If fakewall, push player through
 ;==============================================================================
 DoorCheck: SUBROUTINE
     lda plX
     ldy plY
-    
+
 ; Up/Down check
     cmp #BoardDungDoorNSX
     ; continue if positive
     bmi .LRCheck
     cmp #BoardDungDoorNSX + $8+1
     bpl .LRCheck
-    
+
     ldx #0
     cpy #BoardDungDoorNY
     beq .UnlockUp
     cpy #BoardDungDoorSY
     beq .UnlockDown
-    
+
 .LRCheck
     cpy #BoardDungDoorEWY
     bmi .rtsBreakwall
     cpy #BoardDungDoorEWY + $8+1
     bpl .rtsBreakwall
-    
+
     ldx #2
     cmp #BoardDungDoorEX
     beq .UnlockRight
@@ -519,7 +519,7 @@ DoorCheck: SUBROUTINE
     and DungDoorMask,x
     bne .rtsBreakwall
     ; Spend a key to unlock a keydoor
-    
+
     dec itemKeys
     lda #SFX_STAB
     sta SfxFlags
@@ -530,7 +530,7 @@ DoorOpen:
     eor #$FF
     and roomDoors
     sta roomDoors
-    
+
     ldy roomId
     lda DungDoorFlagA,x
     ora rRoomFlag,y
@@ -553,29 +553,29 @@ DoorOpen:
     ldy plItemTimer
     cpy #-6
     bne .rts
-    
+
 CheckBreakwall: SUBROUTINE
     lda m0X
     ldy m0Y
-    
+
 ; Up/Down check
     cmp #BoardBreakwallNSX1
     bmi .LRCheck
     cmp #BoardBreakwallNSX2 + 1
     bpl .LRCheck
-    
+
     ldx #0
     cpy #BoardBreakwallNY
     bpl .UnlockUp
     cpy #BoardBreakwallSY + 1
     bmi .UnlockDown
-    
+
 .LRCheck
     cpy #BoardBreakwallEWY1
     bmi .rts
     cpy #BoardBreakwallEWY2 + 1
     bpl .rts
-    
+
     ldx #2
     cmp #BoardBreakwallEX
     bpl .UnlockRight
@@ -604,7 +604,7 @@ DungDoorFlagB:
     .byte $01, $04, $40, $10
 DungDoorRoomOff:
     .byte $10, $F0, $01, $FF
-    
+
     align 8
     ; wall types:
     ; none, central long, left-right long, full
@@ -618,11 +618,11 @@ WorldDoorPF1UpL:
 
 WorldDoorPF1UpR:
     .byte $C0, $C0, $FF, $FF, $FF, $C0, $FF, $AB
-    
+
 WorldDoorPF1A:
     ; Top
     .byte $00, $00, $C0, $C0, $00, $C0, $AB, $AB
-    
+
 WorldDoorPF1B:
     ; Mid
     .byte $00, $C0, $00, $C0, $C0, $C0, $AB, $AB
@@ -630,8 +630,8 @@ WorldDoorPF1B:
 WorldDoorPF1C:
     ; Bottom
     .byte $00, $00, $C0, $C0, $C0, $00, $AB, $AB
-    
-    
+
+
 WorldColors:
     /* 00 */ .byte COLOR_BLACK
     /* 01 */ .byte COLOR_DARK_GRAY

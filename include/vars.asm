@@ -294,7 +294,7 @@ THudTemp        ds 1
 THudDigits      ds 6
     ORG THudHealthMaxH
 THudHealthDisp  ds 1
-; == 14 == 
+; == 14 ==
 
     SEG.U VARS_EN_SYS
     ORG Temp0 + 1
@@ -303,7 +303,7 @@ EnSysSpawnTry   ds 1
 EnSysNext       ds 1
 EnSysClearOff   ds 1 ; offset to byte that room clear is stored at
 EnSysClearMask  ds 1 ; stores bitmask for room clear flag
-    
+
     SEG.U VARS_MI_SYS
     ORG Temp0
 MiSysDir        ds 1
@@ -373,7 +373,7 @@ RF_SV_DESTROY   = $40 ; x1xx_xxxx
     ; xxxx_x1xx S open
     ; xxx1_xxxx E open
     ; x1xx_xxxx W open
-    
+
 ; ****************************************
 ; * Constants                            *
 ; ****************************************
@@ -439,7 +439,7 @@ BoardBreakwallEX = $76
     COLOR EN_LIGHT_BLUE,$88,$D8 ; Item secondary flicker
     COLOR EN_TRIFORCE,  $2A,$2A
     COLOR EN_BROWN,     $F0,$22
-    
+
     COLOR PLAYER_00,    $C6,$58
     COLOR PLAYER_01,    $08,$0C
     COLOR PLAYER_02,    $46,$64

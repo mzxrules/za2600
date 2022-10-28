@@ -42,11 +42,11 @@ DRAW_PAUSE_MENU: SUBROUTINE
     ldx #1
     jsr PosMenuObjects
     lda plState2
-    and #[PS_ACTIVE_ITEM & 3] 
+    and #[PS_ACTIVE_ITEM & 3]
     tay
     lda draw_pause_menu_item_cursor_pos,y
     ldx #2
-    jsr PosMenuObjects    
+    jsr PosMenuObjects
     sta WSYNC
     sta HMOVE
 
@@ -88,7 +88,7 @@ DRAW_PAUSE_MENU: SUBROUTINE
     lda itemBombs
     beq .setBombItem
     lda #GI_BOMB
-    
+
 .setBombItem
     sta PGiItems+1
 
@@ -157,7 +157,7 @@ DRAW_PAUSE_MENU: SUBROUTINE
 .displayPotionRed
     lda #GI_POTION_RED
     bpl .setPotionItem
-    
+
 .displayPotionBlue
     lda #GI_POTION_BLUE
 .setPotionItem

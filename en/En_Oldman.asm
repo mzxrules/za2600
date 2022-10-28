@@ -7,7 +7,7 @@ En_OldMan:
     sta enX
     lda #$38
     sta enY
-    
+
     lda roomFlags
     and #RF_EV_LOAD
     bne .skipSetPos
