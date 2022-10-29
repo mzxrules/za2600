@@ -100,6 +100,7 @@ itemMaps    ds 1 ; Level 2-9
 itemFlags   ds 3
 ; ITEMV_name = item var
 ; ITEMF_name = item flag
+    ITEM SWORD1,        0,$20
     ITEM SWORD2,        0,$40
     ITEM SWORD3,        0,$80
 
@@ -112,8 +113,8 @@ itemFlags   ds 3
     ITEM RING_BLUE,     1,$40
     ITEM RING_RED,      1,$80
 
-    ITEM ARROWS,        2,$01
-    ITEM ARROWS_SILVER, 2,$02
+    ITEM ARROW,         2,$01
+    ITEM ARROW_SILVER,  2,$02
     ITEM CANDLE_BLUE,   2,$04
     ITEM CANDLE_RED,    2,$08
     ITEM MEAT,          2,$10

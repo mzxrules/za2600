@@ -44,24 +44,15 @@ SprItem4:
     .byte $34 ; |..XX.X..|
     .byte $18 ; |...XX...|
 SprItem5:
-    .byte $00 ; |........|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $7E ; |.XXXXXX.|
+    .byte $7E ; |.XXXXXX.|
+    .byte $3C ; |..XXXX..|
+    .byte $3C ; |..XXXX..|
     .byte $18 ; |...XX...|
-    .byte $34 ; |..XX.X..|
-    .byte $34 ; |..XX.X..|
-    .byte $34 ; |..XX.X..|
-    .byte $34 ; |..XX.X..|
-    .byte $34 ; |..XX.X..|
     .byte $18 ; |...XX...|
 SprItem6:
-    .byte $FF ; |XXXXXXXX|
-    .byte $FF ; |XXXXXXXX|
-    .byte $7E ; |.XXXXXX.|
-    .byte $7E ; |.XXXXXX.|
-    .byte $3C ; |..XXXX..|
-    .byte $3C ; |..XXXX..|
-    .byte $18 ; |...XX...|
-    .byte $18 ; |...XX...|
-SprItem7:
     .byte $00 ; |........|
     .byte $18 ; |...XX...|
     .byte $3C ; |..XXXX..|
@@ -70,16 +61,16 @@ SprItem7:
     .byte $76 ; |.XXX.XX.|
     .byte $2C ; |..X.XX..|
     .byte $00 ; |........|
+SprItem7:
+    .byte $08 ; |....X...|
+    .byte $18 ; |...XX...|
+    .byte $08 ; |....X...|
+    .byte $18 ; |...XX...|
+    .byte $08 ; |....X...|
+    .byte $14 ; |...X.X..|
+    .byte $14 ; |...X.X..|
+    .byte $08 ; |....X...|
 SprItem8:
-    .byte $08 ; |....X...|
-    .byte $18 ; |...XX...|
-    .byte $08 ; |....X...|
-    .byte $18 ; |...XX...|
-    .byte $08 ; |....X...|
-    .byte $14 ; |...X.X..|
-    .byte $14 ; |...X.X..|
-    .byte $08 ; |....X...|
-SprItem9:
     .byte $10 ; |...X....|
     .byte $30 ; |..XX....|
     .byte $30 ; |..XX....|
@@ -88,7 +79,7 @@ SprItem9:
     .byte $72 ; |.XXX..X.|
     .byte $68 ; |.XX.X...|
     .byte $30 ; |..XX....|
-SprItem10:
+SprItem9:
     .byte $08 ; |....X...|
     .byte $18 ; |...XX...|
     .byte $3C ; |..XXXX..|
@@ -97,7 +88,7 @@ SprItem10:
     .byte $18 ; |...XX...|
     .byte $18 ; |...XX...|
     .byte $08 ; |....X...|
-SprItem11:
+SprItem10:
     .byte $00 ; |........|
     .byte $12 ; |...X..X.|
     .byte $0C ; |....XX..|
@@ -106,7 +97,7 @@ SprItem11:
     .byte $50 ; |.X.X....|
     .byte $60 ; |.XX.....|
     .byte $00 ; |........|
-SprItem12:
+SprItem11:
     .byte $00 ; |........|
     .byte $F8 ; |XXXXX...|
     .byte $4C ; |.X..XX..|
@@ -115,16 +106,16 @@ SprItem12:
     .byte $0A ; |....X.X.|
     .byte $06 ; |.....XX.|
     .byte $02 ; |......X.|
+SprItem12:
+    .byte $99 ; |X..XX..X|
+    .byte $DB ; |XX.XX.XX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $99 ; |X..XX..X|
 SprItem13:
-    .byte $99 ; |X..XX..X|
-    .byte $DB ; |XX.XX.XX|
-    .byte $FF ; |XXXXXXXX|
-    .byte $DB ; |XX.XX.XX|
-    .byte $DB ; |XX.XX.XX|
-    .byte $FF ; |XXXXXXXX|
-    .byte $DB ; |XX.XX.XX|
-    .byte $99 ; |X..XX..X|
-SprItem14:
     .byte $1E ; |...XXXX.|
     .byte $1E ; |...XXXX.|
     .byte $2C ; |..X.XX..|
@@ -133,7 +124,7 @@ SprItem14:
     .byte $18 ; |...XX...|
     .byte $18 ; |...XX...|
     .byte $00 ; |........|
-SprItem15:
+SprItem14:
     .byte $1C ; |...XXX..|
     .byte $08 ; |....X...|
     .byte $14 ; |...X.X..|
@@ -142,7 +133,7 @@ SprItem15:
     .byte $1C ; |...XXX..|
     .byte $14 ; |...X.X..|
     .byte $1C ; |...XXX..|
-SprItem16:
+SprItem15:
     .byte $3C ; |..XXXX..|
     .byte $66 ; |.XX..XX.|
     .byte $C3 ; |XX....XX|
@@ -151,70 +142,43 @@ SprItem16:
     .byte $6E ; |.XX.XXX.|
     .byte $39 ; |..XXX..X|
     .byte $14 ; |...X.X..|
+SprItem16:
+    .byte $3C ; |..XXXX..|
+    .byte $4A ; |.X..X.X.|
+    .byte $90 ; |X..X....|
+    .byte $F0 ; |XXXX....|
+    .byte $F0 ; |XXXX....|
+    .byte $90 ; |X..X....|
+    .byte $4A ; |.X..X.X.|
+    .byte $3C ; |..XXXX..|
 SprItem17:
+    .byte $38 ; |..XXX...|
+    .byte $44 ; |.X...X..|
+    .byte $82 ; |X.....X.|
+    .byte $9A ; |X..XX.X.|
+    .byte $A6 ; |X.X..XX.|
+    .byte $5A ; |.X.XX.X.|
     .byte $3C ; |..XXXX..|
-    .byte $4A ; |.X..X.X.|
-    .byte $90 ; |X..X....|
-    .byte $F0 ; |XXXX....|
-    .byte $F0 ; |XXXX....|
-    .byte $90 ; |X..X....|
-    .byte $4A ; |.X..X.X.|
-    .byte $3C ; |..XXXX..|
+    .byte $18 ; |...XX...|
 SprItem18:
-    .byte $38 ; |..XXX...|
-    .byte $44 ; |.X...X..|
-    .byte $82 ; |X.....X.|
-    .byte $9A ; |X..XX.X.|
-    .byte $A6 ; |X.X..XX.|
-    .byte $5A ; |.X.XX.X.|
-    .byte $3C ; |..XXXX..|
-    .byte $18 ; |...XX...|
+    .byte $0A ; |....X.X.|
+    .byte $54 ; |.X.X.X..|
+    .byte $24 ; |..X..X..|
+    .byte $24 ; |..X..X..|
+    .byte $24 ; |..X..X..|
+    .byte $2E ; |..X.XXX.|
+    .byte $74 ; |.XXX.X..|
+    .byte $20 ; |..X.....|
 SprItem19:
-    .byte $38 ; |..XXX...|
-    .byte $44 ; |.X...X..|
-    .byte $82 ; |X.....X.|
-    .byte $9A ; |X..XX.X.|
-    .byte $A6 ; |X.X..XX.|
-    .byte $5A ; |.X.XX.X.|
     .byte $3C ; |..XXXX..|
+    .byte $42 ; |.X....X.|
     .byte $18 ; |...XX...|
+    .byte $18 ; |...XX...|
+    .byte $18 ; |...XX...|
+    .byte $10 ; |...X....|
+    .byte $08 ; |....X...|
+    .byte $00 ; |........|
 SprItem20:
-    .byte $0A ; |....X.X.|
-    .byte $54 ; |.X.X.X..|
-    .byte $24 ; |..X..X..|
-    .byte $24 ; |..X..X..|
-    .byte $24 ; |..X..X..|
-    .byte $2E ; |..X.XXX.|
-    .byte $74 ; |.XXX.X..|
-    .byte $20 ; |..X.....|
-SprItem21:
-    .byte $0A ; |....X.X.|
-    .byte $54 ; |.X.X.X..|
-    .byte $24 ; |..X..X..|
-    .byte $24 ; |..X..X..|
-    .byte $24 ; |..X..X..|
-    .byte $2E ; |..X.XXX.|
-    .byte $74 ; |.XXX.X..|
-    .byte $20 ; |..X.....|
-SprItem22:
-    .byte $3C ; |..XXXX..|
-    .byte $42 ; |.X....X.|
-    .byte $18 ; |...XX...|
-    .byte $18 ; |...XX...|
-    .byte $18 ; |...XX...|
-    .byte $10 ; |...X....|
-    .byte $08 ; |....X...|
-    .byte $00 ; |........|
-SprItem23:
-    .byte $3C ; |..XXXX..|
-    .byte $42 ; |.X....X.|
-    .byte $18 ; |...XX...|
-    .byte $18 ; |...XX...|
-    .byte $18 ; |...XX...|
-    .byte $10 ; |...X....|
-    .byte $08 ; |....X...|
-    .byte $00 ; |........|
-SprItem24:
     .byte $3E ; |..XXXXX.|
     .byte $41 ; |.X.....X|
     .byte $1C ; |...XXX..|
@@ -223,7 +187,7 @@ SprItem24:
     .byte $14 ; |...X.X..|
     .byte $08 ; |....X...|
     .byte $00 ; |........|
-SprItem25:
+SprItem21:
     .byte $7E ; |.XXXXXX.|
     .byte $66 ; |.XX..XX.|
     .byte $7A ; |.XXXX.X.|
@@ -232,7 +196,7 @@ SprItem25:
     .byte $6E ; |.XX.XXX.|
     .byte $52 ; |.X.X..X.|
     .byte $7E ; |.XXXXXX.|
-SprItem26:
+SprItem22:
     .byte $00 ; |........|
     .byte $3C ; |..XXXX..|
     .byte $34 ; |..XX.X..|
@@ -241,16 +205,7 @@ SprItem26:
     .byte $18 ; |...XX...|
     .byte $00 ; |........|
     .byte $18 ; |...XX...|
-SprItem27:
-    .byte $00 ; |........|
-    .byte $3C ; |..XXXX..|
-    .byte $34 ; |..XX.X..|
-    .byte $34 ; |..XX.X..|
-    .byte $2C ; |..X.XX..|
-    .byte $18 ; |...XX...|
-    .byte $00 ; |........|
-    .byte $18 ; |...XX...|
-SprItem28:
+SprItem23:
     .byte $5A ; |.X.XX.X.|
     .byte $3E ; |..XXXXX.|
     .byte $74 ; |.XXX.X..|
@@ -259,6 +214,51 @@ SprItem28:
     .byte $2E ; |..X.XXX.|
     .byte $7C ; |.XXXXX..|
     .byte $2A ; |..X.X.X.|
+SprItem24:
+    .byte $00 ; |........|
+    .byte $02 ; |......X.|
+    .byte $46 ; |.X...XX.|
+    .byte $2A ; |..X.X.X.|
+    .byte $12 ; |...X..X.|
+    .byte $2E ; |..X.XXX.|
+    .byte $4C ; |.X..XX..|
+    .byte $FA ; |XXXXX.X.|
+SprItem25:
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+SprItem26:
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+SprItem27:
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+SprItem28:
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
 SprItem29:
     .byte $00 ; |........|
     .byte $00 ; |........|

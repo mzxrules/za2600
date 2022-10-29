@@ -62,6 +62,8 @@ GiItemColors:
 
     .byte COLOR_EN_TRIFORCE ; GiKey
     .byte COLOR_EN_TRIFORCE ; GiMasterKey
+
+    .byte COLOR_EN_BROWN    ; GiSword1
     .byte COLOR_GRAY        ; GiSword2
     .byte COLOR_WHITE       ; GiSword3
 
@@ -75,8 +77,8 @@ GiItemColors:
     .byte COLOR_EN_BLUE     ; GiRingBlue
     .byte COLOR_EN_RED      ; GiRingRed
 
-    .byte COLOR_EN_TRIFORCE ; GiArrows
-    .byte COLOR_WHITE       ; GiArrowsSilver
+    .byte COLOR_EN_TRIFORCE ; GiArrow
+    .byte COLOR_WHITE       ; GiArrowSilver
     .byte COLOR_EN_BLUE     ; GiCandleBlue
     .byte COLOR_EN_RED      ; GiCandleRed
     .byte COLOR_EN_RED      ; GiMeat
@@ -85,6 +87,50 @@ GiItemColors:
     .byte COLOR_EN_RED      ; GiPotionRed
 
     .byte COLOR_EN_TRIFORCE ; GiMap
+    .byte COLOR_EN_BROWN    ; GiBowArrow
+    .byte COLOR_WHITE       ; GiBowArrowSilver
+
+
+GiItemSpr:
+    .byte $00   ; GiNone
+    .byte $08   ; GiRecoverHeart
+    .byte $10   ; GiFairy
+    .byte $18   ; GiBomb
+
+    .byte $20   ; GiRupee
+    .byte $20   ; GiRupee5
+    .byte $28   ; GiTriforce
+    .byte $30   ; GiHeart
+
+    .byte $38   ; GiKey
+    .byte $40   ; GiMasterKey
+
+    .byte $48   ; GiSword1
+    .byte $48   ; GiSword2
+    .byte $50   ; GiSword3
+
+    .byte $58   ; GiBow
+    .byte $60   ; GiRaft
+    .byte $68   ; GiBoots
+    .byte $70   ; GiFlute
+
+    .byte $78   ; GiFireMagic
+    .byte $80   ; GiBracelet
+    .byte $88   ; GiRingBlue
+    .byte $88   ; GiRingRed
+
+    .byte $90   ; GiArrow
+    .byte $90   ; GiArrowSilver
+    .byte $98   ; GiCandleBlue
+    .byte $98   ; GiCandleRed
+    .byte $A0   ; GiMeat
+    .byte $A8   ; GiNote
+    .byte $B0   ; GiPotionBlue
+    .byte $B0   ; GiPotionRed
+
+    .byte $B8   ; GiMap
+    .byte $C0   ; GiBowArrow
+    .byte $C0   ; GiBowArrowSilver
 
 EnItemDraw: SUBROUTINE ; y == itemDraw
     lda #>SprItem0
@@ -99,10 +145,7 @@ EnItemDraw: SUBROUTINE ; y == itemDraw
     ldx #COLOR_EN_LIGHT_BLUE
 .skipItemColor
     stx enColor
-    tya
-    asl
-    asl
-    asl
+    lda GiItemSpr,y
     clc
     adc #<SprItem0
     sta enSpr

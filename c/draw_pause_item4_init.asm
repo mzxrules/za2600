@@ -8,10 +8,7 @@
     tax
     lda GiItemColors,x
     sta PItemColors,y
-    txa
-    asl
-    asl
-    asl
+    lda GiItemSpr,x
     pha
     lda draw_pause_menu_item_sprite_zp,y
     tax

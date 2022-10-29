@@ -222,8 +222,8 @@ PickBow: SUBROUTINE
     lda ITEMV_BOW
     and #ITEMF_BOW
     beq .rts
-    lda ITEMV_ARROWS
-    and #[ITEMF_ARROWS | ITEMF_ARROWS_SILVER]
+    lda ITEMV_ARROW
+    and #[ITEMF_ARROW | ITEMF_ARROW_SILVER]
     beq .rts
     lda itemRupees
 .rts

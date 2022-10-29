@@ -20,20 +20,20 @@ KERNEL_SHOP: SUBROUTINE
     sty plX ; reset player position
 
 ; Initialize sprite pointers
-    ldy #2
-    ldx #0
-.sprite_setup_loop
-    lda shopItem,y
-    asl
-    asl
-    asl
-    sta ShopSpr0,x
+    ldy shopItem+0
+    lda GiItemSpr,y
+    sta ShopSpr2
+    ldy shopItem+1
+    lda GiItemSpr,y
+    sta ShopSpr1
+    ldy shopItem+2
+    lda GiItemSpr,y
+    sta ShopSpr0
     lda #>SprItem0+4
-    sta ShopSpr0+1,x
-    inx
-    inx
-    dey
-    bpl .sprite_setup_loop
+    sta ShopSpr0+1
+    sta ShopSpr1+1
+    sta ShopSpr2+1
+
     ldy #15
     sty ShopDrawY
 
@@ -156,9 +156,10 @@ GiRecoverHeart:
 .setHealth
     jmp UPDATE_PL_HEALTH
 
+GiSword1:
 GiSword2:
 GiSword3:
-    lda Bit8-6-GI_SWORD2,x
+    lda Bit8+5-GI_SWORD1,x
     ora itemFlags
     sta itemFlags
     rts
@@ -179,15 +180,15 @@ GiRingBlue:
     sta itemFlags+1
     rts
 
-GiArrows:
-GiArrowsSilver:
+GiArrow:
+GiArrowSilver:
 GiCandleBlue:
 GiCandleRed:
 GiMeat:
 GiNote:
 GiPotionBlue:
 GiPotionRed:
-    lda Bit8-GI_ARROWS,x
+    lda Bit8-GI_ARROW,x
     ora itemFlags+2
     sta itemFlags+2
     rts
@@ -228,6 +229,8 @@ GiMap:
     ora itemMaps
     sta itemMaps
 GiNone:
+GiBowArrow:
+GiBowArrowSilver:
     rts
 
 ;==============================================================================
@@ -497,15 +500,15 @@ ItemGet:
 
 ShopGiItems:
 ; Cheap
-    .byte GI_ARROWS, GI_RECOVER_HEART, GI_BOMB
-    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROWS
-    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROWS
-    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROWS
+    .byte GI_ARROW, GI_RECOVER_HEART, GI_BOMB
+    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROW
+    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROW
+    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROW
 ; Expensive
-    .byte GI_ARROWS, GI_RECOVER_HEART, GI_BOMB
-    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROWS
-    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROWS
-    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROWS
+    .byte GI_ARROW, GI_RECOVER_HEART, GI_BOMB
+    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROW
+    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROW
+    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROW
 ; Potion
     .byte GI_NONE, GI_NONE, GI_NONE
     .byte GI_POTION_BLUE, GI_FAIRY, GI_POTION_RED

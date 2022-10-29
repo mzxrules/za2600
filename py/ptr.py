@@ -169,6 +169,8 @@ tbl = [
 # above items have hardcoded ordering, and flash blue
         "GiKey",
         "GiMasterKey",
+
+        "GiSword1",
         "GiSword2",
         "GiSword3",
 
@@ -182,8 +184,8 @@ tbl = [
         "GiRingBlue",
         "GiRingRed",
 
-        "GiArrows",
-        "GiArrowsSilver",
+        "GiArrow",
+        "GiArrowSilver",
         "GiCandleBlue",
         "GiCandleRed",
 
@@ -193,6 +195,9 @@ tbl = [
         "GiPotionRed",
 
         "GiMap",
+# below items are not real items
+        "GiBowArrow",
+        "GiBowArrowSilver",
     ]),
     GameEnum("MusicSeq", "Ms",
     genEditorBindings=False,

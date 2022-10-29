@@ -70,7 +70,7 @@ DRAW_PAUSE_MENU: SUBROUTINE
     bvs .displaySword2
     nop
     nop
-    lda #GI_SWORD2
+    lda #GI_SWORD1
     bpl .setSwordItem
 
 .displaySword2
@@ -95,8 +95,40 @@ DRAW_PAUSE_MENU: SUBROUTINE
 ; Bow
     lda ITEMV_BOW
     and #ITEMF_BOW
-    beq .setBowItem
+    beq .tryDisplayArrow
+
+    lda ITEMV_ARROW
+    tax
+    and ITEMF_ARROW_SILVER
+    bne .displayBowArrowSilver
+    txa
+    and ITEMF_ARROW
+    bne .displayBowArrow
     lda #GI_BOW
+    bpl .setBowItem
+.displayBowArrow
+    lda #GI_BOW_ARROW
+    bpl .setBowItem
+
+.displayBowArrowSilver
+    lda #GI_BOW_ARROW_SILVER
+    bpl .setBowItem
+
+
+.tryDisplayArrow
+    lda ITEMV_ARROW
+    tax
+    and ITEMF_ARROW_SILVER
+    bne .displaySilverArrow
+    txa
+    and ITEMF_ARROW
+    beq .setBowItem
+    lda #GI_ARROW
+    bpl .setBowItem
+
+.displaySilverArrow
+    lda #GI_ARROW_SILVER
+
 .setBowItem
     sta PGiItems+2
 
