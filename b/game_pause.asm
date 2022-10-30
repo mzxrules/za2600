@@ -136,7 +136,9 @@ Pause_Menu_Input: SUBROUTINE
     lda plState2
     and #PS_ACTIVE_ITEM
     sta PCursorLast
-    sta PCursor
+
+; Y = PCursor
+    tay
 
     lda SWCHA
     and #$F0
@@ -152,50 +154,32 @@ Pause_Menu_Input: SUBROUTINE
 .ContDown
     asl
     bcs .ContUp
-    ;clc
-    ;lda PCursor
-    ;adc #4-1
-    ;sta PCursor
     jmp .pickRight
 .ContUp
     asl
     bcs .rts
-    ;clc
-    ;lda PCursor
-    ;adc #-4+1
-    ;sta PCursor
     jmp .pickLeft
     rts
 
 .pickRight
-    lda PCursor
-    and #PS_ACTIVE_ITEM
-    tay
     lda Pause_Menu_Item_Next+1,y
-    tay
-    sta PCursor
     jsr PickItemDel
     beq .pickRight
     bne .selectedItem
 
 .pickLeft
-    lda PCursor
-    and #PS_ACTIVE_ITEM
-    tay
     lda Pause_Menu_Item_Next-1,y
-    tay
-    sta PCursor
     jsr PickItemDel
     beq .pickLeft
 
 .selectedItem
+    sty PCursor
     lda plState2
     and #$F8
     ora PCursor
     sta plState2
 
-    lda PCursor
-    cmp PCursorLast
+    cpy PCursorLast
     beq .skipSfx
     lda #SFX_STAB
     sta SfxFlags
@@ -208,10 +192,7 @@ Pause_Menu_Input: SUBROUTINE
 
 PickSword: SUBROUTINE
     lda ITEMV_SWORD3
-    and #[ITEMF_SWORD3 | ITEMF_SWORD2]
-    bne .rts
-    lda #1
-.rts
+    and #[ITEMF_SWORD3 | ITEMF_SWORD2 | ITEMF_SWORD1]
     rts
 
 PickBomb: SUBROUTINE
@@ -255,10 +236,16 @@ PickPotion: SUBROUTINE
     rts
 
 PickItemDel:
+    tay
+    cpy PCursorLast
+    beq .stopSearch
     lda PlItemPickH,y
     pha
     lda PlItemPickL,y
     pha
+    rts
+.stopSearch
+    lda #1
     rts
 
 

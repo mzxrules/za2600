@@ -15,7 +15,6 @@ BombAnimDeltaX:
 BombAnimDeltaY:
 
 PlayerArrow: SUBROUTINE
-; ARROW
     bit plState
     bvc .skipSpawnArrow ;PS_USE_ITEM
     lda itemRupees
@@ -88,7 +87,6 @@ ArrowDeltaY:
     .byte 0, 0, -2, 2
 
 PlayerFire: SUBROUTINE
-; FIRE
     bit plState
     bvc .skipSpawnFire ;PS_USE_ITEM
     ; implement fire check
@@ -123,7 +121,6 @@ PlayerFire: SUBROUTINE
 
 
 PlayerBomb: SUBROUTINE
-; Bombs
     bit plState
     bvc .skipDropBomb ;PS_USE_ITEM
     lda itemBombs

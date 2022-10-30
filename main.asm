@@ -167,7 +167,11 @@ BANK_12
     INCBIN "world/w0rs.bin"
     INCBIN "world/w0ex.bin"
 
-    repeat 0x80
+    repeat 0x77
+    .byte $01
+    repend
+    .byte $00
+    repeat 0x8
     .byte $01
     repend
     LOG_BANK_SIZE "-BANK 12- World 0", BANK_12

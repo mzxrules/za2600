@@ -65,11 +65,13 @@ DRAW_PAUSE_MENU: SUBROUTINE
 ;==============================================================================
 
 ; Sword
+    lda ITEMF_SWORD1
     bit ITEMV_SWORD3
     bmi .displaySword3
     bvs .displaySword2
-    nop
-    nop
+    beq .setSwordItem
+
+.displaySword1
     lda #GI_SWORD1
     bpl .setSwordItem
 

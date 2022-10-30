@@ -1,29 +1,6 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-RoomUpdate: SUBROUTINE
-    lda roomFlags
-    and #~RF_EV_LOADED
-    sta roomFlags
-    bpl .skipLoadRoom
-    ora #RF_EV_LOADED
-    and #~[RF_EV_LOAD + RF_NO_ENCLEAR + RF_EV_CLEAR + RF_PF_IGNORE + RF_PF_AXIS + RF_PF_DARK]
-    sta roomFlags
-    lda #-$18
-    sta roomTimer
-    lda #[PS_GLIDE | PS_LOCK_ALL]
-    sta plState
-    jsr LoadRoom
-    lda #0      ;EN_NONE
-    sta enType
-    sta enState
-    sta blType
-    sta roomPush
-    sta plItemTimer
-    sta KernelId
-.skipLoadRoom
-    rts
-
 LoadCaveRoom: SUBROUTINE
     ; Don't overwrite room vars
     lda #COLOR_CHOCOLATE
@@ -60,9 +37,32 @@ LoadCaveRoom: SUBROUTINE
     sta wPF1RoomR,y
     dey
     bpl .loadRoomSprite3
+.rts
     rts
 
+RoomUpdate:  ; SUBROUTINE
+    lda roomFlags
+    and #~RF_EV_LOADED
+    sta roomFlags
+    bpl .rts ; RF_EV_LOAD
+    ora #RF_EV_LOADED
+    and #~[RF_EV_LOAD + RF_NO_ENCLEAR + RF_EV_CLEAR + RF_PF_IGNORE + RF_PF_AXIS + RF_PF_DARK]
+    sta roomFlags
+    lda #-$18
+    sta roomTimer
+    lda #[PS_GLIDE | PS_LOCK_ALL]
+    sta plState
+
+
 LoadRoom: SUBROUTINE
+    lda #0      ;EN_NONE
+    sta enType
+    sta enState
+    sta blType
+    sta roomPush
+    sta plItemTimer
+    sta KernelId
+
     ; load world bank
     lda #SLOT_W0
     ldx #SLOT_RW0

@@ -274,10 +274,10 @@ PF2Room16:
     .byte $80 ; |.......X| mirrored
     .byte $80 ; |.......X| mirrored
     .byte $C0 ; |......XX| mirrored
-    .byte $60 ; |.....XX.| mirrored
-    .byte $30 ; |....XX..| mirrored
-    .byte $30 ; |....XX..| mirrored
-    .byte $30 ; |....XX..| mirrored
+    .byte $E0 ; |.....XXX| mirrored
+    .byte $F0 ; |....XXXX| mirrored
+    .byte $F0 ; |....XXXX| mirrored
+    .byte $F0 ; |....XXXX| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $30 ; |....XX..| mirrored
