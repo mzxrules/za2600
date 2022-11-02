@@ -100,6 +100,7 @@ itemMaps    ds 1 ; Level 2-9
 itemFlags   ds 3
 ; ITEMV_name = item var
 ; ITEMF_name = item flag
+    ITEM SHIELD,        0,$10
     ITEM SWORD1,        0,$20
     ITEM SWORD2,        0,$40
     ITEM SWORD3,        0,$80
@@ -148,7 +149,7 @@ enState     ds 1
 ; EnShopkeeper enState
                       ; 1xxx_xxxx Init
                       ; x1xx_xxxx Item Bought
-GI_EVENT_SHOP   = $20 ; xx1x_xxxx
+GI_EVENT_CAVE   = $20 ; xx1x_xxxx
 GI_EVENT_CD     = $10 ; xxx1_xxxx
 GI_EVENT_TRI    = $08 ; xxxx_1xxx
 GI_EVENT_INIT   = $04 ; xxxx_x1xx
@@ -480,16 +481,6 @@ DEG_000         = $01
 DEG_090         = $08
 DEG_180         = DEG_000 | ATAN2_SIGNX
 DEG_270         = DEG_090 | ATAN2_SIGNY
-
-BIT_01 = Bit8
-BIT_02 = Bit8 + 1
-BIT_04 = Bit8 + 2
-BIT_08 = Bit8 + 3
-BIT_10 = Bit8 + 4
-BIT_20 = Bit8 + 5
-BIT_40 = Bit8 + 6
-BIT_80 = Bit8 + 7
-
 
 ROOM_MAZE_1 = $1B
 ROOM_MAZE_2 = $61

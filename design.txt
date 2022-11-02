@@ -39,7 +39,7 @@ Game Loop:
     Update Room Clear
     Update Shutter Door
     Test Game Over
-    
+
 Room Events:
     RF_EV_LOAD      ; Triggers Room Load event
     RF_EV_LOADED    ; If set, a new room has been loaded
@@ -56,7 +56,7 @@ enRecoil    ds 1 (non-zero = recoiling)
 enBlockDir  ds 1 UDLR
 
 
-if collided with pf, 
+if collided with pf,
     reset x,y
     if recoil == 0,
         pick new direction
@@ -67,11 +67,11 @@ if collided with weapon && stun == 0,
     recoil = -8
     x &= 0xFE //stay on grid
     y &= 0xFE //stay on grid
-    //move func handles recoil opposing facing direction  
-        
-if x & (gridstep-1) != 0 && y & (gridstep-1) != 0, 
+    //move func handles recoil opposing facing direction
+
+if x & (gridstep-1) != 0 && y & (gridstep-1) != 0,
     continue direction
-    
+
 else if Frame & 0x10
     pick new direction
 
@@ -103,11 +103,11 @@ Octorok Logic:
         at end of state, fire missile
     Attack
         idle N frames
-        
+
     PlAttack:
         enable recoil
         dec health 1, 2, 4
-        
+
 Leever Logic:
     States:
     Init
@@ -120,12 +120,12 @@ Stalfos Logic:
     States:
     Walk
         base movement pattern
-        
+
 Gibdos Logic:
     States:
     Walk
         base movement pattern
-        
+
 Rope Logic:
     States:
     Walk
@@ -134,7 +134,7 @@ Rope Logic:
     Stalk
         move until collide with wall
         goto walk
-        
+
 LikeLike Logic:
     States:
     Walk
@@ -150,7 +150,7 @@ Moblin Logic:
         at end of state, fire missile
     Attack
         idle N frames
-        
+
 WizrobeA Logic:
     States:
     Wait
@@ -166,21 +166,21 @@ WizrobeA Logic:
 
 Input repeat prevention:
 
-INPT4 == $00 ; fire button pressed 
-INPT4 == $80 ; fire button not pressed 
+INPT4 == $00 ; fire button pressed
+INPT4 == $80 ; fire button not pressed
 
 if last button == not pressed && button == pressed && ItemTimer == 0
     ItemButton
-    
+
     1 && 0 && 0
-    
-    
-1111 0111 -9    
+
+
+1111 0111 -9
 1111 1000 -8
 1111 1001 -7
 1111 1010 -6
 1111 1011 -5
-1111 1100 -4   
+1111 1100 -4
 1111 1101 -3
 1111 1110 -2
 1111 1111 -1
@@ -200,7 +200,7 @@ Playfield sprites are 16 pixels tall (16 bytes), thus a pointer could be calcula
 We can pre-compute the mul 16 by storing the 4 least significant bits of the
 sprite index in the upper 4, and the most significant 1-2 bits in the lower
 1-2 bits. Thus, AND #$F0 gives the pointer's least significant byte, then
-AND #$01/#$03 + #>SpritePtr gives the most significant byte. 
+AND #$01/#$03 + #>SpritePtr gives the most significant byte.
 
            LSB!  MSB
 PF1 Left:  1111 xxx1
@@ -232,12 +232,12 @@ W 11xx xxxx
 
   Zero Capture Shift Masks
 N 0xFC  0x03     0
-S 0xF3  0x0C     2    
+S 0xF3  0x0C     2
 E 0xCF  0x30     4
 W 0x3F  0xC0     6
 
 The behavior of door and wall flags depends on whether the current world bank
-is an overworld or a dungeon. 
+is an overworld or a dungeon.
 
 Overworld flags:
 
@@ -258,7 +258,7 @@ the wall openings will be drawn.
 E   W   D
 0  00  00 = open
 1  00  01 = keydoor
-2  00  10 = shutter door 
+2  00  10 = shutter door
 3  00  11 = wall
 4  10  11 = bombable wall
 5  11  11 = false wall
@@ -279,7 +279,7 @@ Instead, RAM banks 1-3 store room flags
 RF_PF_IGNORE disables playfield collision within room center
  Enabled in all rooms with PF2 Triforce design
 RF_PF_AXIS allows the player to walk over playfield with boots
- Enabled in dungeon rooms with RED or WATER colors 
+ Enabled in dungeon rooms with RED or WATER colors
 
 set "p_up" "('p_up'+1*('key_pressed'=273o'key72'))"
 
@@ -294,7 +294,7 @@ need x range 0-136 ($88)
 
   7,   6,   5,   4,   3,   2,   1,   0
 111, 110, 101, 100, 011, 010, 001, 000
-000, 001, 010, 011, 100, 101, 110, 111 
+000, 001, 010, 011, 100, 101, 110, 111
 
 
 Health Display
@@ -306,7 +306,7 @@ Health Display
 73-80 = 10 hearts
 
 LoadRoom is running out of scanlines
-Overworld timing: 
+Overworld timing:
 start  3.0
 end   25.44
 Dungeon timing:
@@ -319,7 +319,7 @@ KeydoorCheck -> Kernel Main loop
 
 ClearDrop System:
 
-Two slots: A, B 
+Two slots: A, B
 Stairs / Key Items, Random Item Drops
 
 RoomScript configures A, EnemySystem configures B
@@ -335,18 +335,18 @@ If enType == #EN_NONE and (roomFlags & (#RF_EV_ENCLEAR or #RF_EV_CLEAR))
     set enType to #EnClearDrop
     zero enState, cdBTimer, cdAType, cdBType
     if #RF_EV_ENCLEAR
-        set cdBType #CD_ITEM_RAND 
+        set cdBType #CD_ITEM_RAND
 
 EnClearDrop:
     Process previous frame's collision
          if #CD_LAST_UPDATE indexes an inactive actor, skip
 
     Set CD_UPDATE_A, CD_UPDATE_B based on cdA/BType being non-zero
-    
+
     if CD_UPDATE_A, CD_UPDATE_B == 0 rts
-    
+
     if CD_UPDATE_A, not CD_UPDATE_B, run CD_UPDATE_A x == 1
-    
+
     if not CD_UPDATE_A, CD_UPDATE_B, run CD_UPDATE_B x == 1
 
     if CD_UPDATE_A and CD_UPDATE_B
@@ -354,12 +354,12 @@ EnClearDrop:
         if a == 0, run CD_UPDATE_A, x == 2
         else run CD_UPDATE_B, x == 2
 
-Additionally, the ItemGet system allows for Link to hold items above his head. 
+Additionally, the ItemGet system allows for Link to hold items above his head.
 Affects EnClearDrop and EnShopkeeper var allocation
 enState stores ItemGet trigger, for restoring EnClearDrop and playing MS
 cdAType stores GiItem to hold overhead
-    
-Enemy Spawn Routine: 
+
+Enemy Spawn Routine:
 
 PF1L is normal, so bit 0x80 is left, 0x01 is toward center
 PF2 is mirrored, so bit 0x80 is center, 0x01 is left/right
@@ -416,15 +416,15 @@ y bits:
 if 7 -> 3, then
 0-6 = line * 2 + 1
 
-    
-Text: 
+
+Text:
 load text into ram via loop
  36.48
  40.55
 unroll once
  36.48
  39.71
-    
+
 Items:
 Rupees 1x, 5x
 R. Heart
@@ -455,14 +455,14 @@ sbc = adc(~arg)
     lda v
     sbc #$0
     sta v
-    
+
 ; inc to target amount+1
     lda #$00 ; FF loops indefinitely
     cmp itemRupees
     lda itemRupees
     sbc #$FF
     sta itemRupees
-    
+
 Text24 draws 24 characters on a line every 2 frames, but it consumed most of
 the rom I budgeted for text, without even storing text in the rom yet. It also
 used 24 bytes of ram, which is a ton. when i looked at the code, i discovered
@@ -475,8 +475,36 @@ branch is taken, and so a pair of bvs is enough to implement a variable cycle
 delay of 4/6 cycles.
 
 
-   Caves
+Caves:
 
+Entering an overworld room with a negative id sends you to a cave.
+The cave properties are determined by roomEX, which is not clobbered
+on entering the cave.
+
+money making game
+
+1/3, 1/3, 1/3
+
+loserA is always -10
+loserB is 50/50 -40 or -10
+winner is 50/50 +20 or +50
+
+win, -10, lose
+-10, win, lose
+
+win, lose, -10
+lose, win, -10
+
+-10, lose, win
+lose, -10, win
+
+  1    1    1    1    1    1
++50, +20, -10, -10, -10, -40)
+
+20    8    -4   -4   -4  -16
+
+
+Legacy Cave Notes:
    EX bits
    $FC = Cave Type/MesgId
    $03 = Variable
@@ -499,7 +527,7 @@ Shops
 
 E7 -> 3E conversion
 
-Ram 
+Ram
 
 WorldKernel $ 90
 PF          $ 3C

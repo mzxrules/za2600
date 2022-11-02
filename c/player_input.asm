@@ -229,6 +229,9 @@ PlayerMeat:
 PlayerPotion:
 PlayerSword: SUBROUTINE
 ; If Item Button, use item
+    lda ITEMV_SWORD1
+    and #[ITEMF_SWORD1 | ITEMF_SWORD2 | ITEMF_SWORD3]
+    beq .skipSlashSword
     bit plState
     bvc .skipSlashSword ;PS_USE_ITEM
     lda #<-9

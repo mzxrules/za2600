@@ -18,8 +18,8 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_EntCaveLeft
+Cv_Sword2
 Rs_EntMidDung
 zz5
 Rs_None
@@ -147,7 +147,7 @@ zz0
 Rs_None
 zz0
 Rs_EntCaveRight
-zz16
+Cv_Shop2
 Rs_None
 zz0
 Rs_None
@@ -189,7 +189,7 @@ zz0
 Rs_None
 zz0
 Rs_ShoreItem
-zz7
+GiHeart
 Rs_None
 zz0
 Rs_Maze
@@ -223,7 +223,7 @@ zz0
 Rs_None
 zz0
 Rs_EntCaveLeft
-zz18
+Cv_Shop2
 Rs_None
 zz0
 Rs_None
@@ -233,11 +233,11 @@ zz0
 Rs_EntMidDung
 zz3
 Rs_EntCaveLeft
-zz0
+zz18
 Rs_BlockDiamondStairs
 zz121
 Rs_EntCaveLeft
-zz25
+Cv_Sword1
 Rs_Item
 GiBoots
 Rs_BlockDiamondStairs

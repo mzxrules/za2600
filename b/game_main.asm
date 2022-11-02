@@ -389,7 +389,7 @@ PlDirL:
     ;align 16
 
 WORLD_ENT: ; Initial room spawns for worlds 0-9
-    .byte $77, $73, $7D, $7C, $71, $76, $79, $00, $00, $7E
+    .byte $77, $73, $7D, $7C, $71, $76, $79, $71, $75, $7E
 
     INCLUDE "gen/PlMoveDir.asm"
 
@@ -494,3 +494,8 @@ EnShopkeeper:
     lda #SLOT_SH
     sta BANK_SLOT
     jmp EnShopkeeper_
+
+EnNpcGiveOne:
+    lda #SLOT_SH
+    sta BANK_SLOT
+    jmp EnNpcGiveOne_

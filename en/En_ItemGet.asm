@@ -21,7 +21,7 @@ En_ItemGet: SUBROUTINE
 
     ldx #EN_SHOPKEEPER
     lda enState
-    and #GI_EVENT_SHOP
+    and #GI_EVENT_CAVE
     bne .end
     ldx #EN_CLEAR_DROP
 .end

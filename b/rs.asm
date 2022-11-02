@@ -8,6 +8,47 @@ Rs_Del:
     lda RoomScriptL,x
     pha
 Rs_None:
+Rs_BlockCentral:
+    rts
+
+Cv_Del:
+    ldx roomEX
+    cpx CV_DOOR_REPAIR+1
+    bpl .rts
+    lda CaveTypeH,x
+    pha
+    lda CaveTypeL,X
+    pha
+
+Cv_Path1:
+Cv_Path2:
+Cv_Path3:
+Cv_Path4:
+Cv_MoneyGame:
+Cv_GiveHeartPotion:
+Cv_TakeHeartRupee:
+Cv_Rupees:
+Cv_DoorRepair:
+.rts
+    rts
+
+
+Cv_Sword1:
+Cv_Sword2:
+Cv_Sword3:
+Cv_Note:
+    lda #EN_NPC_GIVE_ONE
+    sta enType
+    rts
+
+
+Cv_Potion:
+Cv_Shop1:
+Cv_Shop2:
+Cv_Shop3:
+Cv_Shop4:
+    lda #EN_SHOPKEEPER
+    sta enType
     rts
 
 Rs_FairyFountain: SUBROUTINE
@@ -36,55 +77,6 @@ Rs_FairyFountain: SUBROUTINE
     sta plState
 .rts
     rts
-
-Rs_Maze: SUBROUTINE
-    ldy roomEX
-    lda Rs_Maze_Type,y
-    tax
-    cmp worldSR
-    beq .skipInit
-    sta worldSR ; room
-    sty worldSY ; check state
-.skipInit
-    bit roomFlags ; check RF_EV_LOAD
-    bpl .rts
-    lda roomId
-    cmp Rs_Maze_Exit,y
-    bne .checkPattern
-; exit maze without finding hidden area
-    sta worldSR
-.rts
-    rts
-.checkPattern
-    inc worldSY
-    inc worldSY
-    ldy worldSY
-    lda Rs_Maze_Pattern-2,y
-    cmp roomId
-    bne .failStep
-    cpy #8
-    bmi .roomLoop
-; maze complete
-    dec worldSR ; force reset
-    lda #SFX_SOLVE
-    sta SfxFlags
-    rts
-
-.failStep
-    sta worldSR
-.roomLoop
-    stx roomId
-    rts
-
-Rs_Maze_Type:
-    .byte ROOM_MAZE_1, ROOM_MAZE_2
-Rs_Maze_Exit
-    .byte <(ROOM_MAZE_1 - #$1), <(ROOM_MAZE_2 + #$1)
-Rs_Maze_Pattern:
-    .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 - #$10)
-    .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 - #$1)
-    .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 + #$10)
-    .byte <(ROOM_MAZE_1 - #$10),<(ROOM_MAZE_2 - #$1)
 
 Rs_EntCaveLeft: SUBROUTINE
     ldx #$14
@@ -136,47 +128,21 @@ Rs_Cave: SUBROUTINE
     sta roomFlags
     and #RF_EV_LOADED
     beq .skipInit
-    lda #EN_SHOPKEEPER
-    sta enType
+    jmp Cv_Del
 .skipInit
+
+    lda #$30
+    cmp plY
+    bpl .skipSetPos
+    sta plY
+.skipSetPos
+
     lda plY
     cmp #$08
     bne .rts
     lda #MS_PLAY_THEME_L
     jmp ReturnWorld
 
-.rts
-    rts
-
-Rs_RaftSpot: SUBROUTINE
-    lda plState
-    and #$20
-    bne .fixPos
-; If item not obtained
-    lda #ITEMF_RAFT
-    and ITEMV_RAFT
-    beq .rts
-; If not touching water surface
-    bit CXP0FB
-    bpl .rts
-    ldy plY
-    cpy #$40
-    bne .rts
-    ldx plX
-    cpx #$40
-    bne .rts
-    iny
-    sty plY
-    lda #PL_DIR_U
-    sta plDir
-    lda plState
-    ora #$22
-    sta plState
-    lda #SFX_SURF
-    sta SfxFlags
-.fixPos
-    lda #$40
-    sta plX
 .rts
     rts
 
@@ -203,32 +169,6 @@ EnableText: ; SUBROUTINE ; A = messageId
 .rts
     rts
 
-Rs_ShoreItem: SUBROUTINE
-    lda #RF_PF_AXIS
-    ora roomFlags
-    sta roomFlags
-    lda #44
-    cmp plX
-    bmi .skipWallback
-    sta plX
-.skipWallback
-    ; check if item should appear
-    lda enType
-    cmp #EN_CLEAR_DROP
-    bne .rts
-    ldx roomId
-    lda rRoomFlag,x
-    bmi .rts ; RF_SV_ITEM_GET ;.NoLoad
-
-    lda #$6C
-    sta cdAX
-    lda #$2C
-    sta cdAY
-    lda #EN_ITEM
-    sta cdAType
-.rts
-    rts
-
 Rs_Item: SUBROUTINE
     lda enType
     cmp #EN_CLEAR_DROP
@@ -249,41 +189,6 @@ Rs_Item: SUBROUTINE
 .rts
     rts
 
-Rs_GameOver: SUBROUTINE
-    lda enInputDelay ; replaced if init taken
-    ldx plHealth
-    bne .skipInit
-    dec plHealth
-    stx wBgColor
-    stx wFgColor
-    stx enType
-    stx roomFlags
-    stx mesgId
-    inx
-    stx KernelId
-    inx
-    stx plState ; PS_LOCK_ALL
-
-    ldx #RS_GAME_OVER
-    stx roomRS
-    ldx #$80
-    stx plY
-
-    ldx #MS_PLAY_OVER
-    stx SeqFlags
-    lda #-$20 ; input delay timer
-.skipInit
-    cmp #1
-    adc #0
-    sta enInputDelay
-    bne .rts
-    bit INPT4
-    bmi .rts
-    jmp RESPAWN
-.rts
-    rts
-
-Rs_EntMidWorld:
 Rs_EntMidDung: SUBROUTINE
     lda plX
     cmp #$40
@@ -387,10 +292,7 @@ Rs_EntCaveRightBlocked:
 .rts
     rts
 
-Rs_BlockCentral: SUBROUTINE
-    rts
-
-Rs_Stairs:
+Rs_Stairs: SUBROUTINE
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts

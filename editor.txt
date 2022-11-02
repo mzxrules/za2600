@@ -236,6 +236,11 @@ set "$" "$Rs&d1&"
 set "$" "fwrite"
 set "exjump" 0
 if "$" === "Rs_Item" "#write_ex_Rs_Item"
+if "$" === "Rs_ShoreItem" "#write_ex_Rs_Item"
+if "$" === "Rs_EntCaveLeft" "#write_ex_Cv_Type"
+if "$" === "Rs_EntCaveLeftBlocked" "#write_ex_Cv_Type"
+if "$" === "Rs_EntCaveRight" "#write_ex_Cv_Type"
+if "$" === "Rs_EntCaveRightBlocked" "#write_ex_Cv_Type"
 if "exjump" == 0 "#write_ex_default"
 inc "l" 1
 if "l" < 128 "write_rsex_loop"
@@ -249,7 +254,7 @@ goto "#return"
 
 : "#write_ex_Rs_Item"
 set "exjump" 1
-set "ex" 0
+set "ex" -1
 : "write_ex_Rs_Item_l"
 inc "ex" 1
 if "zz&d2&" != "('&$Gi('ex')&')" "write_ex_Rs_Item_c"
@@ -258,6 +263,20 @@ set "$" "fwrite"
 goto "#return"
 : "write_ex_Rs_Item_c"
 if "ex" < "GiCount" "write_ex_Rs_Item_l"
+set "exjump" 0
+goto "#return"
+
+: "#write_ex_Cv_Type"
+set "exjump" 1
+set "ex" -1
+: "write_ex_Cv_Type_l"
+inc "ex" 1
+if "zz&d2&" != "('&$Cv('ex')&')" "write_ex_Cv_Type_c"
+set "$" "&$Cv('ex')&"
+set "$" "fwrite"
+goto "#return"
+: "write_ex_Cv_Type_c"
+if "ex" < "CvCount" "write_ex_Cv_Type_l"
 set "exjump" 0
 goto "#return"
 

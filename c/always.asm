@@ -63,6 +63,7 @@ GiItemColors:
     .byte COLOR_EN_TRIFORCE ; GiKey
     .byte COLOR_EN_TRIFORCE ; GiMasterKey
 
+    .byte COLOR_EN_BROWN    ; GiShield
     .byte COLOR_EN_BROWN    ; GiSword1
     .byte COLOR_GRAY        ; GiSword2
     .byte COLOR_WHITE       ; GiSword3
@@ -105,6 +106,7 @@ GiItemSpr:
     .byte $38   ; GiKey
     .byte $40   ; GiMasterKey
 
+    .byte $D0   ; GiShield
     .byte $48   ; GiSword1
     .byte $48   ; GiSword2
     .byte $50   ; GiSword3

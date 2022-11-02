@@ -8,14 +8,18 @@ set "$$" to "$Rs&local1&"
 loop start
 put c0f CustomBlock p20 at "('thisx'+1+'loopcount')" "thisy"
 loop for 32
-if "&$$&" === "Rs_Item" then "Rs_Item"
 
-set "local10" to "('local2'/16)"
-goto "#hexchar"
-put c0f CustomBlock "local10" at "('thisx'+1)" "thisy"
-set "local10" to "local2"
-goto "#hexchar"
-put c0f CustomBlock "local10" at "('thisx'+2)" "thisy"
+if "&$$&" === "Rs_Item" then "Rs_Item"
+if "&$$&" === "Rs_ShoreItem" then "Rs_Item"
+if "&$$&" === "Rs_Maze" then "Rs_Maze"
+if "&$$&" === "Rs_EntCaveLeft" then "Cv_Type"
+if "&$$&" === "Rs_EntCaveLeftBlocked" then "Cv_Type"
+if "&$$&" === "Rs_EntCaveRight" then "Cv_Type"
+if "&$$&" === "Rs_EntCaveRightBlocked" then "Cv_Type"
+
+: "NoValue"
+put c0f CustomBlock "$x2_&local2&.0" at "('thisx'+1)" "thisy"
+put c0f CustomBlock "$x2_&local2&.1" at "('thisx'+2)" "thisy"
 goto "q"
 
 : "Rs_Item"
@@ -23,6 +27,29 @@ loop start
 put c0f CustomBlock "$Gi&local2&.&loopcount&" at "('thisx'+1+'loopcount')" "thisy"
 loop for "('$Gi&local2&.length'-1)"
 goto "q"
+
+: "Cv_Type"
+loop start
+put c0f CustomBlock "$Cv&local2&.&loopcount&" at "('thisx'+1+'loopcount')" "thisy"
+loop for "('$Cv&local2&.length'-1)"
+goto "q"
+
+: "Rs_Maze"
+set "$" "Lost Hills"
+if "local2" = 0 then "print_str"
+set "$" "Lost Woods"
+if "local2" = 1 then "print_str"
+goto "NoValue"
+
+: "print_str"
+goto "#print_str"
+goto "q"
+
+: "#print_str"
+loop start
+put c0f CustomBlock "$.&loopcount&" at "('thisx'+1+'loopcount')" "thisy"
+loop for "('$.length'-1)"
+goto "#return"
 
 
 : "#hexchar"

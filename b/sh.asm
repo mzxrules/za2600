@@ -101,6 +101,33 @@ KERNEL_SHOP: SUBROUTINE
 ;==============================================================================
 ; GET ITEM
 ;==============================================================================
+
+; Special entity for making Link hold up items.
+ItemGet:
+    lda #PS_HOLD_ITEM
+    ora plState2
+    sta plState2
+    lda plX
+    sta enX
+    sta enXL
+    lda plY
+    clc
+    adc #9
+    sta enY
+    sta enYL
+    lda #EN_ITEM_GET
+    sta enType
+    ldy #MS_PLAY_GI
+    ldx cdAType
+    cpx #GI_TRIFORCE
+    bne .defaultGi
+    ldy #MS_PLAY_TRI
+.defaultGi
+    sty SeqFlags
+    lda plState
+    ora #PS_LOCK_ALL
+    sta plState
+
 GiItemDel: SUBROUTINE
     lda ItemIdH,x
     pha
@@ -156,10 +183,11 @@ GiRecoverHeart:
 .setHealth
     jmp UPDATE_PL_HEALTH
 
+GiShield:
 GiSword1:
 GiSword2:
 GiSword3:
-    lda Bit8+5-GI_SWORD1,x
+    lda Bit8+4-GI_SHIELD,x
     ora itemFlags
     sta itemFlags
     rts
@@ -255,8 +283,6 @@ EnClearDrop_: SUBROUTINE
     ; Collided with random drop
     ldx cdBType
     beq .endCollisionCheck ; Safety check
-    ;lda #SFX_ITEM_PICKUP
-    ;sta SfxFlags
     jsr GiItemDel
     lda #EN_NONE
     sta cdBType
@@ -370,43 +396,79 @@ EnClearDropTypeB: SUBROUTINE
 EnRandomDrops:
     .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
 
+EnNpcGiveOne_: SUBROUTINE
+    lda roomId
+    and #$7F
+    tay
+    lda rRoomFlag,y
+    bpl .skipSetObtained ; RF_SV_ITEM_GET
+    lda #$C0
+    sta enState
+.skipSetObtained
+
+    bit enState
+    bvs .rts
+    bmi .main
+
+.init
+
+    ldy roomEX
+    lda NpcGiveOneDialogs-CV_SWORD1,y
+    sta mesgId
+    lda #1
+    sta KernelId
+    lda #$80
+    sta enState
+
+.main
+
+    bit CXPPMM
+    bpl .rts
+; Set RF_SV_ITEM_GET Flag
+    lda roomId
+    and #$7F
+    tay
+    lda rRoomFlag,y
+    ora #RF_SV_ITEM_GET
+    sta wRoomFlag,y
+; Trigger ItemGet
+    lda #[$C0 | GI_EVENT_CAVE]
+    sta enState
+    lda #0
+    sta KernelId
+    ldx roomEX
+    lda NpcGiveOneItems-CV_SWORD1,x
+    sta cdAType
+    jmp ItemGet
+
+.rts
+    rts
+
 EnShopkeeper_: SUBROUTINE
     bit enState
-    bmi .skipInit
-    lda roomEX
-    lsr
-    lsr
+    bvs .rts
+    bmi .main
+    ldy roomEX
+    lda ShopDialogs-CV_SHOP1,y
     sta mesgId
     lda #2
     sta KernelId
     lda #$80
     sta enState
-.skipInit
-    bvc .continue
-    lda #$F0
-    sta enY
-    jmp .rts
-.continue
 
-    lda #$30
-    cmp plY
-    bpl .skipSetPos
-    sta plY
-.skipSetPos
+.main
 
     lda roomEX
-    and #$0F
-    sta shopItem
     asl
     clc
-    adc shopItem
+    adc roomEX
     tax ; shop index * 3
 
     ldy #2
 .init_shop
-    lda ShopGiItems,x
+    lda ShopGiItems-[CV_SHOP1 * 3],x
     sta shopItem,y
-    lda ShopPrices,x
+    lda ShopPrices-[CV_SHOP1 * 3],x
     sta shopDigit,y
     inx
     dey
@@ -436,41 +498,14 @@ EnShopkeeper_: SUBROUTINE
     sta itemRupees
     cld
 
-    lda #[$C0 | GI_EVENT_SHOP]
+    lda #[$C0 | GI_EVENT_CAVE]
     sta enState
     lda #0
     sta KernelId
     lda shopItem,x
     sta cdAType
 
-
-; Special entity for making Link hold up items.
-ItemGet:
-    lda #PS_HOLD_ITEM
-    ora plState2
-    sta plState2
-    lda plX
-    sta enX
-    sta enXL
-    lda plY
-    clc
-    adc #9
-    sta enY
-    sta enYL
-    lda #EN_ITEM_GET
-    sta enType
-    ldy #MS_PLAY_GI
-    ldx cdAType
-    cpx #GI_TRIFORCE
-    bne .defaultGi
-    ldy #MS_PLAY_TRI
-.defaultGi
-    sty SeqFlags
-    lda plState
-    ora #PS_LOCK_ALL
-    sta plState
-    jmp GiItemDel
-
+    jmp ItemGet
 
 .shopEnd
 ; Update shop price display digit
@@ -499,31 +534,46 @@ ItemGet:
     rts
 
 ShopGiItems:
-; Cheap
-    .byte GI_ARROW, GI_RECOVER_HEART, GI_BOMB
-    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROW
-    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROW
-    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROW
-; Expensive
-    .byte GI_ARROW, GI_RECOVER_HEART, GI_BOMB
-    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROW
-    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROW
-    .byte GI_KEY, GI_RECOVER_HEART, GI_ARROW
+; Regular
+    .byte GI_SHIELD, GI_KEY, GI_CANDLE_BLUE
+    .byte GI_SHIELD, GI_BOMB, GI_ARROW
+    .byte GI_SHIELD, GI_MEAT, GI_RECOVER_HEART
+    .byte GI_KEY, GI_MEAT, GI_RING_BLUE
 ; Potion
-    .byte GI_NONE, GI_NONE, GI_NONE
     .byte GI_POTION_BLUE, GI_FAIRY, GI_POTION_RED
+    .byte GI_NONE, GI_NONE, GI_NONE
 
 ShopPrices:
-; Cheap
-    .byte $30, $05, $10
-    .byte $20, $05, $40
-    .byte $30, $05, $10
-    .byte $20, $05, $40
-; Expensive
-    .byte $30, $05, $10
-    .byte $20, $05, $40
-    .byte $30, $05, $10
-    .byte $20, $05, $40
+; Regular
+    .byte $65, $40, $25 ; 160, 100, 60
+    .byte $50, $10, $30 ; 130, 20, 80
+    .byte $35, $40, $05 ; 90, 100, 10
+    .byte $30, $25, $99 ; 80, 60, 250
 ; Potion
+    .byte $16, $10, $25 ; 40, NA, 68
     .byte $AA, $AA, $AA
-    .byte $20, $10, $20
+
+ShopDialogs:
+    .byte MESG_SHOP_CHEAP
+    .byte MESG_SHOP_CHEAP
+    .byte MESG_SHOP_EXPENSIVE
+    .byte MESG_SHOP_EXPENSIVE
+    .byte MESG_POTION
+    .byte MESG_POTION0
+
+NpcGiveOneItems:
+    .byte GI_SWORD1
+    .byte GI_SWORD2
+    .byte GI_SWORD3
+    .byte GI_NOTE
+
+NpcGiveOneDialogs:
+    .byte MESG_TAKE_THIS
+    .byte MESG_MASTER_SWORD
+    .byte MESG_MASTER_SWORD
+    .byte #0
+
+SecretRupees:
+    .byte $40, $12, $05 ; 100, 30, 10
+
+LifeCost = $20 ; -50

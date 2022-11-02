@@ -380,7 +380,12 @@ BANK_24
 
 BANK_26
     INCLUDE "gen/RoomScript.asm"
+    INCLUDE "gen/CaveType.asm"
     INCLUDE "b/rs.asm"
+    INCLUDE "rs/Rs_GameOver.asm"
+    INCLUDE "rs/Rs_Maze.asm"
+    INCLUDE "rs/Rs_RaftSpot.asm"
+    INCLUDE "rs/Rs_ShoreItem.asm"
     INCLUDE "c/mi_system.asm"
     INCLUDE "gen/atan2.asm"
     INCLUDE "c/atan2.asm"
@@ -408,6 +413,7 @@ BANK_28
     INCLUDE "en/EnDraw_Octorok.asm"
     INCLUDE "en/EnDraw_Rope.asm"
     INCLUDE "en/EnDraw_Shopkeeper.asm"
+    INCLUDE "en/EnDraw_NpcGiveOne.asm"
 
     LOG_BANK_SIZE "-BANK 28- PushSystem", BANK_28
 

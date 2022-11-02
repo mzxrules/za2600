@@ -547,7 +547,7 @@ DoorOpen:
 
 .rtsBreakwall
     lda plState2
-    and #3
+    and #PS_ACTIVE_ITEM
     cmp #PLAYER_BOMB
     bne .rts
     ldy plItemTimer
