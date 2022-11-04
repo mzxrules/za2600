@@ -571,7 +571,7 @@ NpcGiveOneDialogs:
     .byte MESG_TAKE_THIS
     .byte MESG_MASTER_SWORD
     .byte MESG_MASTER_SWORD
-    .byte #0
+    .byte MESG_NOTE
 
 SecretRupees:
     .byte $40, $12, $05 ; 100, 30, 10

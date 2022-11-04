@@ -19,7 +19,10 @@ mesg_table = [
         "  MASTER USING IT AND   ",
         "   YOU CAN HAVE THIS.   ",
         ],
-    # SHOP, must be $10 aligned i think
+    "MesgNote", [
+        "    SHOW THIS TO THE    ",
+        "       OLD WOMAN        ",
+        ],
     "MesgShopCheap", [
         " BUY SOMETHING WILL YA? ",
         "   99      99      99   ", # 34, 12, 9A
@@ -41,8 +44,8 @@ mesg_table = [
         "  -40             -01   ",
         ],
     "MesgPotion0", [
-        "I WILL NOT HELP MINIONS ",
-        " OF GANON. LEAVE NOW!   ",
+        "     I DO NOT HELP      ",
+        "  FOLLOWERS OF GANON.   ",
         ],
     "MesgGiveRupees", [
         "     IT'S A SECRET      ",
@@ -50,7 +53,68 @@ mesg_table = [
         ],
     "MesgTakeRupees", [
         "PAY ME FOR DOOR REPAIRS.",
+        "          -99           ",
+        ],
+    "MesgPath", [
+        " TAKE ANY ROAD YOU WANT ",
         "                        ",
+        ],
+    "MesgMoneyGame", [
+        " LET'S PLAY RUPEE GAME  ",
+        "   -90     -90     -90  ", # Since 0 is constant, offset to set +-
+        ],
+    "MesgEastmostPeninsula", [
+        "  EASTMOST PENINSULA    ",
+        "     IS THE SECRET      ",
+        ],
+    "MesgDodongo", [
+        " DODONGO DISLIKES SMOKE ",
+        "                        ",
+        ],
+    "MesgHintLostWoods", [
+        "NORTH, WEST, SOUTH, WEST",
+        "TO CROSS THE LOST WOODS ",
+        ],
+    "MesgHintLostHills", [
+        "GO UP, UP, THE MOUNTAIN ",
+        "          AHEAD         ",
+        ],
+    "MesgPayHintStart", [
+        "  PAY ME AND I'LL TALK  ",
+        "   99      99      99   ",
+        ],
+    "MesgPayHintPoor", [
+        "   THIS AIN'T ENOUGH    ",
+        "         TO TALK        ",
+        ],
+    "MesgPayHintRich", [
+        "    BOY, YOU'RE RICH    ",
+        "                        ",
+        ],
+    "MesgGrumbleGrumble", [
+        "   GRUMBLE, GRUMBLE..   ",
+        "                        ",
+        ],
+    "MesgSpectacleRock", [
+        "  SPECTACLE ROCK IS AN  ",
+        "   ENTRANCE TO DEATH.   ",
+        ],
+    "MesgGoNextRoom", [
+        "  GO TO THE NEXT ROOM   ",
+        "                        ",
+        ],
+    "MesgEyesOfSkull", [
+        "  EYES OF SKULL HAVE A  ",
+        "         SECRET         ",
+        ],
+    "MesgTreeAtDeadEnd", [
+        " SECRET IS IN THE TREE  ",
+        "    AT THE DEAD-END.    ",
+        ],
+
+    "MesgHintGrave", [
+        "    MEET THE OLD MAN    ",
+        "      AT THE GRAVE.     ",
         ],
 ]
 

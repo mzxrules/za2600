@@ -11,11 +11,13 @@ loop for 32
 
 if "&$$&" === "Rs_Item" then "Rs_Item"
 if "&$$&" === "Rs_ShoreItem" then "Rs_Item"
+if "&$$&" === "Rs_Npc" then "Npc_Mesg"
 if "&$$&" === "Rs_Maze" then "Rs_Maze"
 if "&$$&" === "Rs_EntCaveLeft" then "Cv_Type"
 if "&$$&" === "Rs_EntCaveLeftBlocked" then "Cv_Type"
 if "&$$&" === "Rs_EntCaveRight" then "Cv_Type"
 if "&$$&" === "Rs_EntCaveRightBlocked" then "Cv_Type"
+if "&$$&" === "Rs_EntCaveMid" then "Cv_Type"
 
 : "NoValue"
 put c0f CustomBlock "$x2_&local2&.0" at "('thisx'+1)" "thisy"
@@ -32,6 +34,12 @@ goto "q"
 loop start
 put c0f CustomBlock "$Cv&local2&.&loopcount&" at "('thisx'+1+'loopcount')" "thisy"
 loop for "('$Cv&local2&.length'-1)"
+goto "q"
+
+: "Npc_Mesg"
+loop start
+put c0f CustomBlock "$Mesg&local2&.&loopcount&" at "('thisx'+1+'loopcount')" "thisy"
+loop for "('$Mesg&local2&.length'-1)"
 goto "q"
 
 : "Rs_Maze"

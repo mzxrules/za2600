@@ -1,5 +1,5 @@
 Rs_Npc
-zz0
+MesgGameOver
 Rs_None
 zz0
 Rs_None
@@ -21,7 +21,7 @@ GiFireMagic
 Rs_None
 zz0
 Rs_Npc
-zz0
+MesgGameOver
 Rs_Item
 GiTriforce
 Rs_Item
@@ -41,11 +41,11 @@ GiHeart
 Rs_Item
 GiTriforce
 Rs_Npc
-zz0
+MesgGameOver
 Rs_None
 zz0
 Rs_Npc
-zz0
+MesgGameOver
 Rs_None
 zz0
 Rs_Item
@@ -61,7 +61,7 @@ zz58
 Rs_None
 zz0
 Rs_Npc
-zz0
+MesgDodongo
 Rs_None
 zz0
 Rs_Item
@@ -85,7 +85,7 @@ GiKey
 Rs_Item
 GiKey
 Rs_Npc
-zz0
+MesgGameOver
 Rs_None
 zz0
 Rs_None
@@ -129,7 +129,7 @@ GiBomb
 Rs_Item
 GiKey
 Rs_Npc
-zz0
+MesgEastmostPeninsula
 Rs_BlockCentral
 zz0
 Rs_None
@@ -205,7 +205,7 @@ zz0
 Rs_Item
 GiKey
 Rs_Npc
-zz0
+MesgGameOver
 Rs_None
 zz0
 Rs_Item

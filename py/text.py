@@ -466,7 +466,7 @@ def UsedChars(mesg_data):
         strSet |= set(mesg)
     return strSet
 
-def greedy_quickrand(seq):
+def greedy_quickrand(seq, targetLen):
     copy = seq.copy()
     result = greedy_scs(copy,1)
     for i in range(100):
@@ -475,6 +475,8 @@ def greedy_quickrand(seq):
         r = greedy_scs(copy, 1)
         if len(r) < len(result):
             result = r
+        if len(result) <= targetLen:
+            break
     return result
 
 def dump_mesg_lut():
@@ -501,7 +503,7 @@ for i in range(len(mesg_data)):
     mesg_data[i] = '{:<24}'.format(mesg_data[i])
 
 # configure max charset
-zeldaSet = set("!',-.0123456789 ?ABCDEFGHIKLMNOPQRSTUVWXYZ") # crucially, no J
+zeldaSet = set("!',+-.0123456789 ?ABCDEFGHIKLMNOPQRSTUVWXYZ") # crucially, no J
 usedChars = UsedChars(mesg_data)
 if not usedChars <= zeldaSet:
     print("Unexpected char:")
@@ -517,7 +519,7 @@ for char in usedChars:
     sprSeqs.append(seqStr)
     charSprRef[char] = [-1, seqStr]
 
-sprScs = greedy_quickrand(sprSeqs)
+sprScs = greedy_quickrand(sprSeqs, 128)
 
 # get char offsets for message data
 for char in usedChars:
@@ -575,7 +577,7 @@ dump_mesg_lut()
 # generate digit lookup table
 raw = []
 strOut = ""
-for char in "0123456789 ":
+for char in "0123456789 +-":
     raw.append(charSprRef[char][0])
 
 strOut = "MesgDigits:\n" + ToAsm(raw)

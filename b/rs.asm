@@ -102,6 +102,18 @@ Rs_EntCaveRight: SUBROUTINE
 .rts
     rts
 
+Rs_EntCaveMid: SUBROUTINE
+    ldx #$40
+    cpx plX
+    bne .rts
+    ldy #$28
+    cpy plY
+    bne .rts
+    ldy #$20
+    jmp EnterCave
+.rts
+    rts
+
 ; X, Y is return world X/Y
 EnterCave:
     lda roomId
@@ -189,7 +201,7 @@ Rs_Item: SUBROUTINE
 .rts
     rts
 
-Rs_EntMidDung: SUBROUTINE
+Rs_EntDungMid: SUBROUTINE
     lda plX
     cmp #$40
     bne .rts
