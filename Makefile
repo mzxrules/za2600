@@ -16,6 +16,7 @@ zelda_dep := main.asm \
   gen/mesg_data_0A.asm \
   gen/ms_header.asm \
   gen/bitcount.asm \
+  gen/spr_tri.asm \
 
 all: $(output_bin)
 
@@ -58,3 +59,6 @@ gen/editor_color.txt: py/color.py
 
 gen/bitcount.asm: py/bitcount.py
 	python3 py/bitcount.py
+
+gen/spr_tri.asm: py/spr_tri.py
+	python3 py/spr_tri.py

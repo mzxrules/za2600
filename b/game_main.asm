@@ -1,7 +1,7 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-INIT:
+MAIN_INIT:
     lda #%00110001 ; ball size 8, reflect playfield
     sta CTRLPF
     sta VDELBL
@@ -25,6 +25,7 @@ INIT:
 
 ;TOP_FRAME ;3 37 192 30
 MAIN_VERTICAL_SYNC: ; 3 SCANLINES
+    jsr Random ; 35 cycles
     lda #2
     ldx #49
     sta WSYNC
@@ -62,7 +63,6 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta BANK_SLOT
     jsr PlayerInput
 PAUSE_RETURN:
-    jsr Random
     jsr PlayerItem
 .roomLoadCpuSkip
 

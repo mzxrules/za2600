@@ -11,10 +11,7 @@ Bit8:
 
     INCLUDE "gen/mesg_digits.asm"
 
-MAIN_UNPAUSE:
-    lda #SLOT_MAIN
-    sta BANK_SLOT
-    jmp PAUSE_RETURN
+MAIN_UNPAUSE: BHA_BANK_JMP #SLOT_MAIN, PAUSE_RETURN
 
 ;==============================================================================
 ; PosWorldObjects

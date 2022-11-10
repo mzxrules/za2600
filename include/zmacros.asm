@@ -43,10 +43,32 @@ w{1} = . - KERNEL_WORLD + wKERNEL + 1
 .j1
     ENDM
 
+; Color definition macro
     MACRO COLOR
     IFCONST PAL60
 COLOR_{1} = {3}
     ELSE
 COLOR_{1} = {2}
     ENDIF
+    ENDM
+
+; Bank Hook macros
+; For hot swapping the bank the cpu is currently executing
+
+; BANK_JMP jumps to a given destination
+    MACRO BHA_BANK_JMP
+    lda {1}
+    sta BANK_SLOT
+    jmp {2}
+    ENDM
+
+; BANK_FALL allows fallthrough
+    MACRO BHA_BANK_FALL
+    lda {1}
+    sta BANK_SLOT
+    ENDM
+
+    MACRO BHY_BANK_FALL
+    ldy {1}
+    sty BANK_SLOT
     ENDM

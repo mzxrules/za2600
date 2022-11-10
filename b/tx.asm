@@ -3,9 +3,7 @@
 ; TextKernel is based on text24.asm
 ; https://atariage.com/forums/topic/317782-text-kernel-approaches/
 ;==============================================================================
-ShopKernel:
-    lda #SLOT_SH
-    sta BANK_SLOT
+ShopKernel: BHA_BANK_FALL #SLOT_SH
 
 TextKernel: SUBROUTINE
     nop ; Scanlines 56 to 97 (3116) (TIM64T 48)

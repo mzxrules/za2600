@@ -191,7 +191,7 @@ BANK_13
     INCBIN "world/w1ex.bin"
 
     repeat 0x80
-    .byte $01
+    .byte $02
     repend
 
     LOG_BANK_SIZE "-BANK 13- Dungeon 1", BANK_13
@@ -438,7 +438,7 @@ BANK_29
 ; ****************************************
 ; *               BANK 30                *
 ; ****************************************
-    SEG Bank28
+    SEG Bank30
     ORG $7800
     RORG $F000
 
@@ -451,11 +451,23 @@ BANK_30
 ; ****************************************
 ; *               BANK 31                *
 ; ****************************************
-    SEG Bank19
+    SEG Bank31
     ORG $7C00
     RORG $F400
 
 BANK_31
+DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_DRAW_PAUSE_2
     INCLUDE "b/draw_pause_world.asm"
     INCLUDE "c/draw_pause_menu.asm"
     LOG_BANK_SIZE "-BANK 31- Draw Paused World", BANK_31
+
+; ****************************************
+; *               BANK 32                *
+; ****************************************
+    SEG Bank32
+    ORG $8000
+    RORG $F400
+
+BANK_32
+    INCLUDE "c/draw_pause_menu_tri.asm"
+    LOG_BANK_SIZE "-BANK 32- Draw Paused Tri", BANK_32

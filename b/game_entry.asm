@@ -5,18 +5,18 @@
 
 ENTRY: SUBROUTINE ; Address FC00
     CLEAN_START
-    sta BANK_SLOT
-    jmp ENTRY_INIT
+    sta BANK_SLOT ; load copy of bank to F000
+    jmp ENTRY_INIT ; jump to F000 address space
 
 ENTRY_INIT: SUBROUTINE ; Address F000
     ldy #SLOT_MAIN
     sty BANK_SLOT
 
-ENTRY_INIT_RAM:
+; initialize extended ram
     ldy #2 ; ram banks to init
 
 .init_ram_loop
-    lda ENTRY_RAM_BANKS,y
+    lda .ENTRY_RAM_BANKS,y
     sta BANK_SLOT_RAM
     txa
 
@@ -40,7 +40,7 @@ ENTRY_INIT_RAM:
     dey
     bpl .init_ram_loop
 
-    jmp INIT
+    jmp MAIN_INIT
 
-ENTRY_RAM_BANKS:
+.ENTRY_RAM_BANKS
     .byte #SLOT_RW0, #SLOT_RW1, #SLOT_RW2

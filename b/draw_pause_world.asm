@@ -11,7 +11,7 @@ DRAW_PAUSE_WORLD:
     INCLUDE "c/draw_world_init.asm"
 
 
-KERNEL_PAUSE_WORLD_MAIN: SUBROUTINE ; 192 scanlines
+KERNEL_PAUSE_WORLD_MAIN:  ; 192 scanlines
     sta WSYNC
     lda INTIM
     bne KERNEL_PAUSE_WORLD_MAIN
@@ -85,8 +85,3 @@ KERNEL_PAUSE_WORLD_RESUME:
     sta WSYNC
     sta WSYNC
     rts
-
-
-.RoomHeight
-    .byte 03, 07, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55, 59, 63
-    .byte 67, 71, 75, 79

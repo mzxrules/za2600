@@ -141,7 +141,7 @@ EnNone:
 ;==============================================================================
 
 EnSysEncounter:
-    .byte EN_NONE, EN_DARKNUT, EN_LIKE_LIKE, EN_OCTOROK, EN_WALLMASTER, EN_BOSS_CUCCO
+    .byte EN_NONE, EN_DARKNUT, EN_ROPE, EN_LIKE_LIKE, EN_OCTOROK, EN_WALLMASTER, EN_BOSS_CUCCO
 EnSysEncounterCount:
     .byte 0, 1, 2, 1, 1
 

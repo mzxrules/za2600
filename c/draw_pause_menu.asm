@@ -1,21 +1,9 @@
 ;==============================================================================
 ; mzxrules 2022
 ;==============================================================================
-PosMenuObjects: SUBROUTINE
-    sec            ; 2
-    sta WSYNC      ; 3
-.DivideLoop
-    sbc #15        ; 2  6 - each time thru this loop takes 5 cycles, which is
-    bcs .DivideLoop; 2  8 - the same amount of time it takes to draw 15 pixels
-    eor #7         ; 2 10 - The EOR & ASL statements convert the remainder
-    asl            ; 2 12 - of position/15 to the value needed to fine tune
-    asl            ; 2 14 - the X position
-    asl            ; 2 16
-    asl            ; 2 18
-    sta.wx HMP0,X  ; 5 23 - store fine tuning of X
-    sta RESP0,X    ; 4 27 - set coarse X position of object
-;                  ;   67, which is max supported scan cycle
-    rts
+    align 16
+PosMenuObject: SUBROUTINE
+    INCLUDE "c/sub_PosObject.asm"
 
 ;   Sword, Bomb, Bow,   Candle
 ;   Flute, Wand, Meat,  Potion
@@ -37,27 +25,24 @@ DRAW_PAUSE_MENU: SUBROUTINE
     sta BANK_SLOT
     lda #$34
     ldx #0
-    jsr PosMenuObjects
+    jsr PosMenuObject
     lda #$44
     ldx #1
-    jsr PosMenuObjects
+    jsr PosMenuObject
     lda plState2
     and #[PS_ACTIVE_ITEM & 3]
     tay
     lda draw_pause_menu_item_cursor_pos,y
     ldx #2
-    jsr PosMenuObjects
+    jsr PosMenuObject
     sta WSYNC
     sta HMOVE
 
 ; Configure Item Sprite page
     lda #>SprItem0
     sta PItemSpr0+1
-    lda #>SprItem0
     sta PItemSpr1+1
-    lda #>SprItem0
     sta PItemSpr2+1
-    lda #>SprItem0
     sta PItemSpr3+1
 
 ;==============================================================================
@@ -320,27 +305,7 @@ KERNEL_PAUSE_MENU_MAIN: SUBROUTINE ; 192 scanlines
 
     sta WSYNC
     sta WSYNC
-
-;==============================================================================
-; Finish Frame
-;==============================================================================
-    ldy #71
-.dummy_end
-    sta WSYNC
-    sta WSYNC
-    dey
-    bpl .dummy_end
-
-;==============================================================================
-; End Kernel
-;==============================================================================
-
-; Reset CTRLPF
-    lda #%00110001 ; ball size 8, reflect playfield
-    sta CTRLPF
-    lda #COLOR_PLAYER_00
-    sta COLUP0
-    rts
+    jmp DRAW_PAUSE_MENU_TRI
 
 draw_pause_menu_item_cursor_pos:
     .byte #$35, #$45, #$55, #$65

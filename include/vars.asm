@@ -275,7 +275,6 @@ PItemSpr2       ds 2
 PItemColors     ds 4
     ORG Temp0 + 1
 PCursorLast     ds 1
-PCursorFirst    ds 1
 PCursor         ds 1
     ORG Temp0 + 1
 PItemSpr3       ds 2
@@ -531,3 +530,4 @@ SLOT_RS_INIT = RAMSEG_F0 | 29
 
 SLOT_PL     = RAMSEG_F0 | 30
 SLOT_DRAW_PAUSE_WORLD = RAMSEG_F4 | 31
+SLOT_DRAW_PAUSE_2 = RAMSEG_F4 | 32

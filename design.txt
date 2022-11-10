@@ -597,3 +597,22 @@ Atan2 table lookup:
 Rs_Maze
  roomEX 0 is N,N,N,N to Level 5
  roomEX 1 is N,E,S,E to graveyard
+
+
+==+ TRI +==
+/|\ 1, 2 (top)
+
+
+/| |\ 3, 4 (second row)
+
+square left
+__
+\| 5
+
+|\ 6
+
+square right
+__
+|/ 7
+
+/| 8

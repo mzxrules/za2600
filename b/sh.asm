@@ -1,10 +1,8 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-;ShopKernel:
 ; match code in tx.asm to line up PC after bank swap
-    lda #SLOT_SH
-    sta BANK_SLOT
+ShopKernel: BHA_BANK_FALL #SLOT_SH
 
 KERNEL_SHOP: SUBROUTINE
 ; Load Sprites
