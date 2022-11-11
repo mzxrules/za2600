@@ -457,7 +457,7 @@ BANK_30
 
 BANK_31
 DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_DRAW_PAUSE_2
-    INCLUDE "b/draw_pause_world.asm"
+    INCLUDE "c/draw_pause_world.asm"
     INCLUDE "c/draw_pause_menu.asm"
     LOG_BANK_SIZE "-BANK 31- Draw Paused World", BANK_31
 
