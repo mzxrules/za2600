@@ -1,8 +1,4 @@
-. "build hexadecimal lookup table"
-loop start
-set "$hexStr.&loopcount&" to "('loopcount'+48)"
-loop for 9
-inc "$hexStr" by "ABCDEF"
+wait 1
 
 : "q"
 set "CHAR" to "('SS_ITEM')"
@@ -124,6 +120,8 @@ set "" to "fwrite_open"
 set "$" to ""
 goto "#return"
 
+
+. "Dumps the data for the current char in atari format"
 : "#dumpchr"
 set "$dumpchr" to ""
 inc "sp" by 2
@@ -152,7 +150,7 @@ set "b" to "(('b' a 0x33 << 2) o ('b' a 0xCC >> 2))"
 set "b" to "(('b' a 0x0F << 4) o ('b' a 0xF0 >> 4))"
 : "skip_invchar"
 set "sp&sp&" to "b"
-goto "#hexbyte"
+set "$hex" to "&$x2_('sp&sp&')&"
 set "$line&yl&" to "    .byte $&$hex& ; &$lineb&\n"
 dec "char_x" by 8
 inc "char_y" by 1
@@ -166,7 +164,3 @@ dec "sp" by 2
 set "yl_" to 0
 goto "#return"
 
-: "#hexbyte"
-set "$hex" to "&$hexStr+('sp&sp&'%256/16)#1&"
-inc "$hex" by "&$hexStr+('sp&sp&'%16)#1&"
-goto "#return"

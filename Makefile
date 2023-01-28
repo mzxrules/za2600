@@ -35,6 +35,9 @@ clean:
 audio.bin: gen/ms_header.asm audio.asm
 	dasm audio.asm -f3 -oaudio.bin -saudio.sym -T1 -Iinclude
 
+proto.bin: proto.asm
+	dasm proto.asm -f3 -oproto.bin -sproto.sym -T1 -Iinclude
+
 zelda.bin: $(zelda_dep)
 	dasm main.asm -f3 -ozelda_PAL60.bin -DPAL60  -Iinclude
 	dasm main.asm -f3 -ozelda.bin -szelda.sym -T1  -Iinclude

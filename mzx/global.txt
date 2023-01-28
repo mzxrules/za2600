@@ -5,6 +5,7 @@ set "fwrite_delimiter" to 10
 . "sprite sheet allocations
 set "SS_MAP" (22)
 set "SS_N0" (48)
+set "SS_BOSS" (96)
 set "SS_PL" (160)
 set "SS_EN" (192)
 set "SS_ROOM" (256)
@@ -16,6 +17,7 @@ set "SPR_PF2" (256*2+128)
 set "SPR_UI" (256*3)
 set "SPR_WORK" (256*6)
 
+. "build $x2 and $x1 string look-up tables"
 loop start
 set "local2" "('loopcount'/16)"
 goto "#hex"
@@ -28,6 +30,7 @@ set "$x1_&loopcount&.0" to "('local2')"
 : "cont_hex_precompute"
 loop 255
 
+. "build $d2 string look-up table"
 loop start
 set "local2" "('loopcount'/10)"
 goto "#digit"

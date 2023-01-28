@@ -1,6 +1,6 @@
 List of todos, ordered by importance
 
-Status Hud - Needs selected item indicator/possibly improve hp sprite
+Status Hud - Potentially make HP match ring level
 Event System
 Door Unlock System - Complete
 Ganon Fight Kernel
