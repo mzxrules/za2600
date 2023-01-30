@@ -324,9 +324,6 @@ KERNEL_HUD_LOOP:
     ldy #ROOM_HEIGHT
 KERNEL_WORLD_RESUME:
 
-    lda #SLOT_SPR_A
-    sta BANK_SLOT
-
     lda #$FF
     sta PF0
     sta PF1

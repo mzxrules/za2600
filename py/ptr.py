@@ -52,7 +52,8 @@ Entity_Table = [
     "En_RopeMain",     "EnDraw_Rope",
     "En_Wallmaster",   "EnDraw_Wallmaster",
 
-    "EnBoss_Cucco",    "EnDraw_None"
+    "En_BossGohma",    "EnDraw_BossGohma",
+    "EnBoss_Cucco",    "EnDraw_None",
 ]
 
 RoomScript_Table = [

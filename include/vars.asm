@@ -208,6 +208,20 @@ enLLTimer   ds 1
     ORG EN_ENEMY_VARIABLES
 ; Rope
 enRopeTimer ds 1
+    ORG EN_ENEMY_VARIABLES
+; Gohma
+;enState     ds 1
+                        ; 1xxx_xxxx = init
+                        ; xxxx_x111 = animation state
+                        ; xxxx_1xxx = RESERVED
+GOHMA_ANIM_0    = $00
+GOHMA_ANIM_1    = $02
+GOHMA_ANIM_2    = $04
+enBossX     ds 1
+enBossY     ds 1
+enGohmaTimer ds 1
+
+; Test
     ORG EN_VARS + 1
 enTestDir   ds 1
 enTestFX    ds 1

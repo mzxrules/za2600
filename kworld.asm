@@ -2,6 +2,10 @@
 ; mzxrules 2021
 ;==============================================================================
 KERNEL_WORLD: SUBROUTINE ; rKERNEL
+    VKERNEL1 WorldSprBank
+    lda #SLOT_SPR_A
+    sta BANK_SLOT
+
     VKERNEL1 BgColor
     lda #COLOR_PATH
     sta COLUBK
@@ -11,8 +15,8 @@ KERNEL_WORLD: SUBROUTINE ; rKERNEL
     lda enColor
     sta COLUP1
 
-    ldx NUSIZ1_T
-    stx NUSIZ1
+    lda NUSIZ1_T
+    sta NUSIZ1
     lda NUSIZ0_T
     sta NUSIZ0
 

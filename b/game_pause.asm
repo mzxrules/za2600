@@ -68,10 +68,14 @@ PAUSE_FROM_GAME:
     sta BANK_SLOT
     jsr UpdateAudio
 
+    bit PauseState
+    bvs .skip_draw_en
+
     lda #SLOT_EN_D
     sta BANK_SLOT
     jsr EnDraw_Del
 
+.skip_draw_en
     lda #SLOT_DRAW_PAUSE_WORLD
     sta BANK_SLOT
     bit PauseState

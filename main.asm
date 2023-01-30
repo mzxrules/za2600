@@ -80,7 +80,7 @@ BANK_PF
 ; ****************************************
 ; *               BANK 5                 *
 ; ****************************************
-    SEG Bank4
+    SEG Bank5
     ORG $1400
     RORG $F400
 
@@ -92,7 +92,7 @@ BANK_5
 ; ****************************************
 ; *               BANK 6                 *
 ; ****************************************
-    SEG Bank5
+    SEG Bank6
     ORG $1800
     RORG $F000
 
@@ -107,15 +107,16 @@ MINIMAP
     INCLUDE "spr/spr_pl.asm"
     INCLUDE "spr/spr_sh.asm"
     INCLUDE "spr/spr_num.asm"
+    INCLUDE "spr/spr_gohma.asm"
 
     LOG_BANK_SIZE "-BANK 6- Sprites", BANK_6
 
 ; ****************************************
 ; *               BANK 7                 *
 ; ****************************************
-    SEG Bank5
+    SEG Bank7
     ORG $1C00
-    RORG $FC00
+    RORG $F000
 
 BANK_7
     LOG_BANK_SIZE "-BANK 7- RESERVED", BANK_7
@@ -170,7 +171,7 @@ BANK_12
     repeat 0x77
     .byte $01
     repend
-    .byte $00
+    .byte $06
     repeat 0x8
     .byte $01
     repend
@@ -319,6 +320,7 @@ BANK_22
     INCLUDE "en/En_Rope.asm"
     INCLUDE "en/En_Wallmaster.asm"
 
+    INCLUDE "en/En_BossGohma.asm"
     INCLUDE "en/EnBoss_Cucco.asm"
 
     INCLUDE "en/En_Oldman.asm"
@@ -414,6 +416,7 @@ BANK_28
     INCLUDE "en/EnDraw_Rope.asm"
     INCLUDE "en/EnDraw_Shopkeeper.asm"
     INCLUDE "en/EnDraw_NpcGiveOne.asm"
+    INCLUDE "en/EnDraw_BossGohma.asm"
 
     LOG_BANK_SIZE "-BANK 28- PushSystem", BANK_28
 

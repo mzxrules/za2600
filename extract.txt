@@ -59,7 +59,6 @@ goto "#dumpsht"
 set "CHAR" to "('SS_EN')"
 loop start
 inc "$" by "SprE&loopcount&:\n"
-set "$s&s&" to "SprE&loopcount&"
 set "sp&sp&" to 8
 goto "#dumpchr"
 inc "$" by "$dumpchr"
@@ -67,6 +66,19 @@ inc "CHAR" by 1
 loop for 31
 set "$sht" to "spr/spr_en.asm"
 goto "#dumpsht"
+
+
+set "CHAR" to "(96)"
+loop start
+inc "$" by "SprGohma&loopcount&:\n"
+set "sp&sp&" to 9
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 5
+set "$sht" to "spr/spr_gohma.asm"
+goto "#dumpsht"
+
 
 set "$pf1" to ""
 set "$pf2" to ""
@@ -110,7 +122,6 @@ goto "#dumpsht"
 
 set "$pf1" to ""
 set "$pf2" to ""
-
 end
 
 : "#dumpsht"
@@ -120,11 +131,13 @@ set "" to "fwrite_open"
 set "$" to ""
 goto "#return"
 
-
-. "Dumps the data for the current char in atari format"
+. "===================="
 : "#dumpchr"
+. "Dumps the data for the current char in atari format"
+. "sp[0] = num lines"
+. "yl_ = offset from top"
+. "===================="
 set "$dumpchr" to ""
-inc "sp" by 2
 set "char_x" to "('CHAR'%32*8)"
 set "char_y" to "('CHAR'/32*14+'yl_')"
 set "yl" to "yl_"
@@ -149,18 +162,16 @@ set "b" to "(('b' a 0x55 << 1) o ('b' a 0xAA >> 1))"
 set "b" to "(('b' a 0x33 << 2) o ('b' a 0xCC >> 2))"
 set "b" to "(('b' a 0x0F << 4) o ('b' a 0xF0 >> 4))"
 : "skip_invchar"
-set "sp&sp&" to "b"
-set "$hex" to "&$x2_('sp&sp&')&"
+set "$hex" to "&$x2_('b')&"
 set "$line&yl&" to "    .byte $&$hex& ; &$lineb&\n"
 dec "char_x" by 8
 inc "char_y" by 1
 inc "yl" by 1
-if "yl" < "sp('sp'-2)" then "yloop"
+if "yl" < "sp('sp')" then "yloop"
 : "flip_char"
 dec "yl" by 1
 inc "$dumpchr" by "$line&yl&"
 if "yl" > "yl_" then "flip_char"
-dec "sp" by 2
 set "yl_" to 0
 goto "#return"
 

@@ -56,9 +56,6 @@ KERNEL_PAUSE_WORLD_RESUME:
     jsr PosWorldObjects
     sta WSYNC
 
-    lda #SLOT_SPR_A
-    sta BANK_SLOT
-
     lda #$FF
     sta PF0
     sta PF1

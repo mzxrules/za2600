@@ -141,9 +141,11 @@ EnNone:
 ;==============================================================================
 
 EnSysEncounter:
-    .byte EN_NONE, EN_DARKNUT, EN_ROPE, EN_LIKE_LIKE, EN_OCTOROK, EN_WALLMASTER, EN_BOSS_CUCCO
+    .byte EN_NONE, EN_DARKNUT, EN_ROPE, EN_LIKE_LIKE
+    .byte EN_OCTOROK, EN_WALLMASTER, EN_BOSS_GOHMA
 EnSysEncounterCount:
-    .byte 0, 1, 2, 1, 1
+    .byte 0, 1, 2, 1
+    .byte 1, 1, 1
 
 EnSystem: SUBROUTINE
     ; precompute room clear flag helpers because it's annoying
