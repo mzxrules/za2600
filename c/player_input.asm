@@ -57,17 +57,7 @@ PlayerArrow: SUBROUTINE
     cmp #BoardYD
     bmi .offScreen
     cmp #BoardYU
-    bmi .drawArrow
-.endArrow
-    lda itemRupees
-    bne .offScreen
-    lda plState2
-    and #~PS_ACTIVE_ITEM
-    sta plState2
-.offScreen
-    lda #$80
-    sta m0Y
-    rts
+    bpl .offScreen
 .drawArrow
     ldy plItemDir
     lda ArrowDeltaX,y
@@ -79,6 +69,16 @@ PlayerArrow: SUBROUTINE
     adc m0Y
     sta m0Y
 .rts
+    rts
+.endArrow
+    lda itemRupees
+    bne .offScreen
+    lda plState2
+    and #~PS_ACTIVE_ITEM ; Equip Sword
+    sta plState2
+.offScreen
+    lda #$80
+    sta m0Y
     rts
 
 ArrowDeltaX:
