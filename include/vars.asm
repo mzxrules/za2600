@@ -76,7 +76,6 @@ plState2    ds 1
 PS_HOLD_ITEM    = $80 ; 1000_0000
                       ; xxxx_1xxx RESERVED
 PS_ACTIVE_ITEM  = $07 ; 0000_0111 Mask to fetch current active item
-PS_ACTIVE_ITEM_T = $03; placeholder until implemented
                       ;       000 Sword
                       ;       001 Bombs
                       ;       010 Bow
@@ -88,8 +87,15 @@ plStun      ds 1
 plHealthMax ds 1
 plHealth    ds 1 ; $0 exact for gameover, negative for gameover state is init
 plItemTimer ds 1
-    ; Bombs -11 is active detonation
+
+ITEM_ANIM_SWORD_STAB_LONG   = -7
+ITEM_ANIM_SWORD_STAB_SHORT  = -1
+ITEM_ANIM_BOMB_DETONATE     = -11 ; Bombs active detonation
+ITEM_ANIM_BOMB_BREAKWALL    = -6  ;
 plItemDir   ds 1
+                      ; 0000_0011 Attack Direction, most items
+                      ; 1000_0000 Flute, tornado in on respawn
+                      ;
     ORG plItemDir
 PauseState  ds 1
 itemRupees  ds 1
@@ -319,6 +325,29 @@ EnSysNext       ds 1
 EnSysClearOff   ds 1 ; offset to byte that room clear is stored at
 EnSysClearMask  ds 1 ; stores bitmask for room clear flag
 
+    SEG.U VARS_HB_SYS
+    ORG Temp0 + 1
+HbDamage        ds 1
+HB_DMG_SWORD1   = 0
+HB_DMG_SWORD2   = 1
+HB_DMG_SWORD3   = 2
+HB_DMG_ARROW    = 3
+HB_DMG_FIRE     = 4
+HB_DMG_BOMB     = 5
+
+HbFlags         ds 1
+HB_PL_SWORD     = $01
+HB_PL_ARROW     = $02
+HB_PL_FIRE      = $04
+HB_PL_BOMB      = $08
+HB_PL_WAVE      = $10
+HB_PL_WAND      = $20
+Hb_aa_Box       ds 1
+Hb_aa_x         ds 1
+Hb_aa_y         ds 1
+Hb_bb_x         ds 1
+Hb_bb_y         ds 1
+
     SEG.U VARS_MI_SYS
     ORG Temp0
 MiSysDir        ds 1
@@ -425,7 +454,7 @@ BoardDungDoorWX = $0C-1
 BoardDungDoorEX = $74+1
 
 ; BombWall dimensions
-; check wall at frame -6
+; check wall at frame ITEM_ANIM_BOMB_BREAKWALL
 ; N wall, y >= $45. x mid is $41 so +-12?
 ; S wall, y <= $13
 ; E wall, x >= $76. y mid is $2C so +-12?
@@ -545,3 +574,5 @@ SLOT_RS_INIT = RAMSEG_F0 | 29
 SLOT_PL     = RAMSEG_F0 | 30
 SLOT_DRAW_PAUSE_WORLD = RAMSEG_F4 | 31
 SLOT_DRAW_PAUSE_2 = RAMSEG_F4 | 32
+
+SLOT_BATTLE = RAMSEG_FC | 33

@@ -8,7 +8,7 @@ En_Darknut: SUBROUTINE
     jsr Random
     and #3
     sta enDir
-    lda #2 -1
+    lda #2
     sta enHp
 
 En_DarknutMain:
@@ -22,15 +22,44 @@ En_DarknutMain:
 
 .checkDamaged
 ; if collided with weapon && stun == 0,
-    lda CXM0P
-    bpl .endCheckDamaged
     lda enStun
     bne .endCheckDamaged
-    lda plItemDir
-    cmp enDir
-    beq .defSfx
-    jsr EnSys_Damage
-    bpl .defSfx
+    lda #SLOT_BATTLE
+    sta BANK_SLOT
+    jsr HbGetPlAtt
+    jsr HbPlAttCollide_EnBB
+
+; Get damage
+    ldx HbDamage
+    lda EnDam_Darknut,x
+    tay
+
+    lda #SLOT_MAIN
+    sta BANK_SLOT
+    lda HbFlags
+    beq .endCheckDamaged
+
+; Test if darknut takes damage
+    lda HbFlags
+    and #HB_PL_FIRE
+    bne .endCheckDamaged
+    lda HbFlags
+    and #HB_PL_SWORD | #HB_PL_BOMB
+    beq .defSfx ; block non-damaging attacks
+
+; Test if item hit Darknut's shield
+    ldx plItemDir
+    cpx enDir
+    bne .gethit
+
+    ; Test if sword hit shield
+    and #HB_PL_SWORD
+    bne .defSfx
+    ; Bomb hit shield
+    ldy #-2
+
+.gethit
+    tya ; fetch damage
     ldx #-32
     stx enStun
     clc

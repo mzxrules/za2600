@@ -18,13 +18,26 @@ En_LikeLikeMain: SUBROUTINE
 
 .checkDamaged
 ; if collided with weapon && stun == 0,
-    lda CXM0P
-    bpl .endCheckDamaged
     lda enStun
     cmp #-8
     bmi .endCheckDamaged
-    jsr EnSys_Damage
-    bpl .endCheckDamaged
+
+    lda #SLOT_BATTLE
+    sta BANK_SLOT
+    jsr HbGetPlAtt
+    jsr HbPlAttCollide_EnBB
+
+; Get damage
+    ldx HbDamage
+    lda EnDam_Rope,x
+    tay
+
+    lda #SLOT_MAIN
+    sta BANK_SLOT
+    lda HbFlags
+    beq .endCheckDamaged
+
+    tya
     ldx #-32
     stx enStun
     ldx #SFX_EN_DAMAGE

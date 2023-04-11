@@ -312,6 +312,7 @@ BANK_21
 BANK_22
     INCLUDE "gen/Entity.asm"
     INCLUDE "gen/EnMoveDir.asm"
+    INCLUDE "gen/roomcollision.asm"
     INCLUDE "b/en.asm"
 
     INCLUDE "en/En_Darknut.asm"
@@ -319,13 +320,13 @@ BANK_22
     INCLUDE "en/En_Octorok.asm"
     INCLUDE "en/En_Rope.asm"
     INCLUDE "en/En_Wallmaster.asm"
+    INCLUDE "en/En_Test.asm"
 
     INCLUDE "en/En_BossGohma.asm"
     INCLUDE "en/EnBoss_Cucco.asm"
 
     INCLUDE "en/En_Oldman.asm"
     INCLUDE "en/En_ItemGet.asm"
-    INCLUDE "en/EnSys_Damage.asm"
 
     LOG_BANK_SIZE "-BANK 22/23- EnemyAI", BANK_22
 
@@ -474,3 +475,15 @@ DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_DRAW_PAUSE_2
 BANK_32
     INCLUDE "c/draw_pause_menu_tri.asm"
     LOG_BANK_SIZE "-BANK 32- Draw Paused Tri", BANK_32
+
+
+; ****************************************
+; *               BANK 33                *
+; ****************************************
+    SEG Bank33
+    ORG $8400
+    RORG $FC00
+
+BANK_33
+    INCLUDE "b/battle.asm"
+    LOG_BANK_SIZE "-BANK 32- Battle System", BANK_33

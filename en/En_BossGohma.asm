@@ -1,5 +1,5 @@
 ;==============================================================================
-; mzxrules 2021
+; mzxrules 2022
 ;==============================================================================
 
 En_BossGohma: SUBROUTINE
@@ -46,8 +46,8 @@ En_BossGohma: SUBROUTINE
     sbc enBossY
     cmp #4
     bcs .endWeaponCollision
-    lda #SFX_PL_HEAL
-    sta SfxFlags
+    lda #$80
+    sta m0Y
     jmp EnSysEnDie
     bmi .endWeaponCollision ; always branch
 

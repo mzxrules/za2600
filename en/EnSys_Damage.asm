@@ -5,15 +5,15 @@
 ; Start by checking weapon type
 EnSys_Damage: SUBROUTINE
     lda plState2
-    and #PS_ACTIVE_ITEM_T
+    and #PS_ACTIVE_ITEM
     beq .sword ; 0
     cmp #2
     bpl .highItem ; 2-3
     ; 1
 
-; Bomb (plItemTimer -11)
+; Bomb (plItemTimer ITEM_ANIM_BOMB_DETONATE)
 .bomb
-    ldx #-11
+    ldx #ITEM_ANIM_BOMB_DETONATE
     cpx plItemTimer
     bpl .rts
     lda #-2

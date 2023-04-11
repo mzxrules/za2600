@@ -153,7 +153,7 @@ SfxStop:
 SfxEnDamage:
 SfxDef: SUBROUTINE
     lda SfxCur
-    cmp #4
+    cmp #6
     bpl SfxStop
     lda #6
     sta AUDCT1

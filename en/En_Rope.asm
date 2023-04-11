@@ -24,12 +24,25 @@ En_RopeMain: SUBROUTINE
 
 .checkDamaged
 ; if collided with weapon && stun == 0,
-    lda CXM0P
-    bpl .endCheckDamaged
     lda enStun
     bne .endCheckDamaged
-    jsr EnSys_Damage
-    bpl .defSfx
+
+    lda #SLOT_BATTLE
+    sta BANK_SLOT
+    jsr HbGetPlAtt
+    jsr HbPlAttCollide_EnBB
+
+; Get damage
+    ldx HbDamage
+    lda EnDam_Rope,x
+    tay
+
+    lda #SLOT_MAIN
+    sta BANK_SLOT
+    lda HbFlags
+    beq .endCheckDamaged
+
+    tya
     ldx #-32
     stx enStun
     clc

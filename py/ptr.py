@@ -51,6 +51,7 @@ Entity_Table = [
     "En_Rope",         "EnDraw_Rope",
     "En_RopeMain",     "EnDraw_Rope",
     "En_Wallmaster",   "EnDraw_Wallmaster",
+    "En_Test",         "EnDraw_Darknut",
 
     "En_BossGohma",    "EnDraw_BossGohma",
     "EnBoss_Cucco",    "EnDraw_None",
@@ -302,6 +303,21 @@ tbl = [
         "PickWand",
         "PickMeat",
         "PickPotion",
+    ]),
+
+    GameEnum("HbPlAtt", "HbPlAtt",
+    genEditorBindings=False,
+    genPtrTable=True,
+    genConstants=False,
+    vals=[
+        "HbPlSword",
+        "HbPlBomb",
+        "HbPlBow",
+        "HbPlCandle",
+        "HbPlFlute",
+        "HbPlWand",
+        "HbPlMeat",
+        "HbPlPotion",
     ]),
 ]
 

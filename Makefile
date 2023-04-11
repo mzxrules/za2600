@@ -39,8 +39,8 @@ proto.bin: proto.asm
 	dasm proto.asm -f3 -oproto.bin -sproto.sym -T1 -Iinclude
 
 zelda.bin: $(zelda_dep)
-	dasm main.asm -f3 -ozelda_PAL60.bin -DPAL60  -Iinclude
-	dasm main.asm -f3 -ozelda.bin -szelda.sym -T1  -Iinclude
+	dasm main.asm -f3 -ozelda_PAL60.bin -DPAL60 -Iinclude $(flags)
+	dasm main.asm -f3 -ozelda.bin -szelda.sym -T1 -Iinclude $(flags)
 
 gen/RoomScript.asm: py/mesg.py py/ptr.py
 	python3 py/ptr.py

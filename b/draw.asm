@@ -67,7 +67,7 @@ POSITION_SPRITES: SUBROUTINE
     lsr ;clc
     adc #7
     sta THudDigits+4
-
+/*
 ; Triforce display
     lda worldId
     bne .hud_key_init
@@ -86,7 +86,7 @@ POSITION_SPRITES: SUBROUTINE
     lda #<SprN12 - #<SprN0 + 7
     sta THudDigits+2
     bne .hud_bomb_init
-
+*/
 ; key display
 .hud_key_init
     ldx itemKeys
@@ -402,7 +402,8 @@ PosHudObjects: SUBROUTINE
     sta WSYNC
     sta HMOVE
     rts
-
+/*
     .align 128
 draw_bitcount:
     INCLUDE "gen/bitcount.asm"
+ */

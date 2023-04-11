@@ -149,6 +149,7 @@ PlayerBomb: SUBROUTINE
 .skipDropBomb
     ldy plItemTimer
     bne .drawBomb
+; Handle end of Bomb behavior
     lda itemBombs
     bne .skipEquipSword
     lda plState2
@@ -159,7 +160,7 @@ PlayerBomb: SUBROUTINE
     sta m0Y
     rts
 .drawBomb
-    cpy #-11
+    cpy #ITEM_ANIM_BOMB_DETONATE
     bmi .rts
     bne .skipDetonateEffect
     lda #7
@@ -431,6 +432,15 @@ PlayerInput: SUBROUTINE
     bmi .skipCheckForPause
     lda plItemTimer
     bmi .skipCheckForPause
+; Check Flute Warp in
+    lda plState2
+    and #PS_ACTIVE_ITEM
+    cmp #PLAYER_FLUTE
+    bne .noWarpIn
+    bit plItemDir
+    bmi .skipCheckForPause
+.noWarpIn
+; Check death
     ldx plHealth
     dex
     bmi .skipCheckForPause
@@ -440,10 +450,7 @@ PlayerInput: SUBROUTINE
     sta PauseSp
     lda #>(PAUSE_ENTRY - 1)
     sta PauseSp+1
-    rts
-    ;inc itemKeys
-    ;inc itemBombs
-    ;inc itemRupees
+    rts ; jmp PAUSE_ENTRY
 .skipCheckForPause
     ; test if player locked
     lda #PS_LOCK_ALL

@@ -12,6 +12,56 @@ En_Del:
     rts
 
 ;==============================================================================
+; Tests room collision
+; X = x position
+; Y = y position (move to reg a?)
+; returns A != 0 if collision occurs
+; y position must not be in range 0-3
+;==============================================================================
+CheckRoomCol: SUBROUTINE
+; adjust x coordinate
+    txa
+    lsr
+    lsr
+    tax
+
+; adjust y coordinate
+    tya
+    lsr
+    lsr
+; A stores adjusted y coord
+
+    cpx #[$04/4]
+    bmi .rts
+    cmp #[$10/4]
+    bmi .rts
+
+    cpx #[$60/4]
+    beq .special_right
+    cpx #[$20/4]
+    beq .special_left
+    clc
+    adc room_col8_off-1,x
+    tay
+    lda rPF1RoomL-2,y
+    ora rPF1RoomL-1,y
+    and room_col8_mask-1,x
+    rts
+
+.special_right
+    adc #ROOM_PX_HEIGHT -1
+.special_left
+    tay
+    lda rPF1RoomL-2,y
+    ora rPF1RoomL-1,y
+    ora rPF2Room-2,y
+    ora rPF2Room-1,y
+    and #1
+
+.rts
+    rts
+
+;==============================================================================
 ; Selects a new direction to move in at random, respecting blocked direction
 ;==============================================================================
 NextDir: SUBROUTINE
@@ -142,10 +192,10 @@ EnNone:
 
 EnSysEncounter:
     .byte EN_NONE, EN_DARKNUT, EN_ROPE, EN_LIKE_LIKE
-    .byte EN_OCTOROK, EN_WALLMASTER, EN_BOSS_GOHMA
+    .byte EN_OCTOROK, EN_WALLMASTER, EN_BOSS_GOHMA, EN_TEST
 EnSysEncounterCount:
     .byte 0, 1, 2, 1
-    .byte 1, 1, 1
+    .byte 1, 1, 1, 1
 
 EnSystem: SUBROUTINE
     ; precompute room clear flag helpers because it's annoying

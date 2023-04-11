@@ -417,6 +417,29 @@ if 7 -> 3, then
 0-6 = line * 2 + 1
 
 
+=== Generalized Entity Room Collision Check ===
+
+8x8 Entities can only exist on points
+x = $04 to $7C
+y = $08 to $50
+
+Real world pixel is 4x4, giving us
+x = 31 steps player, 27 other
+y = 19 steps player, 15 other
+
+x = $20 stradle PF1L, PF2 (test 0th bit for both)
+x = $60 stradle PF1R, PF2
+x <= $1C is PF1L (bit 7 -> 0)
+x >= $24 and <= $5C is PF2 (bit 0 -> 7 -> 0)
+x >= $64 is PF1R (bit 0 -> 7)
+
+Start by handling $20, $60 special case
+if $20 bit set
+    $20 case if v flag not set
+    $60 if v flag set
+else
+
+
 Text:
 load text into ram via loop
  36.48
@@ -616,3 +639,59 @@ __
 |/ 7
 
 /| 8
+
+== Battle System ==
+
+Timing:
+
+EnDarknut:
+231,30
+233,41
+
+Battle algo:
+
+Check if weapon hitbox overlaps enemy hitbox
+
+0, 1, 2, 3, 5
+
+Sword - Direction and Timer
+    frames -7 to -2 // same as Arrow
+    EW hitbox is 8x2
+    NS hitbox is 2x8
+    frame -1 // possibly not needed?
+    EW hitbox is 4x2
+    NS hitbox is 2x4
+
+Bomb - Timer, swap between 4x4 and 8x8 hitbox
+Arrow - Direction
+    EW hitbox is 8x2
+    NS hitbox is 2x8
+Fire - Simple 4x4 hitbox
+Flute - No Hit
+Wand -> Sword then Fire?
+Meat - No Hit
+Potion - No Hit
+
+
+Hitbox system:
+
+To test if two boxes AA and BB overlap:
+    if AA.x > BB.x - AA.w:
+    if AA.x < BB.x + BB.w:
+        # x axis pass
+
+Another way to compute it:
+    (u8)(AA.x + AA.w-1 - BB.x) < (AA.w + BB.w-1)
+
+Hb_Get_Pl_Att: Fetches current player attack and it's hitbox
+
+Battle Weapons:
+
+sword (1, 2, 3)
+shield (1, 2)
+arrow (1, 2)
+fire
+wave
+bomb
+wand
+Boomerang ?

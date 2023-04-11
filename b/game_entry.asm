@@ -40,6 +40,19 @@ ENTRY_INIT: SUBROUTINE ; Address F000
     dey
     bpl .init_ram_loop
 
+    IFCONST ITEM
+.cheats
+    lda #8
+    sta itemKeys
+    lda #16
+    sta itemRupees
+    sta itemBombs
+    lda #$FF
+    sta itemFlags
+    sta itemFlags+1
+    sta itemFlags+2
+    ENDIF
+
     jmp MAIN_INIT
 
 .ENTRY_RAM_BANKS

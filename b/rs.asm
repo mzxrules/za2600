@@ -275,7 +275,7 @@ Rs_EntCaveRightBlocked:
     cmp #PLAYER_BOMB
     bne .rts
     ldy plItemTimer
-    cpy #-6
+    cpy #ITEM_ANIM_BOMB_BREAKWALL
     bmi .rts
 ; opening destroyed
     stx roomRS

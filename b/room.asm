@@ -551,7 +551,7 @@ DoorOpen:
     cmp #PLAYER_BOMB
     bne .rts
     ldy plItemTimer
-    cpy #-6
+    cpy #ITEM_ANIM_BOMB_BREAKWALL
     bne .rts
 
 CheckBreakwall: SUBROUTINE
