@@ -17,6 +17,8 @@ En_DarknutMain:
     cmp #1
     adc #0
     sta enStun
+
+; update blocked direction
     lda #$F0
     jsr EnSetBlockedDir
 

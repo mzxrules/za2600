@@ -10,7 +10,7 @@ EnDraw_Shopkeeper: SUBROUTINE
     jsr EnItemDraw
 
     lda #%0110
-    sta NUSIZ1_T
+    sta wNUSIZ1_T
 
     lda #$20
     sta enX

@@ -339,7 +339,7 @@ UpdateWorldDoors: SUBROUTINE
     sta Temp1
     lda WorldDoorPF1B,x
     sta Temp3
-    lda WorldDoorPF1C,X
+    lda WorldDoorPF1C,x
     sta Temp5
     tya
     lsr
@@ -590,7 +590,7 @@ CheckBreakwall: SUBROUTINE
 .UnlockRight
     lda roomWA
     eor #%10101010
-    and DungDoorMask,X
+    and DungDoorMask,x
     beq DoorOpen
     rts
 

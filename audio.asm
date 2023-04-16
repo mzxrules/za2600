@@ -248,8 +248,8 @@ DivideLoop
         asl            ; 2 10 - the X position
         asl            ; 2 12
         asl            ; 2 14
-        sta.wx HMP0,X  ; 5 19 - store fine tuning of X
-        sta RESP0,X    ; 4 23 - set coarse X position of object
+        sta.wx HMP0,x  ; 5 19 - store fine tuning of X
+        sta RESP0,x    ; 4 23 - set coarse X position of object
         rts            ; 6 29
 
 MuteChannel: SUBROUTINE
@@ -308,7 +308,7 @@ UpdateSong1: SUBROUTINE
     tax
     lda ToneLookup,x
     sta AUDC0+1
-    lda (seq1Durs),Y
+    lda (seq1Durs),y
     clc
     adc Frame
     sta songTFrame+1

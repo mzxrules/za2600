@@ -121,7 +121,7 @@ HbPlAttCollide: SUBROUTINE
 .pass_x
     lda Hb_aa_y
     clc
-    adc hitbox_aa_oy,X
+    adc hitbox_aa_oy,x
 
     sec
     sbc Hb_bb_y

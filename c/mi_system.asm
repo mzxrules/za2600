@@ -85,9 +85,9 @@ MiSystem: SUBROUTINE
     tay
 
 .draw
-    lda NUSIZ1_T
+    lda rNUSIZ1_T
     ora #$20
-    sta NUSIZ1_T
+    sta wNUSIZ1_T
     lda #3
     sta wM1H
 

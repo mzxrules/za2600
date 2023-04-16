@@ -22,6 +22,12 @@ blY         ds 1
 ; M0H
 ; M1H
 ; BLH
+; NUSIZ0_T   ds 1
+; NUSIZ1_T   ds 1
+; BgColor    ds 1
+; FgColor    ds 1
+; PlColor    ds 1
+; EnColor    ds 1
 
 plXL        ds 1
 enXL        ds 1
@@ -32,9 +38,6 @@ enSpr       ds 2 ; enSprOff
 plDir       ds 1
 enDir       ds 1
 
-
-;BgColor    ds 1
-;FgColor    ds 1
 worldId     ds 1
 worldSX     ds 1 ; respawn X
 worldSY     ds 1 ; respawn Y / Rs_Maze state
@@ -144,8 +147,7 @@ SfxCur      ds 1
 ; Entity Variables
 ;==============================================================================
 enType      ds 1
-enColor     ds 1
-EN_VARS:    ds 10 ; Zero initialized enemy vars
+EN_VARS:    ds 10 ; Zero initialized entity vars
 EN_VARS_END:
 EN_VARS_COUNT = EN_VARS_END - EN_VARS
 
@@ -253,9 +255,6 @@ mADir       ds 1
 mBDir       ds 1
 mATimer     ds 1
 mBTimer     ds 1
-
-NUSIZ0_T    ds 1
-NUSIZ1_T    ds 1
 
 atan2Temp   ds 1
 

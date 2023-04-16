@@ -8,9 +8,9 @@ EnBoss_Cucco: SUBROUTINE
     lda #<SprE24
     sta enSpr
     lda #%0111
-    sta NUSIZ1_T
+    sta wNUSIZ1_T
     lda #$0a
-    sta enColor
+    sta wEnColor
     lda #15
     sta wENH
     lda enState
@@ -27,7 +27,7 @@ EnBoss_Cucco: SUBROUTINE
     bne .rts
     jsr EnSysEnDie
     lda #0
-    sta NUSIZ1_T
+    sta wNUSIZ1_T
 .rts
     rts
 

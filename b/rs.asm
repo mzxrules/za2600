@@ -17,7 +17,7 @@ Cv_Del:
     bpl .rts
     lda CaveTypeH,x
     pha
-    lda CaveTypeL,X
+    lda CaveTypeL,x
     pha
 
 Cv_Path1:

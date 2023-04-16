@@ -12,12 +12,18 @@ KERNEL_WORLD: SUBROUTINE ; rKERNEL
     VKERNEL1 FgColor
     lda #COLOR_GREEN_ROCK
     sta COLUPF
-    lda enColor
+    VKERNEL1 EnColor
+    lda #COLOR_GREEN_ROCK
     sta COLUP1
+    VKERNEL1 PlColor
+    lda #COLOR_PLAYER_00
+    sta COLUP0
 
-    lda NUSIZ1_T
+    VKERNEL1 NUSIZ1_T
+    lda #0
     sta NUSIZ1
-    lda NUSIZ0_T
+    VKERNEL1 NUSIZ0_T
+    lda #0
     sta NUSIZ0
 
     lda #0

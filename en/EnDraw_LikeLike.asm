@@ -15,7 +15,7 @@ EnDraw_LikeLike: SUBROUTINE
     asl
     asl
     adc #COLOR_EN_RED
-    sta enColor
+    sta wEnColor
     rts
 
     LOG_SIZE "EnDraw_LikeLike", EnDraw_LikeLike

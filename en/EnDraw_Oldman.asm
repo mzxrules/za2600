@@ -5,7 +5,7 @@
 EnDraw_OldMan: SUBROUTINE
     ; Draw Routine
     lda #COLOR_EN_RED
-    sta enColor
+    sta wEnColor
     lda #<SprS0
     sta enSpr
     lda #>SprS0

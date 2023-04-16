@@ -4,7 +4,7 @@
 
 EnDraw_Octorok: SUBROUTINE
     lda #COLOR_EN_ROK_BLUE
-    sta enColor
+    sta wEnColor
     lda #>SprE4
     sta enSpr+1
     ldx enDir

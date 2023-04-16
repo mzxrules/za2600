@@ -36,8 +36,8 @@ DivideLoop
     asl            ; 2 14 - the X position
     asl            ; 2 16
     asl            ; 2 18
-    sta.wx HMP0,X  ; 5 23 - store fine tuning of X
-    sta RESP0,X    ; 4 27 - set coarse X position of object
+    sta.wx HMP0,x  ; 5 23 - store fine tuning of X
+    sta RESP0,x    ; 4 27 - set coarse X position of object
 ;                  ;   67, which is max supported scan cycle
     dex            ; 2 69
     bpl .Loop      ; 3 72
@@ -143,7 +143,7 @@ EnItemDraw: SUBROUTINE ; y == itemDraw
     beq .skipItemColor
     ldx #COLOR_EN_LIGHT_BLUE
 .skipItemColor
-    stx enColor
+    stx wEnColor
     lda GiItemSpr,y
     clc
     adc #<SprItem0

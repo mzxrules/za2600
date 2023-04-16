@@ -9,7 +9,7 @@ EnDraw_Darknut: SUBROUTINE
     asl
     asl
     adc #COLOR_EN_RED
-    sta enColor
+    sta wEnColor
     ldx enDir
     ldy Mul8,x
     sty enSpr

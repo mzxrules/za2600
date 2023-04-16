@@ -103,7 +103,7 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     lda #7
     sta wENH
     lda #0
-    sta NUSIZ1_T
+    sta wNUSIZ1_T
 
 ; update player stun timer
     lda plStun

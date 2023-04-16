@@ -8,7 +8,7 @@ EnDraw_NpcGiveOne: SUBROUTINE
     bit enState
     bvs .noDraw
     ldy roomEX
-    lda .NpcGiveOneItems,Y
+    lda .NpcGiveOneItems,y
     tay
     jsr EnItemDraw
 

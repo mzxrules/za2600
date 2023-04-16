@@ -13,7 +13,7 @@ RsInit_SpectacleRock: SUBROUTINE
     lda #$20
     sta enY
     lda rFgColor
-    sta enColor
+    sta wEnColor
     lda #(30*8)
     sta enSpr
     rts

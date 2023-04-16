@@ -9,7 +9,7 @@ EnDraw_Rope: SUBROUTINE
     asl
     asl
     adc #COLOR_EN_TRIFORCE
-    sta enColor
+    sta wEnColor
     ldx enDir
     ldy .sprites,x
     sty enSpr

@@ -29,7 +29,7 @@ EnDraw_ClearDrop: SUBROUTINE
 
 .EnStairs:
     lda rFgColor
-    sta enColor
+    sta wEnColor
     lda #<SprItem31
     sta enSpr
     lda #>SprItem31

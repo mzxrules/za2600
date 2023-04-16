@@ -32,7 +32,7 @@ PlayerArrow: SUBROUTINE
     lda #SFX_ARROW
     sta SfxFlags
     lda ArrowWidth8,y
-    sta NUSIZ0_T
+    sta wNUSIZ0_T
     lda ArrowHeight8,y
     sta wM0H
     lda ArrowOff8X,y
@@ -103,7 +103,7 @@ PlayerFire: SUBROUTINE
     adc plY
     sta m0Y
     lda #$20
-    sta NUSIZ0_T
+    sta wNUSIZ0_T
     lda #0
     sta wM0H
 .skipSpawnFire
@@ -143,7 +143,7 @@ PlayerBomb: SUBROUTINE
     adc plY
     sta m0Y
     lda #$20
-    sta NUSIZ0_T
+    sta wNUSIZ0_T
     lda #3
     sta wM0H
 .skipDropBomb
@@ -166,7 +166,7 @@ PlayerBomb: SUBROUTINE
     lda #7
     sta wM0H
     lda #$30
-    sta NUSIZ0_T
+    sta wNUSIZ0_T
     lda #SFX_BOMB
     sta SfxFlags
 
@@ -261,7 +261,7 @@ PlayerSword: SUBROUTINE
     adc plDir
     tay
     lda SwordWidth4,y
-    sta NUSIZ0_T
+    sta wNUSIZ0_T
     lda SwordHeight4,y
     sta wM0H
     lda SwordOff4X,y
@@ -334,10 +334,10 @@ PlayerFlute: SUBROUTINE
 .contDraw
     lda m0Y
     clc
-    adc .tornadoAnimDeltaY-1,X
+    adc .tornadoAnimDeltaY-1,x
     sta m0Y
     lda .tornadoAnimWidth-1,x
-    sta NUSIZ0_T
+    sta wNUSIZ0_T
     lda .tornadoAnimHeight-1,x
     sta wM0H
     lda m0X
@@ -383,7 +383,7 @@ PlayerFlute: SUBROUTINE
     tax
 .loop
 
-    lda Bit8,X
+    lda Bit8,x
     and itemTri
     bne .foundDest
     inx
@@ -393,7 +393,7 @@ PlayerFlute: SUBROUTINE
     beq .loop
 
 .foundDest
-    lda .tornadoDest,X
+    lda .tornadoDest,x
 .NoDest
     sta roomId
     inx
