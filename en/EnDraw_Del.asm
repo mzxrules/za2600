@@ -3,11 +3,17 @@
 ;==============================================================================
 
 EnDraw_Del:
-    lda #0
-    sta REFP1
-    ldx enType
-    lda EntityDrawH,x
+    ldx #0
+    stx REFP1
+    lda enType+1
+    beq .skip
+    lda Frame
+    and #1
+    tax
+.skip
+    ldy enType,x
+    lda EntityDrawH,y
     pha
-    lda EntityDrawL,x
+    lda EntityDrawL,y
     pha
     rts

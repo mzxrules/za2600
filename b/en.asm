@@ -4,7 +4,7 @@
 En_Del:
     lda #SLOT_EN_B
     sta BANK_SLOT
-    ldx enType
+    ldx enType,y
     lda EntityH,x
     pha
     lda EntityL,x
@@ -29,7 +29,11 @@ CheckRoomCol: SUBROUTINE
     tya
     lsr
     lsr
+    tay
 ; A stores adjusted y coord
+
+CheckRoomCol_XA:
+    tya
 
     cpx #[$04/4]
     bmi .rts
@@ -51,11 +55,11 @@ CheckRoomCol: SUBROUTINE
 .special_right
     adc #ROOM_PX_HEIGHT -1
 .special_left
-    tay
-    lda rPF1RoomL-2,y
-    ora rPF1RoomL-1,y
-    ora rPF2Room-2,y
-    ora rPF2Room-1,y
+    tax
+    lda rPF1RoomL-2,x
+    ora rPF1RoomL-1,x
+    ora rPF2Room-2,x
+    ora rPF2Room-1,x
     and #1
 
 .rts
@@ -70,12 +74,107 @@ NextDir: SUBROUTINE
     tax
 .nextLoop
     inx
-    lda enBlockDir
+    lda enBlockDir,y
     and Lazy8,x
     bne .nextLoop
     txa
     and #3
-    sta enDir
+    sta enDir,y
+    rts
+
+NextDir2: SUBROUTINE
+
+EnSetBlockedDir2: SUBROUTINE
+    ldx EnSysNX
+    cpx #[EnBoardXR/4]
+    bne .setBlockedL
+    ora #EN_BLOCKDIR_R
+.setBlockedL
+    cpx #[EnBoardXL/4]
+    bne .setBlockedD
+    ora #EN_BLOCKDIR_L
+.setBlockedD
+    ldx EnSysNY
+    cpx #[EnBoardYD/4]
+    bne .setBlockedU
+    ora #EN_BLOCKDIR_D
+.setBlockedU
+    cpx #[EnBoardYU/4]
+    bne .checkPFHit
+    ora #EN_BLOCKDIR_U
+.checkPFHit
+    sta enBlockDir
+
+    jsr Random
+    and #3
+    sta enNextTemp
+    sta enNextTemp2
+    bpl .firstGo
+
+.checkLoop
+    inc enNextTemp
+    lda enNextTemp
+    and #3
+    cmp enNextTemp2
+    beq .miss
+
+.firstGo
+    tax
+    lda enBlockDir
+    and Lazy8,x
+    bne .checkLoop
+    ldx EnSysNX
+    ldy EnSysNY
+    lda enNextTemp
+    and #3
+    bne .check_1
+
+.EN_BLOCKDIR_L
+    dex
+    jsr CheckRoomCol_XA
+    bne .checkLoop
+    dec EnSysNX
+    lda #EN_DIR_L
+    sta enNextDir
+    lda #1
+    rts
+
+.check_1
+    cmp #1
+    bne .check_2
+.EN_DIR_R
+    inx
+    jsr CheckRoomCol_XA
+    bne .checkLoop
+    inc EnSysNX
+    lda #EN_DIR_R
+    sta enNextDir
+    rts
+
+.check_2
+    cmp #2
+    bne .EN_DIR_D
+
+.EN_DIR_U
+    iny
+    jsr CheckRoomCol_XA
+    bne .checkLoop
+    inc EnSysNY
+    lda #EN_DIR_U
+    sta enNextDir
+    rts
+
+.EN_DIR_D
+    dey
+    jsr CheckRoomCol_XA
+    bne .checkLoop
+    dec EnSysNY
+    lda #EN_DIR_D
+    sta enNextDir
+    rts
+
+.miss
+    lda #0
     rts
 
 ;==============================================================================
@@ -84,6 +183,7 @@ NextDir: SUBROUTINE
 ; Y = returns up/down direction towards player
 ;==============================================================================
 SeekDir: SUBROUTINE
+/*
     ldx #EN_DIR_L
     lda enX
     sec
@@ -122,6 +222,7 @@ SeekDir: SUBROUTINE
 .storeY
     sty enDir
 .rts
+*/
     rts
 
 ;==============================================================================
@@ -129,7 +230,8 @@ SeekDir: SUBROUTINE
 ; A = flag reset mask. Set to $F0 to reset blocked direction flags
 ;==============================================================================
 EnSetBlockedDir: SUBROUTINE
-    and enBlockDir
+/*
+    and enBlockDir,y
     ldx enX
     cpx #EnBoardXR
     bne .setBlockedL
@@ -153,37 +255,38 @@ EnSetBlockedDir: SUBROUTINE
     bmi .setCurBlock
     bvc .setBlockDir
 .setCurBlock
-    ldx enDir
+    ldx enDir,y
     ora Bit8,x
 .setBlockDir
-    sta enBlockDir
+    sta enBlockDir,y
+*/
     rts
 
 EnDirR2: SUBROUTINE
-    inc enX
+    inc en0X,x
 EnDirR: SUBROUTINE
-    inc enX
+    inc en0X,x
     rts
 EnDirL2: SUBROUTINE
-    dec enX
+    dec en0X,x
 EnDirL: SUBROUTINE
-    dec enX
+    dec en0X,x
     rts
 EnDirD2: SUBROUTINE
-    dec enY
+    dec en0Y,x
 EnDirD: SUBROUTINE
-    dec enY
+    dec en0Y,x
     rts
 EnDirU2: SUBROUTINE
-    inc enY
+    inc en0Y,x
 EnDirU: SUBROUTINE
-    inc enY
+    inc en0Y,x
     rts
 
 EnNone:
     lda #$F0
     sta enSpr+1
-    sta enY
+    sta en0Y,y
     rts
 
 ;==============================================================================
@@ -194,12 +297,16 @@ EnSysEncounter:
     .byte EN_NONE, EN_DARKNUT, EN_ROPE, EN_LIKE_LIKE
     .byte EN_OCTOROK, EN_WALLMASTER, EN_BOSS_GOHMA, EN_TEST
 EnSysEncounterCount:
-    .byte 0, 1, 2, 1
+    .byte 0, 2, 2, 1
     .byte 1, 1, 1, 1
 
-EnSystem: SUBROUTINE
+EnSystem_DUMMY: SUBROUTINE
+.rts2
+    rts
+EnSystem:
     ; precompute room clear flag helpers because it's annoying
     lda roomId
+    bmi .rts2
     lsr
     lsr
     lsr
@@ -242,6 +349,8 @@ EnSystem: SUBROUTINE
     sta roomENCount
 
 .runEncounter
+    lda #0
+    sta enNum
     ; toggle off enemy clear event
     lda #~RF_EV_ENCLEAR
     and roomFlags
@@ -250,7 +359,14 @@ EnSystem: SUBROUTINE
     lda roomENCount
     beq .rts
     lda enType
+    beq .cont
+    inc enNum
+    lda enNum
+    cmp roomENCount
+    beq .rts
+    lda enType+1
     bne .rts
+.cont
     lda #PS_LOCK_ALL
     bit plState
     bne .rts
@@ -263,14 +379,20 @@ EnSystem: SUBROUTINE
     lda EnSysSpawnTry
     beq .rts
     ldy #EN_VARS_COUNT-1
+    ldx enNum
+    bne .entity2
+    dey
+.entity2
     lda #0
 .EnInitLoop:
     sta EN_VARS,y
     dey
+    dey
     bpl .EnInitLoop
 
+    ldx enNum
     lda EnSysNext
-    sta enType
+    sta enType,x
 .rts
     rts
 
@@ -302,8 +424,8 @@ EnRandSpawn: SUBROUTINE
     asl ; y * 4 (* 8 total)
     clc
     adc #$14
-    sta enY
-    sta enYL
+    ldy enNum
+    sta en0Y,y
     lda Mul8,x
     bit Rand16
     bmi .skipInvert
@@ -313,8 +435,7 @@ EnRandSpawn: SUBROUTINE
 .skipInvert
     clc
     adc #$40
-    sta enX
-    sta enXL
+    sta en0X,y
     rts
 
 EnSpawnPF2Mask:
@@ -337,17 +458,40 @@ EnSysEnDie:
 
 .continueEncounter
     lda #$80
-    sta enY
+    sta en0Y,y
     lda #EN_NONE
-    sta enType
+    sta enType,y
+    cpy #0
+    beq EnSysCleanShift
+.rts
+    rts
+
+EnSysCleanShift: SUBROUTINE
+    lda enType
+    bne .rts
+    ldx enType+1
+    beq .rts
+    stx enType
+
+    ldx #EN_VARS_COUNT + 6 -2
+.loop
+    lda EN_VARS-6+1,x
+    sta EN_VARS-6,X
+    dex
+    dex
+    bpl .loop
+    lda #0
+    sta enType+1
+
 .rts
     rts
 
 EnMoveDirDel:
-    ldx enDir
-    lda EnMoveDirH,x
+    ldy enDir
+EnMoveDirDel2:
+    lda EnMoveDirH,y
     pha
-    lda EnMoveDirL,x
+    lda EnMoveDirL,y
     pha
     rts
 

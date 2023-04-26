@@ -57,6 +57,7 @@ RoomUpdate:  ; SUBROUTINE
 LoadRoom: SUBROUTINE
     lda #0      ;EN_NONE
     sta enType
+    sta enType+1
     sta enState
     sta blType
     sta roomPush

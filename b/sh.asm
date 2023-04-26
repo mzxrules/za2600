@@ -107,12 +107,10 @@ ItemGet:
     sta plState2
     lda plX
     sta enX
-    sta enXL
     lda plY
     clc
     adc #9
     sta enY
-    sta enYL
     lda #EN_ITEM_GET
     sta enType
     ldy #MS_PLAY_GI

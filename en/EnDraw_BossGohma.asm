@@ -4,9 +4,9 @@
 
 EnDraw_BossGohma: SUBROUTINE
 
-    lda enBossX
+    lda en0X
     sta enX
-    lda enBossY
+    lda en0Y
     sta enY
 
     lda Frame

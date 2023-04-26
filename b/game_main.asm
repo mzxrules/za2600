@@ -185,7 +185,7 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     jsr PlMoveDirDel
 ; Skip player PFCollision
     ldy #1
-    bne PFCollision
+    bne endPFCollision ;bne PFCollision
 
 .completePlayerWallPass
     lda #$00
@@ -201,15 +201,15 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 PFCollision: SUBROUTINE
 
     ; Check RF_PF_IGNORE
-    lda RoomFlagPFCollision,y
+    lda RoomFlagPFCollision
     and roomFlags
     beq .collisionPosReset
-    ldx plX,y
+    ldx plX
     cpx #EnBoardXL
     bmi .collisionPosReset
     cpx #EnBoardXR+1
     bpl .collisionPosReset
-    ldx plY,y
+    ldx plY
     cpx #EnBoardYD
     bmi .collisionPosReset
     cpx #EnBoardYU+1
@@ -233,23 +233,19 @@ PFCollision: SUBROUTINE
     bne .SkipPFCollision ; branch always
 
 .collisionPosReset
-    lda CXP0FB,y ; CXP1FB
+    lda CXP0FB ; CXP1FB
     and #$C0
     beq .SkipPFCollision
 
-    lda plXL,y
-    sta plX,y
-    lda plYL,y
-    sta plY,y
+    lda plXL
+    sta plX
+    lda plYL
+    sta plY
 .SkipPFCollision:
-    lda plX,y
-    sta plXL,y
-    lda plY,y
-    sta plYL,y
-
-    iny
-    cpy #2
-    bmi PFCollision
+    lda plX
+    sta plXL
+    lda plY
+    sta plYL
 endPFCollision
 
     lda #SLOT_EN_A
@@ -270,9 +266,23 @@ endPFCollision
     jsr Rs_Del
 
 .Entity
+    ldx #1
+    stx enNum
+
+.EntityLoop
+
     lda #SLOT_EN_A
     sta BANK_SLOT
+    ldy enNum
     jsr En_Del
+
+    dec enNum
+    bpl .EntityLoop
+
+    lda #SLOT_EN_A
+    sta BANK_SLOT
+    jsr EnSysCleanShift
+
 
 .Missile:
     lda #SLOT_RS_A
@@ -485,6 +495,7 @@ EnClearDrop:
     lda #SLOT_SH
     sta BANK_SLOT
     jmp EnClearDrop_
+
 EnStairs:
     lda #SLOT_SH
     sta BANK_SLOT

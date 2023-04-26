@@ -19,7 +19,7 @@ HbGetPlAtt: SUBROUTINE
     lda m0Y
     sta Hb_aa_y
 
-    ldy plItemTimer
+    lda plItemTimer
     beq .rts
     lda plState2
     and #PS_ACTIVE_ITEM
@@ -28,6 +28,7 @@ HbGetPlAtt: SUBROUTINE
     pha
     lda HbPlAttL,x
     pha
+    ldx plItemTimer
 .rts
     rts
 
@@ -35,9 +36,9 @@ HbPlWand: SUBROUTINE
 HbPlSword: SUBROUTINE
     lda #HB_PL_SWORD
     sta HbFlags
-    cpy #ITEM_ANIM_SWORD_STAB_SHORT
+    cpx #ITEM_ANIM_SWORD_STAB_SHORT
     bcs .rts ; if y >= Stab Short
-    cpy #ITEM_ANIM_SWORD_STAB_LONG
+    cpx #ITEM_ANIM_SWORD_STAB_LONG
     bcc .rts ; if y < Stab Short
     ldx plItemDir
     inx
@@ -57,7 +58,7 @@ HbPlSword: SUBROUTINE
     rts
 
 HbPlBomb: SUBROUTINE
-    cpy #ITEM_ANIM_BOMB_DETONATE
+    cpx #ITEM_ANIM_BOMB_DETONATE
     bcc .rts
     lda #10 ; 8x8 hitbox
     sta Hb_aa_Box

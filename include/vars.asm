@@ -30,13 +30,10 @@ blY         ds 1
 ; EnColor    ds 1
 
 plXL        ds 1
-enXL        ds 1
 plYL        ds 1
-enYL        ds 1
 plSpr       ds 2 ; plSprOff
 enSpr       ds 2 ; enSprOff
 plDir       ds 1
-enDir       ds 1
 
 worldId     ds 1
 worldSX     ds 1 ; respawn X
@@ -146,14 +143,17 @@ SfxCur      ds 1
 ;==============================================================================
 ; Entity Variables
 ;==============================================================================
-enType      ds 1
-EN_VARS:    ds 10 ; Zero initialized entity vars
+enNum       ds 1
+enType      ds 2
+en0X        ds 2
+en0Y        ds 2
+EN_VARS:    ds 16 ; Zero initialized entity vars
 EN_VARS_END:
 EN_VARS_COUNT = EN_VARS_END - EN_VARS
 
     ORG EN_VARS
+enState     ds 2
 EN_NPC_VARIABLES:
-enState     ds 1
 ; EnShopkeeper enState
                       ; 1xxx_xxxx Init
                       ; x1xx_xxxx Item Bought
@@ -164,14 +164,14 @@ GI_EVENT_INIT   = $04 ; xxxx_x1xx
 mesgId      ds 1
 ; Gameover
 enInputDelay ds 1
-    ORG EN_NPC_VARIABLES + 2
+    ORG EN_NPC_VARIABLES + 1
 ; EnShopkeeper
 shopItem    ds 3
 shopDigit   ds 3
 
-    ORG EN_VARS + 1
+    ORG EN_NPC_VARIABLES
 ; En_ClearDrop and En_ItemGet
-;enState     ds 1
+;enState
 CD_UPDATE_B     = $80 ; 1xxx_xxxx
 CD_UPDATE_A     = $40 ; x1xx_xxxx
                       ; xx11_11xx GI_EVENT reserved
@@ -186,19 +186,17 @@ cdAY        ds 1
 cdBY        ds 1
 
 ; EnemyCommon
-    ORG EN_VARS + 1
-enHp        ds 1
-enStun      ds 1
-enBlockDir  ds 1 ; blocked direction
-EN_BLOCKDIR_L = 1
-EN_BLOCKDIR_R = 2
-EN_BLOCKDIR_U = 4
-EN_BLOCKDIR_D = 8
+    ORG EN_VARS + 2
+enNX       ds 2
+enNY       ds 2
+enHp        ds 2
+enStun      ds 2
+enDir       ds 2
 
 EN_ENEMY_VARIABLES:
     ORG EN_ENEMY_VARIABLES
 ; Darknut
-;enBlockDir
+enDarknutTemp
                 ; xx1x_xxxx = new direction toggle
     ORG EN_ENEMY_VARIABLES
 ; Wallmaster
@@ -225,8 +223,6 @@ enRopeTimer ds 1
 GOHMA_ANIM_0    = $00
 GOHMA_ANIM_1    = $02
 GOHMA_ANIM_2    = $04
-enBossX     ds 1
-enBossY     ds 1
 enGohmaTimer ds 1
 
 ; Test
@@ -323,6 +319,16 @@ EnSysSpawnTry   ds 1
 EnSysNext       ds 1
 EnSysClearOff   ds 1 ; offset to byte that room clear is stored at
 EnSysClearMask  ds 1 ; stores bitmask for room clear flag
+enBlockDir      ds 1 ; blocked direction
+enNextDir       ds 1
+EN_BLOCKDIR_L = 1
+EN_BLOCKDIR_R = 2
+EN_BLOCKDIR_U = 4
+EN_BLOCKDIR_D = 8
+enNextTemp      ds 1
+enNextTemp2     ds 1
+EnSysNX         ds 1
+EnSysNY         ds 1
 
     SEG.U VARS_HB_SYS
     ORG Temp0 + 1
@@ -484,7 +490,7 @@ BoardBreakwallEX = $76
     COLOR EN_BROWN,     $F0,$22
 
     COLOR PLAYER_00,    $C6,$58
-    COLOR PLAYER_01,    $08,$0C
+    COLOR PLAYER_01,    $0E,$0E
     COLOR PLAYER_02,    $46,$64
 
     COLOR PATH,         $3C,$4C

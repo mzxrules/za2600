@@ -416,6 +416,18 @@ y bits:
 if 7 -> 3, then
 0-6 = line * 2 + 1
 
+=== New EnSys Algo ===
+
+Spawning:
+
+enNX - Next Target, 4x4 grid x
+enNY - Next Target, 4x4 grid y
+
+enNX, enNY set to initial spawn pos
+
+Movement:
+If thisX,thisY = enNX, enNY; NextDir
+
 
 === Generalized Entity Room Collision Check ===
 

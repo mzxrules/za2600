@@ -6,8 +6,8 @@ En_BossGohma: SUBROUTINE
     bit enState
     bmi .skipInit
     lda #$40
-    sta enBossX
-    sta enBossY
+    sta en0X
+    sta en0Y
     lda #[$80 | $00 | GOHMA_ANIM_0]
     sta enState
     jsr Random
@@ -34,7 +34,7 @@ En_BossGohma: SUBROUTINE
     lda m0X
     sec
     sbc #4
-    sbc enBossX
+    sbc en0X
     cmp #9
     bcs .endWeaponCollision
 
@@ -43,7 +43,7 @@ En_BossGohma: SUBROUTINE
     sec
     sbc #$100-7
     sec
-    sbc enBossY
+    sbc en0Y
     cmp #4
     bcs .endWeaponCollision
     lda #$80
@@ -82,8 +82,8 @@ En_BossGohma: SUBROUTINE
     bit enState
     bvc .left
 .right
-    inc enBossX
-    lda enBossX
+    inc en0X
+    lda en0X
     cmp #$5C
     bne .endMove
     lda enState
@@ -91,8 +91,8 @@ En_BossGohma: SUBROUTINE
     sta enState
     bne .endMove ; always branch
 .left
-    dec enBossX
-    lda enBossX
+    dec en0X
+    lda en0X
     cmp #$24
     bne .endMove
     lda enState

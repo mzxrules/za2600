@@ -4,27 +4,36 @@
 
 En_Darknut: SUBROUTINE
     lda #EN_DARKNUT_MAIN
-    sta enType
+    sta enType,y
     jsr Random
     and #3
-    sta enDir
+    sta enDir,y
     lda #2
-    sta enHp
+    sta enHp,y
+    lda en0X,y
+    lsr
+    lsr
+    sta enNX,y
+    lda en0Y,y
+    lsr
+    lsr
+    sta enNY,y
 
 En_DarknutMain:
+    lda enNX,y
+    sta EnSysNX
+    lda enNY,y
+    sta EnSysNY
+
 ; update stun timer
-    lda enStun
+    lda enStun,y
     cmp #1
     adc #0
-    sta enStun
-
-; update blocked direction
-    lda #$F0
-    jsr EnSetBlockedDir
+    sta enStun,y
 
 .checkDamaged
 ; if collided with weapon && stun == 0,
-    lda enStun
+    lda enStun,y
     bne .endCheckDamaged
     lda #SLOT_BATTLE
     sta BANK_SLOT
@@ -34,7 +43,7 @@ En_DarknutMain:
 ; Get damage
     ldx HbDamage
     lda EnDam_Darknut,x
-    tay
+    sta enDarknutTemp
 
     lda #SLOT_MAIN
     sta BANK_SLOT
@@ -50,23 +59,24 @@ En_DarknutMain:
     beq .defSfx ; block non-damaging attacks
 
 ; Test if item hit Darknut's shield
-    ldx plItemDir
-    cpx enDir
+    ldx enDir,y
+    cpx plItemDir
     bne .gethit
 
     ; Test if sword hit shield
     and #HB_PL_SWORD
     bne .defSfx
     ; Bomb hit shield
-    ldy #-2
+    lda #-2
+    sta enDarknutTemp
 
 .gethit
-    tya ; fetch damage
+    lda enDarknutTemp ; fetch damage
     ldx #-32
-    stx enStun
+    stx enStun,y
     clc
-    adc enHp
-    sta enHp
+    adc enHp,y
+    sta enHp,y
     bpl .endCheckDamaged
     jmp EnSysEnDie
 .defSfx
@@ -75,44 +85,46 @@ En_DarknutMain:
 .endCheckDamaged
 
     ; Check player hit
-    bit enStun
+    lda enStun,y
     bmi .endCheckHit
     bit CXPPMM
     bpl .endCheckHit
     lda #-8
     jsr UPDATE_PL_HEALTH
+    ldy enNum
 .endCheckHit
 
-.checkBlocked
-    lda enBlockDir
-    ldx enDir
-    and Bit8,x
-    beq .endCheckBlocked
-    jsr NextDir
-    jmp .move
-.endCheckBlocked
-
-.randDir
-    lda enX
-    and #7
+    lda enNX,y
+    asl
+    asl
+    cmp en0X,y
     bne .move
-    lda enY
-    and #7
+    lda enNY,y
+    asl
+    asl
+    cmp en0Y,y
     bne .move
-    lda Frame
-    eor enBlockDir
-    and #$20
-    beq .move
-    eor enBlockDir
-    sta enBlockDir
-    jsr NextDir
 
+    lda #$00
+    jsr NextDir2
+    beq .rts
+    ldx enNum
+    lda enNextDir
+    sta enDir,x
 .move
     lda Frame
     and #1
     beq .rts
-    ldx enDir
-    jmp EnMoveDirDel
+    ldx enNum
+    lda enDir,x
+    tay
+    jsr EnMoveDirDel2
 .rts
+    ldy enNum
+    lda EnSysNX
+    sta enNX,y
+    lda EnSysNY
+    sta enNY,y
+
     rts
     LOG_SIZE "En_Darknut", En_Darknut

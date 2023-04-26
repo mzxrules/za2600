@@ -171,7 +171,7 @@ BANK_12
     repeat 0x77
     .byte $01
     repend
-    .byte $06
+    .byte $01
     repeat 0x8
     .byte $01
     repend

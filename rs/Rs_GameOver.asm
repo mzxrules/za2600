@@ -9,6 +9,7 @@ Rs_GameOver: SUBROUTINE
     stx wBgColor
     stx wFgColor
     stx enType
+    stx enType+1
     stx roomFlags
     stx mesgId
     inx
