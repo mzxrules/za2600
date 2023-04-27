@@ -480,7 +480,7 @@ EnSysCleanShift: SUBROUTINE
     dex
     dex
     bpl .loop
-    lda #0
+    lda #EN_NONE
     sta enType+1
 
 .rts

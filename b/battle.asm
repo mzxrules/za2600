@@ -97,9 +97,9 @@ HbPlPotion: SUBROUTINE
 
 
 HbPlAttCollide_EnBB:
-    lda enX
+    lda en0X,y
     sta Hb_bb_x
-    lda enY
+    lda en0Y,y
     sta Hb_bb_y
 HbPlAttCollide: SUBROUTINE
     ldx Hb_aa_Box
