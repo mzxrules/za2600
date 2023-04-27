@@ -4,32 +4,34 @@
 
 En_Darknut: SUBROUTINE
     lda #EN_DARKNUT_MAIN
-    sta enType,y
+    sta enType,x
     jsr Random
     and #3
-    sta enDir,y
+    sta enDir,x
     lda #2
-    sta enHp,y
-    lda en0X,y
+    sta enHp,x
+    lda en0X,x
     lsr
     lsr
-    sta enNX,y
-    lda en0Y,y
+    sta enNX,x
+    lda en0Y,x
     lsr
     lsr
-    sta enNY,y
+    sta enNY,x
 
 En_DarknutMain:
-    lda enNX,y
+    lda enNX,x
     sta EnSysNX
-    lda enNY,y
+    lda enNY,x
     sta EnSysNY
 
 ; update stun timer
-    lda enStun,y
+    lda enStun,x
     cmp #1
     adc #0
-    sta enStun,y
+    sta enStun,x
+
+    ldy enNum
 
 .checkDamaged
 ; if collided with weapon && stun == 0,
@@ -94,15 +96,17 @@ En_DarknutMain:
     ldy enNum
 .endCheckHit
 
-    lda enNX,y
+; Movement
+    ldx enNum
+    lda enNX,x
     asl
     asl
-    cmp en0X,y
+    cmp en0X,x
     bne .move
-    lda enNY,y
+    lda enNY,x
     asl
     asl
-    cmp en0Y,y
+    cmp en0Y,x
     bne .move
 
     lda #$00
@@ -120,11 +124,11 @@ En_DarknutMain:
     tay
     jsr EnMoveDirDel2
 .rts
-    ldy enNum
+    ldx enNum
     lda EnSysNX
-    sta enNX,y
+    sta enNX,x
     lda EnSysNY
-    sta enNY,y
+    sta enNY,x
 
     rts
     LOG_SIZE "En_Darknut", En_Darknut

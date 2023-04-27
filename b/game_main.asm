@@ -271,9 +271,7 @@ endPFCollision
 
 .EntityLoop
 
-    lda #SLOT_EN_A
-    sta BANK_SLOT
-    ldy enNum
+    ldx enNum
     jsr En_Del
 
     dec enNum
@@ -491,22 +489,14 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     sta roomFlags
     rts
 
-EnClearDrop:
-    lda #SLOT_SH
+En_Del:
+    lda #SLOT_EN_A
     sta BANK_SLOT
-    jmp EnClearDrop_
-
-EnStairs:
-    lda #SLOT_SH
+    ldy enType,x
+    lda EntityH,y
+    pha
+    lda EntityL,y
+    pha
+    lda Entity_BankLUT,y
     sta BANK_SLOT
-    jmp EnStairs_
-
-EnShopkeeper:
-    lda #SLOT_SH
-    sta BANK_SLOT
-    jmp EnShopkeeper_
-
-EnNpcGiveOne:
-    lda #SLOT_SH
-    sta BANK_SLOT
-    jmp EnNpcGiveOne_
+    rts

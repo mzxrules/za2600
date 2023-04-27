@@ -187,8 +187,8 @@ cdBY        ds 1
 
 ; EnemyCommon
     ORG EN_VARS + 2
-enNX       ds 2
-enNY       ds 2
+enNX        ds 2
+enNY        ds 2
 enHp        ds 2
 enStun      ds 2
 enDir       ds 2
@@ -213,7 +213,7 @@ enMDY       ds 1
 enLLTimer   ds 1
     ORG EN_ENEMY_VARIABLES
 ; Rope
-enRopeTimer ds 1
+enRopeTimer ds 2
     ORG EN_ENEMY_VARIABLES
 ; Gohma
 ;enState     ds 1
@@ -581,3 +581,8 @@ SLOT_DRAW_PAUSE_WORLD = RAMSEG_F4 | 31
 SLOT_DRAW_PAUSE_2 = RAMSEG_F4 | 32
 
 SLOT_BATTLE = RAMSEG_FC | 33
+
+SEG_SH = SLOT_SH
+SEG_34 = RAMSEG_F4 | 34
+SEG_35 = RAMSEG_F4 | 35
+SEG_NA = SLOT_MAIN

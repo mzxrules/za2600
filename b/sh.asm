@@ -261,7 +261,7 @@ GiBowArrowSilver:
 ; En Clear Item Drop System
 ;==============================================================================
 
-EnClearDrop_: SUBROUTINE
+EnClearDrop: SUBROUTINE
 ; process last drawn entity
     lda enState
     and #1 ; CD_LAST_UPDATE
@@ -352,7 +352,7 @@ EnClearDropTypeA: SUBROUTINE
     cmp #EN_STAIRS
     bne .rts
 
-EnStairs_:
+EnStairs:
     cpx plX
     bne .rts
     cpy plY
@@ -392,7 +392,7 @@ EnClearDropTypeB: SUBROUTINE
 EnRandomDrops:
     .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
 
-EnNpcGiveOne_: SUBROUTINE
+EnNpcGiveOne: SUBROUTINE
     lda roomId
     and #$7F
     tay
@@ -440,7 +440,7 @@ EnNpcGiveOne_: SUBROUTINE
 .rts
     rts
 
-EnShopkeeper_: SUBROUTINE
+EnShopkeeper: SUBROUTINE
     bit enState
     bvs .rts
     bmi .main

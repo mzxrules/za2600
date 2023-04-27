@@ -1,15 +1,6 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-En_Del:
-    lda #SLOT_EN_B
-    sta BANK_SLOT
-    ldx enType,y
-    lda EntityH,x
-    pha
-    lda EntityL,x
-    pha
-    rts
 
 ;==============================================================================
 ; Tests room collision
@@ -69,6 +60,7 @@ CheckRoomCol_XA:
 ; Selects a new direction to move in at random, respecting blocked direction
 ;==============================================================================
 NextDir: SUBROUTINE
+/*
     jsr Random
     and #3
     tax
@@ -80,6 +72,7 @@ NextDir: SUBROUTINE
     txa
     and #3
     sta enDir,y
+*/
     rts
 
 NextDir2: SUBROUTINE
@@ -140,7 +133,7 @@ EnSetBlockedDir2: SUBROUTINE
     rts
 
 .check_1
-    cmp #1
+    cmp #EN_DIR_R
     bne .check_2
 .EN_DIR_R
     inx
@@ -152,7 +145,7 @@ EnSetBlockedDir2: SUBROUTINE
     rts
 
 .check_2
-    cmp #2
+    cmp #EN_DIR_U
     bne .EN_DIR_D
 
 .EN_DIR_U
@@ -286,7 +279,7 @@ EnDirU: SUBROUTINE
 EnNone:
     lda #$F0
     sta enSpr+1
-    sta en0Y,y
+    sta en0Y,x
     rts
 
 ;==============================================================================
@@ -300,13 +293,10 @@ EnSysEncounterCount:
     .byte 0, 2, 2, 1
     .byte 1, 1, 1, 1
 
-EnSystem_DUMMY: SUBROUTINE
-.rts2
-    rts
-EnSystem:
+EnSystem: SUBROUTINE
     ; precompute room clear flag helpers because it's annoying
     lda roomId
-    bmi .rts2
+    bmi .rts
     lsr
     lsr
     lsr
@@ -349,36 +339,39 @@ EnSystem:
     sta roomENCount
 
 .runEncounter
-    lda #0
-    sta enNum
     ; toggle off enemy clear event
     lda #~RF_EV_ENCLEAR
     and roomFlags
     sta roomFlags
 
-    lda roomENCount
-    beq .rts
-    lda enType
-    beq .cont
-    inc enNum
-    lda enNum
-    cmp roomENCount
-    beq .rts
-    lda enType+1
-    bne .rts
-.cont
+    ; test if the player is being positioned in the room
     lda #PS_LOCK_ALL
     bit plState
     bne .rts
 
+    ; return if...
+    ; There are 0 encounters left
+    ; There is 1 encounter left and enType is already slotted
+    ldx #0
+.loop
+    cpx roomENCount
+    beq .rts
+    lda enType,x
+    beq .cont
+    inx
+    cpx #2
+    bne .loop
+.rts
+    rts
+
+.cont
+    ; store next encounter
     lda EnSysEncounter,y
     sta EnSysNext
-    lda #4
-    sta EnSysSpawnTry
-    jsr EnRandSpawn
-    lda EnSysSpawnTry
-    beq .rts
+
+    ; zero entity variable data
     ldy #EN_VARS_COUNT-1
+    stx enNum
     ldx enNum
     bne .entity2
     dey
@@ -390,10 +383,15 @@ EnSystem:
     dey
     bpl .EnInitLoop
 
+    lda #4
+    sta EnSysSpawnTry
+    jsr EnRandSpawn
+    lda EnSysSpawnTry
+    beq .rts
+
     ldx enNum
     lda EnSysNext
     sta enType,x
-.rts
     rts
 
 

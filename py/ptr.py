@@ -22,6 +22,7 @@ class GameEnum:
     genPtrTable: bool
     genConstants: bool
     vals: list = field(default_factory=list)
+    bankLut: list = field(default_factory=list)
 
     def __post_init__(self):
         if self.shortName == None:
@@ -33,28 +34,28 @@ class GameEnum:
         return x
 
 Entity_Table = [
-    "EnNone",          "EnDraw_None",
-    "EnClearDrop",     "EnDraw_ClearDrop",
-    "EnItem",          "EnDraw_None",
-    "EnStairs",        "EnDraw_None",
-    "EnShopkeeper",    "EnDraw_Shopkeeper",
-    "EnNpcGiveOne",    "EnDraw_NpcGiveOne",
-    "En_ItemGet",      "EnDraw_ItemGet",
-    "En_OldMan",       "EnDraw_OldMan",
+    "EnNone",          "SEG_NA", "", "EnDraw_None",
+    "EnClearDrop",     "SEG_SH", "", "EnDraw_ClearDrop",
+    "EnItem",          "SEG_NA", "", "EnDraw_None",
+    "EnStairs",        "SEG_SH", "", "EnDraw_None",
+    "EnShopkeeper",    "SEG_SH", "", "EnDraw_Shopkeeper",
+    "EnNpcGiveOne",    "SEG_SH", "", "EnDraw_NpcGiveOne",
+    "En_ItemGet",      "SEG_35", "", "EnDraw_ItemGet",
+    "En_OldMan",       "SEG_35", "", "EnDraw_OldMan",
 
-    "En_Darknut",      "EnDraw_Darknut",
-    "En_DarknutMain",  "EnDraw_Darknut",
-    "En_LikeLike",     "EnDraw_LikeLike",
-    "En_LikeLikeMain", "EnDraw_LikeLike",
-    "En_Octorok",      "EnDraw_Octorok",
-    "En_OctorokMain",  "EnDraw_Octorok",
-    "En_Rope",         "EnDraw_Rope",
-    "En_RopeMain",     "EnDraw_Rope",
-    "En_Wallmaster",   "EnDraw_Wallmaster",
-    "En_Test",         "EnDraw_Darknut",
+    "En_Darknut",      "SEG_34", "", "EnDraw_Darknut",
+    "En_DarknutMain",  "SEG_34", "", "EnDraw_Darknut",
+    "En_LikeLike",     "SEG_34", "", "EnDraw_LikeLike",
+    "En_LikeLikeMain", "SEG_34", "", "EnDraw_LikeLike",
+    "En_Octorok",      "SEG_34", "", "EnDraw_Octorok",
+    "En_OctorokMain",  "SEG_34", "", "EnDraw_Octorok",
+    "En_Rope",         "SEG_34", "", "EnDraw_Rope",
+    "En_RopeMain",     "SEG_34", "", "EnDraw_Rope",
+    "En_Wallmaster",   "SEG_35", "", "EnDraw_Wallmaster",
+    "En_Test",         "SEG_35", "", "EnDraw_Darknut",
 
-    "En_BossGohma",    "EnDraw_BossGohma",
-    "EnBoss_Cucco",    "EnDraw_None",
+    "En_BossGohma",    "SEG_34", "", "EnDraw_BossGohma",
+    "EnBoss_Cucco",    "SEG_34", "", "EnDraw_None",
 ]
 
 RoomScript_Table = [
@@ -86,22 +87,26 @@ tbl = [
     genEditorBindings=False,
     genPtrTable=True,
     genConstants=True,
-    vals=Entity_Table[0::2]),
+    vals=Entity_Table[0::4],
+    bankLut=Entity_Table[1::4]),
     GameEnum("EntityDraw", "EnDraw",
     genEditorBindings=False,
     genPtrTable=True,
     genConstants=False,
-    vals=Entity_Table[1::2]),
+    vals=Entity_Table[3::4],
+    bankLut=Entity_Table[2::4]),
     GameEnum("RoomScript", "Rs",
     genEditorBindings=True,
     genPtrTable=True,
     genConstants=True,
-    vals=RoomScript_Table[0::2]),
+    vals=RoomScript_Table[0::2],
+    bankLut=None),
     GameEnum("RoomScriptInit", "RsInit",
     genEditorBindings=False,
     genPtrTable=True,
     genConstants=False,
-    vals=RoomScript_Table[1::2]),
+    vals=RoomScript_Table[1::2],
+    bankLut=None),
     GameEnum("Ball", "Bl",
     genEditorBindings=False,
     genPtrTable=True,
@@ -115,7 +120,8 @@ tbl = [
         "BlU",
         "BlPushBlock",
         "BlDiamondPushBlock",
-    ]
+    ],
+    bankLut=None
     ),
     GameEnum("ItemId", "Gi",
     genEditorBindings=True,
@@ -164,7 +170,8 @@ tbl = [
 # below items are not real items
         "GiBowArrow",
         "GiBowArrowSilver",
-    ]),
+    ],
+    bankLut=None),
     GameEnum("MusicSeq", "Ms",
     genEditorBindings=False,
     genPtrTable=True,
@@ -206,7 +213,8 @@ tbl = [
         "MsNone",
         "MsNone",
         "MsNone",
-    ]),
+    ],
+    bankLut=None),
     GameEnum("Sfx", "Sfx",
     genEditorBindings=False,
     genPtrTable=True,
@@ -223,7 +231,8 @@ tbl = [
         "SfxSurf",
         "SfxArrow",
         "SfxSolve"
-    ]),
+    ],
+    bankLut=None),
     GameEnum("PlMoveDir", "PlDir",
     genEditorBindings=False,
     genPtrTable=True,
@@ -233,7 +242,8 @@ tbl = [
         "PlDirL",
         "PlDirD",
         "PlDirU"
-    ]),
+    ],
+    bankLut=None),
     GameEnum("EnMoveDir", "EnDir",
     genEditorBindings=False,
     genPtrTable=True,
@@ -243,12 +253,14 @@ tbl = [
         "EnDirR",
         "EnDirU",
         "EnDirD"
-    ]),
+    ],
+    bankLut=None),
     GameEnum("Messages", "Mesg",
     genEditorBindings=True,
     genPtrTable=True,
     genConstants=True,
-    vals=mesg_ids),
+    vals=mesg_ids,
+    bankLut=None),
     GameEnum("CaveType", "Cv",
     genEditorBindings=True,
     genPtrTable=True,
@@ -275,7 +287,8 @@ tbl = [
         "Cv_TakeHeartRupee",
         "Cv_Rupees",
         "Cv_DoorRepair",
-    ]),
+    ],
+    bankLut=None),
     GameEnum("PlItem", "PlItem",
     genEditorBindings=False,
     genPtrTable=True,
@@ -289,7 +302,8 @@ tbl = [
         "PlayerWand",
         "PlayerMeat",
         "PlayerPotion",
-    ]),
+    ],
+    bankLut=None),
     GameEnum("PlItemPick", "PlItemPick",
     genEditorBindings=False,
     genPtrTable=True,
@@ -303,7 +317,8 @@ tbl = [
         "PickWand",
         "PickMeat",
         "PickPotion",
-    ]),
+    ],
+    bankLut=None),
 
     GameEnum("HbPlAtt", "HbPlAtt",
     genEditorBindings=False,
@@ -318,7 +333,8 @@ tbl = [
         "HbPlWand",
         "HbPlMeat",
         "HbPlPotion",
-    ]),
+    ],
+    bankLut=None),
 ]
 
 def ToSnakeCase(s):
@@ -374,6 +390,17 @@ def DumpPtrAsm():
 
         with open(f'gen/{e.name}.asm', "w") as file:
             file.write(out)
+
+        if e.bankLut is not None:
+            out = ""
+            out += f"{e.name}_BankLUT:\n"
+            test = zip(e.vals, e.bankLut)
+            for thing, segment in test:
+                out += f"    .byte  {segment} ; {thing}\n"
+
+            with open(f'gen/{e.name}_bank.asm', "w") as file:
+                file.write(out)
+
 
 def GetConstants(const, l):
     lastName = None

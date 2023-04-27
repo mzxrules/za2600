@@ -311,25 +311,21 @@ BANK_21
 
 BANK_22
     INCLUDE "gen/Entity.asm"
+    INCLUDE "gen/Entity_bank.asm"
     INCLUDE "gen/EnMoveDir.asm"
     INCLUDE "gen/roomcollision.asm"
     INCLUDE "b/en.asm"
 
-    INCLUDE "en/En_Darknut.asm"
-    INCLUDE "en/En_LikeLike.asm"
-    INCLUDE "en/En_Octorok.asm"
-    INCLUDE "en/En_Rope.asm"
-    INCLUDE "en/En_Wallmaster.asm"
-    INCLUDE "en/En_Test.asm"
+    LOG_BANK_SIZE "-BANK 22- Entity Common", BANK_22
 
-    INCLUDE "en/En_BossGohma.asm"
-    INCLUDE "en/EnBoss_Cucco.asm"
-
-    INCLUDE "en/En_Oldman.asm"
-    INCLUDE "en/En_ItemGet.asm"
-
-    LOG_BANK_SIZE "-BANK 22/23- EnemyAI", BANK_22
-
+; ****************************************
+; *               BANK 23                *
+; ****************************************
+    SEG Bank22
+    ORG $5C00
+    RORG $F000
+BANK_23
+    .byte 0
 
 ; ****************************************
 ; *               BANK 24                *
@@ -486,4 +482,36 @@ BANK_32
 
 BANK_33
     INCLUDE "b/battle.asm"
-    LOG_BANK_SIZE "-BANK 32- Battle System", BANK_33
+    LOG_BANK_SIZE "-BANK 33- Battle System", BANK_33
+
+; ****************************************
+; *               BANK 34                *
+; ****************************************
+    SEG Bank34
+    ORG $8800
+    RORG $F400
+
+BANK_34
+    INCLUDE "en/En_Darknut.asm"
+    INCLUDE "en/En_LikeLike.asm"
+    INCLUDE "en/En_Octorok.asm"
+    INCLUDE "en/En_Rope.asm"
+
+    INCLUDE "en/En_BossGohma.asm"
+    INCLUDE "en/EnBoss_Cucco.asm"
+
+    LOG_BANK_SIZE "-BANK 34- En1", BANK_34
+
+; ****************************************
+; *               BANK 35                *
+; ****************************************
+    SEG Bank35
+    ORG $8C00
+    RORG $F400
+
+BANK_35
+    INCLUDE "en/En_Oldman.asm"
+    INCLUDE "en/En_ItemGet.asm"
+    INCLUDE "en/En_Wallmaster.asm"
+    INCLUDE "en/En_Test.asm"
+    LOG_BANK_SIZE "-BANK 35- En2", BANK_35
