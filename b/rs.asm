@@ -102,6 +102,18 @@ Rs_EntCaveRight: SUBROUTINE
 .rts
     rts
 
+Rs_EntCaveCenterWall: SUBROUTINE
+    ldx #$40
+    cpx plX
+    bne .rts
+    ldy #$3C
+    cpy plY
+    bne .rts
+    ldy #$38
+    jmp EnterCave
+.rts
+    rts
+
 Rs_EntCaveMid: SUBROUTINE
     ldx #$40
     cpx plX

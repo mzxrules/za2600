@@ -8,6 +8,7 @@
 EnDam_Darknut:
     .byte -1, -2, -3,  0,  0, -4
 EnDam_Rope:
+EnDam_Octorok:
     .byte -1, -2, -3, -1, -1, -2
 
 HbGetPlAtt: SUBROUTINE

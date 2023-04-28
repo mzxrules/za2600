@@ -27,6 +27,7 @@ En_Rope: SUBROUTINE
     jsr En_Rope_Think
 
 En_RopeMain: SUBROUTINE
+; update EnSysNX
     lda enNX,x
     sta EnSysNX
     lda enNY,x

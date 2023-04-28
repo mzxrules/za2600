@@ -168,12 +168,45 @@ BANK_12
     INCBIN "world/w0rs.bin"
     INCBIN "world/w0ex.bin"
 
-    repeat 0x77
-    .byte $01
+    repeat 8
+    .byte $01, $02
     repend
-    .byte $00
-    repeat 0x8
+
+    repeat 8
+    .byte $02, $01
+    repend
+
+    repeat 4
+    .byte $01, $02, $02, $01
+    repend
+
+    repeat 4
+    .byte $02, $01, $01, $02
+    repend
+
+    repeat 4
+    .byte $01, $02, $02, $01
+    repend
+
+    repeat 4
+    .byte $02, $01, $01, $02
+    repend
+
+    .byte $01, $02, $01, $01
+    .byte $02, $01, $01, $01
+    .byte $01, $01, $02, $02
+    .byte $02, $02, $01, $01
+
+
+    repeat 3
+    .byte $01, $01
+    repend
+
     .byte $01
+; $77
+    .byte $00
+    repeat 0x4
+    .byte $01, $01
     repend
     LOG_BANK_SIZE "-BANK 12- World 0", BANK_12
 
@@ -191,9 +224,16 @@ BANK_13
     INCBIN "world/w1rs.bin"
     INCBIN "world/w1ex.bin"
 
-    repeat 0x80
-    .byte $02
-    repend
+    .byte $00, $03, $04, $00,  $00, $06, $00, $00,  $00, $03, $03, $00,  $00, $00, $07, $00
+    .byte $04, $00, $05, $07,  $00, $00, $06, $00,  $07, $04, $04, $03,  $07, $00, $03, $00
+    .byte $04, $00, $03, $03,  $06, $03, $03, $02,  $00, $00, $02, $00,  $00, $00, $03, $04
+    .byte $04, $04, $05, $02,  $06, $05, $00, $05,  $00, $00, $00, $04,  $00, $00, $03, $03
+
+ ;                                   v--WALLMASTA
+    .byte $04, $00, $03, $03,  $04, $03, $00, $03,  $00, $02, $03, $04,  $03, $04, $02, $03
+    .byte $05, $04, $03, $01,  $02, $00, $04, $03,  $00, $05, $03, $05,  $05, $05, $03, $04
+    .byte $00, $06, $04, $01,  $06, $04, $04, $00,  $00, $05, $00, $01,  $03, $03, $04, $04
+    .byte $02, $00, $01, $00,  $03, $00, $00, $04,  $00, $00, $06, $03,  $00, $00, $04, $00
 
     LOG_BANK_SIZE "-BANK 13- Dungeon 1", BANK_13
 
@@ -497,8 +537,6 @@ BANK_34
     INCLUDE "en/En_Octorok.asm"
     INCLUDE "en/En_Rope.asm"
 
-    INCLUDE "en/En_BossGohma.asm"
-    INCLUDE "en/EnBoss_Cucco.asm"
 
     LOG_BANK_SIZE "-BANK 34- En1", BANK_34
 
@@ -514,4 +552,6 @@ BANK_35
     INCLUDE "en/En_ItemGet.asm"
     INCLUDE "en/En_Wallmaster.asm"
     INCLUDE "en/En_Test.asm"
+    INCLUDE "en/EnBoss_Cucco.asm"
+    INCLUDE "en/En_BossGohma.asm"
     LOG_BANK_SIZE "-BANK 35- En2", BANK_35

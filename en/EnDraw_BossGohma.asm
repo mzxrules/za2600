@@ -41,8 +41,6 @@ EnDraw_BossGohma: SUBROUTINE
     sta enSpr
     lda #COLOR_EN_TRIFORCE
     sta wEnColor
-    lda #0
-    sta wBgColor
     lda #8
     sta wENH
     rts

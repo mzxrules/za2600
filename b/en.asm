@@ -299,10 +299,12 @@ EnNone:
 ;==============================================================================
 
 EnSysEncounter:
-    .byte EN_NONE, EN_DARKNUT, EN_ROPE, EN_LIKE_LIKE
-    .byte EN_OCTOROK, EN_WALLMASTER, EN_BOSS_GOHMA, EN_TEST
+    .byte EN_NONE, EN_OCTOROK, EN_OCTOROK, EN_ROPE
+    .byte EN_ROPE, EN_DARKNUT, EN_DARKNUT, EN_BOSS_GOHMA
+    .byte EN_WALLMASTER, EN_TEST, EN_LIKE_LIKE
 EnSysEncounterCount:
-    .byte 0, 2, 2, 1
+    .byte 0, 1, 2, 1
+    .byte 2, 1, 2, 1
     .byte 1, 1, 1, 1
 
 EnSystem: SUBROUTINE

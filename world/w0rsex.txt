@@ -198,12 +198,12 @@ Rs_None
 zz0
 Rs_None
 zz0
+Rs_EntCaveCenterWall
+zz7
 Rs_None
 zz0
-Rs_None
-zz0
-Rs_None
-zz0
+Rs_EntCaveCenterWall
+zz4
 Rs_None
 zz0
 Rs_None
@@ -238,8 +238,8 @@ Rs_BlockDiamondStairs
 zz121
 Rs_EntCaveLeft
 Cv_Sword1
-Rs_Item
-GiBoots
+Rs_None
+zz0
 Rs_BlockDiamondStairs
 zz77
 Rs_None

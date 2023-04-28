@@ -206,7 +206,7 @@ Rs_Item
 GiKey
 Rs_Npc
 MesgGameOver
-Rs_None
+Rs_NpcTriforce
 zz0
 Rs_Item
 GiRaft

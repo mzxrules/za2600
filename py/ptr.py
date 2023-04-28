@@ -54,8 +54,8 @@ Entity_Table = [
     "En_Wallmaster",   "SEG_35", "", "EnDraw_Wallmaster",
     "En_Test",         "SEG_35", "", "EnDraw_Darknut",
 
-    "En_BossGohma",    "SEG_34", "", "EnDraw_BossGohma",
-    "EnBoss_Cucco",    "SEG_34", "", "EnDraw_None",
+    "En_BossGohma",    "SEG_35", "", "EnDraw_BossGohma",
+    "EnBoss_Cucco",    "SEG_35", "", "EnDraw_None",
 ]
 
 RoomScript_Table = [
@@ -80,6 +80,7 @@ RoomScript_Table = [
     "Rs_Stairs",              "RsInit_None",
     "Rs_Cave",                "RsInit_None",
     "Rs_GameOver",            "RsInit_None",
+    "Rs_EntCaveCenterWall",   "RsInit_None"
 ]
 
 tbl = [

@@ -334,7 +334,7 @@ PF2Room19:
     .byte $00 ; |........| mirrored
     .byte $7F ; |XXXXXXX.| mirrored
     .byte $7F ; |XXXXXXX.| mirrored
-    .byte $FF ; |XXXXXXXX| mirrored
+    .byte $7F ; |XXXXXXX.| mirrored
     .byte $FF ; |XXXXXXXX| mirrored
     .byte $FF ; |XXXXXXXX| mirrored
     .byte $FF ; |XXXXXXXX| mirrored

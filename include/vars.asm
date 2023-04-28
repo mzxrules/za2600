@@ -205,9 +205,9 @@ enPX        ds 1 ; posX last frame, after collision check
 enPY        ds 1 ; posY last frame, after collision check
     ORG EN_ENEMY_VARIABLES
 ; Octorok
-enTimer     ds 1
-enMDX       ds 1
-enMDY       ds 1
+enOctorokThink  ds 2
+enMDX           ds 1
+enMDY           ds 1
     ORG EN_ENEMY_VARIABLES
 ; LikeLike
 enLLTimer   ds 1
