@@ -1,6 +1,7 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
+EN_ROPE_ATTACK = $40
 
 En_Rope: SUBROUTINE
     lda #EN_ROPE_MAIN
@@ -13,6 +14,7 @@ En_Rope: SUBROUTINE
     lda #-12
     sta enRopeTimer,x
 
+; target next
     lda en0X,x
     lsr
     lsr
@@ -21,6 +23,8 @@ En_Rope: SUBROUTINE
     lsr
     lsr
     sta enNY,x
+
+    jsr En_Rope_Think
 
 En_RopeMain: SUBROUTINE
     lda enNX,x
@@ -33,8 +37,18 @@ En_RopeMain: SUBROUTINE
     cmp #1
     adc #0
     sta enStun,x
-;    lda #$F0
-;    jsr EnSetBlockedDir
+
+; update attack timer
+    lda enRopeTimer,x
+    cmp #1
+    adc #0
+    sta enRopeTimer,x
+
+; update think timer
+    lda enRopeThink,x
+    cmp #1
+    adc #0
+    sta enRopeThink,x
 
 .checkDamaged
 ; if collided with weapon && stun == 0,
@@ -79,109 +93,122 @@ En_RopeMain: SUBROUTINE
     jsr UPDATE_PL_HEALTH
 .endCheckHit
 
-    rts
-
-
-
+; Movement
     ldx enNum
 
+    lda enNX,x
+    asl
+    asl
+    cmp en0X,x
+    bne .move
+    lda enNY,x
+    asl
+    asl
+    cmp en0Y,x
+    bne .move
+
+.solveNextDirection
+
+; What's the plan, snake man?
+    lda #$00
+    jsr EnSetBlockedDir2
+
     lda enState,x
-    and #$40
-    bne .checkBlocked
+    and #EN_ROPE_ATTACK
+    bne .tryContMoveDir
+
     lda enRopeTimer,x
-    cmp #1
-    adc #0
-    sta enRopeTimer,x
-    bne .checkBlocked
+    bne .tryContMoveDir
+
+; try to attack
 .tryAttackX
     lda plX
     lsr
-    sta Temp0
-    lda en0X,x
     lsr
-    cmp Temp0
+    cmp enNX,x
     bne .tryAttackY
-    jmp .tryAttackY ; TODO: FIX
-    asl
-    sta en0X,x
-    jsr SeekDir
-    sty enDir
-    lda #$40 ; #EN_ROPE_ATTACK
-    sta enState
-    jmp .checkBlocked
+    ldy #EN_DIR_U
+    lda plY
+    cmp en0Y,x
+    bpl .setAttackDir
+    ldy #EN_DIR_D
+    bpl .setAttackDir ; always branch
+
 .tryAttackY
     lda plY
     lsr
-    sta Temp0
-    lda en0Y,x
     lsr
-    cmp Temp0
-    bne .checkBlocked
-    jmp .checkBlocked ; TODO: FIX
-    asl
-    sta en0Y,x
-    jsr SeekDir
-    stx enDir
-    lda #$40
-    sta enState
-    jmp .checkBlocked
+    cmp enNY,x
+    bne .testThink
+    ldy #EN_DIR_R
+    lda plX
+    cmp en0X,x
+    bpl .setAttackDir
+    ldy #EN_DIR_L
+    bpl .setAttackDir ; always branch
 
+.setAttackDir
+    sty enDir,x
+    lda #EN_ROPE_ATTACK
+    sta enState,x
+    bpl .tryContMoveDir
 
-.checkBlocked
-    jmp .endCheckBlocked ; TODO: FIX
-    lda enBlockDir
-    ldx enDir
-    and Bit8,x
-    beq .endCheckBlocked
-    jsr NextDir
-    lda enState
-    and #~$40
-    sta enState
+.testThink
+    lda enRopeThink,x
+    beq .newDir
+
+.tryContMoveDir ; We want to continue moving in the current direction
+    ;lda EnSysBlockedDir
+    ;sta Temp0
+
+    jsr TestCurDir
+    beq .hitWall
+    ldx enNum
+    bpl .move
+.hitWall
+.newDir
+    ; hit a wall or something, so reset
+    jsr NextDir2
+
+    ldx enNum
+    lda enNextDir
+    sta enDir,x
+
+    lda enState,x
+    and #EN_ROPE_ATTACK
+    beq .skipResetAttack
+    lda #0
+    sta enState,x
     lda #-12
-    sta enRopeTimer
-    jmp .move
-.endCheckBlocked
+    sta enRopeTimer,x
+.skipResetAttack
+    jsr En_Rope_Think
+
 
 .move
-    ldy enNum
+    lda enState,x
+    and #EN_ROPE_ATTACK
+    bne .moveNow
 
-    lda enState,y
-    and #$40
-    beq .checkMove
-; Fast move
-    ldx enDir,y
-    jsr EnMoveDirDel
-.checkMove
     lda Frame
     and #1
-    beq .clampPos
+    beq .rts
 .moveNow
-    ldx enDir,y
-    jsr EnMoveDirDel
+    ldy enDir,x
+    jsr EnMoveDirDel2
 
-; Since we're potentially moving 2 pixels per frame, clamp enX/enY
-.clampPos
-    ldx enNum
-; left/right
-    lda #EnBoardXR
-    cmp en0X,x
-    bpl .left
-    sta en0X,x
-.left
-    lda #EnBoardXL
-    cmp en0X,x
-    bmi .up
-    sta en0X,x
-.up
-    lda #EnBoardYU
-    cmp en0Y,x
-    bpl .down
-    sta en0Y,x
-.down
-    ldx #EnBoardYD
-    cmp en0Y,x
-    bmi .rts
-    sta en0Y,x
 .rts
+    ldx enNum
+    lda EnSysNX
+    sta enNX,x
+    lda EnSysNY
+    sta enNY,x
+    rts
+
+En_Rope_Think: SUBROUTINE
+    lda Rand16
+    and #$1F
+    adc #$C0
+    sta enRopeThink,x
     rts
     LOG_SIZE "En_Rope", En_Rope

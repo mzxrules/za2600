@@ -17,6 +17,7 @@ zelda_dep := main.asm \
   gen/ms_header.asm \
   gen/bitcount.asm \
   gen/spr_tri.asm \
+  gen/editor_color.txt \
 
 all: $(output_bin)
 

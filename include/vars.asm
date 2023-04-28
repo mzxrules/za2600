@@ -214,6 +214,7 @@ enLLTimer   ds 1
     ORG EN_ENEMY_VARIABLES
 ; Rope
 enRopeTimer ds 2
+enRopeThink ds 2
     ORG EN_ENEMY_VARIABLES
 ; Gohma
 ;enState     ds 1
@@ -319,7 +320,7 @@ EnSysSpawnTry   ds 1
 EnSysNext       ds 1
 EnSysClearOff   ds 1 ; offset to byte that room clear is stored at
 EnSysClearMask  ds 1 ; stores bitmask for room clear flag
-enBlockDir      ds 1 ; blocked direction
+EnSysBlockedDir ds 1 ; blocked direction
 enNextDir       ds 1
 EN_BLOCKDIR_L = 1
 EN_BLOCKDIR_R = 2

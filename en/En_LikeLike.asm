@@ -74,7 +74,7 @@ En_LikeLikeMain: SUBROUTINE
     ; Movement Routine
     lda #$F0
     jsr EnSetBlockedDir
-    lda enBlockDir
+    lda EnSysBlockedDir
     ldx enDir
     and Bit8,x
     beq .endCheckBlocked

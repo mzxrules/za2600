@@ -35,7 +35,7 @@ En_OctorokMain:
 .checkBlocked
     lda #$F0
     jsr EnSetBlockedDir
-    lda enBlockDir
+    lda EnSysBlockedDir
     ldx enDir
     and Bit8,x
     beq .endCheckBlocked

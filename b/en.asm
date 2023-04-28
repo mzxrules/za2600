@@ -66,7 +66,7 @@ NextDir: SUBROUTINE
     tax
 .nextLoop
     inx
-    lda enBlockDir,y
+    lda EnSysBlockedDir,y
     and Lazy8,x
     bne .nextLoop
     txa
@@ -75,29 +75,41 @@ NextDir: SUBROUTINE
 */
     rts
 
-NextDir2: SUBROUTINE
 
 EnSetBlockedDir2: SUBROUTINE
-    ldx EnSysNX
-    cpx #[EnBoardXR/4]
+    ldy EnSysNX
+    cpy #[EnBoardXR/4]
     bne .setBlockedL
     ora #EN_BLOCKDIR_R
 .setBlockedL
-    cpx #[EnBoardXL/4]
+    cpy #[EnBoardXL/4]
     bne .setBlockedD
     ora #EN_BLOCKDIR_L
 .setBlockedD
-    ldx EnSysNY
-    cpx #[EnBoardYD/4]
+    ldy EnSysNY
+    cpy #[EnBoardYD/4]
     bne .setBlockedU
     ora #EN_BLOCKDIR_D
 .setBlockedU
-    cpx #[EnBoardYU/4]
+    cpy #[EnBoardYU/4]
     bne .checkPFHit
     ora #EN_BLOCKDIR_U
 .checkPFHit
-    sta enBlockDir
+    sta EnSysBlockedDir
+    rts
 
+TestCurDir: SUBROUTINE
+    lda enDir,x
+    sta enNextTemp
+    tay
+    iny
+    tya
+    and #3
+    sta enNextTemp2
+    lda enDir,x
+    bpl .firstGo ; jmp
+
+NextDir2:
     jsr Random
     and #3
     sta enNextTemp
@@ -113,7 +125,7 @@ EnSetBlockedDir2: SUBROUTINE
 
 .firstGo
     tax
-    lda enBlockDir
+    lda EnSysBlockedDir
     and Lazy8,x
     bne .checkLoop
     ldx EnSysNX
@@ -202,10 +214,10 @@ SeekDir: SUBROUTINE
 .checkAxis
     sta Temp1
     stx enDir
-    lda enBlockDir
+    lda EnSysBlockedDir
     and Bit8,x
     bne .storeY
-    lda enBlockDir
+    lda EnSysBlockedDir
     and Bit8,y
     bne .rts
     lda Temp1

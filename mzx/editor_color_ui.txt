@@ -1,4 +1,4 @@
-. "initialize static ui
+. "initialize static ui"
 char (32)
 loop start
 set "local2" "loopcount"

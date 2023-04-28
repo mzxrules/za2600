@@ -110,6 +110,7 @@ En_DarknutMain:
     bne .move
 
     lda #$00
+    jsr EnSetBlockedDir2
     jsr NextDir2
     beq .rts
     ldx enNum
@@ -129,6 +130,5 @@ En_DarknutMain:
     sta enNX,x
     lda EnSysNY
     sta enNY,x
-
     rts
     LOG_SIZE "En_Darknut", En_Darknut
