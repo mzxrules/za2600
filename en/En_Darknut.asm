@@ -31,23 +31,23 @@ En_DarknutMain:
     adc #0
     sta enStun,x
 
-    ldy enNum
 
 .checkDamaged
 ; if collided with weapon && stun == 0,
-    lda enStun,y
+    lda enStun,x
     bne .endCheckDamaged
     lda #SLOT_BATTLE
     sta BANK_SLOT
+    ldy enNum
     jsr HbGetPlAtt
     jsr HbPlAttCollide_EnBB
 
 ; Get damage
     ldx HbDamage
     lda EnDam_Darknut,x
-    sta enDarknutTemp
+    sta Temp0
 
-    lda #SLOT_MAIN
+    lda #SLOT_EN_A
     sta BANK_SLOT
     lda HbFlags
     beq .endCheckDamaged
@@ -70,10 +70,10 @@ En_DarknutMain:
     bne .defSfx
     ; Bomb hit shield
     lda #-2
-    sta enDarknutTemp
+    sta Temp0
 
 .gethit
-    lda enDarknutTemp ; fetch damage
+    lda Temp0 ; fetch damage
     ldx #-32
     stx enStun,y
     clc

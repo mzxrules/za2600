@@ -4,50 +4,65 @@
 
 En_Rope: SUBROUTINE
     lda #EN_ROPE_MAIN
-    sta enType
+    sta enType,x
     jsr Random
     and #3
-    sta enDir
+    sta enDir,x
     lda #1 -1
-    sta enHp
+    sta enHp,x
     lda #-12
-    sta enRopeTimer
+    sta enRopeTimer,x
+
+    lda en0X,x
+    lsr
+    lsr
+    sta enNX,x
+    lda en0Y,x
+    lsr
+    lsr
+    sta enNY,x
 
 En_RopeMain: SUBROUTINE
+    lda enNX,x
+    sta EnSysNX
+    lda enNY,x
+    sta EnSysNY
+
 ; update stun timer
-    lda enStun
+    lda enStun,x
     cmp #1
     adc #0
-    sta enStun
-    lda #$F0
-    jsr EnSetBlockedDir
+    sta enStun,x
+;    lda #$F0
+;    jsr EnSetBlockedDir
 
 .checkDamaged
 ; if collided with weapon && stun == 0,
-    lda enStun
+    lda enStun,x
     bne .endCheckDamaged
-
     lda #SLOT_BATTLE
     sta BANK_SLOT
+    ldy enNum
     jsr HbGetPlAtt
     jsr HbPlAttCollide_EnBB
 
 ; Get damage
     ldx HbDamage
     lda EnDam_Rope,x
-    tay
+    sta Temp0
 
-    lda #SLOT_MAIN
+    lda #SLOT_EN_A
     sta BANK_SLOT
     lda HbFlags
     beq .endCheckDamaged
 
-    tya
+.gethit
+    lda Temp0 ; fetch damage
     ldx #-32
-    stx enStun
+    stx enStun,y
     clc
-    adc enHp
-    sta enHp
+    adc enHp,y
+    sta enHp,y
     bpl .endCheckDamaged
     jmp EnSysEnDie
 .defSfx
@@ -56,7 +71,7 @@ En_RopeMain: SUBROUTINE
 .endCheckDamaged
 
 ; Check player hit
-    bit enStun
+    lda enStun,y
     bmi .endCheckHit
     bit CXPPMM
     bpl .endCheckHit
@@ -64,23 +79,31 @@ En_RopeMain: SUBROUTINE
     jsr UPDATE_PL_HEALTH
 .endCheckHit
 
-    bit enState
-    bvs .checkBlocked
-    lda enRopeTimer
+    rts
+
+
+
+    ldx enNum
+
+    lda enState,x
+    and #$40
+    bne .checkBlocked
+    lda enRopeTimer,x
     cmp #1
     adc #0
-    sta enRopeTimer
+    sta enRopeTimer,x
     bne .checkBlocked
 .tryAttackX
     lda plX
     lsr
     sta Temp0
-    lda enX
+    lda en0X,x
     lsr
     cmp Temp0
     bne .tryAttackY
+    jmp .tryAttackY ; TODO: FIX
     asl
-    sta enX
+    sta en0X,x
     jsr SeekDir
     sty enDir
     lda #$40 ; #EN_ROPE_ATTACK
@@ -90,12 +113,13 @@ En_RopeMain: SUBROUTINE
     lda plY
     lsr
     sta Temp0
-    lda enY
+    lda en0Y,x
     lsr
     cmp Temp0
     bne .checkBlocked
+    jmp .checkBlocked ; TODO: FIX
     asl
-    sta enY
+    sta en0Y,x
     jsr SeekDir
     stx enDir
     lda #$40
@@ -104,6 +128,7 @@ En_RopeMain: SUBROUTINE
 
 
 .checkBlocked
+    jmp .endCheckBlocked ; TODO: FIX
     lda enBlockDir
     ldx enDir
     and Bit8,x
@@ -118,41 +143,45 @@ En_RopeMain: SUBROUTINE
 .endCheckBlocked
 
 .move
-    bit enState
-    bvc .checkMove
+    ldy enNum
+
+    lda enState,y
+    and #$40
+    beq .checkMove
 ; Fast move
-    ldx enDir
+    ldx enDir,y
     jsr EnMoveDirDel
 .checkMove
     lda Frame
     and #1
     beq .clampPos
 .moveNow
-    ldx enDir
+    ldx enDir,y
     jsr EnMoveDirDel
 
 ; Since we're potentially moving 2 pixels per frame, clamp enX/enY
 .clampPos
+    ldx enNum
 ; left/right
-    ldx #EnBoardXR
-    cpx enX
+    lda #EnBoardXR
+    cmp en0X,x
     bpl .left
-    stx enX
+    sta en0X,x
 .left
-    ldx #EnBoardXL
-    cpx enX
+    lda #EnBoardXL
+    cmp en0X,x
     bmi .up
-    stx enX
+    sta en0X,x
 .up
-    ldx #EnBoardYU
-    cpx enY
+    lda #EnBoardYU
+    cmp en0Y,x
     bpl .down
-    stx enY
+    sta en0Y,x
 .down
     ldx #EnBoardYD
-    cpx enY
+    cmp en0Y,x
     bmi .rts
-    stx enY
+    sta en0Y,x
 .rts
     rts
     LOG_SIZE "En_Rope", En_Rope

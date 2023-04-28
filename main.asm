@@ -478,7 +478,7 @@ BANK_32
 ; ****************************************
     SEG Bank33
     ORG $8400
-    RORG $FC00
+    RORG $F000
 
 BANK_33
     INCLUDE "b/battle.asm"
