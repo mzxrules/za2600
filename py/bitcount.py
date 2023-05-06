@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 from asmgen import ToAsm, ToAsmD
 
+EN_DIR_L = 0
+EN_DIR_R = 1
+EN_DIR_U = 2
+EN_DIR_D = 3
+
 ROOM_PX_HEIGHT = 20
 
 HITBOX_INFO = [
@@ -76,6 +81,42 @@ def get_room_px_check():
         file.write("room_col8_off:\n")
         file.write(ToAsm(offset_pattern))
 
+def get_randdir_lut():
+    # Generates a 24 byte LUT that functions as such:
+    # xxx11 = First pick of 4 EN_DIR direction
+    # xx1xx = Permutation pattern
+    # 11xxx = index into permutation pattern
+    lut = [0] * 24
+    dir = [EN_DIR_L, EN_DIR_R, EN_DIR_U, EN_DIR_D]
+    select = [
+        [EN_DIR_R, EN_DIR_U, EN_DIR_D],
+        [EN_DIR_L, EN_DIR_U, EN_DIR_D],
+        [EN_DIR_L, EN_DIR_R, EN_DIR_D],
+        [EN_DIR_L, EN_DIR_R, EN_DIR_U],
+        ]
+    permutations = [
+    [0, 1, 2],
+    #[1, 2, 0],
+    #[2, 0, 1],
+
+    [0, 2, 1],
+    #[1, 0, 2],
+    #[2, 1, 0]
+    ]
+
+    for j in range(0,2):
+        perm = permutations[j]
+        for i in range(0,4):
+            possibleNext = select[i]
+            for k in range(0,3):
+
+                index = (k * 8) + (j * 4) + i
+
+                lut[index] = possibleNext[perm[k]]
+    with open(f'gen/nextdir.asm', "w") as file:
+        file.write("nextdir_lut:\n")
+        file.write(ToAsm(lut,4))
+
 
 def get_bitcount():
     table = []
@@ -111,6 +152,7 @@ roomHeight, roomHeight8 = get_roomheight()
 
 get_hitbox_info()
 get_room_px_check()
+get_randdir_lut()
 
 with open(f'gen/bitcount.asm', "w") as file:
     file.write(bitcountOut)

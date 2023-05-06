@@ -154,6 +154,10 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     sta roomFlags
 .endSwapRoom
 
+;==============================================================================
+; Perform Player PF Collision Detection
+;==============================================================================
+
 ; Check Warp in
     lda plState2
     and #PS_ACTIVE_ITEM
@@ -164,9 +168,6 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     jmp endPFCollision
 .runCollision
 
-;==============================================================================
-; Perform PF Collision Detection
-;==============================================================================
     ldy #0 ; PFCollision
     lda plState
     and #~PS_LOCK_AXIS
@@ -215,11 +216,8 @@ PFCollision: SUBROUTINE
     cpx #EnBoardYU+1
     bpl .collisionPosReset
 
-    ; If entity, skip collision
-    cpy #1
-    beq .SkipPFCollision
 
-    ; Else check if RF_PF_AXIS should be in effect for the player
+    ; Check if RF_PF_AXIS should be in effect for the player
     bit RF_PF_AXIS
     beq .SkipPFCollision ; branch on RF_PF_IGNORE
     bit CXP0FB
@@ -233,7 +231,7 @@ PFCollision: SUBROUTINE
     bne .SkipPFCollision ; branch always
 
 .collisionPosReset
-    lda CXP0FB ; CXP1FB
+    lda CXP0FB
     and #$C0
     beq .SkipPFCollision
 
@@ -252,11 +250,8 @@ endPFCollision
     sta BANK_SLOT
     lda #SLOT_EN_B
     sta BANK_SLOT
-.ClearDropSystem:
+.ClearDrop_EnSystem:
     jsr ClearDropSystem
-
-.EnSystem:
-    jsr EnSystem
 
 .RoomScript:
     lda #SLOT_RS_A
@@ -280,7 +275,6 @@ endPFCollision
     lda #SLOT_EN_A
     sta BANK_SLOT
     jsr EnSysCleanShift
-
 
 .Missile:
     lda #SLOT_RS_A

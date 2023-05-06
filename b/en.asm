@@ -80,67 +80,115 @@ EnSetBlockedDir2: SUBROUTINE
     ldy EnSysNX
     cpy #[EnBoardXR/4]
     bne .setBlockedL
-    ora #EN_BLOCKDIR_R
+    ora #EN_BLOCKED_DIR_R
 .setBlockedL
     cpy #[EnBoardXL/4]
     bne .setBlockedD
-    ora #EN_BLOCKDIR_L
+    ora #EN_BLOCKED_DIR_L
 .setBlockedD
     ldy EnSysNY
     cpy #[EnBoardYD/4]
     bne .setBlockedU
-    ora #EN_BLOCKDIR_D
+    ora #EN_BLOCKED_DIR_D
 .setBlockedU
     cpy #[EnBoardYU/4]
     bne .checkPFHit
-    ora #EN_BLOCKDIR_U
+    ora #EN_BLOCKED_DIR_U
 .checkPFHit
     sta EnSysBlockedDir
     rts
 
+;==============================================================================
+; Tests if entity can move in current cardinal direction
+; returns A != 0 if not blocked
+; enNextDir returns tested direction
+; Clobbers X, Y registers
+;==============================================================================
 TestCurDir: SUBROUTINE
+    lda #0
+    sta EnSysNextDirCount
     lda enDir,x
-    sta enNextTemp
-    tay
-    iny
-    tya
-    and #3
-    sta enNextTemp2
-    lda enDir,x
+    sta enNextDir
     bpl .firstGo ; jmp
 
-NextDir2:
+;==============================================================================
+; Randomly selects a new cardinal direction that is not enNextDir
+; returns A != 0 if not blocked
+; enNextDir returns new direction
+; Clobbers X, Y registers
+;==============================================================================
+NextDir3:
+    lda #2
+    sta EnSysNextDirCount
     jsr Random
+    ldy #0
+    cmp #$55
+    bcc .select3
+    iny
+    cmp #$AA
+    bcc .select3
+    iny
+.select3
+    and #4
+    ora Mul8,y
+    ora enNextDir
+    bpl .nextDir3Entry
+
+;==============================================================================
+; Randomly selects a new cardinal direction
+; returns A != 0 if not blocked
+; enNextDir returns new direction
+; Clobbers X, Y registers
+;==============================================================================
+NextDir4:
+    lda #3
+    sta EnSysNextDirCount
+    jsr Random
+    ldy #0
+    cmp #$55
+    bcc .select
+    iny
+    cmp #$AA
+    bcc .select
+    iny
+.select
+    and #7
+    ora Mul8,y
+    sta EnSysNextDirSeed
     and #3
-    sta enNextTemp
-    sta enNextTemp2
+    sta enNextDir
     bpl .firstGo
 
 .checkLoop
-    inc enNextTemp
-    lda enNextTemp
-    and #3
-    cmp enNextTemp2
-    beq .miss
+    dec EnSysNextDirCount
+    bmi .miss
+    lda EnSysNextDirSeed
+    sec
+    sbc #8
+    bpl .continue
+    adc #24
+.continue
+.nextDir3Entry
+    sta EnSysNextDirSeed
+    tax
+    lda nextdir_lut,x
+    sta enNextDir
 
 .firstGo
-    tax
-    lda EnSysBlockedDir
-    and Lazy8,x
-    bne .checkLoop
     ldx EnSysNX
     ldy EnSysNY
-    lda enNextTemp
-    and #3
+    lda enNextDir
     bne .check_1
 
-.EN_BLOCKDIR_L
+.EN_DIR_L
+    lda EnSysBlockedDir
+    and Lazy8 + EN_DIR_L
+    bne .checkLoop
+
     dex
     jsr CheckRoomCol_XA
     bne .checkLoop
     dec EnSysNX
-    lda #EN_DIR_L
-    sta enNextDir
     lda #1
     rts
 
@@ -148,12 +196,15 @@ NextDir2:
     cmp #EN_DIR_R
     bne .check_2
 .EN_DIR_R
+    lda EnSysBlockedDir
+    and Lazy8 + EN_DIR_R
+    bne .checkLoop
+
     inx
     jsr CheckRoomCol_XA
     bne .checkLoop
     inc EnSysNX
-    lda #EN_DIR_R
-    sta enNextDir
+    lda #1
     rts
 
 .check_2
@@ -161,21 +212,27 @@ NextDir2:
     bne .EN_DIR_D
 
 .EN_DIR_U
+    lda EnSysBlockedDir
+    and Lazy8 + EN_DIR_U
+    bne .checkLoop
+
     iny
     jsr CheckRoomCol_XA
     bne .checkLoop
     inc EnSysNY
-    lda #EN_DIR_U
-    sta enNextDir
+    lda #1
     rts
 
 .EN_DIR_D
+    lda EnSysBlockedDir
+    and Lazy8 + EN_DIR_D
+    bne .checkLoop
+
     dey
     jsr CheckRoomCol_XA
     bne .checkLoop
     dec EnSysNY
-    lda #EN_DIR_D
-    sta enNextDir
+    lda #1
     rts
 
 .miss
@@ -231,29 +288,29 @@ SeekDir: SUBROUTINE
     rts
 
 ;==============================================================================
-; Updates enemy's enBlockDir flags
+; Updates enemy's enBlockedDir flags
 ; A = flag reset mask. Set to $F0 to reset blocked direction flags
 ;==============================================================================
 EnSetBlockedDir: SUBROUTINE
 /*
-    and enBlockDir,y
+    and enBlockedDir,y
     ldx enX
     cpx #EnBoardXR
     bne .setBlockedL
-    ora #EN_BLOCKDIR_R
+    ora #EN_BLOCKED_DIR_R
 .setBlockedL
     cpx #EnBoardXL
     bne .setBlockedD
-    ora #EN_BLOCKDIR_L
+    ora #EN_BLOCKED_DIR_L
 .setBlockedD
     ldx enY
     cpx #EnBoardYD
     bne .setBlockedU
-    ora #EN_BLOCKDIR_D
+    ora #EN_BLOCKED_DIR_D
 .setBlockedU
     cpx #EnBoardYU
     bne .checkPFHit
-    ora #EN_BLOCKDIR_U
+    ora #EN_BLOCKED_DIR_U
 
 .checkPFHit
     bit CXP1FB
@@ -263,7 +320,7 @@ EnSetBlockedDir: SUBROUTINE
     ldx enDir,y
     ora Bit8,x
 .setBlockDir
-    sta enBlockDir,y
+    sta enBlockedDir,y
 */
     rts
 
@@ -307,10 +364,31 @@ EnSysEncounterCount:
     .byte 2, 1, 2, 1
     .byte 1, 1, 1, 1
 
+ClearDropSystem: SUBROUTINE
+    lda enType
+    bne .ClearDropSystem_rts
+    lda roomFlags
+    and #RF_EV_ENCLEAR | #RF_EV_CLEAR
+    beq .ClearDropSystem_rts
+
+    ldy #EN_CLEAR_DROP
+    sty enType
+    ldx #0
+    stx enState
+    stx cdBTimer
+    stx cdAType
+    stx cdBType
+
+    and #RF_EV_ENCLEAR
+    beq .ClearDropSystem_rts
+    dec cdBType ; CD_ITEM_RAND
+
+.ClearDropSystem_rts
+
 EnSystem: SUBROUTINE
-    ; precompute room clear flag helpers because it's annoying
     lda roomId
     bmi .rts
+    ; precompute room clear flag helpers because it's annoying
     lsr
     lsr
     lsr
@@ -505,26 +583,4 @@ EnMoveDirDel2:
     pha
     lda EnMoveDirL,y
     pha
-    rts
-
-ClearDropSystem: SUBROUTINE
-    lda enType
-    bne .rts
-    lda roomFlags
-    and #RF_EV_ENCLEAR | #RF_EV_CLEAR
-    beq .rts
-
-    ldy #EN_CLEAR_DROP
-    sty enType
-    ldx #0
-    stx enState
-    stx cdBTimer
-    stx cdAType
-    stx cdBType
-
-    and #RF_EV_ENCLEAR
-    beq .rts
-    dec cdBType ; CD_ITEM_RAND
-
-.rts
     rts

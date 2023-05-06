@@ -352,6 +352,7 @@ BANK_21
 BANK_22
     INCLUDE "gen/Entity.asm"
     INCLUDE "gen/Entity_bank.asm"
+    INCLUDE "gen/nextdir.asm"
     INCLUDE "gen/EnMoveDir.asm"
     INCLUDE "gen/roomcollision.asm"
     INCLUDE "b/en.asm"
@@ -555,3 +556,9 @@ BANK_35
     INCLUDE "en/EnBoss_Cucco.asm"
     INCLUDE "en/En_BossGohma.asm"
     LOG_BANK_SIZE "-BANK 35- En2", BANK_35
+
+; End
+
+    ORG $8FFF
+    RORG $FFFF
+    .byte 0

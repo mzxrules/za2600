@@ -51,9 +51,9 @@ Darknut Logic:
 
 Directions LRUD, opposes player directions
 States:
-enStun      ds 1 (non-zero = can't take damage)
-enRecoil    ds 1 (non-zero = recoiling)
-enBlockDir  ds 1 UDLR
+enStun          ds 1 (non-zero = can't take damage)
+enRecoil        ds 1 (non-zero = recoiling)
+enBlockedDir    ds 1 UDLR
 
 
 if collided with pf,

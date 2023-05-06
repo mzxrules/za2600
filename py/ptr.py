@@ -31,6 +31,8 @@ class GameEnum:
     def EnumFunc(self, x):
         if self.name == "Sfx":
             return 0x81 + x
+        if self.name == "EnBlockedDir":
+            return 1 << x
         return x
 
 Entity_Table = [
@@ -254,6 +256,17 @@ tbl = [
         "EnDirR",
         "EnDirU",
         "EnDirD"
+    ],
+    bankLut=None),
+    GameEnum("EnBlockedDir", "EnBlockedDir",
+    genEditorBindings=False,
+    genPtrTable=False,
+    genConstants=True,
+    vals=[
+        "EnBlockedDirL",
+        "EnBlockedDirR",
+        "EnBlockedDirU",
+        "EnBlockedDirD"
     ],
     bankLut=None),
     GameEnum("Messages", "Mesg",

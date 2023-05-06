@@ -2,27 +2,24 @@
 ; mzxrules 2021
 ;==============================================================================
 EN_OCTOROK_SPIN = $08
-EN_OCTOROK_COMMON = $80
+EN_OCTOROK_RARE = $80
 En_Octorok: SUBROUTINE
     lda #EN_OCTOROK_MAIN
     sta enType,x
     jsr Random
 
-    ;and #$7F
-    ;ora #$10
-    ;sta enOctorokThink,x
     and #3
     sta enDir,x
     sta enState,x
     lda Rand16
     and #7
-    beq .rareType
+    bne .commonType
 
     lda enState,x
-    ora #EN_OCTOROK_COMMON
+    ora #EN_OCTOROK_RARE
     sta enState,x
 
-.rareType
+.commonType
     lda #2 -1
     sta enHp,x
 
@@ -51,12 +48,6 @@ En_OctorokMain:
     cmp #1
     adc #0
     sta enStun,x
-
-; update think timer
-    lda enOctorokThink,x
-    cmp #1
-    adc #0
-    sta enOctorokThink,x
 
 
 .checkDamaged
@@ -122,7 +113,6 @@ En_OctorokMain:
     cmp en0Y,x
     bne .move
 
-
 .solveNextDirection
 
     lda #$00
@@ -133,13 +123,13 @@ En_OctorokMain:
     beq .newDir
 
     jsr TestCurDir
-    beq .hitWall
-    ldx enNum
-    bpl .move
-.hitWall
-.newDir
+    bne .move_ldx
+    jsr NextDir3
+    bpl .newDir_3
 
-    jsr NextDir2
+.newDir
+    jsr NextDir4
+.newDir_3
     ldx enNum
 
     jsr En_Octorok_Think
@@ -155,15 +145,25 @@ En_OctorokMain:
     sta enState,x
     jmp .rts ;
 
+.move_ldx
+    ldx enNum
 .move
     lda enState,x
     rol
     rol
+    rol
+    ora #1
     and Frame
-    and #1
-    bne .rts
+    and #3
+    beq .rts
     ldy enDir,x
     jsr EnMoveDirDel2
+
+; update think timer
+    lda enOctorokThink,x
+    cmp #1
+    adc #0
+    sta enOctorokThink,x
     jmp .rts
 
 
@@ -215,16 +215,9 @@ En_OctorokMain:
 */
 
 En_Octorok_Think: SUBROUTINE
-    lda enState,x
-    sta Temp0
     lda Rand16
     and #$1F
-    adc #$C0
-    bit Temp0
-    bmi .skipShift
-    sec
-    ror
-.skipShift
+    adc #$D8
     sta enOctorokThink,x
     rts
 

@@ -169,7 +169,7 @@ En_RopeMain: SUBROUTINE
 .hitWall
 .newDir
     ; hit a wall or something, so reset
-    jsr NextDir2
+    jsr NextDir4
 
     ldx enNum
     lda enNextDir

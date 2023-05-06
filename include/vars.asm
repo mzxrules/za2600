@@ -322,12 +322,8 @@ EnSysClearOff   ds 1 ; offset to byte that room clear is stored at
 EnSysClearMask  ds 1 ; stores bitmask for room clear flag
 EnSysBlockedDir ds 1 ; blocked direction
 enNextDir       ds 1
-EN_BLOCKDIR_L = 1
-EN_BLOCKDIR_R = 2
-EN_BLOCKDIR_U = 4
-EN_BLOCKDIR_D = 8
-enNextTemp      ds 1
-enNextTemp2     ds 1
+EnSysNextDirSeed    ds 1
+EnSysNextDirCount   ds 1
 EnSysNX         ds 1
 EnSysNY         ds 1
 
@@ -533,6 +529,7 @@ DEG_270         = DEG_090 | ATAN2_SIGNY
 ROOM_MAZE_1 = $1B
 ROOM_MAZE_2 = $61
 
+; Segment Constants
 RAMSEG_F0 = $00
 RAMSEG_F4 = $40
 RAMSEG_F8 = $80

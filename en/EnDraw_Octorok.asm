@@ -30,6 +30,6 @@ EnDraw_Octorok: SUBROUTINE
     rts
 
 EnDraw_OctorokColors
-    .byte COLOR_EN_ROK_BLUE, COLOR_EN_RED
+    .byte COLOR_EN_RED, COLOR_EN_ROK_BLUE
 
     LOG_SIZE "EnDraw_Octorok", EnDraw_Octorok

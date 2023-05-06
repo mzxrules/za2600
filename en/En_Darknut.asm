@@ -111,7 +111,7 @@ En_DarknutMain:
 
     lda #$00
     jsr EnSetBlockedDir2
-    jsr NextDir2
+    jsr NextDir4
     beq .rts
     ldx enNum
     lda enNextDir
