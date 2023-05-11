@@ -249,9 +249,9 @@ Rs_BlockDiamondStairs: SUBROUTINE
     rts
 
 Rs_EntCaveWallCenterBlocked: SUBROUTINE
-    rts
-
-Rs_EntCaveWallLeftBlocked: SUBROUTINE
+    ldx #RS_ENT_CAVE_WALL_CENTER
+    bne .main
+Rs_EntCaveWallLeftBlocked:
     ldx #RS_ENT_CAVE_WALL_LEFT
     bne .main
 Rs_EntCaveWallRightBlocked:
@@ -279,8 +279,17 @@ Rs_EntCaveWallRightBlocked:
 
     lda #$F3
     cpx #RS_ENT_CAVE_WALL_LEFT
-    bne .right
+    beq .left
+    cpx #RS_ENT_CAVE_WALL_RIGHT
+    beq .right
+    lda #$7F
 
+    sta wPF2Room + 12
+    sta wPF2Room + 13
+    sta wPF2Room + 14
+    rts
+
+.left
     sta wPF1RoomL + 12
     sta wPF1RoomL + 13
     sta wPF1RoomL + 14

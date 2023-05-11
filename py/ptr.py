@@ -68,7 +68,7 @@ RoomScript_Table = [
     "Rs_EntCaveWallLeft",           "RsInit_None",
     "Rs_EntCaveWallLeftBlocked",    "RsInit_EntCaveWallLeftBlocked",
     "Rs_EntCaveWallCenter",         "RsInit_None",
-    "Rs_EntCaveWallCenterBlocked",  "RsInit_None",
+    "Rs_EntCaveWallCenterBlocked",  "RsInit_EntCaveWallCenterBlocked",
     "Rs_EntCaveWallRight",          "RsInit_None",
     "Rs_EntCaveWallRightBlocked",   "RsInit_EntCaveWallRightBlocked",
     "Rs_EntCaveMid",                "RsInit_None",

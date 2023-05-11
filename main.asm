@@ -473,6 +473,7 @@ BANK_29
     INCLUDE "rs/RsInit_BlockCentral.asm"
     INCLUDE "rs/RsInit_BlockDiamondStairs.asm"
     INCLUDE "rs/RsInit_EntCaveWallLeftBlocked.asm"
+    INCLUDE "rs/RsInit_EntCaveWallCenterBlocked.asm"
     INCLUDE "rs/RsInit_EntCaveWallRightBlocked.asm"
     INCLUDE "rs/RsInit_FairyFountain.asm"
 

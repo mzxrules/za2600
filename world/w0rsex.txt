@@ -234,7 +234,7 @@ Rs_EntDungMid
 zz3
 Rs_EntCaveWallLeft
 zz18
-Rs_EntCaveWallCenter
+Rs_EntCaveWallCenterBlocked
 Cv_MoneyGame
 Rs_EntCaveWallLeft
 Cv_Sword1
