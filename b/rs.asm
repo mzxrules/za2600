@@ -52,7 +52,7 @@ Cv_Shop4:
     sta enType
     rts
 
-Rs_EntCaveLeft: SUBROUTINE
+Rs_EntCaveWallLeft: SUBROUTINE
     ldx #$14
     cpx plX
     bne .rts
@@ -64,7 +64,7 @@ Rs_EntCaveLeft: SUBROUTINE
 .rts
     rts
 
-Rs_EntCaveRight: SUBROUTINE
+Rs_EntCaveWallRight: SUBROUTINE
     ldx #$6C
     cpx plX
     bne .rts
@@ -76,7 +76,7 @@ Rs_EntCaveRight: SUBROUTINE
 .rts
     rts
 
-Rs_EntCaveCenterWall: SUBROUTINE
+Rs_EntCaveWallCenter: SUBROUTINE
     ldx #$40
     cpx plX
     bne .rts
@@ -248,11 +248,14 @@ Rs_BlockDiamondStairs: SUBROUTINE
     sta roomRS
     rts
 
-Rs_EntCaveLeftBlocked: SUBROUTINE
-    ldx #RS_ENT_CAVE_LEFT
+Rs_EntCaveWallCenterBlocked: SUBROUTINE
+    rts
+
+Rs_EntCaveWallLeftBlocked: SUBROUTINE
+    ldx #RS_ENT_CAVE_WALL_LEFT
     bne .main
-Rs_EntCaveRightBlocked:
-    ldx #RS_ENT_CAVE_RIGHT
+Rs_EntCaveWallRightBlocked:
+    ldx #RS_ENT_CAVE_WALL_RIGHT
 .main
     bit CXM0FB
     bvc .rts
@@ -275,7 +278,7 @@ Rs_EntCaveRightBlocked:
     sta blY
 
     lda #$F3
-    cpx #RS_ENT_CAVE_LEFT
+    cpx #RS_ENT_CAVE_WALL_LEFT
     bne .right
 
     sta wPF1RoomL + 12

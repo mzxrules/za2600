@@ -2,7 +2,7 @@
 ; mzxrules 2022
 ;==============================================================================
 
-RsInit_EntCaveRightBlocked: SUBROUTINE
+RsInit_EntCaveWallRightBlocked: SUBROUTINE
     ldy roomId
     lda rRoomFlag,y
     and #RF_SV_DESTROY
@@ -20,6 +20,6 @@ RsInit_EntCaveRightBlocked: SUBROUTINE
 .open
     lda #$80
     sta blY
-    lda #RS_ENT_CAVE_RIGHT
+    lda #RS_ENT_CAVE_WALL_RIGHT
     sta roomRS
     rts

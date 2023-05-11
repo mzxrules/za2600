@@ -472,8 +472,8 @@ BANK_29
     INCLUDE "rs/RsInit_None.asm"
     INCLUDE "rs/RsInit_BlockCentral.asm"
     INCLUDE "rs/RsInit_BlockDiamondStairs.asm"
-    INCLUDE "rs/RsInit_EntCaveLeftBlocked.asm"
-    INCLUDE "rs/RsInit_EntCaveRightBlocked.asm"
+    INCLUDE "rs/RsInit_EntCaveWallLeftBlocked.asm"
+    INCLUDE "rs/RsInit_EntCaveWallRightBlocked.asm"
     INCLUDE "rs/RsInit_FairyFountain.asm"
 
     LOG_BANK_SIZE "-BANK 29- RoomScriptInit", BANK_29
