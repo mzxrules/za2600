@@ -27,7 +27,7 @@ EnDraw_BossGohma: SUBROUTINE
     lsr
     tax
     lda BossGohma_Reflect,x
-    sta REFP1
+    sta wREFP1_T
     txa
     eor BossGohma_SprFlip,y
     clc

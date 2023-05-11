@@ -237,8 +237,6 @@ PlayerSword: SUBROUTINE
     bvc .skipSlashSword ;PS_USE_ITEM
     lda #<-9
     sta plItemTimer
-    lda plDir
-    sta plItemDir
 ; Sfx
     lda #SFX_STAB
     sta SfxFlags
@@ -250,6 +248,8 @@ PlayerSword: SUBROUTINE
     rts
 
 .drawSword
+    lda plDir
+    sta plItemDir
     lda #0
     cpy #-7
     bmi .endSword
@@ -258,7 +258,7 @@ PlayerSword: SUBROUTINE
     lda #4 ; Draw Sword 8
 .drawSword4
     clc
-    adc plDir
+    adc plItemDir
     tay
     lda SwordWidth4,y
     sta wNUSIZ0_T

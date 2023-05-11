@@ -98,6 +98,7 @@ PAUSE_OVERSCAN: SUBROUTINE ; 30 scanlines
     sta wENH
     lda #0
     sta wNUSIZ1_T
+    sta wREFP1_T
 
 
 PAUSE_OVERSCAN_WAIT:

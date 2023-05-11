@@ -20,6 +20,7 @@ DRAW_PAUSE_MENU: SUBROUTINE
     sta GRP0
     sta GRP1
     sta GRP0
+    sta REFP1
 
     lda #SLOT_SPR_A
     sta BANK_SLOT

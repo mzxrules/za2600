@@ -25,6 +25,9 @@ KERNEL_WORLD: SUBROUTINE ; rKERNEL
     VKERNEL1 NUSIZ0_T
     lda #0
     sta NUSIZ0
+    VKERNEL1 REFP1_T
+    lda #0
+    sta REFP1
 
     lda #0
     tax

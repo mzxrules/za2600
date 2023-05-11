@@ -18,17 +18,13 @@ ENTRY_INIT: SUBROUTINE ; Address F000
 .init_ram_loop
     lda .ENTRY_RAM_BANKS,y
     sta BANK_SLOT_RAM
-    txa
+    txa ; set A to 0
 
-.wipeRamA
+.wipeRam
     dex
     sta wRAM_SEG,x
-    bne .wipeRamA
-
-.wipeRamB
-    dex
     sta wRAM_SEG + $100,x
-    bne .wipeRamB
+    bne .wipeRam
 
     ; kernel transfer
     ldx #KERNEL_LEN

@@ -231,7 +231,7 @@ LoadRoom: SUBROUTINE
     and #%01010101
     sta Temp0
     asl
-    adc Temp0
+    ora Temp0
     eor #$FF
     and roomDoors
     sta roomDoors
