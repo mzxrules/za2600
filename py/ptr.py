@@ -44,6 +44,7 @@ Entity_Table = [
     "EnNpcGiveOne",    "SEG_SH", "", "EnDraw_NpcGiveOne",
     "En_ItemGet",      "SEG_35", "", "EnDraw_ItemGet",
     "En_OldMan",       "SEG_35", "", "EnDraw_OldMan",
+    "En_GreatFairy",   "SEG_35", "", "EnDraw_GreatFairy",
 
     "En_Darknut",      "SEG_34", "", "EnDraw_Darknut",
     "En_DarknutMain",  "SEG_34", "", "EnDraw_Darknut",
@@ -72,7 +73,7 @@ RoomScript_Table = [
     "Rs_EntDungMid",          "RsInit_None",
     "Rs_ExitDung",            "RsInit_None",
     "Rs_ExitDung2",           "RsInit_None",
-    "Rs_FairyFountain",       "RsInit_None",
+    "Rs_FairyFountain",       "RsInit_FairyFountain",
     "Rs_Item",                "RsInit_None",
     "Rs_Maze",                "RsInit_None",
     "Rs_Npc",                 "RsInit_None",

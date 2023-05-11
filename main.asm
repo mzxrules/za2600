@@ -455,6 +455,7 @@ BANK_28
     INCLUDE "en/EnDraw_Shopkeeper.asm"
     INCLUDE "en/EnDraw_NpcGiveOne.asm"
     INCLUDE "en/EnDraw_BossGohma.asm"
+    INCLUDE "en/EnDraw_GreatFairy.asm"
 
     LOG_BANK_SIZE "-BANK 28- PushSystem", BANK_28
 
@@ -473,6 +474,7 @@ BANK_29
     INCLUDE "rs/RsInit_BlockDiamondStairs.asm"
     INCLUDE "rs/RsInit_EntCaveLeftBlocked.asm"
     INCLUDE "rs/RsInit_EntCaveRightBlocked.asm"
+    INCLUDE "rs/RsInit_FairyFountain.asm"
 
     LOG_BANK_SIZE "-BANK 29- RoomScriptInit", BANK_29
 
@@ -550,6 +552,7 @@ BANK_34
 
 BANK_35
     INCLUDE "en/En_Oldman.asm"
+    INCLUDE "en/En_GreatFairy.asm"
     INCLUDE "en/En_ItemGet.asm"
     INCLUDE "en/En_Wallmaster.asm"
     INCLUDE "en/En_Test.asm"

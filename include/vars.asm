@@ -185,6 +185,12 @@ cdBX        ds 1
 cdAY        ds 1
 cdBY        ds 1
 
+    ORG EN_NPC_VARIABLES
+; Great Fairy
+;enstate    ; 1xxx_xxxx init
+;           ; x1xx_xxxx heal event
+enGFairyDie ds 1
+
 ; EnemyCommon
     ORG EN_VARS + 2
 enNX        ds 2

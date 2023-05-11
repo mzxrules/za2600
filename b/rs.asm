@@ -9,6 +9,7 @@ Rs_Del:
     pha
 Rs_None:
 Rs_BlockCentral:
+Rs_FairyFountain:
     rts
 
 Cv_Del:
@@ -49,33 +50,6 @@ Cv_Shop3:
 Cv_Shop4:
     lda #EN_SHOPKEEPER
     sta enType
-    rts
-
-Rs_FairyFountain: SUBROUTINE
-    ldy plY
-    cpy #$1C
-    bmi .rts
-    lda plState
-    ldy plHealthMax
-    cpy plHealth
-    beq .skipHeal
-    ora #PS_LOCK_ALL
-    sta plState
-
-    lda #0
-    sta SfxFlags
-    lda Frame
-    and #1
-    bne .rts
-    lda #SFX_PL_HEAL
-    sta SfxFlags
-
-    inc plHealth
-    rts
-.skipHeal
-    and #~PS_LOCK_ALL
-    sta plState
-.rts
     rts
 
 Rs_EntCaveLeft: SUBROUTINE

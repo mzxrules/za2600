@@ -72,8 +72,8 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_EntCaveMid
+Cv_Shop2
 Rs_None
 zz0
 Rs_None
@@ -234,8 +234,8 @@ Rs_EntDungMid
 zz3
 Rs_EntCaveLeft
 zz18
-Rs_BlockDiamondStairs
-zz121
+Rs_EntCaveCenterWall
+zz13
 Rs_EntCaveLeft
 Cv_Sword1
 Rs_None
