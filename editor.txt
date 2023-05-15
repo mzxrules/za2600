@@ -11,6 +11,9 @@ loop 255
 set "mzx_speed" to 8
 
 . "mzx sprite reference"
+. "Init room mzx_sprite reference data, in order of"
+. "0246..."
+. "1357..."
 loop start
 put c00 CustomBlock "('loopcount'*2)" at "('loopcount'%64)" "('loopcount'/64*2)"
 put c00 CustomBlock "('loopcount'*2+1)" at "('loopcount'%64)" "('loopcount'/64*2+1)"
@@ -38,6 +41,7 @@ loop start
 set "sx" "('loopcount'%32)"
 set "sy" "('loopcount'/32*64+'SS_ROOM')"
 
+. "Top room sprite"
 set "char" ('sx'+'sy')
 set "byte" 2
 set "c_b" "char_byte"
@@ -45,6 +49,7 @@ set "byte" 0
 set "char_byte" "c_b"
 set "byte" 1
 set "char_byte" "c_b"
+. "Bottom room sprite"
 set "char" ('sx'+'sy'+32)
 set "byte" 3
 set "c_b" "char_byte"
@@ -54,32 +59,7 @@ set "byte" 5
 set "char_byte" "c_b"
 loop 63
 
-. "Room Sprite Sheet"
-. "convert PF sprite char order from (0 32), (1, 33) to (0, 1), (2, 3)"
-. "additionally, mirror PF1 sprites"
-loop start
-set "sx" to "('loopcount'%32)"
-set "sy" to "('loopcount'/32*64+'SS_ROOM')"
-set "tx" to "('loopcount'*2+'SPR_PF1')"
-
-copy char "('sx'+'sy')" to "('tx')"
-copy char "('sx'+'sy'+32)" to "('tx'+1)"
-loop 63
-
-loop start
-set "sx" to "('loopcount'%32)"
-set "sy" to "('loopcount'/32*64+'SS_ROOM')"
-set "tx" to "('loopcount'*2+'SPR_PF2')"
-
-copy char "('sx'+'sy')" to "('tx')"
-copy char "('sx'+'sy'+32)" to "('tx'+1)"
-loop 63
-
-loop start
-flip char "('SPR_PF1'+'loopcount'+64)" EAST
-loop 127
-
-. "initialize unbounded mzx sprites 0-127 are used for world rooms"
+. "initialize unbounded mzx_sprites. 0-127 are used for world rooms"
 loop start
 set "spr&loopcount&_unbound" to 1
 set "spr&loopcount&_offset" to "('loopcount'/32*256+'SPR_WORK')"
@@ -555,6 +535,7 @@ set "$lvldoor2" to "$w&worldId&door2"
 set "$lvldoor3" to "$w&worldId&door3"
 set "$lvlrs" to "$w&worldId&rs"
 set "$lvlex" to "$w&worldId&ex"
+goto "#set_editor_room_sprites"
 if "worldId" = 0 then "#draw_16x8"
 if "worldId" > 0 then "#draw_16x8"
 
@@ -585,4 +566,31 @@ goto "#return"
 set "b" to "(('b' a 0x55 << 1) o ('b' a 0xAA >> 1))"
 set "b" to "(('b' a 0x33 << 2) o ('b' a 0xCC >> 2))"
 set "b" to "(('b' a 0x0F << 4) o ('b' a 0xF0 >> 4))"
+goto "#return"
+
+. "Initialize editor copy Room Sprite Sheet"
+. "convert PF sprite char order from (0 32), (1, 33) to (0, 1), (2, 3)"
+. "additionally, mirror PF1 sprites"
+: "#set_editor_room_sprites"
+loop start
+set "sx" to "('loopcount'%32)"
+set "sy" to "('loopcount'/32*64+'SS_ROOM'+('worldId'!=0*128))"
+set "tx" to "('loopcount'*2+'SPR_PF1')"
+
+copy char "('sx'+'sy')" to "('tx')"
+copy char "('sx'+'sy'+32)" to "('tx'+1)"
+loop 63
+
+loop start
+set "sx" to "('loopcount'%32)"
+set "sy" to "('loopcount'/32*64+'SS_ROOM'+('worldId'!=0*128))"
+set "tx" to "('loopcount'*2+'SPR_PF2')"
+
+copy char "('sx'+'sy')" to "('tx')"
+copy char "('sx'+'sy'+32)" to "('tx'+1)"
+loop 63
+
+loop start
+flip char "('SPR_PF1'+'loopcount'+64)" EAST
+loop 127
 goto "#return"

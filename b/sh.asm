@@ -84,9 +84,6 @@ KERNEL_SHOP: SUBROUTINE
     stx GRP0
     stx GRP1
 
-    lda #COLOR_PLAYER_00
-    sta COLUP0
-
 .waitTimerLoop
     lda #SLOT_DRAW
     sta BANK_SLOT

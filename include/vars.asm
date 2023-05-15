@@ -276,6 +276,7 @@ Temp2       ds 1
 Temp3       ds 1
 Temp4       ds 1
 Temp5       ds 1
+TRoomSprB   ds 1 ; LoadRoom sprite bank
 
     SEG.U VARS_AUD_ZERO
     ORG Temp0 + 1
@@ -548,6 +549,7 @@ SLOT_MAIN   = RAMSEG_FC | 1
 SLOT_PAUSE  = RAMSEG_FC | 2
 
 SLOT_PF_A   = RAMSEG_F4 | 4
+SLOT_PF_B   = RAMSEG_F4 | 5
 SLOT_SPR_A  = RAMSEG_F0 | 6
 SLOT_SPR_A2 = RAMSEG_F4 | 6
 

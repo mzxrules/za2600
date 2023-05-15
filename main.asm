@@ -75,7 +75,7 @@ BANK_4
 BANK_PF
     INCLUDE "spr/spr_room_pf1.asm"
     INCLUDE "spr/spr_room_pf2.asm"
-    LOG_BANK_SIZE "-BANK 4- Sprites PF 0", BANK_4
+    LOG_BANK_SIZE "-BANK 4- Sprites World PF", BANK_4
 
 ; ****************************************
 ; *               BANK 5                 *
@@ -85,9 +85,9 @@ BANK_PF
     RORG $F400
 
 BANK_5
-    ;INCLUDE "spr/spr_room_pf1.asm"
-    ;INCLUDE "spr/spr_room_pf2.asm"
-    LOG_BANK_SIZE "-BANK 5- Sprites PF 1", BANK_5
+    INCLUDE "spr/spr_room_pf1B.asm"
+    INCLUDE "spr/spr_room_pf2B.asm"
+    LOG_BANK_SIZE "-BANK 5- Sprites Dung PF", BANK_5
 
 ; ****************************************
 ; *               BANK 6                 *

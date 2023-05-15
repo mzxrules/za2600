@@ -64,21 +64,17 @@ LoadRoom: SUBROUTINE
     sta plItemTimer
     sta KernelId
 
-    ; load world bank
-    lda #SLOT_W0
-    ldx #SLOT_RW0
+    ; load world bank data
     ldy worldId
-    beq .worldBankSet
-    lda #SLOT_W2
-    ldx #SLOT_RW2
-    cpy #7
-    bpl .worldBankSet
-    lda #SLOT_W1
-    ldx #SLOT_RW1
-
-.worldBankSet
+    lda WorldBankOff,y
+    tay
+    lda WorldRom,y
     sta BANK_SLOT
-    stx BANK_SLOT_RAM
+    lda WorldRam,y
+    sta BANK_SLOT_RAM
+    lda WorldRoomSprites,y
+    sta TRoomSprB
+
     ldy roomId
     bpl .skipCaveRoom
     jmp LoadCaveRoom
@@ -165,7 +161,7 @@ LoadRoom: SUBROUTINE
 
 ; Load playfield data
     ldy #ROOM_SPR_HEIGHT-1
-    lda #SLOT_PF_A
+    lda TRoomSprB
     sta BANK_SLOT
 
     lda worldId

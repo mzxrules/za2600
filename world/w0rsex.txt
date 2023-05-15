@@ -60,8 +60,8 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_EntCaveMid
+Cv_MoneyGame
 Rs_None
 zz0
 Rs_None
@@ -152,8 +152,8 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_BlockDiamondStairs
-zz118
+Rs_None
+zz0
 Rs_None
 zz0
 Rs_None
@@ -240,8 +240,8 @@ Rs_EntCaveWallLeft
 Cv_Sword1
 Rs_None
 zz0
-Rs_BlockDiamondStairs
-zz77
+Rs_None
+zz0
 Rs_None
 zz0
 Rs_None

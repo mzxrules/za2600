@@ -83,7 +83,7 @@ goto "#dumpsht"
 set "$pf1" to ""
 set "$pf2" to ""
 
-. "PF1 Sheet"
+. "World PF1 Sheet"
 loop start
 set "mirror" 0
 set "CHAR" ('loopcount'+'SS_ROOM'+32)
@@ -98,7 +98,7 @@ goto "#dumpchr"
 inc "$pf1" "$dumpchr"
 loop 31
 
-. "PF2 Sheet"
+. "World PF2 Sheet"
 loop start
 set "mirror" 1
 set "CHAR" ('loopcount'+'SS_ROOM'+64+32)
@@ -118,6 +118,47 @@ set "$sht" to "spr/spr_room_pf1.asm"
 goto "#dumpsht"
 set "$" to "$pf2"
 set "$sht" to "spr/spr_room_pf2.asm"
+goto "#dumpsht"
+
+set "$pf1" to ""
+set "$pf2" to ""
+
+
+. "Dungeon PF1 Sheet"
+loop start
+set "mirror" 0
+set "CHAR" ('loopcount'+'SS_ROOM'+32+128)
+inc "$pf1" "PF1Room('loopcount'):\n"
+set "sp&sp&" 4
+goto "#dumpchr"
+inc "$pf1" "$dumpchr"
+set "CHAR" ('loopcount'+'SS_ROOM'+128)
+set "sp&sp&" 14
+set "yl_" 2
+goto "#dumpchr"
+inc "$pf1" "$dumpchr"
+loop 31
+
+. "Dungeon PF2 Sheet"
+loop start
+set "mirror" 1
+set "CHAR" ('loopcount'+'SS_ROOM'+64+32+128)
+inc "$pf2" "PF2Room('loopcount'):\n"
+set "sp&sp&" 4
+goto "#dumpchr"
+inc "$pf2" "$dumpchr"
+set "CHAR" ('loopcount'+'SS_ROOM'+64+128)
+set "sp&sp&" 14
+set "yl_" 2
+goto "#dumpchr"
+inc "$pf2" "$dumpchr"
+loop 31
+
+set "$" to "$pf1"
+set "$sht" to "spr/spr_room_pf1B.asm"
+goto "#dumpsht"
+set "$" to "$pf2"
+set "$sht" to "spr/spr_room_pf2B.asm"
 goto "#dumpsht"
 
 set "$pf1" to ""

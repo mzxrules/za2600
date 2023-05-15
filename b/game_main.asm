@@ -495,3 +495,15 @@ En_Del:
     lda Entity_BankLUT,y
     sta BANK_SLOT
     rts
+
+WorldBankOff:
+    .byte 0, 1, 1, 1, 1, 1, 1, 2, 2, 2
+
+WorldRom:
+    .byte #SLOT_W0, #SLOT_W1, #SLOT_W2
+
+WorldRam:
+    .byte #SLOT_RW0, #SLOT_RW1, #SLOT_RW2
+
+WorldRoomSprites:
+    .byte #SLOT_PF_A, #SLOT_PF_B, #SLOT_PF_B

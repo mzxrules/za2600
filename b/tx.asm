@@ -417,8 +417,6 @@ FinishVS
     jmp ShopKernel
 .worldKernelReturn
 
-    lda #COLOR_PLAYER_00
-    sta COLUP0
     jsr PosWorldObjects
 
 .waitTimerLoop

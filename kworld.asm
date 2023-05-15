@@ -70,9 +70,9 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     VKERNEL1 M1H
     lda #7          ; 3 enM height
     dcp m1DY        ; 5
-    ;sta WSYNC
     lda #1          ; 2
     adc #0          ; 2
+    ;sta WSYNC
     sta ENAM1       ; 3
 
     lda rPF1RoomL,x ; 4
