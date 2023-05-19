@@ -56,8 +56,8 @@ Rs_Maze
 zz0
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_BlockPathStairs
+zz10
 Rs_None
 zz0
 Rs_EntCaveMid
@@ -68,8 +68,8 @@ Rs_None
 zz0
 Rs_EntDungMid
 zz6
-Rs_None
-zz0
+Rs_BlockPathStairs
+zz12
 Rs_None
 zz0
 Rs_EntCaveMid
@@ -144,8 +144,8 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_BlockPathStairs
+zz11
 Rs_EntCaveWallRight
 Cv_Shop2
 Rs_None
@@ -240,8 +240,8 @@ Rs_EntCaveWallLeft
 Cv_Sword1
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_BlockPathStairs
+zz9
 Rs_None
 zz0
 Rs_None

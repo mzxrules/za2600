@@ -21,10 +21,6 @@ Cv_Del:
     lda CaveTypeL,x
     pha
 
-Cv_Path1:
-Cv_Path2:
-Cv_Path3:
-Cv_Path4:
 Cv_MoneyGame:
 Cv_GiveHeartPotion:
 Cv_TakeHeartRupee:
@@ -33,6 +29,14 @@ Cv_DoorRepair:
 .rts
     rts
 
+
+Cv_Path1:
+Cv_Path2:
+Cv_Path3:
+Cv_Path4:
+    lda #EN_NPC_PATH
+    sta enType
+    rts
 
 Cv_Sword1:
 Cv_Sword2:
@@ -61,10 +65,8 @@ Rs_EntCaveWallLeft: SUBROUTINE
     bne .rts
     ldy #$38
     jmp EnterCave
-.rts
-    rts
 
-Rs_EntCaveWallRight: SUBROUTINE
+Rs_EntCaveWallRight:
     ldx #$6C
     cpx plX
     bne .rts
@@ -73,10 +75,8 @@ Rs_EntCaveWallRight: SUBROUTINE
     bne .rts
     ldy #$38
     jmp EnterCave
-.rts
-    rts
 
-Rs_EntCaveWallCenter: SUBROUTINE
+Rs_EntCaveWallCenter:
     ldx #$40
     cpx plX
     bne .rts
@@ -85,10 +85,8 @@ Rs_EntCaveWallCenter: SUBROUTINE
     bne .rts
     ldy #$38
     jmp EnterCave
-.rts
-    rts
 
-Rs_EntCaveMid: SUBROUTINE
+Rs_EntCaveMid:
     ldx #$40
     cpx plX
     bne .rts
@@ -98,26 +96,6 @@ Rs_EntCaveMid: SUBROUTINE
     ldy #$20
     jmp EnterCave
 .rts
-    rts
-
-; X, Y is return world X/Y
-EnterCave:
-    lda roomId
-    sta worldSR
-    stx worldSX
-    sty worldSY
-
-    ldx #$40
-    ldy #$10
-    stx plX
-    sty plY
-
-    lda roomFlags
-    ora #RF_EV_LOAD
-    sta roomFlags
-    lda roomId
-    ora #$80
-    sta roomId
     rts
 
 Rs_Cave: SUBROUTINE
@@ -219,30 +197,6 @@ Rs_ExitDung2:
 .rts
     rts
 
-; A = SeqFlags
-ReturnWorld: SUBROUTINE
-    sta SeqFlags
-    lda worldSX
-    sta plX
-    lda worldSY
-    sta plY
-    lda worldSR
-    sta roomId
-    lda #0
-    sta worldId
-    lda roomFlags
-    ora #RF_EV_LOAD
-    sta roomFlags
-    lda plState
-    and #~PS_LOCK_ALL
-    sta plState
-    lda plState2
-    and #~PS_HOLD_ITEM
-    sta plState2
-    lda #PL_DIR_D
-    sta plDir
-    rts
-
 Rs_BlockDiamondStairs: SUBROUTINE
     lda #RS_STAIRS
     sta roomRS
@@ -299,6 +253,19 @@ Rs_EntCaveWallRightBlocked:
     sta wPF1RoomR + 13
     sta wPF1RoomR + 14
 
+.rts
+    rts
+
+Rs_BlockPathStairs: SUBROUTINE
+    lda roomFlags
+    and #RF_EV_CLEAR
+    beq .rts
+    lda #$18
+    sta cdAX
+    lda #$34
+    sta cdAY
+    lda #EN_STAIRS
+    sta cdAType
 .rts
     rts
 

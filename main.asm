@@ -454,6 +454,7 @@ BANK_28
     INCLUDE "en/EnDraw_Rope.asm"
     INCLUDE "en/EnDraw_Shopkeeper.asm"
     INCLUDE "en/EnDraw_NpcGiveOne.asm"
+    INCLUDE "en/EnDraw_NpcPath.asm"
     INCLUDE "en/EnDraw_BossGohma.asm"
     INCLUDE "en/EnDraw_GreatFairy.asm"
 
@@ -472,6 +473,7 @@ BANK_29
     INCLUDE "rs/RsInit_None.asm"
     INCLUDE "rs/RsInit_BlockCentral.asm"
     INCLUDE "rs/RsInit_BlockDiamondStairs.asm"
+    INCLUDE "rs/RsInit_BlockPathStairs.asm"
     INCLUDE "rs/RsInit_EntCaveWallLeftBlocked.asm"
     INCLUDE "rs/RsInit_EntCaveWallCenterBlocked.asm"
     INCLUDE "rs/RsInit_EntCaveWallRightBlocked.asm"
@@ -553,6 +555,7 @@ BANK_34
 
 BANK_35
     INCLUDE "en/En_Oldman.asm"
+    INCLUDE "en/En_NpcPath.asm"
     INCLUDE "en/En_GreatFairy.asm"
     INCLUDE "en/En_ItemGet.asm"
     INCLUDE "en/En_Wallmaster.asm"

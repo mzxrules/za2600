@@ -27,8 +27,23 @@ BlD:
     dec blY
     rts
 
+BlPathPushBlock: SUBROUTINE
+    ldx roomENCount
+    bne .rts
+    lda rPF1RoomL + 6
+    and #$06
+    beq .skipENCount
+    ldx #$19
+    stx blX
+    ldx #$20
+    stx blY
+    lda rPF1RoomL + 6
+    and #~$06
+    sta wPF1RoomL + 6
+    sta wPF1RoomL + 7
+    rts
 
-BlDiamondPushBlock: SUBROUTINE
+BlDiamondPushBlock: ; SUBROUTINE
     ldx roomENCount
     bne .rts
     ldx #$41
@@ -45,6 +60,7 @@ BlDiamondPushBlock: SUBROUTINE
 BlPushBlock: ; SUBROUTINE
     ldx roomENCount
     bne .rts
+.skipENCount
     ldx roomPush
     inx
     cpx #16+12 ; full move

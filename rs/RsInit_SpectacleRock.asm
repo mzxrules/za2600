@@ -3,6 +3,9 @@
 ;==============================================================================
 
 RsInit_SpectacleRock: SUBROUTINE
+    lda #$80
+    sta blY
+
     ldy #$6
     lda rPF2Room,y
     and #$F9

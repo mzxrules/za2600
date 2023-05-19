@@ -354,6 +354,11 @@ EnStairs:
     bne .rts
     cpy plY
     bne .rts
+    lda worldId
+    bne .dungeonStairs
+.worldStairs
+    jmp EnterCave
+.dungeonStairs
     lda roomEX
     sta roomId
     lda roomFlags

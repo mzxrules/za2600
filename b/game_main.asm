@@ -484,6 +484,50 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     sta roomFlags
     rts
 
+; X, Y is return world X/Y
+EnterCave:
+    lda roomId
+    sta worldSR
+    stx worldSX
+    sty worldSY
+
+    ldx #$40
+    ldy #$10
+    stx plX
+    sty plY
+
+    lda roomFlags
+    ora #RF_EV_LOAD
+    sta roomFlags
+    lda roomId
+    ora #$80
+    sta roomId
+    rts
+
+; A = SeqFlags
+ReturnWorld: SUBROUTINE
+    sta SeqFlags
+    lda worldSX
+    sta plX
+    lda worldSY
+    sta plY
+    lda worldSR
+    sta roomId
+    lda #0
+    sta worldId
+    lda roomFlags
+    ora #RF_EV_LOAD
+    sta roomFlags
+    lda plState
+    and #~PS_LOCK_ALL
+    sta plState
+    lda plState2
+    and #~PS_HOLD_ITEM
+    sta plState2
+    lda #PL_DIR_D
+    sta plDir
+    rts
+
 En_Del:
     lda #SLOT_EN_A
     sta BANK_SLOT

@@ -42,6 +42,7 @@ Entity_Table = [
     "EnStairs",        "SEG_SH", "", "EnDraw_None",
     "EnShopkeeper",    "SEG_SH", "", "EnDraw_Shopkeeper",
     "EnNpcGiveOne",    "SEG_SH", "", "EnDraw_NpcGiveOne",
+    "En_NpcPath",      "SEG_35", "", "EnDraw_NpcPath",
     "En_ItemGet",      "SEG_35", "", "EnDraw_ItemGet",
     "En_OldMan",       "SEG_35", "", "EnDraw_OldMan",
     "En_GreatFairy",   "SEG_35", "", "EnDraw_GreatFairy",
@@ -65,6 +66,7 @@ RoomScript_Table = [
     "Rs_None",                      "RsInit_None",
     "Rs_BlockCentral",              "RsInit_BlockCentral",
     "Rs_BlockDiamondStairs",        "RsInit_BlockDiamondStairs",
+    "Rs_BlockPathStairs",           "RsInit_BlockPathStairs",
     "Rs_EntCaveWallLeft",           "RsInit_None",
     "Rs_EntCaveWallLeftBlocked",    "RsInit_EntCaveWallLeftBlocked",
     "Rs_EntCaveWallCenter",         "RsInit_None",
@@ -125,6 +127,7 @@ tbl = [
         "BlU",
         "BlPushBlock",
         "BlDiamondPushBlock",
+        "BlPathPushBlock",
     ],
     bankLut=None
     ),

@@ -47,6 +47,8 @@ Room Events:
     RF_NO_ENCLEAR   ; Blocks Enemy Cleared from setting Room Cleared
     RF_EV_CLEAR     ; Room Cleared
 
+RsInit configures room for first frame. Remember to position ball
+
 Darknut Logic:
 
 Directions LRUD, opposes player directions
