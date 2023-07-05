@@ -67,26 +67,7 @@ POSITION_SPRITES: SUBROUTINE
     lsr ;clc
     adc #7
     sta THudDigits+4
-/*
-; Triforce display
-    lda worldId
-    bne .hud_key_init
-    bit roomId
-    bmi .hud_key_init
-    lda itemTri
-    lsr
-    tax
-    lda draw_bitcount,x
-    adc #0
-    tax
-    lda Mul8,x
-    clc
-    adc #7
-    sta THudDigits+3
-    lda #<SprN12 - #<SprN0 + 7
-    sta THudDigits+2
-    bne .hud_bomb_init
-*/
+
 ; key display
 .hud_key_init
     ldx itemKeys
@@ -342,6 +323,7 @@ KERNEL_WORLD_RESUME:
     sta GRP1
     sta GRP0
     sta ENAM0
+    sta ENAM1
     sta PF0
     rts
     LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN
@@ -402,8 +384,3 @@ PosHudObjects: SUBROUTINE
     sta WSYNC
     sta HMOVE
     rts
-/*
-    .align 128
-draw_bitcount:
-    INCLUDE "gen/bitcount.asm"
- */

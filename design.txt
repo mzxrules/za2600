@@ -166,6 +166,18 @@ WizrobeA Logic:
     Phase Out
         flicker sprite on/off
 
+Glock Logic:
+    Glock is a three headed monster. After the first head takes enough damage, it is severed
+    and will freely roam the room
+
+    Intro
+    Telegraph
+
+    Attack
+
+Glock Head Logic:
+
+
 Input repeat prevention:
 
 INPT4 == $00 ; fire button pressed

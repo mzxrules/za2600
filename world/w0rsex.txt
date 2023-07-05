@@ -72,7 +72,7 @@ Rs_BlockPathStairs
 zz12
 Rs_None
 zz0
-Rs_EntCaveMid
+Rs_EntCaveWallCenter
 Cv_Shop2
 Rs_None
 zz0

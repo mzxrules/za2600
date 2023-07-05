@@ -345,6 +345,24 @@ EnDirU: SUBROUTINE
     inc en0Y,x
     rts
 
+; Diagonals
+EnDirLu: SUBROUTINE
+    dec en0X,x
+    inc en0Y,x
+    rts
+EnDirLd: SUBROUTINE
+    dec en0X,x
+    dec en0Y,x
+    rts
+EnDirRu: SUBROUTINE
+    inc en0X,x
+    inc en0Y,x
+    rts
+EnDirRd: SUBROUTINE
+    inc en0X,x
+    dec en0Y,x
+    rts
+
 EnNone:
     lda #$F0
     sta enSpr+1
@@ -358,7 +376,7 @@ EnNone:
 EnSysEncounter:
     .byte EN_NONE, EN_OCTOROK, EN_OCTOROK, EN_ROPE
     .byte EN_ROPE, EN_DARKNUT, EN_DARKNUT, EN_BOSS_GOHMA
-    .byte EN_WALLMASTER, EN_TEST, EN_LIKE_LIKE
+    .byte EN_WALLMASTER, EN_TEST, EN_LIKE_LIKE, EN_BOSS_GLOCK
 EnSysEncounterCount:
     .byte 0, 1, 2, 1
     .byte 2, 1, 2, 1
@@ -566,7 +584,7 @@ EnSysCleanShift: SUBROUTINE
     ldx #EN_VARS_COUNT + 6 -2
 .loop
     lda EN_VARS-6+1,x
-    sta EN_VARS-6,X
+    sta EN_VARS-6,x
     dex
     dex
     bpl .loop

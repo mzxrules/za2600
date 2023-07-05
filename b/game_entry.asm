@@ -36,7 +36,7 @@ ENTRY_INIT: SUBROUTINE ; Address F000
     dey
     bpl .init_ram_loop
 
-    IFCONST ITEM
+    IFCONST ITEMS
 .cheats
     lda #8
     sta itemKeys

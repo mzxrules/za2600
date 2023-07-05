@@ -267,16 +267,6 @@ SeqChan:
     sta AUDVT0,y
     rts
 
-SeqMuteChan0:
-    ldy #0
-    beq SeqMuteChan
-SeqMuteChan1:
-    ldy #1
-SeqMuteChan:
-    lda #0
-    sta AUDVT0,y
-    rts
-
 MsDung1: SUBROUTINE
     ldx SeqCur + 1
     bvc .skipSetDir
@@ -296,7 +286,10 @@ MsIntro0: SUBROUTINE
     clc
     adc Frame
     sta SeqTFrame
-    jmp SeqMuteChan0
+SeqMuteChan0:
+    lda #0
+    sta AUDVT0
+    rts
 .skipSetDur
     lda ms_intro0_note,x
     jmp SeqChan0
@@ -313,7 +306,10 @@ MsIntro1: SUBROUTINE
     lda #MS_PLAY_THEME_L
     sta SeqFlags
 .skipSwitchSeq
-    jmp SeqMuteChan1
+SeqMuteChan1:
+    lda #0
+    sta AUDVT1
+    rts
 .skipSetDur
     lda ms_intro1_note,x
     jmp SeqChan1

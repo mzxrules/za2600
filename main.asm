@@ -457,6 +457,8 @@ BANK_28
     INCLUDE "en/EnDraw_NpcPath.asm"
     INCLUDE "en/EnDraw_BossGohma.asm"
     INCLUDE "en/EnDraw_GreatFairy.asm"
+    INCLUDE "en/EnDraw_BossGlock.asm"
+    INCLUDE "en/EnDraw_BossGlockHead.asm"
 
     LOG_BANK_SIZE "-BANK 28- PushSystem", BANK_28
 
@@ -562,6 +564,8 @@ BANK_35
     INCLUDE "en/En_Test.asm"
     INCLUDE "en/EnBoss_Cucco.asm"
     INCLUDE "en/En_BossGohma.asm"
+    INCLUDE "en/En_BossGlock.asm"
+    INCLUDE "en/En_BossGlockHead.asm"
     LOG_BANK_SIZE "-BANK 35- En2", BANK_35
 
 ; End

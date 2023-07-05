@@ -46,11 +46,7 @@ KERNEL_SHOP: SUBROUTINE
     lda GiItemColors,x
     sta COLUP0
 
-; Cycle padding to line up world kernel draw routine
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
+
 
 ; DRAW
 .draw_loop
@@ -67,7 +63,6 @@ KERNEL_SHOP: SUBROUTINE
 
     lda (ShopSpr1),y
     sta GRP0
-
 
     ldx shopItem+2
     lda GiItemColors,x
@@ -89,6 +84,12 @@ KERNEL_SHOP: SUBROUTINE
     sta BANK_SLOT
     ldy #SHOP_ROOM_HEIGHT
     jsr PosWorldObjects
+    sta WSYNC
+
+; Cycle padding to line up world kernel draw routine
+    sta WSYNC
+    sta WSYNC
+    sta WSYNC
     sta WSYNC
 
     jmp KERNEL_WORLD_RESUME

@@ -197,50 +197,50 @@ SprE21:
     .byte $F5 ; |XXXX.X.X|
     .byte $7E ; |.XXXXXX.|
 SprE22:
-    .byte $A5 ; |X.X..X.X|
-    .byte $A5 ; |X.X..X.X|
-    .byte $BD ; |X.XXXX.X|
-    .byte $42 ; |.X....X.|
-    .byte $3C ; |..XXXX..|
     .byte $1C ; |...XXX..|
-    .byte $18 ; |...XX...|
-    .byte $30 ; |..XX....|
+    .byte $3E ; |..XXXXX.|
+    .byte $2A ; |..X.X.X.|
+    .byte $49 ; |.X..X..X|
+    .byte $49 ; |.X..X..X|
+    .byte $5D ; |.X.XXX.X|
+    .byte $7F ; |.XXXXXXX|
+    .byte $63 ; |.XX...XX|
 SprE23:
+    .byte $1C ; |...XXX..|
+    .byte $08 ; |....X...|
+    .byte $1C ; |...XXX..|
+    .byte $08 ; |....X...|
+    .byte $1C ; |...XXX..|
+    .byte $08 ; |....X...|
+    .byte $1C ; |...XXX..|
     .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $10 ; |...X....|
-    .byte $28 ; |..X.X...|
 SprE24:
-    .byte $38 ; |..XXX...|
-    .byte $38 ; |..XXX...|
-    .byte $7C ; |.XXXXX..|
-    .byte $7C ; |.XXXXX..|
-    .byte $7E ; |.XXXXXX.|
-    .byte $7E ; |.XXXXXX.|
-    .byte $BF ; |X.XXXXXX|
-    .byte $BF ; |X.XXXXXX|
+    .byte $14 ; |...X.X..|
+    .byte $22 ; |..X...X.|
+    .byte $36 ; |..XX.XX.|
+    .byte $6B ; |.XX.X.XX|
+    .byte $49 ; |.X..X..X|
+    .byte $5D ; |.X.XXX.X|
+    .byte $7F ; |.XXXXXXX|
+    .byte $63 ; |.XX...XX|
 SprE25:
-    .byte $56 ; |.X.X.XX.|
-    .byte $56 ; |.X.X.XX.|
-    .byte $77 ; |.XXX.XXX|
-    .byte $77 ; |.XXX.XXX|
-    .byte $22 ; |..X...X.|
-    .byte $22 ; |..X...X.|
-    .byte $19 ; |...XX..X|
-    .byte $19 ; |...XX..X|
+    .byte $1C ; |...XXX..|
+    .byte $08 ; |....X...|
+    .byte $1C ; |...XXX..|
+    .byte $08 ; |....X...|
+    .byte $1C ; |...XXX..|
+    .byte $08 ; |....X...|
+    .byte $1C ; |...XXX..|
+    .byte $00 ; |........|
 SprE26:
-    .byte $6A ; |.XX.X.X.|
-    .byte $BD ; |X.XXXX.X|
-    .byte $FE ; |XXXXXXX.|
-    .byte $7F ; |.XXXXXXX|
-    .byte $FE ; |XXXXXXX.|
-    .byte $7F ; |.XXXXXXX|
-    .byte $BD ; |X.XXXX.X|
-    .byte $56 ; |.X.X.XX.|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $14 ; |...X.X..|
+    .byte $36 ; |..XX.XX.|
+    .byte $36 ; |..XX.XX.|
+    .byte $22 ; |..X...X.|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
 SprE27:
     .byte $FF ; |XXXXXXXX|
     .byte $7F ; |.XXXXXXX|

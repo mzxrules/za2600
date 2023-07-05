@@ -143,35 +143,55 @@ SfxCur      ds 1
 ;==============================================================================
 ; Entity Variables
 ;==============================================================================
+
+; System Reserve Vars
 enNum       ds 1
 enType      ds 2
-en0X        ds 2
-en0Y        ds 2
+en0X        ds 1
+en1X        ds 1
+en0Y        ds 1
+en1Y        ds 1
 EN_VARS:    ds 16 ; Zero initialized entity vars
 EN_VARS_END:
 EN_VARS_COUNT = EN_VARS_END - EN_VARS
 
+; Class NPC
     ORG EN_VARS
 enState     ds 2
-EN_NPC_VARIABLES:
-; EnShopkeeper enState
+mesgId      ds 1
+CLASS_EN_NPC
+
+; Class ENEMY
+    ORG EN_VARS
+enState     ds 2
+enHp        ds 2
+enStun      ds 2
+CLASS_EN_ENEMY
+enDir       ds 2
+enNX        ds 2
+enNY        ds 2
+CLASS_EN_ENEMY_MOVE
+
+; == Gameover
+    ORG CLASS_EN_NPC
+enInputDelay ds 1
+
+; == EnShopkeeper
+    ORG CLASS_EN_NPC
+; enState
                       ; 1xxx_xxxx Init
                       ; x1xx_xxxx Item Bought
 GI_EVENT_CAVE   = $20 ; xx1x_xxxx
 GI_EVENT_CD     = $10 ; xxx1_xxxx
 GI_EVENT_TRI    = $08 ; xxxx_1xxx
 GI_EVENT_INIT   = $04 ; xxxx_x1xx
-mesgId      ds 1
-; Gameover
-enInputDelay ds 1
-    ORG EN_NPC_VARIABLES + 1
-; EnShopkeeper
 shopItem    ds 3
 shopDigit   ds 3
 
-    ORG EN_NPC_VARIABLES
-; En_ClearDrop and En_ItemGet
-;enState
+; == En_ClearDrop
+; == En_ItemGet
+    ORG EN_VARS
+enState     ds 2
 CD_UPDATE_B     = $80 ; 1xxx_xxxx
 CD_UPDATE_A     = $40 ; x1xx_xxxx
                       ; xx11_11xx GI_EVENT reserved
@@ -185,45 +205,43 @@ cdBX        ds 1
 cdAY        ds 1
 cdBY        ds 1
 
-    ORG EN_NPC_VARIABLES
-; Great Fairy
-;enstate    ; 1xxx_xxxx init
+; == Great Fairy
+    ORG CLASS_EN_NPC
+; enstate
+;           ; 1xxx_xxxx init
 ;           ; x1xx_xxxx heal event
 enGFairyDie ds 1
 
-; EnemyCommon
-    ORG EN_VARS + 2
-enNX        ds 2
-enNY        ds 2
-enHp        ds 2
-enStun      ds 2
-enDir       ds 2
 
-EN_ENEMY_VARIABLES:
-    ORG EN_ENEMY_VARIABLES
-; Darknut
+; == Darknut
+    ORG CLASS_EN_ENEMY_MOVE
 enDarknutTemp
                 ; xx1x_xxxx = new direction toggle
-    ORG EN_ENEMY_VARIABLES
-; Wallmaster
+
+; == Wallmaster
+    ORG CLASS_EN_ENEMY_MOVE
 enWallPhase ds 1 ; anim timer for phasing through wall
 enPX        ds 1 ; posX last frame, after collision check
 enPY        ds 1 ; posY last frame, after collision check
-    ORG EN_ENEMY_VARIABLES
-; Octorok
+
+; == Octorok
+    ORG CLASS_EN_ENEMY_MOVE
 enOctorokThink  ds 2
 enMDX           ds 1
 enMDY           ds 1
-    ORG EN_ENEMY_VARIABLES
-; LikeLike
+
+; == LikeLike
+    ORG CLASS_EN_ENEMY_MOVE
 enLLTimer   ds 1
-    ORG EN_ENEMY_VARIABLES
-; Rope
+
+; == Rope
+    ORG CLASS_EN_ENEMY_MOVE
 enRopeTimer ds 2
 enRopeThink ds 2
-    ORG EN_ENEMY_VARIABLES
-; Gohma
-;enState     ds 1
+
+; == Gohma
+    ORG CLASS_EN_ENEMY
+; enState
                         ; 1xxx_xxxx = init
                         ; xxxx_x111 = animation state
                         ; xxxx_1xxx = RESERVED
@@ -232,8 +250,16 @@ GOHMA_ANIM_1    = $02
 GOHMA_ANIM_2    = $04
 enGohmaTimer ds 1
 
-; Test
-    ORG EN_VARS + 1
+; == Glock (Trinexx)
+    ORG CLASS_EN_ENEMY
+enGlockTimer        ds 1
+enGlockThink        ds 1
+enGlockNeck         ds 1
+enGlockHeadDir      ds 1
+enGlockHeadThink    ds 1
+
+; == Test
+    ORG EN_VARS + 2
 enTestDir   ds 1
 enTestFX    ds 1
 enTestFY    ds 1
@@ -488,6 +514,7 @@ BoardBreakwallEX = $76
 
     COLOR EN_RED,       $42,$64
     COLOR EN_BLUE,      $74,$B4
+    COLOR EN_GREEN,     $DA,$5C
     COLOR EN_ROK_BLUE,  $72,$C4
     COLOR EN_LIGHT_BLUE,$88,$D8 ; Item secondary flicker
     COLOR EN_TRIFORCE,  $2A,$2A

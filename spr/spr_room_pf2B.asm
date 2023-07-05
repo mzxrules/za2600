@@ -451,11 +451,11 @@ PF2Room26:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
+    .byte $F8 ; |...XXXXX| mirrored
+    .byte $04 ; |..X.....| mirrored
+    .byte $F8 ; |...XXXXX| mirrored
+    .byte $E0 ; |.....XXX| mirrored
+    .byte $80 ; |.......X| mirrored
     .byte $00 ; |........| mirrored
 PF2Room27:
     .byte $00 ; |........| mirrored
