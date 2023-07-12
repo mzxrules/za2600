@@ -1322,3 +1322,17 @@ lost_baselineB = [
 
 lost_highline = lost_highlineA + lost_highlineA + lost_highlineB
 lost_baseline = lost_baselineA + lost_baselineA + lost_baselineB
+
+
+warp_highline = [
+    [
+        "D5", (1/4),
+        "E5", (1/4),
+        "D6", (1/2),
+    ],
+    [
+        "C#6", (1/8),
+        "C6", (1/8),
+        "B5", (3/4),
+    ],
+]

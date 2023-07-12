@@ -20,6 +20,14 @@ def AdjustDungeonBaseline(seq):
             test.append((note,dur))
     return test
 
+def AdjustWarpSeq(seq):
+    test = []
+    for note, dur in seq:
+        while dur > 0:
+            test.append((note, 1/8))
+            dur -= 1/8
+    return test
+
 seqs = {
     "dung" : Seq("ms_dung", 90, 4, dungeon_baseline, dungeon_highline),
     "gi"   : Seq("ms_gi", 90, 4, get_item_highline, get_item_baseline),
@@ -30,13 +38,14 @@ seqs = {
     #"tri"  : Seq("ms_tri", 90, 1, ice_baseline, empty_channel),
     "tri"  : Seq("ms_tri", 150, 1, tri_highline2, tri_baseline2), # tri_baseline
     #"lost" : Seq("ms_tri", 75, 1, lost_highline, lost_baseline)
-    "myst" : Seq("ms_myst", 150, 1/4, empty_channel, myst_baseline),
+    #"myst" : Seq("ms_myst", 150, 1/4, empty_channel, myst_baseline),
+    "warp" : Seq("ms_warp", 60, 1, warp_highline, empty_channel),
 }
 
 for k, seq in seqs.items():
     seq.Flatten()
 
-#FindBestSeq(seqs["tri"].ch0)
+FindBestSeq(seqs["warp"].ch0)
 #FindBestSeq(seqs["tri"].ch1)
 #quit()
 
@@ -48,11 +57,13 @@ seqs["world"].ShiftChannel(0,-11)
 seqs["world"].ShiftChannel(1,-11)
 seqs["intro"].ShiftChannel(0,-11)
 seqs["intro"].ShiftChannel(1,-11)
-seqs["myst"].ShiftChannel(1,12)
+#seqs["myst"].ShiftChannel(1,12)
 seqs["tri"].ShiftChannel(0,5) #-8 5
 seqs["tri"].ShiftChannel(1,5)
 seqs["tri"].RepeatLastValidNote(0)
 seqs["tri"].RepeatLastValidNote(1)
+seqs["warp"].AdjustChannel(0, AdjustWarpSeq)
+seqs["warp"].ShiftChannel(0,-2)
 #seqs["lost"].ShiftChannel(0,0)
 #seqs["lost"].ShiftChannel(1,0)
 

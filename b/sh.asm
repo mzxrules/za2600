@@ -358,7 +358,7 @@ EnStairs:
     lda worldId
     bne .dungeonStairs
 .worldStairs
-    jmp EnterCave
+    jmp ENTER_CAVE
 .dungeonStairs
     lda roomEX
     sta roomId

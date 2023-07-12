@@ -3,6 +3,8 @@
 ;==============================================================================
 
 PAUSE_ENTRY: SUBROUTINE
+    ldx #$FF
+    txs
     lda Frame
     sta PFrame
     lda #0
@@ -62,8 +64,6 @@ PAUSE_FROM_GAME:
 .runPauseMenu
 
 .runPauseUpdate
-    lda #SLOT_AU_A
-    sta BANK_SLOT
     lda #SLOT_AU_B
     sta BANK_SLOT
     jsr UpdateAudio

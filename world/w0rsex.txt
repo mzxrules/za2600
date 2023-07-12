@@ -130,8 +130,8 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_EntDungFlute
+zz7
 Rs_FairyFountain
 zz0
 Rs_EntDungMid

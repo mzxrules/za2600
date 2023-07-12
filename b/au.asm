@@ -2,6 +2,8 @@
 ; mzxrules 2021
 ;==============================================================================
 UpdateAudio: SUBROUTINE
+    lda #SLOT_AU_A
+    sta BANK_SLOT
     lda SeqFlags
     bit SeqFlags
     bpl .continueSequence
@@ -66,6 +68,51 @@ SfxSurfVPattern:
 SfxSurfFPattern:
     .byte 2, 2, 3, 3, 5, 5, 7, 7, 1, 1, 1, 1, 1, 1, 1, 1
     /* .byte 02, 03, 05, 07, 05, 10, 10, 10 */
+
+SfxDelay: SUBROUTINE
+    clc
+    lda SeqTFrame
+    adc #$30
+    sta SeqTFrame
+    clc
+    lda SeqTFrame + 1
+    adc #$30
+    sta SeqTFrame + 1
+    jmp SfxStop
+
+    INCLUDE "gen/ms_warp0_note.asm"
+
+SfxWarp: SUBROUTINE
+    lda SfxCur
+    bpl .continue
+; SfxStop
+    lda #0
+    sta SfxFlags
+    rts
+.continue
+    inc SeqTFrame
+    inc SeqTFrame + 1
+
+    ldx #0
+    stx AUDVT0
+    stx AUDVT1
+
+    lsr
+    lsr
+    lsr
+    tax
+    lda ms_warp0_note,x
+    jmp SeqChan0
+
+SfxQuake: SUBROUTINE
+    lda #8
+    sta AUDVT1
+    sta AUDCT1
+    lda #17
+    sta AUDFT1
+    lda SfxCur
+    bne SfxStop
+    rts
 
 SfxStab: SUBROUTINE
     ldx #8

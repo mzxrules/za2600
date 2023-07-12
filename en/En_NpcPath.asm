@@ -33,7 +33,7 @@ En_NpcPath: SUBROUTINE
     lda NpcPathRooms,y
     sta worldSR
     lda #MS_PLAY_THEME_L
-    jmp ReturnWorld
+    jmp RETURN_WORLD
 
 .rts
     rts

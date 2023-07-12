@@ -61,8 +61,9 @@ BANK_2
     ORG $0C00
     RORG $FC00
 BANK_3
-
-    LOG_BANK_SIZE "-BANK 3- Reserved", BANK_3
+    INCLUDE "c/always.asm"
+    INCLUDE "b/game_halt.asm"
+    LOG_BANK_SIZE "-BANK 3- Halt Game", BANK_3
 
 ; ****************************************
 ; *               BANK 4                 *
@@ -184,7 +185,8 @@ BANK_12
     .byte $02, $01, $01, $02
     repend
 
-    repeat 4
+    .byte $01, $02, $00, $01
+    repeat 3
     .byte $01, $02, $02, $01
     repend
 
@@ -480,6 +482,7 @@ BANK_29
     INCLUDE "rs/RsInit_EntCaveWallCenterBlocked.asm"
     INCLUDE "rs/RsInit_EntCaveWallRightBlocked.asm"
     INCLUDE "rs/RsInit_FairyFountain.asm"
+    INCLUDE "rs/RsInit_EntDungFlute.asm"
 
     LOG_BANK_SIZE "-BANK 29- RoomScriptInit", BANK_29
 

@@ -1,16 +1,6 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-Rs_Del:
-    ldx roomRS
-    lda RoomScriptH,x
-    pha
-    lda RoomScriptL,x
-    pha
-Rs_None:
-Rs_BlockCentral:
-Rs_FairyFountain:
-    rts
 
 Cv_Del:
     ldx roomEX
@@ -64,7 +54,7 @@ Rs_EntCaveWallLeft: SUBROUTINE
     cpy plY
     bne .rts
     ldy #$38
-    jmp EnterCave
+    jmp ENTER_CAVE
 
 Rs_EntCaveWallRight:
     ldx #$6C
@@ -74,7 +64,7 @@ Rs_EntCaveWallRight:
     cpy plY
     bne .rts
     ldy #$38
-    jmp EnterCave
+    jmp ENTER_CAVE
 
 Rs_EntCaveWallCenter:
     ldx #$40
@@ -84,7 +74,7 @@ Rs_EntCaveWallCenter:
     cpy plY
     bne .rts
     ldy #$38
-    jmp EnterCave
+    jmp ENTER_CAVE
 
 Rs_EntCaveMid:
     ldx #$40
@@ -94,7 +84,7 @@ Rs_EntCaveMid:
     cpy plY
     bne .rts
     ldy #$20
-    jmp EnterCave
+    jmp ENTER_CAVE
 .rts
     rts
 
@@ -117,7 +107,7 @@ Rs_Cave: SUBROUTINE
     cmp #$08
     bne .rts
     lda #MS_PLAY_THEME_L
-    jmp ReturnWorld
+    jmp RETURN_WORLD
 
 .rts
     rts
@@ -193,7 +183,7 @@ Rs_ExitDung: SUBROUTINE
     bne .rts
 Rs_ExitDung2:
     lda #MS_PLAY_THEME_L
-    jmp ReturnWorld
+    jmp RETURN_WORLD
 .rts
     rts
 
@@ -281,3 +271,94 @@ Rs_Stairs: SUBROUTINE
     sta cdAType
 .rts
     rts
+
+Rs_EntDungFlute: SUBROUTINE
+    ldy roomId
+    lda rRoomFlag,y
+    and #RF_SV_DESTROY
+    bne .animate
+
+; extra safety check
+    lda roomFlags
+    and #RF_EV_LOAD
+    bne .rts
+
+    lda plState2
+    and #PS_ACTIVE_ITEM
+    cmp #PLAYER_FLUTE
+    bne .rts
+    lda plItemTimer
+    bpl .rts
+
+    lda plState
+    ora #PS_LOCK_ALL
+    sta plState
+
+    lda #-$40
+    sta roomTimer
+
+    lda #$80
+    sta m0Y
+
+    ldy roomId
+    lda rRoomFlag,y
+    ora #RF_SV_DESTROY
+    sta wRoomFlag,y
+.rts
+    rts
+
+.animate
+    lda #-8
+    sta plItemTimer
+
+    lda roomTimer
+    cmp #1
+    adc #0
+    sta roomTimer
+    beq .endAnimate
+
+    ; negate
+    eor #$FF
+    sec
+    adc #0
+
+    tax ;temp
+    lsr
+    lsr
+    lsr
+    tay
+    lda .LEVEL_7_PF2,y
+    sta wPF2Room+7,y
+    lda #$C0
+    sta wPF1RoomL+7,y
+    sta wPF1RoomR+7,y
+    txa
+    and #7
+    eor #5
+    bne .rts
+
+    lda #SFX_QUAKE
+    sta SfxFlags
+    rts
+
+.endAnimate
+    lda plState
+    and #~PS_LOCK_ALL
+    sta plState
+
+    lda #SFX_SOLVE
+    sta SfxFlags
+
+    lda #RS_ENT_DUNG_MID
+    sta roomRS
+    rts
+
+.LEVEL_7_PF2:
+    .byte $68 ; |...X.XX.| mirrored
+    .byte $74 ; |..X.XXX.| mirrored
+    .byte $7E ; |.XXXXXX.| mirrored
+    .byte $F6 ; |.XX.XXXX| mirrored
+    .byte $E2 ; |.X...XXX| mirrored
+    .byte $49 ; |X..X..X.| mirrored
+    .byte $E2 ; |.X...XXX| mirrored
+    .byte $FC ; |..XXXXXX| mirrored

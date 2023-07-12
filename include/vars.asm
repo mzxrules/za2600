@@ -40,7 +40,7 @@ worldSX     ds 1 ; respawn X
 worldSY     ds 1 ; respawn Y / Rs_Maze state
 worldSR     ds 1 ; respawn room / Rs_Maze init
 roomId      ds 1
-roomTimer   ds 1 ; Shutter animation timer
+roomTimer   ds 1 ; Dungeon Shutter / Room animation timer
 roomFlags   ds 1
 RF_EV_LOAD      = $80 ; 1000_0000 Force Load Room
 RF_EV_LOADED    = $40 ; 0100_0000 Room Load happened this frame
@@ -574,6 +574,7 @@ BANK_SLOT       = $3F
 
 SLOT_MAIN   = RAMSEG_FC | 1
 SLOT_PAUSE  = RAMSEG_FC | 2
+SLOT_HALT   = RAMSEG_FC | 3
 
 SLOT_PF_A   = RAMSEG_F4 | 4
 SLOT_PF_B   = RAMSEG_F4 | 5

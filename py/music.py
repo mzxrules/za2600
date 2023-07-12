@@ -56,7 +56,8 @@ seqs = {
     "final": Seq("ms_final", 150, 1, dung_final_highline, dung_final_baseline),
     "tri"  : Seq("ms_tri", 150, 1, tri_highline, tri_baseline),
     "ice"  : Seq("ms_ice", 90, 1, ice_baseline, empty_channel),
-    "lost" : Seq("ms_lost", 75, 1, lost_highline, lost_baseline)
+    "lost" : Seq("ms_lost", 75, 1, lost_highline, lost_baseline),
+    "warp" : Seq("ms_warp", 60, 1, warp_highline, empty_channel),
 }
 
 songKey = "ice"

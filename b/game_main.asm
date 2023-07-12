@@ -75,8 +75,6 @@ PAUSE_RETURN:
     jsr UpdateDoors
 .skipRoomChecks
 
-    lda #SLOT_AU_A
-    sta BANK_SLOT
     lda #SLOT_AU_B
     sta BANK_SLOT
     jsr UpdateAudio
@@ -255,10 +253,6 @@ endPFCollision
     jsr ClearDropSystem
 
 .RoomScript:
-    lda #SLOT_RS_A
-    sta BANK_SLOT
-    lda #SLOT_RS_B
-    sta BANK_SLOT
     jsr Rs_Del
 
 .Entity
@@ -485,7 +479,7 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     rts
 
 ; X, Y is return world X/Y
-EnterCave:
+ENTER_CAVE:
     lda roomId
     sta worldSR
     stx worldSX
@@ -505,7 +499,7 @@ EnterCave:
     rts
 
 ; A = SeqFlags
-ReturnWorld: SUBROUTINE
+RETURN_WORLD: SUBROUTINE
     sta SeqFlags
     lda worldSX
     sta plX
@@ -538,6 +532,21 @@ En_Del:
     pha
     lda Entity_BankLUT,y
     sta BANK_SLOT
+    rts
+
+Rs_Del:
+    lda #SLOT_RS_A
+    sta BANK_SLOT
+    lda #SLOT_RS_B
+    sta BANK_SLOT
+    ldx roomRS
+    lda RoomScriptH,x
+    pha
+    lda RoomScriptL,x
+    pha
+Rs_None:
+Rs_BlockCentral:
+Rs_FairyFountain:
     rts
 
 WorldBankOff:

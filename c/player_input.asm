@@ -316,12 +316,11 @@ PlayerFlute: SUBROUTINE
     bmi .drawTornado ; jmp
 
 .SpawnTornado
-    lda plY
-    sta m0Y
-    lda #0
-    sta m0X
-    lda #-84
-    sta plItemTimer
+    lda #SFX_WARP
+    sta SfxFlags
+    lda #SLOT_HALT
+    sta BANK_SLOT
+    jmp HALT_FLUTE_ENTRY
 
 .drawTornado
     cmp #-1
@@ -446,11 +445,8 @@ PlayerInput: SUBROUTINE
     bmi .skipCheckForPause
     lda #SLOT_PAUSE
     sta BANK_SLOT
-    lda #<(PAUSE_ENTRY - 1)
-    sta PauseSp
-    lda #>(PAUSE_ENTRY - 1)
-    sta PauseSp+1
-    rts ; jmp PAUSE_ENTRY
+    jmp PAUSE_ENTRY
+
 .skipCheckForPause
     ; test if player locked
     lda #PS_LOCK_ALL
