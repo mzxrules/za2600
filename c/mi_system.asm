@@ -1,156 +1,243 @@
 ;==============================================================================
 ; mzxrules 2022
 ;==============================================================================
+MI_SPAWN_CARD = $1
+MI_SPAWN_ATAN = $2
+MI_RUN_CARD = $1^$80
+MI_RUN_ATAN = $2^$80
+;==============================================================================
+; MiSysUpdateCardPos
+;----------
+; Updates Missile Position via Cardinal Dir
+; X = Missile Index
+;==============================================================================
+MiSysUpdateCardPos: SUBROUTINE
+    lda mi0Dir,x
+    sta MiSysDir
+    and #2
+    bne .updateY
+.updateX
+    lda MiSysDir
+    and #1
+    beq .left
+.right
+    inc mi0X,x
+    inc mi0X,x
+    rts
+.left
+    dec mi0X,x
+    dec mi0X,x
+    rts
+.updateY
+    lda MiSysDir
+    and #1
+    beq .up
+.down
+    dec mi0Y,x
+    dec mi0Y,x
+    rts
+.up
+    inc mi0Y,x
+    inc mi0Y,x
+    rts
 
 ;==============================================================================
-; MiSysUpdatePos
+; MiSysUpdateAtanPos
 ;----------
-; Updates Missile Position
-; Y = Missile Index
+; Updates Missile Position via Atan2 Dir
+; X = Missile Index
 ;==============================================================================
-MiSysUpdatePos: SUBROUTINE
-    lda mADir,y
+MiSysUpdateAtanPos: SUBROUTINE
+    lda mi0Dir,x
     sta MiSysDir
     and #$3F
-    tax
-    lda Atan2X,x
+    tay
+    lda Atan2X,y
     sta MiSysDX
-    lda Atan2Y,x
+    lda Atan2Y,y
     sta MiSysDY
 
-    ldx #1
+    ldy #1
 ; Update X
 .addDouble
-    lda mAxf,y
+    lda mi0Xf,x
     bit MiSysDir
     bmi .subX
     clc
     adc MiSysDX
-    sta mAxf,y
-    lda mAx,y
+    sta mi0Xf,x
+    lda mi0X,x
     adc #0
-    sta mAx,y
+    sta mi0X,x
     jmp .addY
 .subX
     sec
     sbc MiSysDX
-    sta mAxf,y
-    lda mAx,y
+    sta mi0Xf,x
+    lda mi0X,x
     sbc #0
-    sta mAx,y
+    sta mi0X,x
 
 ; Update Y
 .addY
-    lda mAyf,y
+    lda mi0Yf,x
     bit MiSysDir
     bvs .subY
     clc
     adc MiSysDY
-    sta mAyf,y
-    lda mAy,y
+    sta mi0Yf,x
+    lda mi0Y,x
     adc #0
-    sta mAy,y
+    sta mi0Y,x
     jmp .checkAddY
 .subY
     sec
     sbc MiSysDY
-    sta mAyf,y
-    lda mAy,y
+    sta mi0Yf,x
+    lda mi0Y,x
     sbc #0
-    sta mAy,y
+    sta mi0Y,x
 .checkAddY
-    dex
+    dey
     bpl .addDouble
     rts
 
 MiSystem: SUBROUTINE
-    ldy #1
+    ldx #1
 .loop
-    lda mAType,y
-    beq .cont
-    jsr MiSysUpdatePos
-.cont
-    dey
-    bpl .loop
+    lda miType,x
+    beq .continue
 
-; Select Missile Draw
-    ldy #1
-    lda mAType
-    beq .draw
-    dey
-    lda mAType+1
-    beq .draw
-    lda Frame
-    and #1
-    tay
-
-.draw
-    lda rNUSIZ1_T
-    ora #$20
-    sta wNUSIZ1_T
-    lda #3
-    sta wM1H
-
-    lda mAx,y
-    sta m1X
-    tax
-    lda mAy,y
-    sta m1Y
-
-    cpx #EnBoardXL
+    jsr MiProcess
+    jsr MiPlCol
+    lda mi0X,x
+    cmp #EnBoardXL
     bmi .kill
-    cpx #EnBoardXR+1 + 3
+    cmp #EnBoardXR+7
     bpl .kill
-    cmp #EnBoardYU+1 + 2
-    bpl .kill
-    cmp #EnBoardYD - 2
-    bmi .kill
 
-.rts
-    rts
+    lda mi0Y,x
+    cmp #EnBoardYU
+    bpl .kill
+    cmp #EnBoardYD+7
+    bpl .continue
 .kill
     lda #0
-    sta mAType,y
-    lda #$80
-    sta m1Y
+    sta miType,x
+.continue
+    dex
+    bpl .loop
+    rts
+
+MiProcess: SUBROUTINE
+.cont1
+    cmp #MI_SPAWN_CARD
+    bne .cont2
+    jmp MiSpawnRock
+
+.cont2
+    cmp #MI_SPAWN_ATAN
+    bne .cont3
+    jmp MiSpawnAtan
+
+.cont3
+    cmp #MI_RUN_ATAN
+    bne .cont4
+    jmp MiSysUpdateAtanPos
+.cont4
+    cmp #MI_RUN_CARD
+    bne .no_update
+.cardPos
+    jmp MiSysUpdateCardPos
+.no_update
     rts
 
 
-MiSpawn2: SUBROUTINE
-    lda plX
-    sec
-    sbc MiSysAddX
-    tax
+MiSpawnAtan: SUBROUTINE
+    stx MiSysEnNum
     lda plY
     sec
-    sbc MiSysAddY
+    sbc mi0Y,x
     tay
+    lda plX
+    sec
+    sbc mi0X,x
+    tax
     jsr Atan2
-
-MiSpawn: SUBROUTINE
-    ldy #1
-    ldx mBType
-    beq .rtsMiSysNext
-    dey
-    ldx mAType
-    beq .rtsMiSysNext
-    dey
-; Y returns next free missile index, or -1 if no slots available
-.rtsMiSysNext
-
-MiSpawnImpl: SUBROUTINE
-    cpy #$FF
-    beq .rts
-.rockInit
-    sta mADir,y
-    lda MiSysAddType
-    sta mAType,y
-    lda MiSysAddX
-    sta mAx,y
-    lda MiSysAddY
-    sta mAy,y
+    ldx MiSysEnNum
+    sta mi0Dir,x
+    lda #MI_RUN_ATAN
+    sta miType,x
     lda #$80
-    sta mAxf,y
-    sta mAyf,y
-.rts
+    sta mi0Xf,x
+    sta mi0Yf,x
     rts
+
+; X is missile slot
+MiSpawnRock: SUBROUTINE
+    lda #MI_RUN_CARD
+    sta miType,x
+    rts
+
+; X is missile slot
+MiPlCol: SUBROUTINE
+
+    lda enType,x
+    cmp #EN_TEST_MISSILE
+    bne .skipTestReset
+    lda #0
+    sta enTestMissileResult,x
+
+.skipTestReset
+
+    lda plDir
+    and #3
+    tay
+    lda plX
+    sta Hb_aa_x
+    lda plY
+    sta Hb_aa_y
+    lda mi0X,x
+    sta Hb_bb_x
+    lda mi0Y,x
+    sta Hb_bb_y
+HbEnAttCollide:
+    ;ldy Hb_aa_Box
+    ;beq .no_hit ; null box
+
+.valid_box
+    lda Hb_aa_x
+    clc
+    adc hitbox2_aa_ox,y
+
+    sec
+    sbc Hb_bb_x
+    cmp hitbox2_aa_w_plus_bb_w,y
+    ;bcc .pass_x
+    bcs .no_hit
+;.no_hit
+;    lda #0
+;    sta HbFlags
+;    rts
+
+.pass_x
+    lda Hb_aa_y
+    clc
+    adc hitbox2_aa_oy,y
+
+    sec
+    sbc Hb_bb_y
+    cmp hitbox2_aa_h_plus_bb_h,y
+    bcs .no_hit
+
+    lda enType,x
+    cmp #EN_TEST_MISSILE
+    bne .skipTestSet
+    lda #COLOR_EN_RED
+    sta enTestMissileResult,x
+.skipTestSet
+
+.no_hit
+    rts
+
+    INCLUDE "gen/hitbox_info2.asm"

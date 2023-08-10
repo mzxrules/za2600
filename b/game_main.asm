@@ -59,6 +59,14 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda #0
     beq .roomLoadCpuSkip
 .roomSkipInit
+
+.Missile:
+    lda #SLOT_RS_A
+    sta BANK_SLOT
+    lda #SLOT_RS_B
+    sta BANK_SLOT
+    jsr MiSystem
+
     lda #SLOT_PL
     sta BANK_SLOT
     jsr PlayerInput
@@ -270,13 +278,6 @@ endPFCollision
     lda #SLOT_EN_A
     sta BANK_SLOT
     jsr EnSysCleanShift
-
-.Missile:
-    lda #SLOT_RS_A
-    sta BANK_SLOT
-    lda #SLOT_RS_B
-    sta BANK_SLOT
-    jsr MiSystem
 
 .BallScript:
     lda #SLOT_PU_A

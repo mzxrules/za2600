@@ -56,13 +56,12 @@ En_OctorokMain:
     bne .endCheckDamaged
     lda #SLOT_BATTLE
     sta BANK_SLOT
-    ldy enNum
     jsr HbGetPlAtt
     jsr HbPlAttCollide_EnBB
 
 ; Get damage
-    ldx HbDamage
-    lda EnDam_Octorok,x
+    ldy HbDamage
+    lda EnDam_Octorok,y
     sta Temp0
 
     lda #SLOT_EN_A
@@ -72,11 +71,11 @@ En_OctorokMain:
 
 .gethit
     lda Temp0 ; fetch damage
-    ldx #-32
-    stx enStun,y
+    ldy #-32
+    sty enStun,x
     clc
-    adc enHp,y
-    sta enHp,y
+    adc enHp,x
+    sta enHp,x
     bpl .endCheckDamaged
     jmp EnSysEnDie
 .defSfx
@@ -85,7 +84,7 @@ En_OctorokMain:
 .endCheckDamaged
 
 ; Check player hit
-    lda enStun,y
+    lda enStun,x
     bmi .endCheckHit
     bit CXPPMM
     bpl .endCheckHit
@@ -180,6 +179,15 @@ En_OctorokMain:
     tay
     lda ENEMY_ROT,y
     sta enDir,x
+    sta mi0Dir,x
+    lda #1
+    sta miType,x
+    lda en0X,x
+    sta mi0X,x
+    lda en0Y,x
+    sta mi0Y,x
+
+
 .rts
     ldx enNum
     lda EnSysNX
@@ -187,32 +195,6 @@ En_OctorokMain:
     lda EnSysNY
     sta enNY,x
     rts
-
-; Fire Nut logic
-/*
-    lda Frame
-    and #$3F
-    bne .skipFire
-    lda #1
-    sta MiSysAddType
-    clc
-    lda enX
-    adc #3
-    sta MiSysAddX
-    lda enY
-    adc #2
-    sta MiSysAddY
-    ldy enDir
-    lda EN_ATAN2_CARDINAL,y
-    jsr MiSpawn
-.skipFire
-    lda Frame
-    and #1
-    bne .rts
-    jsr EnMoveDirDel
-.rts
-    rts
-*/
 
 En_Octorok_Think: SUBROUTINE
     lda Rand16
@@ -226,6 +208,6 @@ ENEMY_ROT:
     .byte 2, 3, 1, 0 ; clockwise
     .byte 3, 2, 0, 1 ; counterclock
 
-EN_ATAN2_CARDINAL:
-    .byte DEG_180, DEG_000, DEG_090, DEG_270
+;EN_ATAN2_CARDINAL:
+;    .byte DEG_180, DEG_000, DEG_090, DEG_270
     LOG_SIZE "En_Octorok", En_Octorok

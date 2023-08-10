@@ -24,12 +24,12 @@ HbGetPlAtt: SUBROUTINE
     beq .rts
     lda plState2
     and #PS_ACTIVE_ITEM
-    tax
-    lda HbPlAttH,x
+    tay
+    lda HbPlAttH,y
     pha
-    lda HbPlAttL,x
+    lda HbPlAttL,y
     pha
-    ldx plItemTimer
+    ldy plItemTimer
 .rts
     rts
 
@@ -37,29 +37,29 @@ HbPlWand: SUBROUTINE
 HbPlSword: SUBROUTINE
     lda #HB_PL_SWORD
     sta HbFlags
-    cpx #ITEM_ANIM_SWORD_STAB_SHORT
+    cpy #ITEM_ANIM_SWORD_STAB_SHORT
     bcs .rts ; if y >= Stab Short
-    cpx #ITEM_ANIM_SWORD_STAB_LONG
+    cpy #ITEM_ANIM_SWORD_STAB_LONG
     bcc .rts ; if y < Stab Short
-    ldx plItemDir
-    inx
-    stx Hb_aa_Box
+    ldy plItemDir
+    iny
+    sty Hb_aa_Box
 
-    ldx #HB_DMG_SWORD3
+    ldy #HB_DMG_SWORD3
     bit ITEMV_SWORD3
     bmi .sword3
     bvs .sword2
 .sword1
-    dex
+    dey
 .sword2
-    dex
+    dey
 .sword3
-    stx HbDamage
+    sty HbDamage
 .rts
     rts
 
 HbPlBomb: SUBROUTINE
-    cpx #ITEM_ANIM_BOMB_DETONATE
+    cpy #ITEM_ANIM_BOMB_DETONATE
     bcc .rts
     lda #10 ; 8x8 hitbox
     sta Hb_aa_Box
@@ -72,9 +72,9 @@ HbPlBomb: SUBROUTINE
 
 HbPlBow: SUBROUTINE
     lda m0Y
-    ldx plItemDir
-    inx
-    stx Hb_aa_Box
+    ldy plItemDir
+    iny
+    sty Hb_aa_Box
     lda #HB_DMG_ARROW
     sta HbDamage
     lda #HB_PL_ARROW
@@ -96,24 +96,30 @@ HbPlMeat: SUBROUTINE
 HbPlPotion: SUBROUTINE
     rts
 
-
+;==============================================================================
+; HbPlAttCollide
+; HbPlAttCollide_EnBB
+;----------
+; Calculates whether player attack has collided with EnBB
+; X = enNum
+;==============================================================================
 HbPlAttCollide_EnBB:
-    lda en0X,y
+    lda en0X,x
     sta Hb_bb_x
-    lda en0Y,y
+    lda en0Y,x
     sta Hb_bb_y
 HbPlAttCollide: SUBROUTINE
-    ldx Hb_aa_Box
+    ldy Hb_aa_Box
     beq .no_hit ; null box
 
 .valid_box
     lda Hb_aa_x
     clc
-    adc hitbox_aa_ox,x
+    adc hitbox_aa_ox,y
 
     sec
     sbc Hb_bb_x
-    cmp hitbox_aa_w_plus_bb_w,x
+    cmp hitbox_aa_w_plus_bb_w,y
     bcc .pass_x
 .no_hit
     lda #0
@@ -123,11 +129,11 @@ HbPlAttCollide: SUBROUTINE
 .pass_x
     lda Hb_aa_y
     clc
-    adc hitbox_aa_oy,x
+    adc hitbox_aa_oy,y
 
     sec
     sbc Hb_bb_y
-    cmp hitbox_aa_h_plus_bb_h,x
+    cmp hitbox_aa_h_plus_bb_h,y
     bcs .no_hit
     lda #HB_PL_ARROW
     and HbFlags

@@ -80,8 +80,6 @@ SfxDelay: SUBROUTINE
     sta SeqTFrame + 1
     jmp SfxStop
 
-    INCLUDE "gen/ms_warp0_note.asm"
-
 SfxWarp: SUBROUTINE
     lda SfxCur
     bpl .continue

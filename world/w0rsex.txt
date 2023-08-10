@@ -134,8 +134,8 @@ Rs_EntDungFlute
 zz7
 Rs_FairyFountain
 zz0
-Rs_EntDungMid
-zz9
+Rs_EntCaveMid
+Cv_Shop1
 Rs_EntDungMid
 zz4
 Rs_None

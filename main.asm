@@ -404,6 +404,7 @@ BANK_24
     INCLUDE "gen/ms_tri0_dur.asm"
     INCLUDE "gen/ms_tri1_note.asm"
     INCLUDE "gen/ms_tri1_dur.asm"
+    INCLUDE "gen/ms_warp0_note.asm"
 
     align 16
     INCLUDE "gen/ms_header.asm"
@@ -461,6 +462,7 @@ BANK_28
     INCLUDE "en/EnDraw_GreatFairy.asm"
     INCLUDE "en/EnDraw_BossGlock.asm"
     INCLUDE "en/EnDraw_BossGlockHead.asm"
+    INCLUDE "en/EnDraw_TestMissile.asm"
 
     LOG_BANK_SIZE "-BANK 28- PushSystem", BANK_28
 
@@ -565,6 +567,7 @@ BANK_35
     INCLUDE "en/En_ItemGet.asm"
     INCLUDE "en/En_Wallmaster.asm"
     INCLUDE "en/En_Test.asm"
+    INCLUDE "en/En_TestMissile.asm"
     INCLUDE "en/EnBoss_Cucco.asm"
     INCLUDE "en/En_BossGohma.asm"
     INCLUDE "en/En_BossGlock.asm"
@@ -573,6 +576,6 @@ BANK_35
 
 ; End
 
-    ORG $8FFF
+    ORG $FFFF
     RORG $FFFF
     .byte 0

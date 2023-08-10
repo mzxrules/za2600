@@ -48,6 +48,7 @@ En_BossGohma: SUBROUTINE
     bcs .endWeaponCollision
     lda #$80
     sta m0Y
+    ldx enNum
     jmp EnSysEnDie
     bmi .endWeaponCollision ; always branch
 

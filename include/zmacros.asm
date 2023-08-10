@@ -8,6 +8,11 @@ ITEMV_{1} = itemFlags + {2}
 ITEMF_{1} = {3}
     ENDM
 
+; Defines consts to calculate En class sizes
+    MACRO EN_SIZE
+SIZE_EN_{1} = . - EN_VARS + $8000
+    ENDM
+
 ; Outputs rom size of a code section
     MACRO LOG_BANK_SIZE
         IFNCONST PAL60

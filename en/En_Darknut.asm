@@ -38,13 +38,12 @@ En_DarknutMain:
     bne .endCheckDamaged
     lda #SLOT_BATTLE
     sta BANK_SLOT
-    ldy enNum
     jsr HbGetPlAtt
     jsr HbPlAttCollide_EnBB
 
 ; Get damage
-    ldx HbDamage
-    lda EnDam_Darknut,x
+    ldy HbDamage
+    lda EnDam_Darknut,y
     sta Temp0
 
     lda #SLOT_EN_A
@@ -61,8 +60,8 @@ En_DarknutMain:
     beq .defSfx ; block non-damaging attacks
 
 ; Test if item hit Darknut's shield
-    ldx enDir,y
-    cpx plItemDir
+    ldy enDir,x
+    cpy plItemDir
     bne .gethit
 
     ; Test if sword hit shield
@@ -74,11 +73,11 @@ En_DarknutMain:
 
 .gethit
     lda Temp0 ; fetch damage
-    ldx #-32
-    stx enStun,y
+    ldy #-32
+    sty enStun,x
     clc
-    adc enHp,y
-    sta enHp,y
+    adc enHp,x
+    sta enHp,x
     bpl .endCheckDamaged
     jmp EnSysEnDie
 .defSfx
@@ -87,13 +86,12 @@ En_DarknutMain:
 .endCheckDamaged
 
     ; Check player hit
-    lda enStun,y
+    lda enStun,x
     bmi .endCheckHit
     bit CXPPMM
     bpl .endCheckHit
     lda #-8
     jsr UPDATE_PL_HEALTH
-    ldy enNum
 .endCheckHit
 
 ; Movement

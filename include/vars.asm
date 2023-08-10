@@ -151,26 +151,44 @@ en0X        ds 1
 en1X        ds 1
 en0Y        ds 1
 en1Y        ds 1
-EN_VARS:    ds 16 ; Zero initialized entity vars
+EN_VARS:    ds 26 ; Zero initialized entity vars
 EN_VARS_END:
 EN_VARS_COUNT = EN_VARS_END - EN_VARS
 
 ; Class NPC
     ORG EN_VARS
 enState     ds 2
+miType      ds 2
 mesgId      ds 1
 CLASS_EN_NPC
 
 ; Class ENEMY
     ORG EN_VARS
 enState     ds 2
+miType      ds 2
 enHp        ds 2
 enStun      ds 2
-CLASS_EN_ENEMY
+CLASS_EN_ENEMY_BASE
+enDir       ds 2
+mi0Xf       ds 1
+mi1Xf       ds 1
+mi0Yf       ds 1
+mi1Yf       ds 1
+CLASS_EN_BOSS
+    ORG CLASS_EN_ENEMY_BASE
 enDir       ds 2
 enNX        ds 2
 enNY        ds 2
 CLASS_EN_ENEMY_MOVE
+; Missile Vars
+mi0Dir      ds 1
+mi1Dir      ds 1
+mi0X        ds 1
+mi1X        ds 1
+mi0Y        ds 1
+mi1Y        ds 1
+CLASS_EN_ENEMY_MOVE_SHOOT
+CLASS_EN_BOSS_SHOOT
 
 ; == Gameover
     ORG CLASS_EN_NPC
@@ -190,8 +208,8 @@ shopDigit   ds 3
 
 ; == En_ClearDrop
 ; == En_ItemGet
-    ORG EN_VARS
-enState     ds 2
+    ORG CLASS_EN_NPC
+; enState
 CD_UPDATE_B     = $80 ; 1xxx_xxxx
 CD_UPDATE_A     = $40 ; x1xx_xxxx
                       ; xx11_11xx GI_EVENT reserved
@@ -217,30 +235,35 @@ enGFairyDie ds 1
     ORG CLASS_EN_ENEMY_MOVE
 enDarknutTemp
                 ; xx1x_xxxx = new direction toggle
+    EN_SIZE DARKNUT
 
 ; == Wallmaster
     ORG CLASS_EN_ENEMY_MOVE
 enWallPhase ds 1 ; anim timer for phasing through wall
 enPX        ds 1 ; posX last frame, after collision check
 enPY        ds 1 ; posY last frame, after collision check
+    EN_SIZE WALLMASTER
 
 ; == Octorok
-    ORG CLASS_EN_ENEMY_MOVE
+    ORG CLASS_EN_ENEMY_MOVE_SHOOT
 enOctorokThink  ds 2
 enMDX           ds 1
 enMDY           ds 1
+    EN_SIZE OCTOROK
 
 ; == LikeLike
     ORG CLASS_EN_ENEMY_MOVE
 enLLTimer   ds 1
+    EN_SIZE LIKE_LIKE
 
 ; == Rope
     ORG CLASS_EN_ENEMY_MOVE
 enRopeTimer ds 2
 enRopeThink ds 2
+    EN_SIZE ROPE
 
 ; == Gohma
-    ORG CLASS_EN_ENEMY
+    ORG CLASS_EN_BOSS_SHOOT
 ; enState
                         ; 1xxx_xxxx = init
                         ; xxxx_x111 = animation state
@@ -249,14 +272,16 @@ GOHMA_ANIM_0    = $00
 GOHMA_ANIM_1    = $02
 GOHMA_ANIM_2    = $04
 enGohmaTimer ds 1
+    EN_SIZE BOSS_GOHMA
 
 ; == Glock (Trinexx)
-    ORG CLASS_EN_ENEMY
+    ORG CLASS_EN_BOSS_SHOOT
 enGlockTimer        ds 1
 enGlockThink        ds 1
 enGlockNeck         ds 1
 enGlockHeadDir      ds 1
 enGlockHeadThink    ds 1
+    EN_SIZE BOSS_GLOCK
 
 ; == Test
     ORG EN_VARS + 2
@@ -265,25 +290,14 @@ enTestFX    ds 1
 enTestFY    ds 1
 enTestTimer ds 1
 
+; == TestMissile
+    ORG CLASS_EN_ENEMY_MOVE_SHOOT
+enTestMissileType   ds 2
+enTestMissileResult ds 2
+
     ORG EN_VARS_END
 
 ;==============================================================================
-
-; Missile Vars
-mAType      ds 1
-mBType      ds 1
-mAx         ds 1
-mBx         ds 1
-mAxf        ds 1
-mBxf        ds 1
-mAy         ds 1
-mBy         ds 1
-mAyf        ds 1
-mByf        ds 1
-mADir       ds 1
-mBDir       ds 1
-mATimer     ds 1
-mBTimer     ds 1
 
 atan2Temp   ds 1
 
@@ -385,12 +399,10 @@ Hb_bb_y         ds 1
 
     SEG.U VARS_MI_SYS
     ORG Temp0
+MiSysEnNum      ds 1
 MiSysDir        ds 1
 MiSysDX         ds 1
 MiSysDY         ds 1
-MiSysAddType    ds 1
-MiSysAddX       ds 1
-MiSysAddY       ds 1
 
     SEG.U VARS_SHOP_KERNEL
     ORG Temp0
@@ -445,6 +457,7 @@ rRoomClear  ds 256/8            ; All Enemies Defeated flags
 rRoomFlag   ds 256
     ; all world types
 RF_SV_ITEM_GET  = $80 ; 1xxx_xxxx Got Item
+RF_SV_VISIT     = $20 ; xx1x_xxxx Visited Room
     ; overworld only
 RF_SV_DESTROY   = $40 ; x1xx_xxxx
     ; dungeons only
@@ -588,6 +601,8 @@ SLOT_W2     = RAMSEG_F4 | 14
 SLOT_RW0    = RAMSEG_F8 | 0
 SLOT_RW1    = RAMSEG_F8 | 1
 SLOT_RW2    = RAMSEG_F8 | 2
+
+SLOT_RW_MAP = RAMSEG_F0 | 3
 
 SLOT_SH     = RAMSEG_F0 | 18
 SLOT_DRAW   = RAMSEG_F4 | 19

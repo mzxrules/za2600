@@ -376,7 +376,7 @@ EnNone:
 EnSysEncounter:
     .byte EN_NONE, EN_OCTOROK, EN_OCTOROK, EN_ROPE
     .byte EN_ROPE, EN_DARKNUT, EN_DARKNUT, EN_BOSS_GOHMA
-    .byte EN_WALLMASTER, EN_TEST, EN_LIKE_LIKE, EN_BOSS_GLOCK
+    .byte EN_WALLMASTER, EN_TEST_MISSILE, EN_LIKE_LIKE, EN_BOSS_GLOCK
 EnSysEncounterCount:
     .byte 0, 1, 2, 1
     .byte 2, 1, 2, 1
@@ -551,6 +551,12 @@ EnSpawnPF2Mask:
 
     LOG_SIZE "EnRandSpawn", EnRandSpawn
 
+;==============================================================================
+; EnSysEnDie
+;----------
+; Kills an Enemy
+; X = enNum of Enemy to kill
+;==============================================================================
 EnSysEnDie:
     dec roomENCount
     bne .continueEncounter
@@ -566,10 +572,10 @@ EnSysEnDie:
 
 .continueEncounter
     lda #$80
-    sta en0Y,y
+    sta en0Y,x
     lda #EN_NONE
-    sta enType,y
-    cpy #0
+    sta enType,x
+    cpx #0
     beq EnSysCleanShift
 .rts
     rts

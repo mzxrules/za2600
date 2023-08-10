@@ -27,6 +27,20 @@ EnDraw_Octorok: SUBROUTINE
     clc
     adc #<SprE4
     sta enSpr
+
+    lda miType,x
+    bpl .rts
+
+    lda #1
+    sta wM1H
+    lda mi0X,x
+    sta m1X
+    lda mi0Y,x
+    sta m1Y
+    lda rNUSIZ1_T
+    ora %10000
+    sta wNUSIZ1_T
+.rts
     rts
 
 EnDraw_OctorokColors

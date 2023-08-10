@@ -9,7 +9,7 @@ EN_DIR_D = 3
 ROOM_PX_HEIGHT = 20
 
 HITBOX_INFO = [
-# width, height, shift displacement
+# width, height, x shift displacement
     (0, 0, 0),
 # sword/arrow
     (8, 2, 0),
@@ -26,6 +26,20 @@ HITBOX_INFO = [
     (8, 8, 0),
 ]
 
+HITBOX_INFO2 = [
+# player shield hb
+    (1, 8,  8,  0),
+    (1, 8, -1,  0),
+    (8, 1,  0, -1),
+    (8, 1,  0,  8),
+# player hitbox (missiles)
+    (6, 6, 1, 1),
+]
+
+HITBOX_INFO_MISSILE = [
+    (2, 2)
+]
+
 def get_hitbox_info():
     aa_ox = []
     aa_oy = []
@@ -35,7 +49,7 @@ def get_hitbox_info():
         bb_w = 8
         bb_h = 8
 
-        aa_ox.append(aa_w-2+xshift)
+        aa_ox.append(aa_w-1+xshift-1)
         aa_oy.append(aa_h-1)
         aa_w_PLUS_bb_w.append(aa_w + bb_w -1)
         aa_h_PLUS_bb_h.append(aa_h + bb_h -1)
@@ -48,6 +62,30 @@ def get_hitbox_info():
         file.write("hitbox_aa_w_plus_bb_w:\n")
         file.write(ToAsm(aa_w_PLUS_bb_w))
         file.write("hitbox_aa_h_plus_bb_h:\n")
+        file.write(ToAsm(aa_h_PLUS_bb_h))
+
+def get_hitbox_info2():
+    aa_ox = []
+    aa_oy = []
+    aa_w_PLUS_bb_w = []
+    aa_h_PLUS_bb_h = []
+
+    for bb_w, bb_h in HITBOX_INFO_MISSILE:
+        for aa_w, aa_h, xshift, yshift in HITBOX_INFO2:
+
+            aa_ox.append(aa_w-1+xshift)
+            aa_oy.append(aa_h-1+yshift)
+            aa_w_PLUS_bb_w.append(aa_w + bb_w -1)
+            aa_h_PLUS_bb_h.append(aa_h + bb_h -1)
+
+    with open(f'gen/hitbox_info2.asm', "w") as file:
+        file.write("hitbox2_aa_ox:\n")
+        file.write(ToAsm(aa_ox))
+        file.write("hitbox2_aa_oy:\n")
+        file.write(ToAsm(aa_oy))
+        file.write("hitbox2_aa_w_plus_bb_w:\n")
+        file.write(ToAsm(aa_w_PLUS_bb_w))
+        file.write("hitbox2_aa_h_plus_bb_h:\n")
         file.write(ToAsm(aa_h_PLUS_bb_h))
 
 def get_room_px_check():
@@ -151,6 +189,7 @@ bitcountOut = get_bitcount()
 roomHeight, roomHeight8 = get_roomheight()
 
 get_hitbox_info()
+get_hitbox_info2()
 get_room_px_check()
 get_randdir_lut()
 

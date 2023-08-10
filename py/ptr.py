@@ -56,7 +56,9 @@ Entity_Table = [
     "En_Rope",         "SEG_34", "SEG_NA", "EnDraw_Rope",
     "En_RopeMain",     "SEG_34", "SEG_NA", "EnDraw_Rope",
     "En_Wallmaster",   "SEG_35", "SEG_NA", "EnDraw_Wallmaster",
+
     "En_Test",         "SEG_35", "SEG_NA", "EnDraw_Darknut",
+    "En_TestMissile",  "SEG_35", "SEG_NA", "EnDraw_TestMissile",
 
     "En_BossGohma",    "SEG_35", "SEG_NA", "EnDraw_BossGohma",
     "En_BossGlock",    "SEG_35", "SEG_NA", "EnDraw_BossGlock",

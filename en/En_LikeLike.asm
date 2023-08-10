@@ -28,8 +28,8 @@ En_LikeLikeMain: SUBROUTINE
     jsr HbPlAttCollide_EnBB
 
 ; Get damage
-    ldx HbDamage
-    lda EnDam_Rope,x
+    ldy HbDamage
+    lda EnDam_Rope,y
     tay
 
     lda #SLOT_MAIN
@@ -75,8 +75,8 @@ En_LikeLikeMain: SUBROUTINE
     lda #$F0
     jsr EnSetBlockedDir
     lda EnSysBlockedDir
-    ldx enDir
-    and Bit8,x
+    ldy enDir
+    and Bit8,y
     beq .endCheckBlocked
     jsr NextDir
 .endCheckBlocked

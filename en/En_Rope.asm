@@ -57,13 +57,12 @@ En_RopeMain: SUBROUTINE
     bne .endCheckDamaged
     lda #SLOT_BATTLE
     sta BANK_SLOT
-    ldy enNum
     jsr HbGetPlAtt
     jsr HbPlAttCollide_EnBB
 
 ; Get damage
-    ldx HbDamage
-    lda EnDam_Rope,x
+    ldy HbDamage
+    lda EnDam_Rope,y
     sta Temp0
 
     lda #SLOT_EN_A
@@ -73,11 +72,11 @@ En_RopeMain: SUBROUTINE
 
 .gethit
     lda Temp0 ; fetch damage
-    ldx #-32
-    stx enStun,y
+    ldy #-32
+    sty enStun,x
     clc
-    adc enHp,y
-    sta enHp,y
+    adc enHp,x
+    sta enHp,x
     bpl .endCheckDamaged
     jmp EnSysEnDie
 .defSfx
@@ -86,7 +85,7 @@ En_RopeMain: SUBROUTINE
 .endCheckDamaged
 
 ; Check player hit
-    lda enStun,y
+    lda enStun,x
     bmi .endCheckHit
     bit CXPPMM
     bpl .endCheckHit
