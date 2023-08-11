@@ -224,6 +224,8 @@ LoadRoom: SUBROUTINE
 ; Update Dungeon roomDoors
     ldy roomId
     lda rRoomFlag,y
+    ora #RF_SV_VISIT
+    sta wRoomFlag,y
     and #%01010101
     sta Temp0
     asl

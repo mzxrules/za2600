@@ -730,3 +730,15 @@ impossible for sprites to align perfectly.
 
 m1x needs to be inc by 1 over mi0X to overlap bottom left player pixel
 m1y does not need to be adjusted, but the missle will appear 1 scanline above
+
+
+Pause Map:
+  0
+ 000  000
+00000 000
+ 000  000
+  0
+
+Map image must be 48 pixels. Each room info is 5x5, 8 rooms per row.
+Dungeon data is 16 rooms per row.
+Level 3 (E) is only dungeon spanning both 0-7 and 0-F row indices

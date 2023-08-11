@@ -302,6 +302,8 @@ enTestMissileResult ds 2
 atan2Temp   ds 1
 
 ; Kernel_World temps
+KERNEL_TEMP ds 6
+    ORG KERNEL_TEMP
 plDY        ds 1
 enDY        ds 1
 m0DY        ds 1
@@ -333,9 +335,21 @@ AUDVT1      ds 1
 PItemSpr0       ds 2
     ORG enSpr
 PItemSpr1       ds 2
-    ORG plDY
+    ORG KERNEL_TEMP
 PItemSpr2       ds 2
 PItemColors     ds 4
+    ORG KERNEL_TEMP
+PMapDrawTemp0   ds 1
+PMapDrawTemp1   ds 1
+    ORG KERNEL_TEMP
+PMapRoomVisit   ds 1
+PMapRoomN       ds 1
+PMapRoomS       ds 1
+PMapRoomE       ds 1
+PMapRoomW       ds 1
+PMapRoom        ds 1
+PMapY = PMapRoom
+
     ORG Temp0 + 1
 PCursorLast     ds 1
 PCursor         ds 1
@@ -461,10 +475,28 @@ RF_SV_VISIT     = $20 ; xx1x_xxxx Visited Room
     ; overworld only
 RF_SV_DESTROY   = $40 ; x1xx_xxxx
     ; dungeons only
-    ; xxxx_xxx1 N open
-    ; xxxx_x1xx S open
-    ; xxx1_xxxx E open
-    ; x1xx_xxxx W open
+RF_SV_OPEN_N    = $01 ; xxxx_xxx1 N open
+RF_SV_OPEN_S    = $04 ; xxxx_x1xx S open
+RF_SV_OPEN_E    = $10 ; xxx1_xxxx E open
+RF_SV_OPEN_W    = $40 ; x1xx_xxxx W open
+
+PAUSE_MAP_HEIGHT = 40
+
+    ORG $F200
+wMAP_0  ds PAUSE_MAP_HEIGHT
+wMAP_1  ds PAUSE_MAP_HEIGHT
+wMAP_2  ds PAUSE_MAP_HEIGHT
+wMAP_3  ds PAUSE_MAP_HEIGHT
+wMAP_4  ds PAUSE_MAP_HEIGHT
+wMAP_5  ds PAUSE_MAP_HEIGHT
+
+    ORG $F000
+rMAP_0  ds PAUSE_MAP_HEIGHT
+rMAP_1  ds PAUSE_MAP_HEIGHT
+rMAP_2  ds PAUSE_MAP_HEIGHT
+rMAP_3  ds PAUSE_MAP_HEIGHT
+rMAP_4  ds PAUSE_MAP_HEIGHT
+rMAP_5  ds PAUSE_MAP_HEIGHT
 
 ; ****************************************
 ; * Constants                            *
@@ -628,6 +660,7 @@ SLOT_RS_INIT = RAMSEG_F0 | 29
 SLOT_PL     = RAMSEG_F0 | 30
 SLOT_DRAW_PAUSE_WORLD = RAMSEG_F4 | 31
 SLOT_DRAW_PAUSE_2 = RAMSEG_F4 | 32
+SLOT_PAUSE_MAP = RAMSEG_F4 | 36
 
 SLOT_BATTLE = RAMSEG_F0 | 33
 

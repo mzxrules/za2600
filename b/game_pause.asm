@@ -100,6 +100,8 @@ PAUSE_OVERSCAN: SUBROUTINE ; 30 scanlines
     sta wNUSIZ1_T
     sta wREFP1_T
 
+    jsr Pause_Menu_Map
+
 
 PAUSE_OVERSCAN_WAIT:
     sta WSYNC
@@ -259,3 +261,164 @@ PickItemDel:
 Pause_Menu_Item_Next:
     .byte 0, 1, 2, 3, 4, 5, 6, 7
     .byte 0
+
+
+Pause_Menu_Map: SUBROUTINE
+    lda #SLOT_RW_MAP
+    sta BANK_SLOT_RAM
+    ldx worldId
+    ldy WorldBankOff,x
+    lda WorldRom,y
+    sta BANK_SLOT
+
+; select line to update
+    lda Frame
+    and #7
+
+; compute start room
+    asl
+    asl
+    asl
+    asl
+    clc
+    adc WorldMapXOff,x
+    sta PMapRoom
+
+; compute visited rooms and room links
+    tay
+    ldx #7
+.visit_room_loop
+    lda rRoomFlag,y
+    and #RF_SV_VISIT
+    clc
+    beq .visit_room_false
+    sec
+.visit_room_false
+    rol PMapRoomVisit
+
+.room_link_loop
+; NORTH
+    clc
+    lda rRoomFlag,y
+    and #RF_SV_OPEN_N
+    bne .path_n_true
+    lda WORLD_T_PF1L,y
+    and #%00000110
+    bne .path_n_false
+.path_n_true
+    sec
+.path_n_false
+    rol PMapRoomN
+; SOUTH
+    clc
+    lda rRoomFlag,y
+    and #RF_SV_OPEN_S
+    bne .path_s_true
+    lda WORLD_T_PF1L,y
+    and #%1000
+    bne .path_s_false
+    lda WORLD_T_PF2,y
+    and #%0100
+    bne .path_s_false
+.path_s_true
+    sec
+.path_s_false
+    rol PMapRoomS
+; EAST
+    clc
+    lda rRoomFlag,y
+    and #RF_SV_OPEN_E
+    bne .path_e_true
+    lda WORLD_T_PF2,y
+    and #%1000
+    bne .path_e_false
+    lda WORLD_T_PF1R,y
+    and #%0010
+    bne .path_e_false
+.path_e_true
+    sec
+.path_e_false
+    rol PMapRoomE
+; WEST
+    clc
+    lda rRoomFlag,y
+    and #RF_SV_OPEN_W
+    bne .path_w_true
+    lda WORLD_T_PF1R,y
+    and #%1100
+    bne .path_w_false
+.path_w_true
+    sec
+.path_w_false
+    rol PMapRoomW
+
+    iny
+    dex
+    bpl .visit_room_loop
+
+; use map texture to only include current dungeon rooms
+    lda #SLOT_SPR_A
+    sta BANK_SLOT
+
+; invert y cursor and setup for memory wipe
+    lda #7
+    sec
+    sbc Frame
+    and #7
+    sta PMapY
+    tay
+
+; Y == map y
+    ldx worldId
+    lda Mul8,x
+    clc
+    adc PMapY
+    tax
+    lda PMapRoomVisit
+    and MINIMAP,x
+    sta PMapRoomVisit
+
+
+
+    ldx #3
+.set_loop
+    lda PMapRoomN,x
+    and PMapRoomVisit
+    sta PMapRoomN,x
+    dex
+    bpl .set_loop
+
+.path_up_loop_end
+
+    lda Pause_Mul5+1,y
+    tay
+
+    lda #SLOT_RW_MAP
+    sta BANK_SLOT_RAM
+
+; reset memory for row
+    ldx #4
+    lda #0
+.clearloop
+    sta wMAP_0-1,y
+    sta wMAP_1-1,y
+    sta wMAP_2-1,y
+    sta wMAP_3-1,y
+    sta wMAP_4-1,y
+    sta wMAP_5-1,y
+    dey
+    dex
+    bpl .clearloop
+    ; y = line * 5
+
+    lda #SLOT_PAUSE_MAP
+    sta BANK_SLOT
+    jmp Pause_MapPlot
+
+
+Pause_Mul5:
+    .byte  0,  5, 10, 15
+    .byte 20, 25, 30, 35, 40
+
+WorldMapXOff:
+    .byte 0, 0, 8, 8, 0, 0, 8, 0, 0, 8

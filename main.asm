@@ -574,6 +574,18 @@ BANK_35
     INCLUDE "en/En_BossGlockHead.asm"
     LOG_BANK_SIZE "-BANK 35- En2", BANK_35
 
+; ****************************************
+; *               BANK 36                *
+; ****************************************
+    SEG Bank36
+    ORG $9000
+    RORG $F400
+
+BANK_36
+Pause_MapPlot:
+    INCLUDE "gen/pause_map.asm"
+    LOG_BANK_SIZE "-BANK 35- Pause Map generator", BANK_36
+
 ; End
 
     ORG $FFFF

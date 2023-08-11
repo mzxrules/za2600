@@ -88,6 +88,77 @@ def get_hitbox_info2():
         file.write("hitbox2_aa_h_plus_bb_h:\n")
         file.write(ToAsm(aa_h_PLUS_bb_h))
 
+def get_pause_map_codegen():
+    def gen_map_image_enable_room(memId, val):
+        return f'''
+    lda rMAP_{memId}+1,y
+    ora #${val:02X}
+    sta wMAP_{memId}+1,y
+    sta wMAP_{memId}+2,y
+    sta wMAP_{memId}+3,y
+'''
+    def gen_map_image_toggle_pix(x, y):
+        memId = 5-(x // 8)
+        val = 1 << (x % 8)
+        return f'''
+    lda rMAP_{memId}+{y},y
+    eor #${val:02X}
+    sta wMAP_{memId}+{y},y
+'''
+
+    def gen_map_draw_room(i, bitNo):
+        plotroom = "Pause_MapPlotRoom"
+        source = f'''
+{plotroom}{i}: SUBROUTINE
+    rol PMapRoomVisit
+    bcc .end
+'''
+        orBits = [0]*6
+        for b in bitNo:
+            orBits[5-(b//8)] |= 1 << (b%8)
+
+        for j in range(6):
+            if orBits[j] != 0:
+                source += gen_map_image_enable_room(j, orBits[j])
+
+        source += f".end"
+        return source
+
+    def gen_map_draw_path(i, label, var, x, y):
+        source = f'''
+{label}{i}: SUBROUTINE
+    rol {var}
+    bcc .end
+'''
+        source += gen_map_image_toggle_pix(x, y)
+        source += ".end"
+        return source
+
+    gensource = ""
+
+
+    # Plot Room
+    for i in range(8):
+        ri = 47 - 4 - i * 5
+        bitNo = [*range(ri, ri-5, -1)]
+        gensource += gen_map_draw_room(i, bitNo[1:4])
+    # Plot Paths
+
+    for i in range(8):
+        ri = 47 -4 - i * 5
+        bitNo = [*range(ri, ri-5, -1)]
+        gensource += gen_map_draw_path(i, "Pause_MapPlotN", "PMapRoomN", bitNo[2], 4)
+        gensource += gen_map_draw_path(i, "Pause_MapPlotS", "PMapRoomS", bitNo[2], 0)
+        gensource += gen_map_draw_path(i, "Pause_MapPlotE", "PMapRoomE", bitNo[4], 2)
+        gensource += gen_map_draw_path(i, "Pause_MapPlotW", "PMapRoomW", bitNo[0], 2)
+
+    gensource += '''
+    rts'''
+
+    with open(f'gen/pause_map.asm', "w") as file:
+        file.write(gensource)
+
+
 def get_room_px_check():
     bitmask_pattern = [
         # PF1 left
@@ -192,6 +263,7 @@ get_hitbox_info()
 get_hitbox_info2()
 get_room_px_check()
 get_randdir_lut()
+get_pause_map_codegen()
 
 with open(f'gen/bitcount.asm', "w") as file:
     file.write(bitcountOut)

@@ -108,9 +108,21 @@ DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_DRAW_PAUSE_2
     sta REFP1 ; Disable P1 mirroring
 
 ;==============================================================================
+; Map Draw Test
+;==============================================================================
+
+; Reset CTRLPF
+    lda #%00110001 ; ball size 8, reflect playfield
+    sta CTRLPF
+    lda #0
+    sta COLUP0
+    sta COLUP1
+    INCLUDE "c/draw_pause_menu_map.asm"
+
+;==============================================================================
 ; Finish Frame
 ;==============================================================================
-    ldy #107
+    ldy #107-86
 .dummy_end
     sta WSYNC
     dey
@@ -120,9 +132,6 @@ DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_DRAW_PAUSE_2
 ; End Kernel
 ;==============================================================================
 
-; Reset CTRLPF
-    lda #%00110001 ; ball size 8, reflect playfield
-    sta CTRLPF
     lda #COLOR_PLAYER_00
     sta COLUP0
     rts
