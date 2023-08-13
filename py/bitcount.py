@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 from asmgen import ToAsm, ToAsmD
+from dataclasses import dataclass, field
+from typing import List, Tuple
 
 EN_DIR_L = 0
 EN_DIR_R = 1
@@ -88,21 +90,167 @@ def get_hitbox_info2():
         file.write("hitbox2_aa_h_plus_bb_h:\n")
         file.write(ToAsm(aa_h_PLUS_bb_h))
 
+@dataclass
+class MapSpr:
+    roomIdx: int
+    checkVar: str
+    x: int
+    y: int
+    isRoom : bool = False
+    write: List[Tuple[int,int]] = field(default_factory=list) #memId, val
+
+    def IsSingleWrite(self):
+        return len(self.write) == 1
+
+    def __str__(self):
+        return f"ISROOM: {self.isRoom} ROOM {self.roomIdx}"
+
 def get_pause_map_codegen():
-    def gen_map_image_enable_room(memId, val):
+    def init_room_spr(i, var, x, y):
+        var = "PMapRoomVisit"
+        spr = MapSpr(i, var, x, y, True)
+
+        orBits = [0]*6
+
+        for b in [*range(x, x-3, -1)]:
+            orBits[5-(b//8)] |= 1 << (b%8)
+
+        for j in range(6):
+            if orBits[j] != 0:
+                spr.write.append((j, orBits[j]))
+        return spr
+
+    def init_path_spr(i, var, x, y):
+        memId = 5-(x // 8)
+        val = 1 << (x % 8)
+        spr = MapSpr(i, var, x, y, False)
+        spr.write.append((memId, val))
+        return spr
+
+
+    mem_write = [[[] for i in range(6)] for j in range(5)]
+
+    # model data
+    for i in range(8):
+        ri = 47 - 4 - i * 5
+        room_spr = init_room_spr(i, "PMapRoomVisit", ri-1, 1)
+        point_spr = [
+            init_path_spr(i, "PMapRoomN", ri-2, 4),
+            init_path_spr(i, "PMapRoomS", ri-2, 0),
+            init_path_spr(i, "PMapRoomE", ri-4, 2),
+            init_path_spr(i, "PMapRoomW", ri-0, 2),
+            ]
+
+        for spr in point_spr:
+            for memId, _ in spr.write:
+                mem_write[spr.y][memId].append(spr)
+        do_append = True
+        for memId, _ in room_spr.write:
+            if do_append:
+                mem_write[1][memId].append(room_spr)
+                mem_write[2][memId].append(room_spr)
+                do_append = False
+            else:
+                mem_write[1][memId].insert(0, room_spr)
+                mem_write[2][memId].insert(0, room_spr)
+
+
+    print (mem_write[1][0])
+
+    def gen_set_test(checkVar, val, label):
         return f'''
-    lda rMAP_{memId}+1,y
+{label}: SUBROUTINE
+    rol {checkVar}
+    bcc .end
     ora #${val:02X}
+.end'''
+    def gen_set_test2(val):
+        return f'''
+    bcc .end2
+    ora #${val:02X}
+.end2'''
+    def gen_writeback(memId, y):
+        print(f"WRITEBACK {memId}")
+        if y == 1:
+            return f'''
+    sta wMAP_{memId}+1,y
+    sta wMAP_{memId}+3,y
+'''
+        else:
+            return f'''
+    sta wMAP_{memId}+{y},y
+'''
+    def gen_line(mem_write, y):
+        src = ""
+        curMemId = -1
+        openBlock = False
+        for elements in mem_write[y]:
+            curMemId += 1
+            if len(elements) < 1:
+                continue
+            src += '''
+; -------
+    lda #0'''
+            for spr in elements:
+                for memId, val in spr.write:
+                    # src += f'; {spr.roomIdx}: {memId}, {openBlock}\n'
+                    if memId < curMemId:
+                        openBlock = True
+                    elif memId == curMemId:
+                        if openBlock:
+                            src += gen_set_test2(val)
+                            openBlock = False
+                        else:
+                            src += gen_set_test(spr.checkVar, val, f"{spr.checkVar}{spr.roomIdx}_{y}")
+            src += gen_writeback(curMemId, y)
+        return src
+    gensource = gen_line(mem_write, 1)
+    gensource += '''
+    rol PMapRoomVisit
+'''
+    gensource += gen_line(mem_write, 2)
+    gensource += gen_line(mem_write, 0)
+    gensource += gen_line(mem_write, 4)
+    gensource += '''
+    rts'''
+    with open(f'gen/pause_map2.asm', "w") as file:
+        file.write(gensource)
+
+def get_pause_map_codegen_old():
+    mem_dirty = [[False]*6 for i in range(5)]
+    def gen_map_image_enable_room(memId, val):
+        source = ""
+        if mem_dirty[1][memId]:
+            source += f'''
+    lda rMAP_{memId}+1,y
+    ora #${val:02X}'''
+        else:
+            mem_dirty[1][memId] = True
+            mem_dirty[2][memId] = True
+            mem_dirty[3][memId] = True
+            source += f'''
+    lda #${val:02X}'''
+        source += f'''
     sta wMAP_{memId}+1,y
     sta wMAP_{memId}+2,y
     sta wMAP_{memId}+3,y
 '''
-    def gen_map_image_toggle_pix(x, y):
+        return source
+    def gen_map_image_set_pix(x, y):
+        source = ""
         memId = 5-(x // 8)
         val = 1 << (x % 8)
-        return f'''
+
+        if mem_dirty[y][memId]:
+            source += f'''
     lda rMAP_{memId}+{y},y
-    eor #${val:02X}
+    ora #${val:02X}'''
+        else:
+            mem_dirty[y][memId] = True
+            source += f'''
+    lda #${val:02X}'''
+
+        return source + f'''
     sta wMAP_{memId}+{y},y
 '''
 
@@ -130,7 +278,7 @@ def get_pause_map_codegen():
     rol {var}
     bcc .end
 '''
-        source += gen_map_image_toggle_pix(x, y)
+        source += gen_map_image_set_pix(x, y)
         source += ".end"
         return source
 

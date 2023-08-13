@@ -5,6 +5,18 @@
 
 ENTRY: SUBROUTINE ; Address FC00
     CLEAN_START
+; wipe ram
+    ldy #3
+.wipe_rambanks_loop
+    sty BANK_SLOT_RAM
+.wipeRam
+    dex
+    sta $F200,x
+    sta $F300,x
+    bne .wipeRam
+    dey
+    bpl .wipe_rambanks_loop
+
     sta BANK_SLOT ; load copy of bank to F000
     jmp ENTRY_INIT ; jump to F000 address space
 
@@ -19,12 +31,6 @@ ENTRY_INIT: SUBROUTINE ; Address F000
     lda .ENTRY_RAM_BANKS,y
     sta BANK_SLOT_RAM
     txa ; set A to 0
-
-.wipeRam
-    dex
-    sta wRAM_SEG,x
-    sta wRAM_SEG + $100,x
-    bne .wipeRam
 
     ; kernel transfer
     ldx #KERNEL_LEN

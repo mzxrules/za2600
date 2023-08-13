@@ -68,6 +68,39 @@ PAUSE_FROM_GAME:
     sta BANK_SLOT
     jsr UpdateAudio
 
+PAUSE_MAP_MEM_RESET:
+    lda PAnim
+    cmp #10
+    bmi .endMapMemReset
+
+; erase map for next cycle; do it here to avoid running out of cycles
+; invert y cursor and setup for memory wipe
+
+    lda #SLOT_RW_MAP
+    sta BANK_SLOT_RAM
+
+    lda #7
+    sec
+    sbc Frame
+    and #7
+    tax
+    lda Pause_Mul5,x
+    tax
+    lda #0
+
+; reset memory for row
+ITER   SET 0
+    REPEAT 5
+    sta wMAP_0+ITER,x
+    sta wMAP_1+ITER,x
+    sta wMAP_2+ITER,x
+    sta wMAP_3+ITER,x
+    sta wMAP_4+ITER,x
+    sta wMAP_5+ITER,x
+ITER    SET ITER+1
+    REPEND
+.endMapMemReset
+
     bit PauseState
     bvs .skip_draw_en
 
@@ -390,25 +423,12 @@ Pause_Menu_Map: SUBROUTINE
 
 .path_up_loop_end
 
-    lda Pause_Mul5+1,y
+    lda Pause_Mul5,y
     tay
 
     lda #SLOT_RW_MAP
     sta BANK_SLOT_RAM
 
-; reset memory for row
-    ldx #4
-    lda #0
-.clearloop
-    sta wMAP_0-1,y
-    sta wMAP_1-1,y
-    sta wMAP_2-1,y
-    sta wMAP_3-1,y
-    sta wMAP_4-1,y
-    sta wMAP_5-1,y
-    dey
-    dex
-    bpl .clearloop
     ; y = line * 5
 
     lda #SLOT_PAUSE_MAP
