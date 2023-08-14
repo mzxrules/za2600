@@ -348,11 +348,11 @@ PMapRoomS       ds 1
 PMapRoomE       ds 1
 PMapRoomW       ds 1
 PMapRoom        ds 1
-PMapY = PMapRoom
 
     ORG Temp0 + 1
 PCursorLast     ds 1
 PCursor         ds 1
+PMapY           ds 1
     ORG Temp0 + 1
 PItemSpr3       ds 2
 PGiItems        ds 4

@@ -111,10 +111,45 @@ mesg_table = [
         " SECRET IS IN THE TREE  ",
         "    AT THE DEAD-END.    ",
         ],
-
     "MesgHintGrave", [
         "    MEET THE OLD MAN    ",
         "      AT THE GRAVE.     ",
+        ],
+    "MesgHintNose", [
+        "  THERE'S A SECRET IN   ",
+        "  THE TIP OF THE NOSE.  ",
+        ],
+    "MesgChoiceGiveBomb", [
+        " YOU'D HAVE MORE BOMBS. ",
+        "          -99           ",
+        ],
+    "MesgHintWaterfall", [
+        " DID YOU GET THE SWORD  ",
+        " FROM TOP OF WATERFALL? ",
+        ],
+    "MesgHintDigdogger", [
+        "    DIGDOGGER HATES     ",
+        " CERTAIN KIND OF SOUND. ",
+        ],
+    "MesgHintArrow", [
+        "  SECRET POWER IS SAID  ",
+        "   TO BE IN THE ARROW.  ",
+        ],
+    "MesgHintEyesOfGohma", [
+        "     AIM AT THE EYES    ",
+        "        OF GOHMA.       ",
+        ],
+    "MesgHintFairiesDontLive", [
+        " THERE ARE SECRETS WHERE",
+        "   FAIRIES DON'T LIVE.  ",
+        ],
+    "MesgHintWalkIntoTheWaterfall", [
+        "     WALK INTO THE      ",
+        "       WATERFALL.       ",
+        ],
+    "MesgHintPatraHasMap", [
+        "   PATRA HAS THE MAP.   ",
+        "                        ",
         ],
 ]
 

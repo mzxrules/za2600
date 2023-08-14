@@ -411,8 +411,6 @@ Pause_Menu_Map: SUBROUTINE
     and MINIMAP,x
     sta PMapRoomVisit
 
-
-
     ldx #3
 .set_loop
     lda PMapRoomN,x

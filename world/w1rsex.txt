@@ -1,5 +1,5 @@
 Rs_Npc
-MesgGameOver
+MesgHintWalkIntoTheWaterfall
 Rs_None
 zz0
 Rs_None
@@ -21,7 +21,7 @@ GiFireMagic
 Rs_None
 zz0
 Rs_Npc
-MesgGameOver
+MesgHintFairiesDontLive
 Rs_Item
 GiTriforce
 Rs_Item
@@ -41,11 +41,11 @@ GiHeart
 Rs_Item
 GiTriforce
 Rs_Npc
-MesgGameOver
-Rs_None
-zz0
+MesgHintArrow
+Rs_Item
+GiKey
 Rs_Npc
-MesgGameOver
+MesgChoiceGiveBomb
 Rs_None
 zz0
 Rs_Item
@@ -85,7 +85,7 @@ GiKey
 Rs_Item
 GiKey
 Rs_Npc
-MesgGameOver
+MesgHintWaterfall
 Rs_None
 zz0
 Rs_None
@@ -205,13 +205,13 @@ zz0
 Rs_Item
 GiKey
 Rs_Npc
-MesgGameOver
+MesgHintDigdogger
 Rs_None
 zz0
 Rs_Item
 GiRaft
-Rs_None
-zz0
+Rs_Npc
+MesgHintEyesOfGohma
 Rs_Item
 GiKey
 Rs_Item

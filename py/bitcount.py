@@ -154,9 +154,6 @@ def get_pause_map_codegen():
                 mem_write[1][memId].insert(0, room_spr)
                 mem_write[2][memId].insert(0, room_spr)
 
-
-    print (mem_write[1][0])
-
     def gen_set_test(checkVar, val, label):
         return f'''
 {label}: SUBROUTINE
@@ -170,7 +167,6 @@ def get_pause_map_codegen():
     ora #${val:02X}
 .end2'''
     def gen_writeback(memId, y):
-        print(f"WRITEBACK {memId}")
         if y == 1:
             return f'''
     sta wMAP_{memId}+1,y
@@ -213,7 +209,7 @@ def get_pause_map_codegen():
     gensource += gen_line(mem_write, 4)
     gensource += '''
     rts'''
-    with open(f'gen/pause_map2.asm', "w") as file:
+    with open(f'gen/pause_map.asm', "w") as file:
         file.write(gensource)
 
 def get_pause_map_codegen_old():
@@ -303,7 +299,7 @@ def get_pause_map_codegen_old():
     gensource += '''
     rts'''
 
-    with open(f'gen/pause_map.asm', "w") as file:
+    with open(f'gen/pause_map2.asm', "w") as file:
         file.write(gensource)
 
 
