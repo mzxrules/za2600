@@ -390,18 +390,18 @@ PF2Room22:
     .byte $B0 ; |....XX.X| mirrored
     .byte $C0 ; |......XX| mirrored
 PF2Room23:
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
+    .byte $80 ; |.......X| mirrored
+    .byte $80 ; |.......X| mirrored
+    .byte $80 ; |.......X| mirrored
+    .byte $80 ; |.......X| mirrored
+    .byte $FC ; |..XXXXXX| mirrored
+    .byte $FC ; |..XXXXXX| mirrored
+    .byte $FC ; |..XXXXXX| mirrored
+    .byte $FC ; |..XXXXXX| mirrored
+    .byte $FC ; |..XXXXXX| mirrored
+    .byte $FC ; |..XXXXXX| mirrored
+    .byte $FC ; |..XXXXXX| mirrored
+    .byte $FC ; |..XXXXXX| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored

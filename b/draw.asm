@@ -55,18 +55,35 @@ POSITION_SPRITES: SUBROUTINE
 .hud_sprite_setup
 ; rupee display
     lda itemRupees
-    and #$0F
-    asl
-    asl
-    asl
-    clc
-    adc #7
-    sta THudDigits+5
-    lda itemRupees
     and #$F0
     lsr ;clc
     adc #7
     sta THudDigits+4
+    lda itemRupees
+    and #$0F
+    rol
+    rol
+    rol ;clc
+    adc #7
+    sta THudDigits+5
+
+; bomb display
+.hud_bomb_init
+    lda itemBombs
+    and #$0F
+    rol
+    rol
+    rol ;clc
+    adc #7
+    sta THudDigits+1
+    lda itemBombs
+    cmp #$10
+    bpl .hud_bomb_digit
+    lda #<SprN11 - #<SprN0 +7
+    .byte $2C
+.hud_bomb_digit
+    lda #<SprN1 - #<SprN0 +7
+    sta THudDigits+0
 
 ; key display
 .hud_key_init
@@ -86,26 +103,7 @@ POSITION_SPRITES: SUBROUTINE
     lda #<SprN10 - #<SprN0 +7
     sta THudDigits+2
 
-; bomb display
-.hud_bomb_init
-    lda itemBombs
-    cmp #$10
-    bpl .hud_bomb_digit
-    lda #<SprN11 - #<SprN0 +7
-    .byte $2C
-.hud_bomb_digit
-    lda #<SprN1 - #<SprN0 +7
-    sta THudDigits+0
-    lda itemBombs
-    and #$0F
-    asl
-    asl
-    asl
-    clc
-    adc #7
-    sta THudDigits+1
-
-    jsr PosHudObjects
+    ;jsr PosHudObjects
 ;===================================================
 ; Pre HUD
 ;===================================================
@@ -119,25 +117,25 @@ POSITION_SPRITES: SUBROUTINE
     and #$7
     sta THudMapPosY
 
-    ldy #1
+    ldx #1
 .hpBarLoop
-    lda plHealthMax,y ; Load HP
+    lda plHealthMax,x ; Load HP
     clc
     adc #7
     lsr
     lsr
     lsr
     ; divide by 8, rounding up
-    tax
-    lda .HealthPattern,x
-    sta THudHealthMaxL,y
-    cpx #8
+    tay
+    lda .HealthPattern,y
+    sta THudHealthMaxL,x
+    cpy #8
     bpl .hpBarLoopCont
-    ldx #8
+    ldy #8
 .hpBarLoopCont
-    lda .HealthPattern-8,x
-    sta THudHealthMaxH,y
-    dey
+    lda .HealthPattern-8,y
+    sta THudHealthMaxH,x
+    dex
     bpl .hpBarLoop
 
     lda #COLOR_HEALTH
@@ -329,58 +327,3 @@ KERNEL_WORLD_RESUME:
     LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN
 
     INCLUDE "c/draw_data.asm"
-
-    .align 64
-;==============================================================================
-; PosHudObjects
-;----------
-; Positions all HUD elements within a single scanline
-;----------
-; Timing Notes:
-; $18 2 iter (9) + 15 = 24
-; $18
-; $60 7 iter (34) + 15 = 49
-;==============================================================================
-PosHudObjects: SUBROUTINE
-    sta WSYNC
-    ; 26 cycles start
-
-    lda worldId         ; 3
-    ; 7 cycle start
-    bne .dungeon        ; 2/3
-    lda #$F             ; 2
-    bne .roomIdMask     ; 3
-.dungeon
-    lda #$7             ; 2
-    nop                 ; 2
-.roomIdMask
-    ; 7 cycle end
-
-    and roomId          ; 3
-    eor #7              ; 2
-    asl                 ; 2
-    asl                 ; 2
-    asl                 ; 2
-    asl                 ; 2
-    sta HMM0            ; 3
-    ; 26 cycles end
-    sta RESP1           ; 3 - Map Sprite
-    sta RESM0           ; 3 - Player Dot
-    ; 18 cycles start
-    lda worldId         ; 3
-    bne .MapShift       ; 2/3
-    lda #0              ; 2
-    beq .SetMapShift    ; 3
-.MapShift
-    lda #$F0            ; 2
-    nop                 ; 2
-.SetMapShift
-    sta HMP1            ; 3
-    lda #0              ; 2
-    sta HMP0            ; 3
-    ; 18 cycles end
-    sta RESP0           ;  - Inventory Sprites
-
-    sta WSYNC
-    sta HMOVE
-    rts

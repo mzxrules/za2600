@@ -67,7 +67,7 @@ loop for 31
 set "$sht" to "spr/spr_en.asm"
 goto "#dumpsht"
 
-
+. "Gohma Boss"
 set "CHAR" to "(96)"
 loop start
 inc "$" by "SprGohma&loopcount&:\n"
@@ -77,6 +77,28 @@ inc "$" by "$dumpchr"
 inc "CHAR" by 1
 loop for 5
 set "$sht" to "spr/spr_gohma.asm"
+goto "#dumpsht"
+
+set "CHAR" to "(69)"
+loop start
+inc "$" by "SprWaterfall&loopcount&:\n"
+set "sp&sp&" to 8
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 4
+set "$sht" to "spr/spr_waterfall.asm"
+goto "#dumpsht"
+
+set "CHAR" to "(74)"
+loop start
+inc "$" by "SprRock&loopcount&:\n"
+set "sp&sp&" to 8
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 0
+set "$sht" to "spr/spr_rock.asm"
 goto "#dumpsht"
 
 

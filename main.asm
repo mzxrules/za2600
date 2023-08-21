@@ -109,6 +109,8 @@ MINIMAP
     INCLUDE "spr/spr_sh.asm"
     INCLUDE "spr/spr_num.asm"
     INCLUDE "spr/spr_gohma.asm"
+    INCLUDE "spr/spr_waterfall.asm"
+    INCLUDE "spr/spr_rock.asm"
 
     LOG_BANK_SIZE "-BANK 6- Sprites", BANK_6
 
@@ -169,14 +171,32 @@ BANK_12
     INCBIN "world/w0rs.bin"
     INCBIN "world/w0ex.bin"
 
-    repeat 8
+; == $00
+    repeat 5
     .byte $01, $02
     repend
 
-    repeat 8
+    .byte #12, $02
+
+    repeat 2
+    .byte $01, $02
+    repend
+
+; == $10
+    repeat 4
     .byte $02, $01
     repend
 
+
+    .byte #13, #13
+
+    .byte $00, $01
+
+    repeat 2
+    .byte $02, $01
+    repend
+
+; == $20
     repeat 4
     .byte $01, $02, $02, $01
     repend
@@ -429,6 +449,7 @@ BANK_26
     INCLUDE "rs/Rs_Maze.asm"
     INCLUDE "rs/Rs_RaftSpot.asm"
     INCLUDE "rs/Rs_ShoreItem.asm"
+    INCLUDE "rs/Rs_Waterfall.asm"
     INCLUDE "c/mi_system.asm"
     INCLUDE "gen/atan2.asm"
     INCLUDE "c/atan2.asm"
@@ -463,6 +484,8 @@ BANK_28
     INCLUDE "en/EnDraw_BossGlock.asm"
     INCLUDE "en/EnDraw_BossGlockHead.asm"
     INCLUDE "en/EnDraw_TestMissile.asm"
+    INCLUDE "en/EnDraw_Waterfall.asm"
+    INCLUDE "en/EnDraw_RollingRock.asm"
 
     LOG_BANK_SIZE "-BANK 28- PushSystem", BANK_28
 
@@ -584,7 +607,18 @@ BANK_35
 BANK_36
 Pause_MapPlot:
     INCLUDE "gen/pause_map.asm"
-    LOG_BANK_SIZE "-BANK 35- Pause Map generator", BANK_36
+    LOG_BANK_SIZE "-BANK 36- Pause Map generator", BANK_36
+
+; ****************************************
+; *               BANK 37                *
+; ****************************************
+    SEG Bank37
+    ORG $9400
+    RORG $F400
+
+BANK_37
+    INCLUDE "en/En_RollingRock.asm"
+    LOG_BANK_SIZE "-BANK 37- En3", BANK_37
 
 ; End
 

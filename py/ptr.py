@@ -64,6 +64,9 @@ Entity_Table = [
     "En_BossGlock",    "SEG_35", "SEG_NA", "EnDraw_BossGlock",
     "En_BossGlockHead","SEG_35", "SEG_NA", "EnDraw_BossGlockHead",
     "EnBoss_Cucco",    "SEG_35", "SEG_NA", "EnDraw_None",
+
+    "En_Waterfall",    "SEG_NA", "SEG_NA", "EnDraw_Waterfall",
+    "En_RollingRock",  "SEG_37", "SEG_NA", "EnDraw_RollingRock",
 ]
 
 RoomScript_Table = [
@@ -91,6 +94,7 @@ RoomScript_Table = [
     "Rs_ShoreItem",                 "RsInit_None",
     "Rs_Stairs",                    "RsInit_None",
     "Rs_Cave",                      "RsInit_None",
+    "Rs_Waterfall",                 "RsInit_None",
     "Rs_GameOver",                  "RsInit_None",
 ]
 

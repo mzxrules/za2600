@@ -262,6 +262,12 @@ enRopeTimer ds 2
 enRopeThink ds 2
     EN_SIZE ROPE
 
+; == Rolling Rocks
+    ORG CLASS_EN_ENEMY_MOVE
+enRollingRockTimer  ds 2
+enRollingRockSize   ds 2
+    EN_SIZE ROLLING_ROCK
+
 ; == Gohma
     ORG CLASS_EN_BOSS_SHOOT
 ; enState
@@ -667,4 +673,5 @@ SLOT_BATTLE = RAMSEG_F0 | 33
 SEG_SH = SLOT_SH
 SEG_34 = RAMSEG_F4 | 34
 SEG_35 = RAMSEG_F4 | 35
+SEG_37 = RAMSEG_F4 | 37
 SEG_NA = SLOT_MAIN

@@ -42,6 +42,7 @@ ENTRY_INIT: SUBROUTINE ; Address F000
     dey
     bpl .init_ram_loop
 
+ENTRY_START_GAME:
     IFCONST ITEMS
 .cheats
     lda #8
@@ -55,7 +56,25 @@ ENTRY_INIT: SUBROUTINE ; Address F000
     sta itemFlags+2
     ENDIF
 
-    jmp MAIN_INIT
+    lda #%00110001 ; ball size 8, reflect playfield
+    sta CTRLPF
+    sta VDELBL
+
+    ; seed RNG
+    ; lda INTIM
+    ; sta Rand16+1
+    ; eor #$FF
+    sta Rand16
+
+    ; set ball
+    lda #$60
+    sta blY
+
+    ; set player stats
+    lda #$18
+    sta plHealthMax
+
+    jmp MAIN_ENTRY
 
 .ENTRY_RAM_BANKS
     .byte #SLOT_RW0, #SLOT_RW1, #SLOT_RW2
