@@ -12,26 +12,7 @@ HALT_FLUTE_ENTRY: SUBROUTINE
     jmp HALT_FROM_FLUTE
 
 HALT_VERTICAL_SYNC:
-    lda #2
-    ldx #49
-    sta WSYNC
-    sta VSYNC
-    stx TIM64T ; 41 scanline timer
-    inc Frame
-    sta WSYNC
-    sta WSYNC
-    lda #0      ; LoaD Accumulator with 0 so D1=0
-    ; disable VDEL for HUD drawing
-    sta VDELP0
-    sta VDELP1
-    ;sta PF0     ; blank the playfield
-    ;sta PF1
-    ;sta PF2
-    ;sta GRP0    ; blanks player0 if VDELP0 was off
-    ;sta GRP1    ; blanks player0 if VDELP0 was on, player1 if VDELP1 was off
-    ;sta GRP0    ; blanks                           player1 if VDELP1 was on
-    sta WSYNC
-    sta VSYNC
+    jsr VERTICAL_SYNC
 
 HALT_FROM_FLUTE:
     clc

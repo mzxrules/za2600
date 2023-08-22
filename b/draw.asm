@@ -23,21 +23,19 @@ POSITION_SPRITES: SUBROUTINE
 
 .minimap_setup
 ; map color and sprite id
-    ldx worldId
-    ldy #COLOR_MINIMAP
-    cpx #2
-    bmi .setMinimapColor
-    lda Bit8-2,x
-    and itemMaps
-    bne .setMinimapColor
-    ldy #0
+    ldy worldId
+    ldx .MapFlagAddr,y
+    lda #$00,x
+    and .MapFlagMask,y
+    beq .setMinimapColor
+    lda #COLOR_MINIMAP
 .setMinimapColor
-    sty COLUP1
+    sta COLUP1
 
 ; sprite setup
     lda #<(MINIMAP) ; Sprite + height-1
     clc
-    adc Mul8,x
+    adc Mul8,y
     sta THudMapSpr
     lda #>(MINIMAP)
     sta THudMapSpr+1
@@ -103,7 +101,6 @@ POSITION_SPRITES: SUBROUTINE
     lda #<SprN10 - #<SprN0 +7
     sta THudDigits+2
 
-    ;jsr PosHudObjects
 ;===================================================
 ; Pre HUD
 ;===================================================
@@ -327,3 +324,11 @@ KERNEL_WORLD_RESUME:
     LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN
 
     INCLUDE "c/draw_data.asm"
+
+.MapFlagAddr
+    .byte #$FF, #$FF
+    .byte #<itemMaps, #<itemMaps, #<itemMaps, #<itemMaps
+
+.MapFlagMask
+    .byte #$FF, #$FF
+    .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
