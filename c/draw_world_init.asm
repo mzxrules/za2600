@@ -31,6 +31,7 @@
     sta plSpr
 
     lda #>(SprP0 + 7)
+    sbc #0
     sta plSpr+1
 
 ; enemy draw height

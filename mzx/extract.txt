@@ -12,15 +12,26 @@ loop for 31
 set "$sht" to "spr/spr_item.asm"
 goto "#dumpsht"
 
-set "CHAR" to "('SS_N0')"
+set "CHAR" to "('SS_N0L')"
 loop start
-inc "$" by "SprN&loopcount&:\n"
+inc "$" by "SprN&loopcount&_L:\n"
 set "sp&sp&" to 8
 goto "#dumpchr"
 inc "$" by "$dumpchr"
 inc "CHAR" by 1
 loop for 15
-set "$sht" to "spr/spr_num.asm"
+set "$sht" to "spr/spr_num_l.asm"
+goto "#dumpsht"
+
+set "CHAR" to "('SS_N0R')"
+loop start
+inc "$" by "SprN&loopcount&_R:\n"
+set "sp&sp&" to 8
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 15
+set "$sht" to "spr/spr_num_r.asm"
 goto "#dumpsht"
 
 set "CHAR" to "('SS_MAP')"

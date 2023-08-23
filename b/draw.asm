@@ -6,9 +6,6 @@
 ;==============================================================================
 POSITION_SPRITES: SUBROUTINE
 
-    lda #SLOT_SPR_A
-    sta BANK_SLOT
-
 ; room draw start
     ldy KernelId
     lda .RoomWorldOff,y
@@ -31,6 +28,16 @@ POSITION_SPRITES: SUBROUTINE
     lda #COLOR_MINIMAP
 .setMinimapColor
     sta COLUP1
+
+; compass point
+    lda WorldCompassRoom,y
+    lsr
+    lsr
+    lsr
+    lsr
+    tax
+    lda .MapDotENA,x
+    sta THudMapCPosY
 
 ; sprite setup
     lda #<(MINIMAP) ; Sprite + height-1
@@ -77,10 +84,10 @@ POSITION_SPRITES: SUBROUTINE
     lda itemBombs
     cmp #$10
     bpl .hud_bomb_digit
-    lda #<SprN11 - #<SprN0 +7
+    lda #<SprN11_L - #<SprN0_L +7
     .byte $2C
 .hud_bomb_digit
-    lda #<SprN1 - #<SprN0 +7
+    lda #<SprN1_L - #<SprN0_L +7
     sta THudDigits+0
 
 ; key display
@@ -98,20 +105,18 @@ POSITION_SPRITES: SUBROUTINE
     clc
     adc #7
     sta THudDigits+3
-    lda #<SprN10 - #<SprN0 +7
+    lda #<SprN10_L - #<SprN0_L +7
     sta THudDigits+2
 
-;===================================================
-; Pre HUD
-;===================================================
 .PRE_HUD:
     lda roomId
     lsr
     lsr
     lsr
     lsr
-    eor #$7
     and #$7
+    tax
+    lda .MapDotENA,x
     sta THudMapPosY
 
     ldx #1
@@ -138,6 +143,9 @@ POSITION_SPRITES: SUBROUTINE
     lda #COLOR_HEALTH
     sta COLUPF
 
+    lda #SLOT_SPR_HU
+    sta BANK_SLOT
+
 ;===================================================
 ; Kernel Main
 ;===================================================
@@ -148,20 +156,21 @@ KERNEL_MAIN:  ; 192 scanlines
     sta VBLANK
 
 KERNEL_HUD:
-    ; precalc digits sprite
-    ldx THudDigits+4    ; 3
-    lda SprN0,x         ; 4
-    and #$F8            ; 2
-    sta THudTemp        ; 3
+    lda #%00000101 ; ball size 1, reflect playfield, pf priority
+    sta CTRLPF
 
     ldy #7 ; Draw Height
     lda #0
-    sta WSYNC
     beq KERNEL_HUD_LOOP
 ;=========== Scanline 1A ==============
+; 66
 .hudScanline1A
+    lda THudMapPosY
+    lsr
+    ror THudMapPosY
+
+    ;sta WSYNC
     lda #0
-    sta WSYNC
     stx COLUP0          ; 2
     sta GRP0
     sta PF1
@@ -170,14 +179,12 @@ KERNEL_HUD:
     ldx THudDigits+2
     stx THudDigits+4
 
-    lda SprN0,x         ; 4
-    and #$F8            ; 2
-    sta THudTemp        ; 3
-
     ldx THudDigits+3
     stx THudDigits+5
+
     lda THudDigits+1
     sta THudDigits+3
+
     lda THudDigits+0
     sta THudDigits+2
 
@@ -186,94 +193,102 @@ KERNEL_HUD:
     lda THudHealthMaxL
     sta THudHealthDisp
     dey
+
+    lda THudMapCPosY
+    lsr
+    ror THudMapCPosY
+
     lda #0
     sta THudHealthL
     sta THudHealthMaxL
-    sta WSYNC
 KERNEL_HUD_LOOP:
 
+    sta WSYNC
 ;=========== Scanline 0 ==============
-    cpy THudMapPosY     ; 3
-    bne .skip           ; 2/3
-    lda #2              ; 2
-.skip
+    sta PF1             ; 3
+    lda THudMapPosY     ; 3
     sta ENAM0           ; 3
+    lda THudMapCPosY    ; 3
+    sta ENABL           ; 3
     lda (THudMapSpr),y  ; 5
     sta GRP1            ; 3
 
-    ; digit 4 precomputed
-
     ldx THudDigits+5    ; 3
-    lda SprN0,x         ; 4
-    and #$07            ; 2
-    ora THudTemp        ; 3
+    lda SprN0_R,x       ; 4
+    ldx THudDigits+4    ; 3
+    ora SprN0_L,x       ; 4
+
     sta GRP0            ; 3
     lda #COLOR_WHITE    ; 2
-    sta COLUP0          ; 2
-    lda THudHealthDisp
-    sta PF1
+    sta COLUP0          ; 3
+    lda THudHealthDisp  ; 3
+    sta PF1             ; 3
     ldx #COLOR_PLAYER_00; 2
-    lda THudHealthH
-    sta THudHealthDisp
-    lda .HUD_SPLIT_TEST,y
-    bne .hudScanline1A
-    lda #0
+    lda THudHealthH     ; 3
+    sta THudHealthDisp  ; 3
+    lda .HUD_SPLIT_TEST,y ; 4*
+    bne .hudScanline1A  ; 2/3
     stx COLUP0          ; 2
-    ldx THudDigits+5    ; 3
-    sta WSYNC
-    sta PF1
+    ldx #0              ; 2
+; 70
+    lda THudMapPosY     ; 3
+    lsr
+    ;sta WSYNC           ; 3
 ;=========== Scanline 1 ==============
+    stx PF1             ; 3
+    ldx THudDigits+5    ; 3
+    lda SprN0_R-1,x     ; 4
     dex                 ; 2
-    lda SprN0,x         ; 4
     dex                 ; 2
     stx THudDigits+5    ; 3
-    and #$07            ; 2
-    sta THudTemp        ; 3
     ldx THudDigits+4    ; 3
+    ora SprN0_L-1,x     ; 4
     dex
-    lda SprN0,x         ; 4
-    and #$F8            ; 2
-    ora THudTemp        ; 3
+    dex
+    stx THudDigits+4    ; 3
+
     sta GRP0            ; 3
     lda THudHealthDisp  ; 3
     sta PF1             ; 3
     lda #COLOR_WHITE    ; 2
-    sta COLUP0          ; 2
+    sta COLUP0          ; 3 47
 
-    dex
-    stx THudDigits+4    ; 3
-    lda SprN0,x         ; 4
-    and #$F8
-    sta THudTemp        ; 3
+    ror THudMapPosY
+
+    lda THudMapCPosY    ; 3
+    lsr
+    ror THudMapCPosY
+
     lda #COLOR_PLAYER_00
     sta COLUP0
 
     lda #0
     dey
-    sta WSYNC
-    sta PF1
 ;=========== Scanline 0 ==============
     bpl KERNEL_HUD_LOOP
+    sta WSYNC
 ; HUD LOOP End
     lda #85
     sta TIM8T ; Delay 8 scanlines
     lda #0
     sta ENAM0
     sta GRP1
+    sta ENABL
 
     lda #COLOR_WHITE
     sta COLUP0
 
     ldx THudDigits+5    ; 3
-    lda SprN0,x         ; 4
-    and #$07            ; 2
-    ora THudTemp        ; 3
+    lda SprN0_R,x       ; 4
+    ldx THudDigits+4    ; 3
+    ora SprN0_L,x       ; 4
     sta GRP0            ; 3
 
     ldx #0
     ldy #COLOR_PLAYER_00
 
-    sleep 6
+    lda #%00110001 ; ball size 1, reflect playfield, pf priority
+    sta CTRLPF
 
     lda rFgColor
     sta COLUPF
@@ -322,7 +337,7 @@ KERNEL_WORLD_RESUME:
     sta PF0
     rts
     LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN
-
+    align $20
     INCLUDE "c/draw_data.asm"
 
 .MapFlagAddr
@@ -332,3 +347,6 @@ KERNEL_WORLD_RESUME:
 .MapFlagMask
     .byte #$FF, #$FF
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
+
+.MapDotENA
+    .byte 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x01

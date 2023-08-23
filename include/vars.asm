@@ -370,6 +370,7 @@ PAnim           ds 1
     ORG Temp0
 THudMapSpr      ds 2
 THudMapPosY     ds 1
+THudMapCPosY    ds 1
 THudHealthMaxL  ds 1
 THudHealthL     ds 1
 THudHealthMaxH  ds 1
@@ -378,7 +379,7 @@ THudTemp        ds 1
 THudDigits      ds 6
     ORG THudHealthMaxH
 THudHealthDisp  ds 1
-; == 14 ==
+; == 15 ==
 
     SEG.U VARS_EN_SYS
     ORG Temp0 + 1
@@ -631,6 +632,7 @@ SLOT_PF_A   = RAMSEG_F4 | 4
 SLOT_PF_B   = RAMSEG_F4 | 5
 SLOT_SPR_A  = RAMSEG_F0 | 6
 SLOT_SPR_A2 = RAMSEG_F4 | 6
+SLOT_SPR_HU = RAMSEG_F0 | 38
 
 SLOT_W0     = RAMSEG_F4 | 12
 SLOT_W1     = RAMSEG_F4 | 13

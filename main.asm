@@ -102,12 +102,10 @@ BANK_6
     align $100
     INCLUDE "spr/spr_en.asm"
     align $100
-MINIMAP
-    INCLUDE "spr/spr_map.asm"
+
     align $20
     INCLUDE "spr/spr_pl.asm"
     INCLUDE "spr/spr_sh.asm"
-    INCLUDE "spr/spr_num.asm"
     INCLUDE "spr/spr_gohma.asm"
     INCLUDE "spr/spr_waterfall.asm"
     INCLUDE "spr/spr_rock.asm"
@@ -619,6 +617,24 @@ Pause_MapPlot:
 BANK_37
     INCLUDE "en/En_RollingRock.asm"
     LOG_BANK_SIZE "-BANK 37- En3", BANK_37
+
+; ****************************************
+; *               BANK 38                *
+; ****************************************
+    SEG Bank38
+    ORG $9800
+    RORG $F000
+
+BANK_38
+
+MINIMAP
+    INCLUDE "spr/spr_map.asm"
+    .align $80
+    INCLUDE "spr/spr_num_l.asm"
+    .byte $0
+    .align $80
+    INCLUDE "spr/spr_num_r.asm"
+    LOG_BANK_SIZE "-BANK 38- Spr HUD", BANK_37
 
 ; End
 

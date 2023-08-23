@@ -139,6 +139,17 @@ VERTICAL_SYNC: SUBROUTINE
     stx TIM64T ; 41 scanline timer
     inc Frame
 
+    ldx worldId
+    lda WorldCompassRoom,x
+    and #7
+    eor #7
+    asl
+    asl
+    asl
+    sta RESBL
+    asl
+    sta HMBL
+
 ;==============================================================================
 ; PosHudObjects
 ;----------
@@ -241,3 +252,15 @@ WorldRam:
 
 WorldRoomSprites:
     .byte #SLOT_PF_A, #SLOT_PF_B, #SLOT_PF_B
+
+WorldCompassRoom:
+    .byte $00
+    .byte $36
+    .byte $0D
+    .byte $3D
+    .byte $03
+    .byte $14
+    .byte $0C
+    .byte $23
+    .byte $24
+    .byte $3A

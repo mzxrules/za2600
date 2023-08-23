@@ -4,7 +4,8 @@ set "fwrite_delimiter" to 10
 
 . "sprite sheet allocations
 set "SS_MAP" (22)
-set "SS_N0" (48)
+set "SS_N0L" (256*13)
+set "SS_N0R" (256*13+16)
 set "SS_BOSS" (96)
 set "SS_PL" (160)
 set "SS_EN" (192)
