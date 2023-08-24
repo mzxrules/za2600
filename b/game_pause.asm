@@ -371,7 +371,7 @@ Pause_Menu_Map: SUBROUTINE
     bpl .visit_room_loop
 
 ; use map texture to only include current dungeon rooms
-    lda #SLOT_SPR_HU
+    lda #SLOT_SPR_H
     sta BANK_SLOT
 
 ; invert y cursor and setup for memory wipe

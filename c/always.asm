@@ -85,6 +85,7 @@ GiItemColors:
     .byte COLOR_EN_RED      ; GiPotionRed
 
     .byte COLOR_EN_TRIFORCE ; GiMap
+    .byte COLOR_EN_TRIFORCE ; GiCompass
     .byte COLOR_EN_BROWN    ; GiBowArrow
     .byte COLOR_WHITE       ; GiBowArrowSilver
 
@@ -128,6 +129,7 @@ GiItemSpr:
     .byte $B0   ; GiPotionRed
 
     .byte $B8   ; GiMap
+    .byte $D8   ; GiCompass
     .byte $C0   ; GiBowArrow
     .byte $C0   ; GiBowArrowSilver
 

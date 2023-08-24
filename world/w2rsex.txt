@@ -120,8 +120,8 @@ Rs_None
 zz0
 Rs_Item
 GiRupee5
-Rs_None
-zz0
+Rs_Item
+GiCompass
 Rs_None
 zz0
 Rs_Item
@@ -162,8 +162,8 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_Item
+GiCompass
 Rs_Npc
 MesgHintNose
 Rs_Item
@@ -172,8 +172,8 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_Item
+GiCompass
 Rs_None
 zz0
 Rs_None

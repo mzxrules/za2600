@@ -50,8 +50,9 @@ ENTRY_START_GAME:
     lda #16
     sta itemRupees
     sta itemBombs
-    lda #$FF
+    lda #$F0
     sta itemFlags
+    lda #$FF
     sta itemFlags+1
     sta itemFlags+2
     ENDIF

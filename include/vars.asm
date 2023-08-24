@@ -103,9 +103,12 @@ itemKeys    ds 1 ; Sign bit = Master Key
 itemBombs   ds 1
 itemTri     ds 1
 itemMaps    ds 1 ; Level 2-9
+itemCompass ds 1
 itemFlags   ds 3
 ; ITEMV_name = item var
 ; ITEMF_name = item flag
+    ITEM COMPASS_1,     0,$01
+    ITEM MAP_1,         0,$02
     ITEM SHIELD,        0,$10
     ITEM SWORD1,        0,$20
     ITEM SWORD2,        0,$40
@@ -375,11 +378,10 @@ THudHealthMaxL  ds 1
 THudHealthL     ds 1
 THudHealthMaxH  ds 1
 THudHealthH     ds 1
-THudTemp        ds 1
 THudDigits      ds 6
     ORG THudHealthMaxH
 THudHealthDisp  ds 1
-; == 15 ==
+; == 14 ==
 
     SEG.U VARS_EN_SYS
     ORG Temp0 + 1
@@ -632,7 +634,7 @@ SLOT_PF_A   = RAMSEG_F4 | 4
 SLOT_PF_B   = RAMSEG_F4 | 5
 SLOT_SPR_A  = RAMSEG_F0 | 6
 SLOT_SPR_A2 = RAMSEG_F4 | 6
-SLOT_SPR_HU = RAMSEG_F0 | 38
+SLOT_SPR_H  = RAMSEG_F0 | 38
 
 SLOT_W0     = RAMSEG_F4 | 12
 SLOT_W1     = RAMSEG_F4 | 13

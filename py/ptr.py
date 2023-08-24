@@ -184,6 +184,7 @@ tbl = [
         "GiPotionRed",
 
         "GiMap",
+        "GiCompass",
 # below items are not real items
         "GiBowArrow",
         "GiBowArrowSilver",

@@ -18,8 +18,7 @@ POSITION_SPRITES: SUBROUTINE
 ; HUD Draw Setup
 ;==============================================================================
 
-.minimap_setup
-; map color and sprite id
+.hud_minimap_visible
     ldy worldId
     ldx .MapFlagAddr,y
     lda #$00,x
@@ -29,17 +28,18 @@ POSITION_SPRITES: SUBROUTINE
 .setMinimapColor
     sta COLUP1
 
-; compass point
-    lda WorldCompassRoom,y
-    lsr
-    lsr
-    lsr
-    lsr
-    tax
-    lda .MapDotENA,x
+
+.hud_compass_pos_y
+    ldx .CompassFlagAddr,y
+    lda #$00,x
+    and .CompassFlagMask,y
+    beq .setCompassPoint
+    lda .MapCompassDotENA,y
+.setCompassPoint
     sta THudMapCPosY
 
-; sprite setup
+
+.hud_minimap_sprite
     lda #<(MINIMAP) ; Sprite + height-1
     clc
     adc Mul8,y
@@ -57,8 +57,8 @@ POSITION_SPRITES: SUBROUTINE
     sta COLUBK
     sta NUSIZ0 ; clean sword from previous frame
 
-.hud_sprite_setup
-; rupee display
+
+.hud_rupee_init
     lda itemRupees
     and #$F0
     lsr ;clc
@@ -72,7 +72,7 @@ POSITION_SPRITES: SUBROUTINE
     adc #7
     sta THudDigits+5
 
-; bomb display
+
 .hud_bomb_init
     lda itemBombs
     and #$0F
@@ -90,7 +90,7 @@ POSITION_SPRITES: SUBROUTINE
     lda #<SprN1_L - #<SprN0_L +7
     sta THudDigits+0
 
-; key display
+
 .hud_key_init
     ldx itemKeys
     bmi .hud_all_keys
@@ -108,7 +108,8 @@ POSITION_SPRITES: SUBROUTINE
     lda #<SprN10_L - #<SprN0_L +7
     sta THudDigits+2
 
-.PRE_HUD:
+
+.hud_pl_pos_y:
     lda roomId
     lsr
     lsr
@@ -119,6 +120,8 @@ POSITION_SPRITES: SUBROUTINE
     lda .MapDotENA,x
     sta THudMapPosY
 
+
+.hud_health
     ldx #1
 .hpBarLoop
     lda plHealthMax,x ; Load HP
@@ -140,12 +143,6 @@ POSITION_SPRITES: SUBROUTINE
     dex
     bpl .hpBarLoop
 
-    lda #COLOR_HEALTH
-    sta COLUPF
-
-    lda #SLOT_SPR_HU
-    sta BANK_SLOT
-
 ;===================================================
 ; Kernel Main
 ;===================================================
@@ -159,11 +156,17 @@ KERNEL_HUD:
     lda #%00000101 ; ball size 1, reflect playfield, pf priority
     sta CTRLPF
 
+    lda #COLOR_HEALTH
+    sta COLUPF
+
+    lda #SLOT_SPR_H
+    sta BANK_SLOT
+
     ldy #7 ; Draw Height
     lda #0
     beq KERNEL_HUD_LOOP
 ;=========== Scanline 1A ==============
-; 66
+; cycle 66
 .hudScanline1A
     lda THudMapPosY
     lsr
@@ -201,8 +204,8 @@ KERNEL_HUD:
     lda #0
     sta THudHealthL
     sta THudHealthMaxL
-KERNEL_HUD_LOOP:
 
+KERNEL_HUD_LOOP:
     sta WSYNC
 ;=========== Scanline 0 ==============
     sta PF1             ; 3
@@ -341,12 +344,33 @@ KERNEL_WORLD_RESUME:
     INCLUDE "c/draw_data.asm"
 
 .MapFlagAddr
-    .byte #$FF, #$FF
+    .byte #$FF, #<ITEMV_MAP_1
+    .byte #<itemMaps, #<itemMaps, #<itemMaps, #<itemMaps
     .byte #<itemMaps, #<itemMaps, #<itemMaps, #<itemMaps
 
 .MapFlagMask
-    .byte #$FF, #$FF
-    .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
-
+    .byte #$FF, #ITEMF_MAP_1
+    .byte 0x01 ; 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80,
 .MapDotENA
     .byte 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x01
+
+.CompassFlagAddr
+    .byte #$FF, #<ITEMV_COMPASS_1
+    .byte #<itemCompass, #<itemCompass, #<itemCompass, #<itemCompass
+    .byte #<itemCompass, #<itemCompass, #<itemCompass, #<itemCompass
+
+.CompassFlagMask
+    .byte #0, #ITEMF_COMPASS_1
+    .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
+
+.MapCompassDotENA
+    .byte $00 ; $00
+    .byte $10 ; $36
+    .byte $02 ; $0D
+    .byte $10 ; $3D
+    .byte $02 ; $03
+    .byte $04 ; $14
+    .byte $02 ; $0C
+    .byte $08 ; $23
+    .byte $08 ; $24
+    .byte $10 ; $3A

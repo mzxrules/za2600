@@ -245,11 +245,33 @@ GiHeart:
     sta plHealth
     rts
 
-GiMap:
+GiMap: SUBROUTINE
     ldy worldId
+    cpy #2
+    bcc .setMap1
     lda Bit8-2,y
     ora itemMaps
     sta itemMaps
+    rts
+.setMap1
+    lda #ITEMF_MAP_1
+    ora ITEMV_MAP_1
+    sta ITEMV_MAP_1
+    rts
+GiCompass: SUBROUTINE
+    ldy worldId
+    cpy #2
+    bcc .setCompass1
+    lda Bit8-2,y
+    ora itemCompass
+    sta itemCompass
+    rts
+.setCompass1
+    lda #ITEMF_COMPASS_1
+    ora ITEMV_COMPASS_1
+    sta ITEMV_COMPASS_1
+    rts
+
 GiNone:
 GiBowArrow:
 GiBowArrowSilver:

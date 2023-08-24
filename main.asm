@@ -634,7 +634,7 @@ MINIMAP
     .byte $0
     .align $80
     INCLUDE "spr/spr_num_r.asm"
-    LOG_BANK_SIZE "-BANK 38- Spr HUD", BANK_37
+    LOG_BANK_SIZE "-BANK 38- Sprites HUD", BANK_38
 
 ; End
 
