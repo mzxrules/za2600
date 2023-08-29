@@ -33,8 +33,9 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
 
     lda #SLOT_PL
     sta BANK_SLOT
-    jsr PlayerInput
+    jsr PauseGame
 PAUSE_RETURN:
+    jsr PlayerInput
     jsr PlayerItem
 .roomLoadCpuSkip
 
@@ -371,8 +372,8 @@ UPDATE_PL_HEALTH: SUBROUTINE
 ; damage
     bit plStun
     bmi .rts
-    ldx #-48
-    stx plStun
+    ldy #PL_STUN_TIME
+    sty plStun
     bit ITEMV_RING_RED
     bpl .checkBlueRing ; #ITEMF_RING_RED
     sec

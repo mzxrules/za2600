@@ -426,7 +426,7 @@ PlayerFlute: SUBROUTINE
 .tornadoAnimWidth:
     .byte $20, $30, $10
 
-PlayerInput: SUBROUTINE
+PauseGame: SUBROUTINE
     bit INPT1
     bmi .skipCheckForPause
     lda plItemTimer
@@ -446,8 +446,10 @@ PlayerInput: SUBROUTINE
     lda #SLOT_PAUSE
     sta BANK_SLOT
     jmp PAUSE_ENTRY
-
 .skipCheckForPause
+    rts
+
+PlayerInput: SUBROUTINE
     ; test if player locked
     lda #PS_LOCK_ALL
     bit plState
@@ -457,8 +459,9 @@ PlayerInput: SUBROUTINE
     sta plState
     lda plState2
     and #PS_ACTIVE_ITEM
-    bne .rts
+    bne .rts2
     sta plItemTimer
+.rts2
     rts
 .InputContinue
     ; Test and update fire button state and related flags
@@ -475,6 +478,58 @@ PlayerInput: SUBROUTINE
     ora #PS_USE_ITEM
 .FireNotHit
     sta plState
+
+; Player Recoil
+    ldx plStun
+    dex
+    cpx #PL_STUN_TIME+8-1
+    bcs .noRecoil
+    txa
+    and #3
+    tax
+    lda PlayerStunColors,x
+    sta wPlColor
+
+    ldy plDir               ; 3
+    ldx PlayerXYAddr,y      ; 4
+    lda #$00,x              ; 4
+    clc
+    adc PlayerRecoilDist,y  ; 4*
+    sta #$00,x              ; 4
+; clamp recoil movement to board bounds
+    ldx plX
+    ldy plY
+.recoilL
+    cpx #BoardXL
+    bcs .recoilR
+    ldx #BoardXL
+.recoilR
+    cpx #BoardXR
+    bcc .recoilD
+    ldx #BoardXR
+.recoilD
+    cpy #BoardYD
+    bcs .recoilU
+    ldy #BoardYD
+.recoilU
+    cpy #BoardYU
+    bcc .recoilSetPlXY
+    ldy #BoardYU
+.recoilSetPlXY
+    stx plX
+    sty plY
+    rts
+.noRecoil
+    ; lda plState
+    ldx #COLOR_PLAYER_02
+    bit ITEMV_RING_RED
+    bmi .setPlColor
+    ldx #COLOR_PLAYER_01
+    bvs .setPlColor
+    ldx #COLOR_PLAYER_00
+.setPlColor
+    stx wPlColor
+
     and #PS_LOCK_MOVE
     bne .rts
 
@@ -493,7 +548,7 @@ ContRight:
 
 MovePlayerRight:
     lda plState
-    lsr
+    lsr ; PS_LOCK_AXIS
     bcc .MovePlayerRightFr
     lda #2
     bit plDir
@@ -517,7 +572,7 @@ ContLeft:
 
 MovePlayerLeft:
     lda plState
-    lsr
+    lsr ; PS_LOCK_AXIS
     bcc .MovePlayerLeftFr
     lda #2
     bit plDir
@@ -540,7 +595,7 @@ ContDown:
 
 MovePlayerDown:
     lda plState
-    lsr
+    lsr ; PS_LOCK_AXIS
     bcc .MovePlayerDownFr
     lda #2
     bit plDir
@@ -563,7 +618,7 @@ ContUp:
 
 MovePlayerUp:
     lda plState
-    lsr
+    lsr ; PS_LOCK_AXIS
     bcc .MovePlayerUpFr
     lda #2
     bit plDir
@@ -575,4 +630,14 @@ MovePlayerUp:
 
 ContFin:
     rts
+
+PlayerXYAddr:
+    .byte plX, plX, plY, plY
+
+PlayerRecoilDist:
+    .byte -2, 2, 2, -2
+
+PlayerStunColors:
+    .byte #COLOR_PLAYER_00, #COLOR_PLAYER_02, #COLOR_PLAYER_01, #COLOR_BLACK
+
     LOG_SIZE "Input", PlayerInput

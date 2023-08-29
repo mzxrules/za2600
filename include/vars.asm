@@ -84,6 +84,8 @@ PS_ACTIVE_ITEM  = $07 ; 0000_0111 Mask to fetch current active item
                       ;       101 Wand
                       ;       110 Meat?
 plStun      ds 1
+PL_STUN_TIME = -30
+plRecoil    ds 1
 plHealthMax ds 1
 plHealth    ds 1 ; $0 exact for gameover, negative for gameover state is init
 plItemTimer ds 1
@@ -576,7 +578,7 @@ BoardBreakwallEX = $76
 
     COLOR PLAYER_00,    $C6,$58
     COLOR PLAYER_01,    $0E,$0E
-    COLOR PLAYER_02,    $46,$64
+    COLOR PLAYER_02,    $46,$66
 
     COLOR PATH,         $3C,$4C
     COLOR GREEN_ROCK,   $D0,$52

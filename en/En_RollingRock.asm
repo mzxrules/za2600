@@ -18,12 +18,7 @@ EN_ROLLING_ROCK_ANIM_go_up  = EN_ROLLING_ROCK_ANIM_length - 2
 
 En_RollingRock: SUBROUTINE
     lda enState,x
-    ror
-    bcs .DoMove
-    ror
-    bcs .SelectMove
-    ror
-    bcs .WaitAppear
+    bne .Main
     jsr Random
 
     ora #$E0
@@ -31,16 +26,38 @@ En_RollingRock: SUBROUTINE
     sta enRollingRockTimer,x
 
     jsr Random
+    tay
     and #$3
     sta enRollingRockSize,x
 
     lda #EN_ROLLING_ROCK_SetInit
     sta enState,x
-    lda #$60
+    lda #$4F
     sta en0Y,x
-    lda #$20
+    tya
+    and #$1F
+    clc
+    adc #$20
     sta en0X,x
     rts
+
+.Main
+; Check player hit
+    lda enStun,x
+    bmi .endCheckHit
+    bit CXPPMM
+    bpl .endCheckHit
+    lda #-8
+    jsr UPDATE_PL_HEALTH
+.endCheckHit
+
+    lda enState,x
+    ror
+    bcs .DoMove
+    ror
+    bcs .SelectMove
+    ror
+    bcs .WaitAppear
 
 .WaitAppear
     lda enRollingRockTimer,x

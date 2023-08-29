@@ -132,7 +132,7 @@ NextDir3:
     and #4
     ora Mul8,y
     ora enNextDir
-    bpl .nextDir3Entry
+    bpl .nextDir3Entry ; JMP
 
 ;==============================================================================
 ; Randomly selects a new cardinal direction
@@ -365,7 +365,6 @@ EnDirRd: SUBROUTINE
 
 EnNone:
     lda #$F0
-    sta enSpr+1
     sta en0Y,x
     rts
 

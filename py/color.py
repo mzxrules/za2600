@@ -93,7 +93,7 @@ GAME_COLOR_TABLE = {
     "COLOR_DARK_PURPLE":    (0x60,0xA2),
     "COLOR_PURPLE":         (0x64,0xA6),
     "COLOR_DARK_TEAL":      (0xB0,0x72),
-    "COLOR_LIGHT_TEAL":      (0xB2,0x74),
+    "COLOR_LIGHT_TEAL":     (0xB2,0x74),
     "COLOR_SACRED":         (0x1E,0x2E), # No good PAL equivalent
 
     "COLOR_MINIMAP":        (0x84,0x08), # Different colors

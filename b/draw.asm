@@ -21,7 +21,7 @@ POSITION_SPRITES: SUBROUTINE
 .hud_minimap_visible
     ldy worldId
     ldx .MapFlagAddr,y
-    lda #$00,x
+    lda $00,x
     and .MapFlagMask,y
     beq .setMinimapColor
     lda #COLOR_MINIMAP
@@ -31,7 +31,7 @@ POSITION_SPRITES: SUBROUTINE
 
 .hud_compass_pos_y
     ldx .CompassFlagAddr,y
-    lda #$00,x
+    lda $00,x
     and .CompassFlagMask,y
     beq .setCompassPoint
     lda .MapCompassDotENA,y
@@ -161,6 +161,9 @@ KERNEL_HUD:
 
     lda #SLOT_SPR_H
     sta BANK_SLOT
+
+    lda #COLOR_PLAYER_00
+    sta COLUP0
 
     ldy #7 ; Draw Height
     lda #0

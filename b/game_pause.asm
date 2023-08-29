@@ -38,6 +38,25 @@ PAUSE_FROM_GAME:
     bne .runPauseUpdate
     lda #0
     sta PauseState
+
+; Restore Frame, correcting audio timers
+    lda PFrame
+    tax
+    sec
+    sbc Frame
+    sta Frame
+
+    lda SeqTFrame
+    clc
+    adc Frame
+    sta SeqTFrame
+
+    lda SeqTFrame+1
+    clc
+    adc Frame
+    sta SeqTFrame+1
+    stx Frame
+
     lda #SLOT_PL
     sta BANK_SLOT
     jmp MAIN_UNPAUSE
