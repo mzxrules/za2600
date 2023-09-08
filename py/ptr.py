@@ -26,7 +26,7 @@ class GameEnum:
 
     def __post_init__(self):
         if self.shortName == None:
-            shortName = name
+            self.shortName = self.name
 
     def EnumFunc(self, x):
         if self.name == "Sfx":
@@ -267,7 +267,7 @@ tbl = [
     bankLut=None),
     GameEnum("EnMoveDir", "EnDir",
     genEditorBindings=False,
-    genPtrTable=True,
+    genPtrTable=False,
     genConstants=True,
     vals=[
         "EnDirL",

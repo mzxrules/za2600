@@ -122,7 +122,7 @@ En_OctorokMain:
     beq .newDir
 
     jsr TestCurDir
-    bne .move_ldx
+    bne .move
     jsr NextDir3
     bpl .newDir_3
 
@@ -144,9 +144,8 @@ En_OctorokMain:
     sta enState,x
     jmp .rts ;
 
-.move_ldx
-    ldx enNum
 .move
+    ldx enNum
     lda enState,x
     rol
     rol
@@ -155,8 +154,7 @@ En_OctorokMain:
     and Frame
     and #3
     beq .rts
-    ldy enDir,x
-    jsr EnMoveDirDel2
+    jsr EnMoveDir
 
 ; update think timer
     lda enOctorokThink,x

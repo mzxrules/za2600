@@ -65,7 +65,7 @@ En_BossGlockHead: SUBROUTINE
     lda enGlockHeadDir
     and #7
     tay
-    jmp EnMoveDirDel2
+    jmp EnMoveDel
 
 En_BossGlockHead_Bounce:
     .byte EN_DIR_R

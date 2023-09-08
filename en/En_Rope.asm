@@ -24,15 +24,9 @@ En_Rope: SUBROUTINE
     lsr
     sta enNY,x
 
-    jsr En_Rope_Think
+    jmp En_Rope_Think
 
 En_RopeMain: SUBROUTINE
-; update EnSysNX
-    lda enNX,x
-    sta EnSysNX
-    lda enNY,x
-    sta EnSysNY
-
 ; update stun timer
     lda enStun,x
     cmp #1
@@ -93,8 +87,17 @@ En_RopeMain: SUBROUTINE
     jsr UPDATE_PL_HEALTH
 .endCheckHit
 
-; Movement
+.ROPE_MOVEMENT
+    lda #SLOT_EN_MOV
+    sta BANK_SLOT
+
     ldx enNum
+
+; update EnSysNX
+    lda enNX,x
+    sta EnSysNX
+    lda enNY,x
+    sta EnSysNY
 
     lda enNX,x
     asl
@@ -110,8 +113,8 @@ En_RopeMain: SUBROUTINE
 .solveNextDirection
 
 ; What's the plan, snake man?
-    lda #$00
-    jsr EnSetBlockedDir2
+    jsr EnMov_Card_WallCheck
+    ldx enNum
 
     lda enState,x
     and #EN_ROPE_ATTACK
@@ -158,18 +161,15 @@ En_RopeMain: SUBROUTINE
     beq .newDir
 
 .tryContMoveDir ; We want to continue moving in the current direction
-    ;lda EnSysBlockedDir
-    ;sta Temp0
-
-    jsr TestCurDir
-    beq .hitWall
-    ldx enNum
-    bpl .move
-.hitWall
-.newDir
+    jsr EnMov_Card_RandDirIfBlocked
+    lda EnSysNextDirCount
+    cmp #3
+    beq .move
     ; hit a wall or something, so reset
-    jsr NextDir4
-
+    bne .setNewDir
+.newDir
+    jsr EnMov_Card_RandDir
+.setNewDir
     ldx enNum
     lda enNextDir
     sta enDir,x
@@ -184,25 +184,19 @@ En_RopeMain: SUBROUTINE
 .skipResetAttack
     jsr En_Rope_Think
 
-
 .move
+    ldx enNum
     lda enState,x
     and #EN_ROPE_ATTACK
     bne .moveNow
 
     lda Frame
-    and #1
-    beq .rts
+    ror
+    bcc .rts
 .moveNow
-    ldy enDir,x
-    jsr EnMoveDirDel2
+    jsr EnMoveDir
 
 .rts
-    ldx enNum
-    lda EnSysNX
-    sta enNX,x
-    lda EnSysNY
-    sta enNY,x
     rts
 
 En_Rope_Think: SUBROUTINE

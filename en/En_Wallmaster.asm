@@ -2,31 +2,10 @@
 ; mzxrules 2021
 ;==============================================================================
 
-En_WallmasterCapture: SUBROUTINE
-    inc enWallPhase
-    ldx enWallPhase
-    cpx #33
-    bne .rts
-    jsr SPAWN_AT_DEFAULT
-.rts
-    rts
+EN_WALLMASTER_CAPTURE = $80
+EN_WALLMASTER_INIT = $40
 
-En_Wallmaster: SUBROUTINE
-    ; draw sprite
-    lda #>SprE10
-    sta enSpr+1
-    lda enWallPhase
-    lsr
-    clc
-    adc #<SprE10-8
-    sta enSpr
-    lda #0
-    sta wEnColor
-
-    bit enState
-    bvs En_WallmasterCapture
-    bmi .runMain
-
+En_WallmasterInit: SUBROUTINE
 ; calculate initial position
     lda #0 ; up wall phase
     ldy #EnBoardYU
@@ -48,21 +27,37 @@ En_Wallmaster: SUBROUTINE
     sty enY
     sta enWallPhase
 
-    lda #$80
+    lda #EN_WALLMASTER_INIT
     sta enState
+    rts
 
-.runMain
-    ldx enWallPhase
-    cpx #16
-    beq .next
-    bmi .incWallPhase
-    dec enWallPhase
-    bpl .rts ; always branch
-.incWallPhase
+En_WallmasterCapture:
     inc enWallPhase
-    bpl .rts ; always branch
+    ldx enWallPhase
+    cpx #33
+    bne .rts
+    jsr SPAWN_AT_DEFAULT
+.rts
+    rts
 
-.next
+En_Wallmaster: SUBROUTINE
+    lda enState,x
+    rol
+    bcs En_WallmasterCapture
+    bpl En_WallmasterInit
+
+; Handle phasing state
+    lda enWallPhase,x
+    cmp #16
+    beq .checkPlayerHit
+    bmi .incWallPhase
+    dec enWallPhase,x
+    rts
+.incWallPhase
+    inc enWallPhase,x
+    rts
+
+.checkPlayerHit
     bit CXPPMM
     bpl .handleMovement
     lda #-4
@@ -71,12 +66,12 @@ En_Wallmaster: SUBROUTINE
     ora #PS_LOCK_ALL
     sta plState
     lda plX
-    sta enX
+    sta enX,x
     lda plY
-    sta enY
-    lda #$40
-    ora enState
-    sta enState
+    sta enY,x
+    lda #EN_WALLMASTER_CAPTURE
+    ora enState,x
+    sta enState,x
     lda #$80
     sta plY
     rts
@@ -110,7 +105,7 @@ En_Wallmaster: SUBROUTINE
     and #1
     bne .rts
 .forceMove
-    jmp EnMoveDirDel
+    jmp EnMoveDir
 .rts
     rts
 

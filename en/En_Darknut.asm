@@ -119,9 +119,7 @@ En_DarknutMain:
     and #1
     beq .rts
     ldx enNum
-    lda enDir,x
-    tay
-    jsr EnMoveDirDel2
+    jsr EnMoveDir
 .rts
     ldx enNum
     lda EnSysNX

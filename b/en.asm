@@ -26,10 +26,10 @@ CheckRoomCol: SUBROUTINE
 CheckRoomCol_XA:
     tya
 
-    cpx #[$04/4]
-    bmi .rts
-    cmp #[$10/4]
-    bmi .rts
+    cpx #[$04/4] ; 2
+    bmi .rts     ; 2
+    cmp #[$10/4] ; 2
+    bmi .rts     ; 2
 
     cpx #[$60/4]
     beq .special_right
@@ -132,6 +132,8 @@ NextDir3:
     and #4
     ora Mul8,y
     ora enNextDir
+    sta EnSysNextDirSeed    ; 3
+    tax                     ; 2
     bpl .nextDir3Entry ; JMP
 
 ;==============================================================================
@@ -143,7 +145,7 @@ NextDir3:
 NextDir4:
     lda #3
     sta EnSysNextDirCount
-    jsr Random
+    jsr Random              ; 32
     ldy #0
     cmp #$55
     bcc .select
@@ -162,27 +164,23 @@ NextDir4:
 .checkLoop
     dec EnSysNextDirCount
     bmi .miss
-    lda EnSysNextDirSeed
-    sec
-    sbc #8
-    bpl .continue
-    adc #24
+    ldy EnSysNextDirSeed    ; 3
+    ldx nextdir_step_lut,y  ; 4
+    stx EnSysNextDirSeed
 .continue
 .nextDir3Entry
-    sta EnSysNextDirSeed
-    tax
-    lda nextdir_lut,x
-    sta enNextDir
+    lda nextdir_lut,x       ; 4
+    sta enNextDir           ; 3
 
 .firstGo
-    ldx EnSysNX
-    ldy EnSysNY
-    lda enNextDir
+    ldx EnSysNX             ; 3
+    ldy EnSysNY             ; 3
+    lda enNextDir           ; 3
     bne .check_1
 
 .EN_DIR_L
-    lda EnSysBlockedDir
-    and Lazy8 + EN_DIR_L
+    lda EnSysBlockedDir     ; 3
+    and #[1<<EN_DIR_L]      ; 2
     bne .checkLoop
 
     dex
@@ -197,7 +195,7 @@ NextDir4:
     bne .check_2
 .EN_DIR_R
     lda EnSysBlockedDir
-    and Lazy8 + EN_DIR_R
+    and #[1<<EN_DIR_R]
     bne .checkLoop
 
     inx
@@ -213,7 +211,7 @@ NextDir4:
 
 .EN_DIR_U
     lda EnSysBlockedDir
-    and Lazy8 + EN_DIR_U
+    and #[1<<EN_DIR_U]
     bne .checkLoop
 
     iny
@@ -225,7 +223,7 @@ NextDir4:
 
 .EN_DIR_D
     lda EnSysBlockedDir
-    and Lazy8 + EN_DIR_D
+    and #[1<<EN_DIR_D]
     bne .checkLoop
 
     dey
@@ -322,45 +320,6 @@ EnSetBlockedDir: SUBROUTINE
 .setBlockDir
     sta enBlockedDir,y
 */
-    rts
-
-EnDirR2: SUBROUTINE
-    inc en0X,x
-EnDirR: SUBROUTINE
-    inc en0X,x
-    rts
-EnDirL2: SUBROUTINE
-    dec en0X,x
-EnDirL: SUBROUTINE
-    dec en0X,x
-    rts
-EnDirD2: SUBROUTINE
-    dec en0Y,x
-EnDirD: SUBROUTINE
-    dec en0Y,x
-    rts
-EnDirU2: SUBROUTINE
-    inc en0Y,x
-EnDirU: SUBROUTINE
-    inc en0Y,x
-    rts
-
-; Diagonals
-EnDirLu: SUBROUTINE
-    dec en0X,x
-    inc en0Y,x
-    rts
-EnDirLd: SUBROUTINE
-    dec en0X,x
-    dec en0Y,x
-    rts
-EnDirRu: SUBROUTINE
-    inc en0X,x
-    inc en0Y,x
-    rts
-EnDirRd: SUBROUTINE
-    inc en0X,x
-    dec en0Y,x
     rts
 
 EnNone:
@@ -599,13 +558,4 @@ EnSysCleanShift: SUBROUTINE
     sta enType+1
 
 .rts
-    rts
-
-EnMoveDirDel:
-    ldy enDir
-EnMoveDirDel2:
-    lda EnMoveDirH,y
-    pha
-    lda EnMoveDirL,y
-    pha
     rts

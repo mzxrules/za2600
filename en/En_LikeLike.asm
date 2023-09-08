@@ -84,7 +84,7 @@ En_LikeLikeMain: SUBROUTINE
     lda Frame
     and #1
     bne .rts
-    jsr EnMoveDirDel
+    jsr EnMoveDir
 .rts
     rts
 

@@ -53,14 +53,12 @@ En_Test:
 
 .continue
 
+    lda #SLOT_EN_MOV
     ldx plX
     ldy plY
-    jsr CheckRoomCol
-    cmp #0
-    beq .no_room_col
-    lda #COLOR_DARK_BLUE
-    sta enStun
-.no_room_col
+    jsr EnMov_Card_WallCheck_TEST
+    lda EnSysBlockedDir
+    sta itemRupees
 
     lda #SLOT_MAIN
     sta BANK_SLOT

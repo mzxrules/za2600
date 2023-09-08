@@ -656,7 +656,7 @@ SLOT_MG     = RAMSEG_F4 | 8 ; Requires bank divisible by 4
 SLOT_ROOM   = RAMSEG_F0 | 21
 
 SLOT_EN_A   = RAMSEG_F0 | 22
-SLOT_EN_B   = RAMSEG_F4 | 23
+SLOT_EN_MOV = RAMSEG_F0 | 23
 
 SLOT_AU_A   = RAMSEG_F0 | 24
 SLOT_AU_B   = RAMSEG_F4 | 25

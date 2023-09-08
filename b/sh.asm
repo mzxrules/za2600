@@ -363,16 +363,13 @@ EnClearDrop: SUBROUTINE
 .TypeA
 
 EnClearDropTypeA: SUBROUTINE
-    ldx cdAX
-    stx enX
-    ldy cdAY
-    sty enY
-
     lda cdAType
     cmp #EN_STAIRS
     bne .rts
 
 EnStairs:
+    ldx cdAX
+    ldy cdAY
     cpx plX
     bne .rts
     cpy plY
@@ -393,10 +390,6 @@ EnStairs:
 ; Random Item Drops
 EnClearDropTypeB: SUBROUTINE
     inc enState
-    lda cdBX
-    sta enX
-    lda cdBY
-    sta enY
 
     lda cdBType
     cmp #CD_ITEM_RAND

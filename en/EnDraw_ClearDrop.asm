@@ -16,9 +16,19 @@ EnDraw_ClearDrop: SUBROUTINE
     and #1
     beq .DrawTypeA
 .DrawTypeB
+    lda cdBX
+    sta enX
+    lda cdBY
+    sta enY
+
     ldy cdBType
     jmp EnItemDraw
 .DrawTypeA
+    lda cdAX
+    sta enX
+    lda cdAY
+    sta enY
+
     lda cdAType
     cmp #EN_STAIRS
     beq .EnStairs

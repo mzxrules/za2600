@@ -370,11 +370,9 @@ BANK_21
     RORG $F000
 
 BANK_22
+    INCLUDE "b/en_common.asm"
     INCLUDE "gen/Entity.asm"
     INCLUDE "gen/Entity_bank.asm"
-    INCLUDE "gen/nextdir.asm"
-    INCLUDE "gen/EnMoveDir.asm"
-    INCLUDE "gen/roomcollision.asm"
     INCLUDE "b/en.asm"
 
     LOG_BANK_SIZE "-BANK 22- Entity Common", BANK_22
@@ -386,7 +384,9 @@ BANK_22
     ORG $5C00
     RORG $F000
 BANK_23
-    .byte 0
+    INCLUDE "b/en_common.asm"
+    INCLUDE "b/en_movement.asm"
+    LOG_BANK_SIZE "-BANK 23- Entity Movement", BANK_23
 
 ; ****************************************
 ; *               BANK 24                *

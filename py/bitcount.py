@@ -368,7 +368,7 @@ def get_randdir_lut():
                 lut[index] = possibleNext[perm[k]]
     with open(f'gen/nextdir.asm', "w") as file:
         file.write("nextdir_lut:\n")
-        file.write(ToAsm(lut,4))
+        file.write(ToAsm(lut,8))
 
 
 def get_bitcount():

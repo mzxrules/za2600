@@ -220,8 +220,6 @@ endPFCollision
 
     lda #SLOT_EN_A
     sta BANK_SLOT
-    lda #SLOT_EN_B
-    sta BANK_SLOT
 .ClearDrop_EnSystem:
     jsr ClearDropSystem
 
