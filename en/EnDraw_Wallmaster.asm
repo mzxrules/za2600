@@ -3,7 +3,11 @@
 ;==============================================================================
 
 EnDraw_Wallmaster: SUBROUTINE
-    ; draw sprite
+    lda en0X,x
+    sta enX
+    lda en0Y,x
+    sta enY
+
     lda #>SprE10
     sta enSpr+1
     lda enWallPhase

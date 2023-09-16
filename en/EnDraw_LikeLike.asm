@@ -3,7 +3,11 @@
 ;==============================================================================
 
 EnDraw_LikeLike: SUBROUTINE
-    ; Draw Routine
+    lda en0X,x
+    sta enX
+    lda en0Y,x
+    sta enY
+
     lda #>SprE16
     sta enSpr+1
     lda Frame

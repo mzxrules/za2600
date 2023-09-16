@@ -6,23 +6,25 @@ EnMov_Card_WallCheck_TEST: SUBROUTINE
     txa
     lsr
     lsr
-    sta EnSysNX
+    sta EnMoveNX
 
 ; adjust y coordinate
     tya
     lsr
     lsr
-    sta EnSysNY
+    sta EnMoveNY
+
 
 ;==============================================================================
-; Computes free spaces, cardinal to position (EnSysNX, EnSysNY)
-; EnSysBlockedDir stores all blocked directions
-; Clobbers X, Y registers
+; Computes free spaces, cardinal to position (EnMoveNX, EnMoveNY)
+; EnMoveBlockedDir stores all blocked directions
+; X = enNum
+; Clobbers Y register
 ;==============================================================================
 EnMov_Card_WallCheck: SUBROUTINE
     lda #0
-;EnSetBlockedDir2:
-    ldx EnSysNX
+; Check board boundaries
+    ldx EnMoveNX
     cpx #[EnBoardXR/4]
     bne .setBlockedL
     ora #EN_BLOCKED_DIR_R
@@ -31,7 +33,7 @@ EnMov_Card_WallCheck: SUBROUTINE
     bne .setBlockedD
     ora #EN_BLOCKED_DIR_L
 .setBlockedD
-    ldy EnSysNY
+    ldy EnMoveNY
     cpy #[EnBoardYD/4]
     bne .setBlockedU
     ora #EN_BLOCKED_DIR_D
@@ -40,7 +42,7 @@ EnMov_Card_WallCheck: SUBROUTINE
     bne .checkPFHit
     ora #EN_BLOCKED_DIR_U
 .checkPFHit
-    sta EnSysBlockedDir
+    sta EnMoveBlockedDir
 
 
 ;CheckRoomCol_XA:
@@ -79,12 +81,12 @@ EnMov_Card_WallCheck: SUBROUTINE
 
 .dl_blocked
     lda #EN_BLOCKED_DIR_L
-    ora EnSysBlockedDir
-    sta EnSysBlockedDir
+    ora EnMoveBlockedDir
+    sta EnMoveBlockedDir
 
 
 .dr ; RIGHT (1, 0)
-    ldy EnSysNY
+    ldy EnMoveNY
     tya
 
     cpx #[$60/4 - 1]
@@ -113,14 +115,14 @@ EnMov_Card_WallCheck: SUBROUTINE
 
 .dr_blocked
     lda #EN_BLOCKED_DIR_R
-    ora EnSysBlockedDir
-    sta EnSysBlockedDir
+    ora EnMoveBlockedDir
+    sta EnMoveBlockedDir
 
 .dud
     ; UP   (0,  1)
     ; DOWN (0, -1)
 
-    ldy EnSysNY
+    ldy EnMoveNY
     tya
 
     cpx #[$60/4]
@@ -135,16 +137,17 @@ EnMov_Card_WallCheck: SUBROUTINE
     and room_col8_mask-1,x
     beq .dud2
     lda #EN_BLOCKED_DIR_U
-    ora EnSysBlockedDir
-    sta EnSysBlockedDir
+    ora EnMoveBlockedDir
+    sta EnMoveBlockedDir
 .dud2
     lda rPF1RoomL-2 -1,y
     ora rPF1RoomL-1 -1,y
     and room_col8_mask-1,x
     beq .rts
     lda #EN_BLOCKED_DIR_D
-    ora EnSysBlockedDir
-    sta EnSysBlockedDir
+    ora EnMoveBlockedDir
+    sta EnMoveBlockedDir
+    ldx enNum
     rts
 
 .dud_special_right
@@ -158,8 +161,8 @@ EnMov_Card_WallCheck: SUBROUTINE
     and #1
     beq .dud_special_right2
     lda #EN_BLOCKED_DIR_U
-    ora EnSysBlockedDir
-    sta EnSysBlockedDir
+    ora EnMoveBlockedDir
+    sta EnMoveBlockedDir
 .dud_special_right2
     lda rPF1RoomL-2 -1,y
     ora rPF1RoomL-1 -1,y
@@ -168,20 +171,23 @@ EnMov_Card_WallCheck: SUBROUTINE
     and #1
     beq .rts
     lda #EN_BLOCKED_DIR_D
-    ora EnSysBlockedDir
-    sta EnSysBlockedDir
+    ora EnMoveBlockedDir
+    sta EnMoveBlockedDir
 .rts
+    ldx enNum
     rts
+
 
 ;==============================================================================
 ; Randomly selects a new cardinal direction
 ; enNX, enNY are update to new destination point
 ; enNextDir returns new direction
-; Clobbers X, Y registers
+; X = enNum
+; Y = enNextDir
 ;==============================================================================
 EnMov_Card_RandDir: SUBROUTINE
     lda #3
-    sta EnSysNextDirCount
+    sta EnMoveRandDirCount
     jsr Random              ; 32
     ldy #0
     cmp #$55
@@ -193,37 +199,37 @@ EnMov_Card_RandDir: SUBROUTINE
 .select_seed
     and #7
     ora Mul8,y
-    sta EnSysNextDirSeed
+    sta EnMoveRandDirSeed
     and #3
     tay ; enNextDir
 .loop
     lda Bit8,y
-    and EnSysBlockedDir
+    and EnMoveBlockedDir
     beq .select
 
-    dec EnSysNextDirCount
+    dec EnMoveRandDirCount
     bmi .miss
-    ldy EnSysNextDirSeed    ; 3
+    ldy EnMoveRandDirSeed   ; 3
     ldx nextdir_step_lut,y  ; 4
-    stx EnSysNextDirSeed
+    stx EnMoveRandDirSeed
     ldy nextdir_lut,x       ; 4
     bpl .loop
 .select
-    jsr EnMoveNextDel
 .miss
+    jsr EnMoveNextDel
     sty enNextDir
     rts
-
 
 ;==============================================================================
 ; Attempts to select enDir, then if blocked randomly selects cardinal direction
 ; enNX, enNY are update to new destination point
 ; enNextDir returns new direction
-; Clobbers X, Y registers
+; X = enNum
+; Y = enNextDir
 ;==============================================================================
 EnMov_Card_RandDirIfBlocked:
     lda #3
-    sta EnSysNextDirCount
+    sta EnMoveRandDirCount
     jsr Random
     ldy #0
     cmp #$55
@@ -236,38 +242,93 @@ EnMov_Card_RandDirIfBlocked:
     and #4
     ora Mul8,y
     ora enDir,x
-    sta EnSysNextDirSeed    ; 3
+    sta EnMoveRandDirSeed   ; 3
     ldy enDir,x
     bpl .loop ; JMP
 
 
-/*
-EnSeekCardDir: SUBROUTINE
-    ldy #EN_DIR_L
+;==============================================================================
+; Selects a new direction based on the shortest path to the player, but only
+; If the current path is blocked
+; X = enNum
+; Y = enNextDir
+;==============================================================================
+EnMov_Card_SeekDirIfBlocked: SUBROUTINE
+    ldy enDir,x
+    lda Bit8,y
+    and EnMoveBlockedDir
+    beq .found_dir
+
+;==============================================================================
+; Selects a new direction based on the shortest path to the player
+; X = enNum
+; Y = enNextDir
+;==============================================================================
+EnMov_Card_SeekDir:
+    lda #0
+    sta EnMoveSeekFlags
+
     lda en0X,x
     sec
     sbc plX
-    bpl .checkY ; enX - plX >= 0, left
+    sta Temp0   ; enX - plX >= 0, left
                 ; enX - plX <  0, right
-    ldy #EN_DIR_R
+
+    rol EnMoveSeekFlags
+    bit Temp0
+    bpl .checkY
     ; negate A
     eor #$FF
     adc #1
-.checkY
     sta Temp0
-    stx EnSysNextDirSeed
 
-    ldy #EN_DIR_D
-    lda enY,x
+.checkY
+    lda en0Y,x
     sec
     sbc plY
-    bpl .checkAxis  ; enY - plY >= 0, down
-                    ; enY - plY <  0, up
-    ldy #EN_DIR_U
+    sta Temp1   ; enY - plY >= 0, down
+                ; enY - plY <  0, up
+
+    rol EnMoveSeekFlags
+    bit Temp1
+    bpl .checkAxis
     ; negate A
     eor #$FF
     adc #1
-.checkAxis
     sta Temp1
-    sty EnSysNextDirCount
-*/
+
+.checkAxis
+    lda Temp0
+    sec
+    sbc Temp1 ; abs(xDelta) - abs(yDelta)
+    lda EnMoveSeekFlags
+    rol
+    asl
+    asl
+    tax
+.loop
+    inx
+    ldy seekdir_lut-1,x
+    lda Bit8,y
+    and EnMoveBlockedDir
+    bne .loop
+.found_dir
+    jsr EnMoveNextDel
+    sty enNextDir
+    rts
+
+EnMov_Card_NewDir: SUBROUTINE
+    lda Rand16
+    and #2
+    bne .contdir_seek
+    jmp EnMov_Card_RandDir
+.contdir_seek
+    jmp EnMov_Card_SeekDir
+
+EnMov_Card_ContDir: SUBROUTINE
+    lda Rand16
+    and #2
+    bne .contdir_seek
+    jmp EnMov_Card_RandDirIfBlocked
+.contdir_seek
+    jmp EnMov_Card_SeekDirIfBlocked

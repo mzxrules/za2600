@@ -370,6 +370,44 @@ def get_randdir_lut():
         file.write("nextdir_lut:\n")
         file.write(ToAsm(lut,8))
 
+def get_seek_lut():
+    # Generates a next direction priority table that seeks out the target
+    # 1xx Left/Right closest (1 Left, 0 Right)
+    # x1x Up/Down closest    (1 Down, 0 Up)
+    # xx1 Horizontal/Vertical axis closest (1 Y-Axis, 0 X-Axis)
+    # Directions will be selected using the following priority system:
+    # Closest Direction, Farthest Axis
+    # Closest Direction, Closest Axis
+    # Farthest Direction, Closest Axis
+    # Farthest Direction, Farthest Axis
+
+    xAxis = [EN_DIR_R, EN_DIR_L]
+    yAxis = [EN_DIR_U, EN_DIR_D]
+    map  = [xAxis, yAxis]
+    CLOSE = 0
+    FAR = 1
+    pattern = [
+        (CLOSE, FAR),
+        (CLOSE, CLOSE),
+        (FAR, CLOSE),
+        (FAR, FAR) ]
+
+
+    seek = []
+
+    for i in range(8):
+        axisClose = i & 1
+        xAxisClose = 1 if (i & 4) > 0 else 0
+        yAxisClose = 1 if (i & 2) > 0 else 0
+
+        for dir, ax in pattern:
+            a = axisClose if ax == CLOSE else 1 - axisClose
+            b = xAxisClose if a == 0 else yAxisClose
+            c = b if dir == CLOSE else 1 - b
+            seek.append(map[a][c])
+    with open(f'gen/seekdir.asm', "w") as file:
+        file.write("seekdir_lut:\n")
+        file.write(ToAsm(seek,4))
 
 def get_bitcount():
     table = []
@@ -403,6 +441,7 @@ def get_roomheight():
 bitcountOut = get_bitcount()
 roomHeight, roomHeight8 = get_roomheight()
 
+get_seek_lut()
 get_hitbox_info()
 get_hitbox_info2()
 get_room_px_check()

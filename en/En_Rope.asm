@@ -91,13 +91,11 @@ En_RopeMain: SUBROUTINE
     lda #SLOT_EN_MOV
     sta BANK_SLOT
 
-    ldx enNum
-
-; update EnSysNX
+; update EnMoveNX
     lda enNX,x
-    sta EnSysNX
+    sta EnMoveNX
     lda enNY,x
-    sta EnSysNY
+    sta EnMoveNY
 
     lda enNX,x
     asl
@@ -114,8 +112,6 @@ En_RopeMain: SUBROUTINE
 
 ; What's the plan, snake man?
     jsr EnMov_Card_WallCheck
-    ldx enNum
-
     lda enState,x
     and #EN_ROPE_ATTACK
     bne .tryContMoveDir
@@ -162,17 +158,15 @@ En_RopeMain: SUBROUTINE
 
 .tryContMoveDir ; We want to continue moving in the current direction
     jsr EnMov_Card_RandDirIfBlocked
-    lda EnSysNextDirCount
-    cmp #3
+    tya
+    cmp enDir,x
     beq .move
     ; hit a wall or something, so reset
     bne .setNewDir
 .newDir
     jsr EnMov_Card_RandDir
 .setNewDir
-    ldx enNum
-    lda enNextDir
-    sta enDir,x
+    sty enDir,x
 
     lda enState,x
     and #EN_ROPE_ATTACK
@@ -185,7 +179,6 @@ En_RopeMain: SUBROUTINE
     jsr En_Rope_Think
 
 .move
-    ldx enNum
     lda enState,x
     and #EN_ROPE_ATTACK
     bne .moveNow

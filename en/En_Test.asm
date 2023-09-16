@@ -54,10 +54,11 @@ En_Test:
 .continue
 
     lda #SLOT_EN_MOV
+    sta BANK_SLOT
     ldx plX
     ldy plY
     jsr EnMov_Card_WallCheck_TEST
-    lda EnSysBlockedDir
+    lda EnMoveBlockedDir
     sta itemRupees
 
     lda #SLOT_MAIN

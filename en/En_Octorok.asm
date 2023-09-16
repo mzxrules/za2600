@@ -37,12 +37,6 @@ En_Octorok: SUBROUTINE
     rts
 
 En_OctorokMain:
-; update EnSysNX
-    lda enNX,x
-    sta EnSysNX
-    lda enNY,x
-    sta EnSysNY
-
 ; update stun timer
     lda enStun,x
     cmp #1
@@ -93,7 +87,14 @@ En_OctorokMain:
 .endCheckHit
 
 ; Movement
-    ldx enNum
+    lda #SLOT_EN_MOV
+    sta BANK_SLOT
+
+; update EnMoveNX
+    lda enNX,x
+    sta EnMoveNX
+    lda enNY,x
+    sta EnMoveNY
 
 ; What's the plan, octo dad?
     lda enState,x
@@ -113,24 +114,21 @@ En_OctorokMain:
     bne .move
 
 .solveNextDirection
+    jsr EnMov_Card_WallCheck
 
-    lda #$00
-    jsr EnSetBlockedDir2
-
-.testThink
     lda enOctorokThink,x
     beq .newDir
 
-    jsr TestCurDir
-    bne .move
-    jsr NextDir3
-    bpl .newDir_3
+    jsr EnMov_Card_RandDirIfBlocked
+    tya
+    cmp enDir,x
+    beq .move
+    bne .setNewDir ; jmp
 
 .newDir
-    jsr NextDir4
-.newDir_3
-    ldx enNum
+    jsr EnMov_Card_NewDir
 
+.setNewDir
     jsr En_Octorok_Think
 
 ; set spin direction
@@ -142,7 +140,7 @@ En_OctorokMain:
     and #$80
     ora Temp0
     sta enState,x
-    jmp .rts ;
+    rts
 
 .move
     ldx enNum
@@ -161,7 +159,7 @@ En_OctorokMain:
     cmp #1
     adc #0
     sta enOctorokThink,x
-    jmp .rts
+    rts
 
 
 .spinInPlace
@@ -184,14 +182,7 @@ En_OctorokMain:
     sta mi0X,x
     lda en0Y,x
     sta mi0Y,x
-
-
 .rts
-    ldx enNum
-    lda EnSysNX
-    sta enNX,x
-    lda EnSysNY
-    sta enNY,x
     rts
 
 En_Octorok_Think: SUBROUTINE

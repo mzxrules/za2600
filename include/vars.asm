@@ -244,9 +244,7 @@ enDarknutTemp
 
 ; == Wallmaster
     ORG CLASS_EN_ENEMY_MOVE
-enWallPhase ds 1 ; anim timer for phasing through wall
-enPX        ds 1 ; posX last frame, after collision check
-enPY        ds 1 ; posY last frame, after collision check
+enWallPhase ds 2 ; anim timer for phasing through wall
     EN_SIZE WALLMASTER
 
 ; == Octorok
@@ -258,7 +256,8 @@ enMDY           ds 1
 
 ; == LikeLike
     ORG CLASS_EN_ENEMY_MOVE
-enLLTimer   ds 1
+enLLTimer   ds 2
+enLLThink   ds 2
     EN_SIZE LIKE_LIKE
 
 ; == Rope
@@ -387,17 +386,23 @@ THudHealthDisp  ds 1
 
     SEG.U VARS_EN_SYS
     ORG Temp0 + 1
-;Temp0          ds 1
-EnSysSpawnTry   ds 1
-EnSysNext       ds 1
-EnSysClearOff   ds 1 ; offset to byte that room clear is stored at
-EnSysClearMask  ds 1 ; stores bitmask for room clear flag
-EnSysBlockedDir ds 1 ; blocked direction
-enNextDir       ds 1
-EnSysNextDirSeed    ds 1
-EnSysNextDirCount   ds 1
-EnSysNX         ds 1
-EnSysNY         ds 1
+EnSysSpawnTry       ds 1
+EnSysNext           ds 1
+EnSysClearOff       ds 1 ; offset to byte that room clear is stored at
+EnSysClearMask      ds 1 ; stores bitmask for room clear flag
+
+    SEG.U VARS_EN_MOV
+    ORG Temp0 + 2
+EN_MOV
+EnMoveRandDirSeed   ds 1
+EnMoveRandDirCount  ds 1
+    ORG EN_MOV
+EnMoveSeekFlags     ds 1
+EnMoveUnreserved    ds 1
+EnMoveNX            ds 1
+EnMoveNY            ds 1
+EnMoveBlockedDir    ds 1
+enNextDir           ds 1
 
     SEG.U VARS_HB_SYS
     ORG Temp0 + 1

@@ -18,12 +18,9 @@ En_Darknut: SUBROUTINE
     lsr
     lsr
     sta enNY,x
+    rts
 
 En_DarknutMain:
-    lda enNX,x
-    sta EnSysNX
-    lda enNY,x
-    sta EnSysNY
 
 ; update stun timer
     lda enStun,x
@@ -95,6 +92,14 @@ En_DarknutMain:
 .endCheckHit
 
 ; Movement
+    lda #SLOT_EN_MOV
+    sta BANK_SLOT
+
+    lda enNX,x
+    sta EnMoveNX
+    lda enNY,x
+    sta EnMoveNY
+
     ldx enNum
     lda enNX,x
     asl
@@ -107,13 +112,9 @@ En_DarknutMain:
     cmp en0Y,x
     bne .move
 
-    lda #$00
-    jsr EnSetBlockedDir2
-    jsr NextDir4
-    beq .rts
-    ldx enNum
-    lda enNextDir
-    sta enDir,x
+    jsr EnMov_Card_WallCheck
+    jsr EnMov_Card_SeekDir
+    sty enDir,x
 .move
     lda Frame
     and #1
@@ -121,10 +122,5 @@ En_DarknutMain:
     ldx enNum
     jsr EnMoveDir
 .rts
-    ldx enNum
-    lda EnSysNX
-    sta enNX,x
-    lda EnSysNY
-    sta enNY,x
     rts
     LOG_SIZE "En_Darknut", En_Darknut

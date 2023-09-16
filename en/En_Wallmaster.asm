@@ -23,12 +23,21 @@ En_WallmasterInit: SUBROUTINE
     bne .rts
 
 .contInit
-    stx enX
-    sty enY
     sta enWallPhase
+    txa
+    ldx enNum
+    sta en0X,x
+    sty en0Y,x
+    lsr
+    lsr
+    sta enNX,x
+    tya
+    lsr
+    lsr
+    sta enNY,x
 
     lda #EN_WALLMASTER_INIT
-    sta enState
+    sta enState,x
     rts
 
 En_WallmasterCapture:
@@ -75,37 +84,39 @@ En_Wallmaster: SUBROUTINE
     lda #$80
     sta plY
     rts
-.handleMovement
-    lda #3
-    bit enX
-    bne .skipSetDir
-    bit enY
-    bne .skipSetDir
 
-    ; test if position changed since last update
-    lda #$F0 ; clear blocked direction
-    ldx enPX
-    cpx enX
-    bne .NextDir
-    ldx enPY
-    cpx enY
-    bne .NextDir
-    lda #$FF ; preserve blocked direction
-.NextDir
-    jsr EnSetBlockedDir
-    jsr SeekDir
-.skipSetDir
-    lda enX
-    sta enPX
-    lda enY
-    sta enPY
-    lda CXP1FB
-    bmi .forceMove
+
+.handleMovement
+    lda #SLOT_EN_MOV
+    sta BANK_SLOT
+    ldx enNum
+
+; update EnMoveNX
+    lda enNX,x
+    sta EnMoveNX
+    lda enNY,x
+    sta EnMoveNY
+
+    lda enNX,x
+    asl
+    asl
+    cmp en0X,x
+    bne .move
+    lda enNY,x
+    asl
+    asl
+    cmp en0Y,x
+    bne .move
+
+.solveNextDirection
+    jsr EnMov_Card_WallCheck
+    jsr EnMov_Card_SeekDir
+    sty enDir,x
+.move
     lda Frame
-    and #1
-    bne .rts
-.forceMove
-    jmp EnMoveDir
+    ror
+    bcc .rts
+    jsr EnMoveDir
 .rts
     rts
 
