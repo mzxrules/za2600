@@ -81,6 +81,8 @@ En_RopeMain: SUBROUTINE
 ; Check player hit
     lda enStun,x
     bmi .endCheckHit
+    bit plState2
+    bvc .endCheckHit ; EN_LAST_DRAWN
     bit CXPPMM
     bpl .endCheckHit
     lda #-4

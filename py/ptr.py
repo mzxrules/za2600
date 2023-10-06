@@ -40,11 +40,11 @@ Entity_Table = [
     "EnClearDrop",     "SEG_SH", "SEG_NA", "EnDraw_ClearDrop",
     "EnItem",          "SEG_NA", "SEG_NA", "EnDraw_None",
     "EnStairs",        "SEG_SH", "SEG_NA", "EnDraw_None",
-    "EnShopkeeper",    "SEG_SH", "SEG_NA", "EnDraw_Shopkeeper",
-    "EnNpcGiveOne",    "SEG_SH", "SEG_NA", "EnDraw_NpcGiveOne",
-    "En_NpcPath",      "SEG_35", "SEG_NA", "EnDraw_NpcPath",
     "En_ItemGet",      "SEG_35", "SEG_NA", "EnDraw_ItemGet",
-    "En_OldMan",       "SEG_35", "SEG_NA", "EnDraw_OldMan",
+    "En_NpcShopkeeper","SEG_SH", "SEG_NA", "EnDraw_NpcShopkeeper",
+    "En_NpcGiveOne",   "SEG_SH", "SEG_NA", "EnDraw_NpcGiveOne",
+    "En_NpcPath",      "SEG_35", "SEG_NA", "EnDraw_NpcPath",
+    "En_NpcOldMan",    "SEG_35", "SEG_NA", "EnDraw_NpcOldMan",
     "En_GreatFairy",   "SEG_35", "SEG_NA", "EnDraw_GreatFairy",
 
     "En_Darknut",      "SEG_34", "SEG_NA", "EnDraw_Darknut",
@@ -67,6 +67,7 @@ Entity_Table = [
 
     "En_Waterfall",    "SEG_NA", "SEG_NA", "EnDraw_Waterfall",
     "En_RollingRock",  "SEG_37", "SEG_NA", "EnDraw_RollingRock",
+    "En_Appear",       "SEG_37", "SEG_NA", "EnDraw_None",
 ]
 
 RoomScript_Table = [

@@ -74,6 +74,7 @@ PS_LOCK_ALL     = $02 ; 0000_0010 Lock Player
 PS_LOCK_AXIS    = $01 ; 0000_0001 Lock Player Axis - Hover Boots
 plState2    ds 1
 PS_HOLD_ITEM    = $80 ; 1000_0000
+EN_LAST_DRAWN   = $40 ; 0100_0000
                       ; xxxx_1xxx RESERVED
 PS_ACTIVE_ITEM  = $07 ; 0000_0111 Mask to fetch current active item
                       ;       000 Sword
@@ -167,6 +168,13 @@ miType      ds 2
 mesgId      ds 1
 CLASS_EN_NPC
 
+; Class ENEMY_SPAWN
+    ORG EN_VARS
+enState     ds 2
+miType      ds 2
+enSysType   ds 2
+enSysTimer  ds 2
+
 ; Class ENEMY
     ORG EN_VARS
 enState     ds 2
@@ -238,7 +246,7 @@ enGFairyDie ds 1
 
 ; == Darknut
     ORG CLASS_EN_ENEMY_MOVE
-enDarknutTemp
+enDarknutTemp   ds 2
                 ; xx1x_xxxx = new direction toggle
     EN_SIZE DARKNUT
 
@@ -387,7 +395,6 @@ THudHealthDisp  ds 1
     SEG.U VARS_EN_SYS
     ORG Temp0 + 1
 EnSysSpawnTry       ds 1
-EnSysNext           ds 1
 EnSysClearOff       ds 1 ; offset to byte that room clear is stored at
 EnSysClearMask      ds 1 ; stores bitmask for room clear flag
 

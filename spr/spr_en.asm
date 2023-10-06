@@ -143,23 +143,23 @@ SprE15:
     .byte $18 ; |...XX...|
     .byte $2C ; |..X.XX..|
 SprE16:
-    .byte $7E ; |.XXXXXX.|
-    .byte $A5 ; |X.X..X.X|
-    .byte $A5 ; |X.X..X.X|
-    .byte $42 ; |.X....X.|
-    .byte $BD ; |X.XXXX.X|
-    .byte $7E ; |.XXXXXX.|
+    .byte $66 ; |.XX..XX.|
+    .byte $FF ; |XXXXXXXX|
+    .byte $99 ; |X..XX..X|
+    .byte $66 ; |.XX..XX.|
+    .byte $FF ; |XXXXXXXX|
+    .byte $C3 ; |XX....XX|
     .byte $C3 ; |XX....XX|
     .byte $7E ; |.XXXXXX.|
 SprE17:
-    .byte $7E ; |.XXXXXX.|
-    .byte $A5 ; |X.X..X.X|
-    .byte $5A ; |.X.XX.X.|
-    .byte $BD ; |X.XXXX.X|
     .byte $66 ; |.XX..XX.|
+    .byte $99 ; |X..XX..X|
+    .byte $66 ; |.XX..XX.|
+    .byte $FF ; |XXXXXXXX|
     .byte $C3 ; |XX....XX|
-    .byte $66 ; |.XX..XX.|
-    .byte $3C ; |..XXXX..|
+    .byte $E7 ; |XXX..XXX|
+    .byte $7E ; |.XXXXXX.|
+    .byte $00 ; |........|
 SprE18:
     .byte $66 ; |.XX..XX.|
     .byte $64 ; |.XX..X..|

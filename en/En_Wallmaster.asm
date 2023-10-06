@@ -67,8 +67,10 @@ En_Wallmaster: SUBROUTINE
     rts
 
 .checkPlayerHit
+    bit plState2
+    bvc .endCheckHit ; EN_LAST_DRAWN
     bit CXPPMM
-    bpl .handleMovement
+    bpl .endCheckHit
     lda #-4
     jsr UPDATE_PL_HEALTH
     lda plState
@@ -84,7 +86,7 @@ En_Wallmaster: SUBROUTINE
     lda #$80
     sta plY
     rts
-
+.endCheckHit
 
 .handleMovement
     lda #SLOT_EN_MOV

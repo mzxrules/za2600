@@ -170,81 +170,15 @@ EnSystem: SUBROUTINE
     rts
 
 .cont
+    stx enNum
     ; store next encounter
     lda EnSysEncounter,y
-    sta EnSysNext
-
-    ; zero entity variable data
-    ldy #EN_VARS_COUNT-1
-    stx enNum
-    ldx enNum
-    bne .entity2
-    dey
-.entity2
-    lda #0
-.EnInitLoop:
-    sta EN_VARS,y
-    dey
-    dey
-    bpl .EnInitLoop
-
-    lda #4
-    sta EnSysSpawnTry
-    jsr EnRandSpawn
-    lda EnSysSpawnTry
-    beq .rts
-
-    ldx enNum
-    lda EnSysNext
+    sta enSysType,x
+    lda #EN_APPEAR
     sta enType,x
+    lda #0
+    sta enState,x
     rts
-
-
-EnRandSpawnRetry:
-    dec EnSysSpawnTry
-    beq .rts
-EnRandSpawn: SUBROUTINE
-    jsr Random
-    and #$7 ; y pos mask
-    cmp #7
-    bne .skipYShift
-    lsr
-.skipYShift
-    asl
-    tay      ; y pos * 2
-    lda #$18 ; x pos mask
-    and Rand16
-    lsr
-    lsr
-    lsr
-    tax
-    lda rPF2Room+2+1,y
-    ora rPF2Room+2+2,y
-    and EnSpawnPF2Mask,x
-    bne EnRandSpawnRetry
-    tya
-    asl
-    asl ; y * 4 (* 8 total)
-    clc
-    adc #$14
-    ldy enNum
-    sta en0Y,y
-    lda Mul8,x
-    bit Rand16
-    bmi .skipInvert
-    eor #$FF
-    sec
-    adc #0
-.skipInvert
-    clc
-    adc #$40
-    sta en0X,y
-    rts
-
-EnSpawnPF2Mask:
-    .byte $80, $60, $18, $06
-
-    LOG_SIZE "EnRandSpawn", EnRandSpawn
 
 ;==============================================================================
 ; EnSysEnDie
@@ -252,7 +186,7 @@ EnSpawnPF2Mask:
 ; Kills an Enemy
 ; X = enNum of Enemy to kill
 ;==============================================================================
-EnSysEnDie:
+EnSysEnDie: SUBROUTINE
     dec roomENCount
     bne .continueEncounter
     ; Set room clear flag

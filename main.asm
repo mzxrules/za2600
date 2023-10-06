@@ -617,6 +617,7 @@ Pause_MapPlot:
 
 BANK_37
     INCLUDE "en/En_RollingRock.asm"
+    INCLUDE "en/En_Appear.asm"
     LOG_BANK_SIZE "-BANK 37- En3", BANK_37
 
 ; ****************************************

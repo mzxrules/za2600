@@ -410,7 +410,7 @@ EnClearDropTypeB: SUBROUTINE
 EnRandomDrops:
     .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
 
-EnNpcGiveOne: SUBROUTINE
+En_NpcGiveOne: SUBROUTINE
     lda roomId
     and #$7F
     tay
@@ -458,7 +458,7 @@ EnNpcGiveOne: SUBROUTINE
 .rts
     rts
 
-EnShopkeeper: SUBROUTINE
+En_NpcShopkeeper: SUBROUTINE
     bit enState
     bvs .rts
     bmi .main
@@ -471,7 +471,6 @@ EnShopkeeper: SUBROUTINE
     sta enState
 
 .main
-
     lda roomEX
     asl
     clc

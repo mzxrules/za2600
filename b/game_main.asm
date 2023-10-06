@@ -234,7 +234,9 @@ endPFCollision
 
     ldx enNum
     jsr En_Del
-
+    lda plState2
+    eor #EN_LAST_DRAWN
+    sta plState2
     dec enNum
     bpl .EntityLoop
 

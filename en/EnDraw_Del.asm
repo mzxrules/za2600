@@ -16,4 +16,10 @@ EnDraw_Del:
     pha
     lda EntityDrawL,y
     pha
+    lda plState2
+    and #~EN_LAST_DRAWN
+    ora EnDraw_LastDrawn,x
+    sta plState2
     rts
+EnDraw_LastDrawn:
+    .byte $00, #EN_LAST_DRAWN

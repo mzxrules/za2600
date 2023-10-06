@@ -42,7 +42,7 @@ Cv_Shop1:
 Cv_Shop2:
 Cv_Shop3:
 Cv_Shop4:
-    lda #EN_SHOPKEEPER
+    lda #EN_NPC_SHOPKEEPER
     sta enType
     rts
 
@@ -124,7 +124,7 @@ Rs_NpcTriforce: SUBROUTINE
     sta roomEX
 
 Rs_Npc: ; SUBROUTINE
-    lda #EN_OLD_MAN
+    lda #EN_NPC_OLD_MAN
     sta enType
 Rs_Text: ; SUBROUTINE
     lda roomEX

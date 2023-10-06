@@ -49,6 +49,27 @@ Room Events:
 
 RsInit configures room for first frame. Remember to position ball
 
+EnSystem LastDraw:
+    EN_LAST_DRAWN   ; Stores entity being given draw priority
+
+    In the draw routine, flag is 0 or 1 to denote if entity 0 or 1 was drawn
+    and can check built-in collision.
+    When read within an entity, 1 denotes that the entity was drawn last frame
+
+    Pri = 0, Slot0 = Thing, Slot1 = NONE, DELSLOT0 -> Pri = 1 (Phony State)
+
+    Pri = 0, Slot0 = Thing, Slot1 = Glob, DELSLOT0 -> Pri = 1 (Phony State)
+    Pri = 0, Slot0 = Thing, Slot1 = Glob, DELSLOT1 -> Pri = 0
+
+    Pri = 1, Slot0 = Thing, Slot1 = Glob, DELSLOT0 -> Pri = 0
+    Pri = 1, Slot0 = Thing, Slot1 = Glob, DELSLOT1 -> Pri = 1
+
+    Pri = 0, Slot0 = Thing, Slot1 = Glob           -> Pri = 0
+    Pri = 1, Slot0 = Thing, Slot1 = Glob           -> Pri = 1
+
+    If Slot0 is deleted, toggle last drawn (not needed, slot0 executes last)
+    Toggle last drawn when swapping from entity 1 to 0
+
 Darknut Logic:
 
 Directions LRUD, opposes player directions

@@ -85,6 +85,8 @@ En_DarknutMain:
     ; Check player hit
     lda enStun,x
     bmi .endCheckHit
+    bit plState2
+    bvc .endCheckHit ; EN_LAST_DRAWN
     bit CXPPMM
     bpl .endCheckHit
     lda #-8
@@ -100,7 +102,6 @@ En_DarknutMain:
     lda enNY,x
     sta EnMoveNY
 
-    ldx enNum
     lda enNX,x
     asl
     asl
@@ -119,7 +120,6 @@ En_DarknutMain:
     lda Frame
     and #1
     beq .rts
-    ldx enNum
     jsr EnMoveDir
 .rts
     rts

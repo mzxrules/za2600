@@ -19,7 +19,7 @@ En_ItemGet: SUBROUTINE
     ldx #EN_NONE
     stx cdAType
 
-    ldx #EN_SHOPKEEPER
+    ldx #EN_NPC_SHOPKEEPER
     lda enState
     and #GI_EVENT_CAVE
     bne .end

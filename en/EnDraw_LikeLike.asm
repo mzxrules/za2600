@@ -15,7 +15,7 @@ EnDraw_LikeLike: SUBROUTINE
     clc
     adc #<SprE16
     sta enSpr
-    lda enStun
+    lda enStun,x
     asl
     asl
     adc #COLOR_EN_RED

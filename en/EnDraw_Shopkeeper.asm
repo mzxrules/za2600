@@ -2,7 +2,7 @@
 ; mzxrules 2022
 ;==============================================================================
 
-EnDraw_Shopkeeper: SUBROUTINE
+EnDraw_NpcShopkeeper: SUBROUTINE
     ldy #$F0
     bit enState
     bvs .noDraw
@@ -18,4 +18,4 @@ EnDraw_Shopkeeper: SUBROUTINE
 .noDraw
     sty enY
     rts
-    LOG_SIZE "EnDraw_Shopkeeper", EnDraw_Shopkeeper
+    LOG_SIZE "EnDraw_NpcShopkeeper", EnDraw_NpcShopkeeper
