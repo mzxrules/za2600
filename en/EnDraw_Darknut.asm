@@ -8,12 +8,17 @@ EnDraw_Darknut: SUBROUTINE
     lda en0Y,x
     sta enY
 
+    lda enState,x
+    lsr
+    and #1
+    tay
+
     lda #>SprE0
     sta enSpr+1
     lda enStun,x
     asl
     asl
-    adc #COLOR_EN_RED
+    adc EnDraw_DarknutColor,y
     sta wEnColor
 
     lda enDir,x
@@ -24,3 +29,6 @@ EnDraw_Darknut: SUBROUTINE
     sta enSpr
     rts
     LOG_SIZE "EnDraw_Darknut", EnDraw_Darknut
+
+EnDraw_DarknutColor:
+    .byte #COLOR_EN_RED, #COLOR_EN_BLUE

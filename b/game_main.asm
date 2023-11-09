@@ -488,6 +488,40 @@ RETURN_WORLD: SUBROUTINE
     sta plDir
     rts
 
+En_Leever:
+En_LeeverBlue:
+En_LeeverMain:
+En_Lynel:
+En_LynelBlue:
+En_LynelMain:
+En_Moblin:
+En_MoblinBlue:
+En_MoblinMain:
+En_Peehat:
+En_Zora:
+En_Tektite:
+En_TektiteBlue:
+En_TektiteMain:
+En_Gibdo:
+En_Goriya:
+En_GoriyaBlue:
+En_Keese:
+En_Pols:
+En_Stalfos:
+En_Vire:
+En_VireSplit:
+En_Wizrobe:
+En_WizrobeBlue:
+En_Zol:
+En_ZolSplit:
+En_BossAqua:
+En_BossManhandla:
+En_BossDon:
+En_BossDig:
+En_BossPatra:
+En_BossGanon:
+    jmp EnSysEnDie
+
 En_Del:
     lda #SLOT_EN_A
     sta BANK_SLOT

@@ -96,6 +96,67 @@ def PackRoomAndDoorData(bankId, level):
             file.write(ToAsm(worldstrip[i],16))
     with open(f"gen/world/b{bankId}wa.bin", "wb") as file:
         file.write(bytes(walls))
+
+
+def ModelEncounterScript(worldId, encounterToRoom):
+    encounterScript = ""
+    with open(f'world/w{worldId}encounter.txt', 'r') as file:
+        encounterScript = file.readlines()
+
+    for line in encounterScript:
+        room, encounterStr = line.split('>',2)
+        encounterStr = encounterStr.strip()
+        if encounterStr == "":
+            encounterStr = "EN_NONE"
+        encounterToken = tuple([x.strip() for x in encounterStr.split(',')])
+
+        encounterToRoom.setdefault(encounterToken, [])
+        encounterToRoom[encounterToken].append((worldId, int(room, 16)))
+
+    return encounterToRoom
+
+
+def BuildRoomEncounterTables(encounterToRoom):
+    roomEN = [
+        [0] * 128,
+        [0] * 128,
+        [0] * 128,
+    ]
+    encounterTableStr = ""
+    curEN = 0
+
+    for k, rooms in encounterToRoom.items():
+        for worldId, room in rooms:
+                roomEN[worldId][room] = curEN
+
+        enCount = 0 if "EN_NONE" in k else len(k)
+
+        encounterTableStr += f"    .byte {enCount}, "
+        encounterTableStr += ", ".join(list(k))
+        encounterTableStr += "\n"
+        curEN += len(k) + 1
+
+    dispSize = f"WORLD ENCOUNTER SIZE = {curEN}"
+    encounterTableStr = f'; {dispSize}\n{encounterTableStr}'
+    print(dispSize)
+
+
+    for bankId in range(3):
+        with open(f"gen/world/b{bankId}en.bin", "wb") as file:
+            file.write(bytes(roomEN[bankId]))
+
+    with open(f"gen/EnSysEncounter.asm", "w") as file:
+        file.write(encounterTableStr)
+
+
+def GenerateEncounters():
+    encounterToRoom = {}
+    for worldId in range(3):
+        ModelEncounterScript(worldId, encounterToRoom)
+
+    BuildRoomEncounterTables(encounterToRoom)
+
+
 def Main():
     for worldId in range(3):
         level = []
@@ -108,6 +169,7 @@ def Main():
     PackRoomAndDoorData(0, mdata[0])
     PackRoomAndDoorData(1, mdata[1])
     PackRoomAndDoorData(2, mdata[2])
+    GenerateEncounters()
 
 Main()
 

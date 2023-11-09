@@ -238,7 +238,7 @@ cdBY        ds 1
 
 ; == Great Fairy
     ORG CLASS_EN_NPC
-; enstate
+; enState
 ;           ; 1xxx_xxxx init
 ;           ; x1xx_xxxx heal event
 enGFairyDie ds 1
@@ -678,6 +678,8 @@ SLOT_RS_B   = RAMSEG_F4 | 27
 
 SLOT_PU_A   = RAMSEG_F0 | 28
 SLOT_EN_D   = RAMSEG_F0 | 28
+SEG_28      = RAMSEG_F0 | 28
+SEG_39      = RAMSEG_F0 | 39
 
 SLOT_RS_INIT = RAMSEG_F0 | 29
 

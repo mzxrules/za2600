@@ -3,6 +3,12 @@
 ;==============================================================================
 EN_OCTOROK_SPIN = $08
 EN_OCTOROK_RARE = $80
+
+En_OctorokBlue: SUBROUTINE
+    lda enState,x
+    ora #EN_OCTOROK_RARE
+    sta enState,x
+
 En_Octorok: SUBROUTINE
     lda #EN_OCTOROK_MAIN
     sta enType,x
@@ -10,16 +16,9 @@ En_Octorok: SUBROUTINE
 
     and #3
     sta enDir,x
-    sta enState,x
-    lda Rand16
-    and #7
-    bne .commonType
-
-    lda enState,x
-    ora #EN_OCTOROK_RARE
+    ora enState,x
     sta enState,x
 
-.commonType
     lda #2 -1
     sta enHp,x
 
@@ -72,9 +71,6 @@ En_OctorokMain:
     sta enHp,x
     bpl .endCheckDamaged
     jmp EnSysEnDie
-.defSfx
-    lda #SFX_DEF
-    sta SfxFlags
 .endCheckDamaged
 
 ; Check player hit

@@ -15,7 +15,10 @@ EnDraw_Wallmaster: SUBROUTINE
     clc
     adc #<SprE10-8
     sta enSpr
-    lda #COLOR_BLACK
+    ; lda #COLOR_BLACK
+    lda enStun,x
+    asl
+    asl
     sta wEnColor
     rts
 

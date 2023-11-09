@@ -7,6 +7,8 @@ EN_WALLMASTER_INIT = $40
 
 En_WallmasterInit: SUBROUTINE
 ; calculate initial position
+    lda #3
+    sta enHp,x
     lda #0 ; up wall phase
     ldy #EnBoardYU
     ldx #EnBoardXL
@@ -58,13 +60,56 @@ En_Wallmaster: SUBROUTINE
 ; Handle phasing state
     lda enWallPhase,x
     cmp #16
-    beq .checkPlayerHit
+    beq .main_thing
     bmi .incWallPhase
     dec enWallPhase,x
     rts
 .incWallPhase
     inc enWallPhase,x
     rts
+
+.main_thing
+; update stun timer
+    lda enStun,x
+    cmp #1
+    adc #0
+    sta enStun,x
+
+.checkDamaged
+    lda enHp,x
+    sta itemRupees
+; if collided with weapon && stun == 0,
+    lda enStun,x
+    bne .endCheckDamaged
+    lda #SLOT_BATTLE
+    sta BANK_SLOT
+    jsr HbGetPlAtt
+    jsr HbPlAttCollide_EnBB
+
+; Get damage
+    ldy HbDamage
+    lda EnDam_Wallmaster,y
+    sta Temp0
+
+    lda #SLOT_EN_A
+    sta BANK_SLOT
+    lda HbFlags
+    beq .endCheckDamaged
+
+.gethit
+    lda Temp0 ; fetch damage
+    ldy #-32
+    sty enStun,x
+    clc
+    adc enHp,x
+    sta enHp,x
+    bpl .endCheckDamaged
+    jmp EnSysEnDie
+.defSfx
+    lda #SFX_DEF
+    sta SfxFlags
+.endCheckDamaged
+
 
 .checkPlayerHit
     bit plState2

@@ -168,7 +168,8 @@ BANK_12
     INCBIN "world/w0co.bin"
     INCBIN "world/w0rs.bin"
     INCBIN "world/w0ex.bin"
-
+    INCBIN "gen/world/b0en.bin"
+/*
 ; == $00
     repeat 5
     .byte $01, $02
@@ -228,6 +229,7 @@ BANK_12
     repeat 0x4
     .byte $01, $01
     repend
+*/
     LOG_BANK_SIZE "-BANK 12- World 0", BANK_12
 
 ; ****************************************
@@ -243,7 +245,9 @@ BANK_13
     INCBIN "world/w1co.bin"
     INCBIN "world/w1rs.bin"
     INCBIN "world/w1ex.bin"
+    INCBIN "gen/world/b1en.bin"
 
+/*
     .byte $00, $03, $04, $00,  $00, $06, $00, $00,  $00, $03, $03, $00,  $00, $00, $07, $00
     .byte $04, $00, $05, $07,  $00, $00, $06, $00,  $07, $04, $04, $03,  $07, $00, $03, $00
     .byte $04, $00, $03, $03,  $06, $03, $03, $02,  $00, $00, $02, $00,  $00, $00, $03, $04
@@ -254,7 +258,7 @@ BANK_13
     .byte $05, $04, $03, $01,  $02, $00, $04, $03,  $00, $05, $03, $05,  $05, $05, $03, $04
     .byte $00, $06, $04, $01,  $06, $04, $04, $00,  $00, $05, $00, $01,  $03, $03, $04, $04
     .byte $02, $00, $01, $00,  $03, $00, $00, $04,  $00, $00, $06, $03,  $00, $00, $04, $00
-
+*/
     LOG_BANK_SIZE "-BANK 13- Dungeon 1", BANK_13
 
 ; ****************************************
@@ -270,10 +274,7 @@ BANK_14
     INCBIN "world/w2co.bin"
     INCBIN "world/w2rs.bin"
     INCBIN "world/w2ex.bin"
-
-    repeat 0x80
-    .byte $01
-    repend
+    INCBIN "gen/world/b2en.bin"
 
     LOG_BANK_SIZE "-BANK 14- Dungeon 2", BANK_14
 
@@ -462,10 +463,11 @@ BANK_26
     RORG $F000
 
 BANK_28
+    INCLUDE "en/EnDraw_Del.asm"
+    INCLUDE "gen/EntityDraw.asm"
+    INCLUDE "gen/EntityDraw_bank.asm"
     INCLUDE "gen/Ball.asm"
     INCLUDE "b/pu.asm"
-    INCLUDE "gen/EntityDraw.asm"
-    INCLUDE "en/EnDraw_Del.asm"
     INCLUDE "en/EnDraw_None.asm"
     INCLUDE "en/EnDraw_ClearDrop.asm"
     INCLUDE "en/EnDraw_ItemGet.asm"
@@ -478,15 +480,8 @@ BANK_28
     INCLUDE "en/EnDraw_Shopkeeper.asm"
     INCLUDE "en/EnDraw_NpcGiveOne.asm"
     INCLUDE "en/EnDraw_NpcPath.asm"
-    INCLUDE "en/EnDraw_BossGohma.asm"
-    INCLUDE "en/EnDraw_GreatFairy.asm"
-    INCLUDE "en/EnDraw_BossGlock.asm"
-    INCLUDE "en/EnDraw_BossGlockHead.asm"
-    INCLUDE "en/EnDraw_TestMissile.asm"
-    INCLUDE "en/EnDraw_Waterfall.asm"
-    INCLUDE "en/EnDraw_RollingRock.asm"
 
-    LOG_BANK_SIZE "-BANK 28- PushSystem", BANK_28
+    LOG_BANK_SIZE "-BANK 28- EnDraw/PushSystem", BANK_28
 
 ; ****************************************
 ; *               BANK 29                *
@@ -590,7 +585,6 @@ BANK_35
     INCLUDE "en/En_Wallmaster.asm"
     INCLUDE "en/En_Test.asm"
     INCLUDE "en/En_TestMissile.asm"
-    INCLUDE "en/EnBoss_Cucco.asm"
     INCLUDE "en/En_BossGohma.asm"
     INCLUDE "en/En_BossGlock.asm"
     INCLUDE "en/En_BossGlockHead.asm"
@@ -618,6 +612,7 @@ Pause_MapPlot:
 BANK_37
     INCLUDE "en/En_RollingRock.asm"
     INCLUDE "en/En_Appear.asm"
+    INCLUDE "en/EnBoss_Cucco.asm"
     LOG_BANK_SIZE "-BANK 37- En3", BANK_37
 
 ; ****************************************
@@ -637,6 +632,25 @@ MINIMAP
     .align $80
     INCLUDE "spr/spr_num_r.asm"
     LOG_BANK_SIZE "-BANK 38- Sprites HUD", BANK_38
+
+
+; ****************************************
+; *               BANK 39                *
+; ****************************************
+    SEG Bank39
+    ORG $9C00
+    RORG $F000
+
+BANK_39
+    INCLUDE "en/EnDraw_Del.asm"
+    INCLUDE "en/EnDraw_BossGohma.asm"
+    INCLUDE "en/EnDraw_GreatFairy.asm"
+    INCLUDE "en/EnDraw_BossGlock.asm"
+    INCLUDE "en/EnDraw_BossGlockHead.asm"
+    INCLUDE "en/EnDraw_TestMissile.asm"
+    INCLUDE "en/EnDraw_Waterfall.asm"
+    INCLUDE "en/EnDraw_RollingRock.asm"
+    LOG_BANK_SIZE "-BANK 39- En3", BANK_39
 
 ; End
 

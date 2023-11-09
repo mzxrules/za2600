@@ -16,6 +16,8 @@ EnDraw_Del:
     pha
     lda EntityDrawL,y
     pha
+    lda EntityDraw_BankLUT,y
+    sta BANK_SLOT
     lda plState2
     and #~EN_LAST_DRAWN
     ora EnDraw_LastDrawn,x

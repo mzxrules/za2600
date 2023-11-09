@@ -67,7 +67,9 @@ EnNone:
 ;==============================================================================
 
 EnSysEncounter:
-    .byte EN_NONE, EN_OCTOROK, EN_OCTOROK, EN_ROPE
+    INCLUDE "gen/EnSysEncounter.asm"
+/*
+    .byte EN_NONE, EN_OCTOROK_BLUE, EN_OCTOROK, EN_ROPE
     .byte EN_ROPE, EN_DARKNUT, EN_DARKNUT, EN_BOSS_GOHMA
     .byte EN_WALLMASTER, EN_TEST_MISSILE, EN_LIKE_LIKE, EN_BOSS_GLOCK
     .byte EN_WATERFALL, EN_ROLLING_ROCK
@@ -76,6 +78,7 @@ EnSysEncounterCount:
     .byte 2, 1, 2, 1
     .byte 1, 1, 1, 1
     .byte 1, 2, 0, 0
+*/
 
 ClearDropSystem: SUBROUTINE
     lda enType
@@ -114,12 +117,10 @@ EnSystem: SUBROUTINE
 
     ; Set x to clear flag offset
     ldx EnSysClearOff
-    ; Set y to encounterId
-    ldy roomEN
 
     ; If room load this frame, setup new encounter
     bit roomFlags
-    bvs .checkRoomClear ; #RF_EV_LOADED
+    bvs .roomLoad ; #RF_EV_LOADED
 
     ; Else, if enemy clear event flag set, set enemy clear flag
     lda roomFlags
@@ -129,10 +130,13 @@ EnSystem: SUBROUTINE
     lda rRoomClear,x
     ora EnSysClearMask
     sta wRoomClear,x
-    bne .runEncounter ; should always branch
+    bne .runEncounter ; JMP
+
+.roomLoad
+    ldy roomEN
+    inc roomEN
 
     ; Test if room wasn't cleared
-.checkRoomClear
     lda #0
     sta roomENCount
     ; check room clear state
@@ -140,7 +144,8 @@ EnSystem: SUBROUTINE
     and EnSysClearMask
     bne .runEncounter
 
-    lda EnSysEncounterCount,y
+    ; start NEW encounter
+    lda EnSysEncounter,y
     sta roomENCount
 
 .runEncounter
@@ -172,6 +177,8 @@ EnSystem: SUBROUTINE
 .cont
     stx enNum
     ; store next encounter
+    ldy roomEN
+    inc roomEN
     lda EnSysEncounter,y
     sta enSysType,x
     lda #EN_APPEAR

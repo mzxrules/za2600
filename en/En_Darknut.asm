@@ -1,15 +1,31 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
+EN_DARKNUT_TYPE_RED = $1
+EN_DARKNUT_TYPE_BLUE = $3
 
-En_Darknut: SUBROUTINE
+
+En_DarknutBlue: SUBROUTINE
+    lda #EN_DARKNUT_TYPE_BLUE
+    sta enState,x
+    lda #3
+    sta enHp,x
+    bpl .commmon_init
+
+En_Darknut:
+    lda #EN_DARKNUT_TYPE_RED
+    sta enState,x
+    lda #2
+    sta enHp,x
+
+.commmon_init
     lda #EN_DARKNUT_MAIN
     sta enType,x
     jsr Random
     and #3
     sta enDir,x
-    lda #2
-    sta enHp,x
+
+
     lda en0X,x
     lsr
     lsr
@@ -118,7 +134,8 @@ En_DarknutMain:
     sty enDir,x
 .move
     lda Frame
-    and #1
+    and enState,x
+    and #3
     beq .rts
     jsr EnMoveDir
 .rts

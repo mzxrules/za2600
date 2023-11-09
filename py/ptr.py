@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import re
 from mesg import *
 from dataclasses import dataclass, field
+from func_common import ToSnakeCase
 
 def ToAsm(data, n=16):
     result = ""
@@ -36,38 +36,75 @@ class GameEnum:
         return x
 
 Entity_Table = [
-    "EnNone",          "SEG_NA", "SEG_NA", "EnDraw_None",
-    "EnClearDrop",     "SEG_SH", "SEG_NA", "EnDraw_ClearDrop",
-    "EnItem",          "SEG_NA", "SEG_NA", "EnDraw_None",
-    "EnStairs",        "SEG_SH", "SEG_NA", "EnDraw_None",
-    "En_ItemGet",      "SEG_35", "SEG_NA", "EnDraw_ItemGet",
-    "En_NpcShopkeeper","SEG_SH", "SEG_NA", "EnDraw_NpcShopkeeper",
-    "En_NpcGiveOne",   "SEG_SH", "SEG_NA", "EnDraw_NpcGiveOne",
-    "En_NpcPath",      "SEG_35", "SEG_NA", "EnDraw_NpcPath",
-    "En_NpcOldMan",    "SEG_35", "SEG_NA", "EnDraw_NpcOldMan",
-    "En_GreatFairy",   "SEG_35", "SEG_NA", "EnDraw_GreatFairy",
+    "EnNone",          "SEG_NA", "SEG_28", "EnDraw_None",
+    "EnClearDrop",     "SEG_SH", "SEG_28", "EnDraw_ClearDrop",
+    "EnItem",          "SEG_NA", "SEG_28", "EnDraw_None",
+    "EnStairs",        "SEG_SH", "SEG_28", "EnDraw_None",
+    "En_ItemGet",      "SEG_35", "SEG_28", "EnDraw_ItemGet",
+    "En_NpcShopkeeper","SEG_SH", "SEG_28", "EnDraw_NpcShopkeeper",
+    "En_NpcGiveOne",   "SEG_SH", "SEG_28", "EnDraw_NpcGiveOne",
+    "En_NpcPath",      "SEG_35", "SEG_28", "EnDraw_NpcPath",
+    "En_NpcOldMan",    "SEG_35", "SEG_28", "EnDraw_NpcOldMan",
+    "En_GreatFairy",   "SEG_35", "SEG_39", "EnDraw_GreatFairy",
 
-    "En_Darknut",      "SEG_34", "SEG_NA", "EnDraw_Darknut",
-    "En_DarknutMain",  "SEG_34", "SEG_NA", "EnDraw_Darknut",
-    "En_LikeLike",     "SEG_34", "SEG_NA", "EnDraw_LikeLike",
-    "En_LikeLikeMain", "SEG_34", "SEG_NA", "EnDraw_LikeLike",
-    "En_Octorok",      "SEG_34", "SEG_NA", "EnDraw_Octorok",
-    "En_OctorokMain",  "SEG_34", "SEG_NA", "EnDraw_Octorok",
-    "En_Rope",         "SEG_34", "SEG_NA", "EnDraw_Rope",
-    "En_RopeMain",     "SEG_34", "SEG_NA", "EnDraw_Rope",
-    "En_Wallmaster",   "SEG_35", "SEG_NA", "EnDraw_Wallmaster",
+    "En_Octorok",      "SEG_34", "SEG_28", "EnDraw_Octorok",
+    "En_OctorokBlue",  "SEG_34", "SEG_28", "EnDraw_Octorok",
+    "En_OctorokMain",  "SEG_34", "SEG_28", "EnDraw_Octorok",
 
-    "En_Test",         "SEG_35", "SEG_NA", "EnDraw_Darknut",
-    "En_TestMissile",  "SEG_35", "SEG_NA", "EnDraw_TestMissile",
+    "En_Leever",       "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_LeeverBlue",   "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_LeeverMain",   "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Lynel",        "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_LynelBlue",    "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_LynelMain",    "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Moblin",       "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_MoblinBlue",   "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_MoblinMain",   "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Peehat",       "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Zora",         "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Tektite",      "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_TektiteBlue",  "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_TektiteMain",  "SEG_NA", "SEG_28", "EnDraw_None",
 
-    "En_BossGohma",    "SEG_35", "SEG_NA", "EnDraw_BossGohma",
-    "En_BossGlock",    "SEG_35", "SEG_NA", "EnDraw_BossGlock",
-    "En_BossGlockHead","SEG_35", "SEG_NA", "EnDraw_BossGlockHead",
-    "EnBoss_Cucco",    "SEG_35", "SEG_NA", "EnDraw_None",
+    "En_Darknut",      "SEG_34", "SEG_28", "EnDraw_Darknut",
+    "En_DarknutBlue",  "SEG_34", "SEG_28", "EnDraw_Darknut",
+    "En_DarknutMain",  "SEG_34", "SEG_28", "EnDraw_Darknut",
+    "En_LikeLike",     "SEG_34", "SEG_28", "EnDraw_LikeLike",
+    "En_LikeLikeMain", "SEG_34", "SEG_28", "EnDraw_LikeLike",
+    "En_Rope",         "SEG_34", "SEG_28", "EnDraw_Rope",
+    "En_RopeMain",     "SEG_34", "SEG_28", "EnDraw_Rope",
+    "En_Wallmaster",   "SEG_35", "SEG_28", "EnDraw_Wallmaster",
 
-    "En_Waterfall",    "SEG_NA", "SEG_NA", "EnDraw_Waterfall",
-    "En_RollingRock",  "SEG_37", "SEG_NA", "EnDraw_RollingRock",
-    "En_Appear",       "SEG_37", "SEG_NA", "EnDraw_None",
+    "En_Gibdo",        "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Goriya",       "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_GoriyaBlue",   "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Keese",        "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Pols",         "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Stalfos",      "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Vire",         "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_VireSplit",    "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Wizrobe",      "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_WizrobeBlue",  "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Zol",          "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_ZolSplit",     "SEG_NA", "SEG_28", "EnDraw_None",
+
+    "En_Test",         "SEG_35", "SEG_28", "EnDraw_Darknut",
+    "En_TestMissile",  "SEG_35", "SEG_28", "EnDraw_TestMissile",
+
+    "En_BossGohma",    "SEG_35", "SEG_39", "EnDraw_BossGohma",
+    "En_BossGlock",    "SEG_35", "SEG_39", "EnDraw_BossGlock",
+    "En_BossGlockHead","SEG_35", "SEG_39", "EnDraw_BossGlockHead",
+    "En_BossAqua",     "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_BossManhandla","SEG_NA", "SEG_28", "EnDraw_None",
+    "En_BossDon",      "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_BossDig",      "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_BossPatra",    "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_BossGanon",    "SEG_NA", "SEG_28", "EnDraw_None",
+    "EnBoss_Cucco",    "SEG_37", "SEG_28", "EnDraw_None",
+
+    "En_Waterfall",    "SEG_NA", "SEG_39", "EnDraw_Waterfall",
+    "En_RollingRock",  "SEG_37", "SEG_39", "EnDraw_RollingRock",
+    "En_Appear",       "SEG_37", "SEG_28", "EnDraw_None",
 ]
 
 RoomScript_Table = [
@@ -373,10 +410,6 @@ tbl = [
     ],
     bankLut=None),
 ]
-
-def ToSnakeCase(s):
-    cust = s.replace('_', '')
-    return re.sub(r'(?<!^)(?=[A-Z])', '_', cust).upper()
 
 def GetEditorBindings(sn, list):
     out = f'set "{sn}Count" to {len(list)}\n'

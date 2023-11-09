@@ -52,7 +52,7 @@ gen/ms_header.asm: py/sound_common.py py/seq.py py/sound.py
 gen/mesg_data_0A.asm: py/mesg.py py/text.py
 	python3 py/text.py
 
-gen/world/b1world.asm: world/w0.bin world/w1.bin py/world.py
+gen/world/b1world.asm: world/w0.bin world/w1.bin py/world.py world/w0encounter.txt world/w1encounter.txt world/w2encounter.txt
 	python3 py/world.py
 
 gen/atan2.asm: py/atan2.py
