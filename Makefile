@@ -18,6 +18,7 @@ zelda_dep := main.asm \
   gen/bitcount.asm \
   gen/spr_tri.asm \
   gen/editor_color.txt \
+  gen/editor_en_bindings.txt \
 
 all: $(output_bin)
 
@@ -60,6 +61,9 @@ gen/atan2.asm: py/atan2.py
 
 gen/editor_color.txt: py/color.py
 	python3 py/color.py
+
+gen/editor_en_bindings.txt: py/encounter.py
+	python3 py/encounter.py
 
 gen/bitcount.asm: py/bitcount.py
 	python3 py/bitcount.py

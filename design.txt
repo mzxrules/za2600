@@ -632,6 +632,7 @@ Q, W, E - inc Room Tile  Left, Mid, Right
 A, S, D - dec Room Tile  Left, Mid, Right
 R, T    - inc, dec Room Script
 F, G    - inc, dec, Room Ex
+6, 7    - inc, dec, Room EN
 O       - Toggle Palette
 P       - Save
 M       - switch active world

@@ -24,8 +24,8 @@ SPAWN_PATTERN = [
     ["En_MoblinBlue"] * 2,
     ["En_MoblinBlue"] * 3,
 
-    ["En_Lynel"] * 2
-    ["En_Lynel"] * 3
+    ["En_Lynel"] * 2,
+    ["En_Lynel"] * 3,
     ["En_LynelBlue"] * 1,
     ["En_LynelBlue"] * 4,
     ["En_LynelBlue", "En_Peehat", "En_Lynel"] * 1,
@@ -93,7 +93,24 @@ def GenerateEncounterDisplay(spawnPatterns):
         displayStrings.append(displayStr)
     return displayStrings
 
+def GenerateEditorBindings(displayStrings):
+    out = ""
+    length = len(displayStrings)
+
+    out += f'set "EnCount" to {length}\n'
+    out += f'set "EnCountExpected" to {length}\n'
+
+    for i in range(length):
+        out += f'set "$Encounter{i}" to "{displayStrings[i]}"\n'
+        i += 1
+
+    with open(f'gen/editor_en_bindings.txt', "w") as file:
+        file.write(out)
+
 
 
 def flatten_spawnpattern():
     return [item for row in SPAWN_PATTERN for item in row]
+
+displayStr = GenerateEncounterDisplay(SPAWN_PATTERN)
+GenerateEditorBindings(displayStr)

@@ -8,6 +8,14 @@ loop start
 set "zz&loopcount&" "loopcount"
 loop 255
 
+. "init w0en and lvlen"
+loop start
+set "$lvlen.&loopcount&" 0
+loop 127
+set "$w0en" "$lvlen"
+set "$w1en" "$lvlen"
+set "$w2en" "$lvlen"
+
 set "mzx_speed" to 8
 
 . "mzx sprite reference"
@@ -160,6 +168,42 @@ goto "q"
 set "$lvlex.&roomId&" "('$lvlex.&roomId&'+255%256)"
 goto "q"
 
+: "key6"
+if "$lvlen.&roomId&" == 0 "#get_rsen"
+set "$lvlen.&roomId&" "('$lvlen.&roomId&'+1%'EnCount')"
+set "get_rsen_val" "$lvlen.&roomId&"
+set "$w&worldId&en_&roomId&" "$Encounter&get_rsen_val&"
+goto "q"
+
+: "key7"
+if "$lvlen.&roomId&" == 0 "#get_rsen"
+set "$lvlen.&roomId&" "('$lvlen.&roomId&'+('EnCount'-1)%'EnCount')"
+set "get_rsen_val" "$lvlen.&roomId&"
+set "$w&worldId&en_&roomId&" "$Encounter&get_rsen_val&"
+goto "q"
+
+. "Computes room encounter ui index"
+: "#get_rsen"
+set "get_rsen_l" 0
+set "$" "$w&worldId&en_&roomId&"
+
+: "get_rsen_loop"
+if "$" === "$Encounter&get_rsen_l&" "get_rsen_SetIndex"
+inc "get_rsen_l" 1
+if "get_rsen_l" < "EnCount" "get_rsen_loop"
+inc "EnCount" 1
+set "$Encounter&get_rsen_l&" "$"
+
+: "get_rsen_SetIndex"
+if "get_rsen_l" > 255 "get_rsen_Die"
+set "$lvlen.&roomId&" to "get_rsen_l"
+goto "#return"
+
+: "get_rsen_Die"
+set "$error_get_rsen" "Index out of bounds"
+endgame
+die
+
 : "keyp"
 ask "Save World Data?"
 : "NO"
@@ -174,6 +218,7 @@ set "$w&worldId&door2" to "$lvldoor2"
 set "$w&worldId&door3" to "$lvldoor3"
 set "$w&worldId&rs" to "$lvlrs"
 set "$w&worldId&ex" to "$lvlex"
+set "$w&worldId&en" to "$lvlen"
 
 loop start
 set "world/w&loopcount&.bin" to "fwrite_open"
@@ -201,9 +246,23 @@ set "world/w&loopcount&ex.bin" to "fwrite_open"
 set "$w&loopcount&ex" to "fwrite('$w&loopcount&ex.length')"
 set "" to "fwrite_open"
 goto "#write_rsex"
+goto "#write_rsen"
 loop for 2
 * "~FSAVED"
 goto "q"
+
+: "#write_rsen"
+set "l" 0
+set "world/w&loopcount&encounter.txt" "fwrite_open"
+: "write_rsen_loop"
+set "$" "$x2_&l&"
+inc "$" ">"
+inc "$" "$w&loopcount&en_&l&"
+set "$" "fwrite"
+inc "l" 1
+if "l" < 128 "write_rsen_loop"
+set "" "fwrite_open"
+goto "#return"
 
 : "#write_rsex"
 set "l" 0
@@ -309,6 +368,18 @@ die
 : "load_rsex_rscheck_pass"
 goto "#return"
 
+: "#load_rsen"
+set "world/w&loopcount&encounter.txt" to "fread_open"
+set "l" 0
+: "load_rsen_loop"
+set "$" to "fread"
+set "$" to "$+3"
+set "$w&loopcount&en_&l&" "$"
+inc "l" 1
+if "l" < 128 "load_rsen_loop"
+set "" to "fread_open"
+goto "#return"
+
 : "#load_data"
 loop start
 set "world/w&loopcount&.bin" to "fread_open"
@@ -330,6 +401,7 @@ set "world/w&loopcount&door3.bin" to "fread_open"
 set "$w&loopcount&door3" to "fread('fread_length')"
 set "" to "fread_open"
 goto "#load_rsex"
+goto "#load_rsen"
 loop for 2
 goto "#return"
 
@@ -340,8 +412,9 @@ set "$w&worldId&door0" to "$lvldoor0"
 set "$w&worldId&door1" to "$lvldoor1"
 set "$w&worldId&door2" to "$lvldoor2"
 set "$w&worldId&door3" to "$lvldoor3"
-set "$w&worldId&rs" "$lvlrs"
-set "$w&worldId&ex" "$lvlex"
+set "$w&worldId&rs" to "$lvlrs"
+set "$w&worldId&ex" to "$lvlex"
+set "$w&worldId&en" to "$lvlen"
 set "worldId" to "('worldId'+1%3)"
 goto "#set_world"
 goto "q"
@@ -535,6 +608,7 @@ set "$lvldoor2" to "$w&worldId&door2"
 set "$lvldoor3" to "$w&worldId&door3"
 set "$lvlrs" to "$w&worldId&rs"
 set "$lvlex" to "$w&worldId&ex"
+set "$lvlen" to "$w&worldId&en"
 goto "#set_editor_room_sprites"
 if "worldId" = 0 then "#draw_16x8"
 if "worldId" > 0 then "#draw_16x8"

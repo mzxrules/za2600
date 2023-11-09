@@ -1,0 +1,69 @@
+char ' '
+set "$editor_en_last" ""
+: "q"
+wait for 1
+loop start
+put c0f CustomBlock p20 at "('thisx'+1+'loopcount')" "thisy"
+put c0f CustomBlock p20 at "('thisx'+1+'loopcount')" "('thisy'+1)"
+put c0f CustomBlock p20 at "('thisx'+1+'loopcount')" "('thisy'+2)"
+loop for 45
+goto "#doLoop"
+goto "q"
+
+: "#doLoop"
+
+. "x, y"
+set "local1" ('thisx'+1)
+set "local2" ('thisy')
+
+. "cur"
+set "local3" 0
+
+. "start/end word index"
+set "local4" 0
+set "local5" 0
+
+. "words"
+set "local6" 0
+
+. "char"
+set "local7" 0
+
+
+set "local4" "local3"
+: "scan_loop"
+if "local3" >= "$w&worldId&en_&roomId&.length" then "flush_last_word"
+
+set "local7" "$w&worldId&en_&roomId&.&local3&"
+inc "local3" 1
+if "local7" == 44 then "#flush_word"
+goto "scan_loop"
+
+
+: "#flush_word"
+: "flush_last_word"
+set "local5" "local3"
+
+: "flush_loop"
+if "local5" <= "local4" "flush_loop_end"
+
+set "local7" "$w&worldId&en_&roomId&.('local4')"
+
+put c0f CustomBlock "('local7')" at "local1" "local2"
+inc "local4" 1
+inc "local1" 1
+goto "flush_loop"
+
+: "flush_loop_end"
+inc "local1" 1
+inc "local6" 1
+
+set "local4" "local3"
+
+if "local6" < 2 "#return"
+
+. "advance to new line
+set "local6" 0
+set "local1" ('thisx'+1)
+inc "local2" 1
+goto "#return"
