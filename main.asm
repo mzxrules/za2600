@@ -650,6 +650,7 @@ BANK_39
     INCLUDE "en/EnDraw_TestMissile.asm"
     INCLUDE "en/EnDraw_Waterfall.asm"
     INCLUDE "en/EnDraw_RollingRock.asm"
+    INCLUDE "en/EnDraw_Appear.asm"
     LOG_BANK_SIZE "-BANK 39- En3", BANK_39
 
 ; End

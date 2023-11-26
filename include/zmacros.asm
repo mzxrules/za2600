@@ -40,6 +40,16 @@ r{1} = . - KERNEL_WORLD + rKERNEL + 1
 w{1} = . - KERNEL_WORLD + wKERNEL + 1
     ENDM
 
+; Sets texture pointers for 48 pixel kernel
+    MACRO TEX48P
+    lda #<{2}{3}
+    ldx #>{2}{3}
+    sta [$F201 +[rTex_{3}0 - KERNEL48]+[{1}*$10]]
+    sta [$F201 +[rTex_{3}1 - KERNEL48]+[{1}*$10]]
+    stx [$F202 +[rTex_{3}0 - KERNEL48]+[{1}*$10]]
+    stx [$F202 +[rTex_{3}1 - KERNEL48]+[{1}*$10]]
+    ENDM
+
 ; Text Kernel sleep macro
     MACRO VSLEEP
     bvs .j0

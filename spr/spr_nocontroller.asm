@@ -1,0 +1,79 @@
+SprNoController0:
+    .byte $EE ; |XXX.XXX.|
+    .byte $8A ; |X...X.X.|
+    .byte $8A ; |X...X.X.|
+    .byte $8A ; |X...X.X.|
+    .byte $EE ; |XXX.XXX.|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $97 ; |X..X.XXX|
+    .byte $B5 ; |X.XX.X.X|
+    .byte $F5 ; |XXXX.X.X|
+    .byte $D5 ; |XX.X.X.X|
+    .byte $97 ; |X..X.XXX|
+SprNoController1:
+    .byte $92 ; |X..X..X.|
+    .byte $B2 ; |X.XX..X.|
+    .byte $F2 ; |XXXX..X.|
+    .byte $D2 ; |XX.X..X.|
+    .byte $97 ; |X..X.XXX|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $1E ; |...XXXX.|
+    .byte $12 ; |...X..X.|
+    .byte $16 ; |...X.XX.|
+    .byte $10 ; |...X....|
+    .byte $1E ; |...XXXX.|
+SprNoController2:
+    .byte $57 ; |.X.X.XXX|
+    .byte $65 ; |.XX..X.X|
+    .byte $75 ; |.XXX.X.X|
+    .byte $55 ; |.X.X.X.X|
+    .byte $77 ; |.XXX.XXX|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $E9 ; |XXX.X..X|
+    .byte $8B ; |X...X.XX|
+    .byte $CF ; |XX..XXXX|
+    .byte $8D ; |X...XX.X|
+    .byte $E9 ; |XXX.X..X|
+SprNoController3:
+    .byte $77 ; |.XXX.XXX|
+    .byte $44 ; |.X...X..|
+    .byte $44 ; |.X...X..|
+    .byte $44 ; |.X...X..|
+    .byte $44 ; |.X...X..|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $77 ; |.XXX.XXX|
+    .byte $41 ; |.X.....X|
+    .byte $67 ; |.XX..XXX|
+    .byte $44 ; |.X...X..|
+    .byte $77 ; |.XXX.XXX|
+SprNoController4:
+    .byte $75 ; |.XXX.X.X|
+    .byte $46 ; |.X...XX.|
+    .byte $67 ; |.XX..XXX|
+    .byte $45 ; |.X...X.X|
+    .byte $77 ; |.XXX.XXX|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $77 ; |.XXX.XXX|
+    .byte $21 ; |..X....X|
+    .byte $27 ; |..X..XXX|
+    .byte $24 ; |..X..X..|
+    .byte $77 ; |.XXX.XXX|
+SprNoController5:
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+

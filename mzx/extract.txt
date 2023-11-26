@@ -78,6 +78,30 @@ loop for 31
 set "$sht" to "spr/spr_en.asm"
 goto "#dumpsht"
 
+. "No Controller"
+set "CHAR" to "(256*14+22)"
+loop start
+inc "$" by "SprNoController&loopcount&:\n"
+set "sp&sp&" to 12
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 5
+set "$sht" to "spr/spr_nocontroller.asm"
+goto "#dumpsht"
+
+. "Demo Title"
+set "CHAR" to "(256*14+22+32)"
+loop start
+inc "$" by "SprTitleDemo&loopcount&:\n"
+set "sp&sp&" to 14
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 5
+set "$sht" to "spr/spr_titledemo.asm"
+goto "#dumpsht"
+
 . "Gohma Boss"
 set "CHAR" to "(96)"
 loop start
@@ -90,6 +114,7 @@ loop for 5
 set "$sht" to "spr/spr_gohma.asm"
 goto "#dumpsht"
 
+. "Waterfall"
 set "CHAR" to "(69)"
 loop start
 inc "$" by "SprWaterfall&loopcount&:\n"

@@ -16,10 +16,24 @@ En_Appear: SUBROUTINE
     ldx enNum
     lda #3
     sta enState,x
+
+    jsr Random
+    and #$1F
+    adc #$D1
+    sta enSysTimer,x
+
 .rts
     rts
 
 .transform
+
+;   update spawn delay
+    lda enSysTimer,x
+    cmp #1
+    adc #0
+    sta enSysTimer,x
+    bmi .rts
+
     lda enSysType,x
     sta enType,x
 

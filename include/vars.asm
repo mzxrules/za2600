@@ -248,6 +248,7 @@ enGFairyDie ds 1
     ORG CLASS_EN_ENEMY_MOVE
 enDarknutTemp   ds 2
                 ; xx1x_xxxx = new direction toggle
+enDarknutStep   ds 2
     EN_SIZE DARKNUT
 
 ; == Wallmaster
@@ -459,6 +460,10 @@ TextReg     ds 12
     ORG $FE
 PauseSp     ds 2
 
+; ****************************************
+; * Extended RAM                         *
+; ****************************************
+
 ; Level Data Banks 1 and 2
 
     ORG $F400
@@ -521,11 +526,18 @@ rMAP_3  ds PAUSE_MAP_HEIGHT
 rMAP_4  ds PAUSE_MAP_HEIGHT
 rMAP_5  ds PAUSE_MAP_HEIGHT
 
+
+    ORG $F600
+wKERNEL48   ds KERNEL48_LEN
+    ORG $F400
+rKERNEL48   ds KERNEL48_LEN
+
 ; ****************************************
 ; * Constants                            *
 ; ****************************************
 
 KERNEL_LEN  = $90   ; World Kernel length
+KERNEL48_LEN = $68  ; 48 pix kernel length
 
 ROOM_PX_HEIGHT      = 20 ; height of room in pixels
 ROOM_SPR_HEIGHT     = 16 ; height of room sprite sheet
@@ -659,6 +671,10 @@ SLOT_RW1    = RAMSEG_F8 | 1
 SLOT_RW2    = RAMSEG_F8 | 2
 
 SLOT_RW_MAP = RAMSEG_F0 | 3
+SLOT_RW_S6_0 = RAMSEG_F0 | 4
+SLOT_RW_S6_4 = RAMSEG_F4 | 4
+SLOT_RW_S6_8 = RAMSEG_F8 | 4
+SLOT_RW_S6_C = RAMSEG_FC | 4
 
 SLOT_SH     = RAMSEG_F0 | 18
 SLOT_DRAW   = RAMSEG_F4 | 19

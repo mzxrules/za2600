@@ -34,6 +34,9 @@ En_Darknut:
     lsr
     lsr
     sta enNY,x
+    jsr Random
+    and #7
+    sta enDarknutStep
     rts
 
 En_DarknutMain:
@@ -129,13 +132,24 @@ En_DarknutMain:
     cmp en0Y,x
     bne .move
 
+    dec enDarknutStep
+    bpl .seek_next
+    jsr Random
+    and #7
+    sta enDarknutStep
+
     jsr EnMov_Card_WallCheck
-    jsr EnMov_Card_SeekDir
+    jsr EnMov_Card_RandDir
+    sty enDir,x
+    bpl .move
+
+.seek_next
+    jsr EnMov_Card_WallCheck
+    jsr EnMov_Card_RandDirIfBlocked
     sty enDir,x
 .move
     lda Frame
-    and enState,x
-    and #3
+    and #1
     beq .rts
     jsr EnMoveDir
 .rts
