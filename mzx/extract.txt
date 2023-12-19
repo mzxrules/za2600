@@ -67,6 +67,7 @@ loop for 2
 set "$sht" to "spr/spr_sh.asm"
 goto "#dumpsht"
 
+. "Enemy Sprites"
 set "CHAR" to "('SS_EN')"
 loop start
 inc "$" by "SprE&loopcount&:\n"
@@ -76,6 +77,28 @@ inc "$" by "$dumpchr"
 inc "CHAR" by 1
 loop for 31
 set "$sht" to "spr/spr_en.asm"
+goto "#dumpsht"
+
+set "CHAR" to "('SS_EN0')"
+loop start
+inc "$" by "SprE&loopcount&:\n"
+set "sp&sp&" to 8
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 31
+set "$sht" to "spr/spr_en0.asm"
+goto "#dumpsht"
+
+set "CHAR" to "('SS_EN1')"
+loop start
+inc "$" by "SprE&loopcount&:\n"
+set "sp&sp&" to 8
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop for 31
+set "$sht" to "spr/spr_en1.asm"
 goto "#dumpsht"
 
 . "No Controller"

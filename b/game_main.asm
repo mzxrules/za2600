@@ -505,9 +505,7 @@ En_TektiteMain:
 En_Gibdo:
 En_Goriya:
 En_GoriyaBlue:
-En_Keese:
 En_Pols:
-En_Stalfos:
 En_Vire:
 En_VireSplit:
 En_Wizrobe:

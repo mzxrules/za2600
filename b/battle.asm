@@ -5,6 +5,10 @@
     INCLUDE "gen/HbPlAtt.asm"
     INCLUDE "gen/hitbox_info.asm"
 
+; HbDamage tables
+
+EnDam_Stalfos:
+    .byte -1, -2, -3, -1, -1, -2
 EnDam_Darknut:
     .byte -1, -2, -3,  0,  0, -4
 EnDam_Rope:

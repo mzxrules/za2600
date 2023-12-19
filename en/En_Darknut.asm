@@ -25,7 +25,6 @@ En_Darknut:
     and #3
     sta enDir,x
 
-
     lda en0X,x
     lsr
     lsr
@@ -36,7 +35,7 @@ En_Darknut:
     sta enNY,x
     jsr Random
     and #7
-    sta enDarknutStep
+    sta enDarknutStep,x
     rts
 
 En_DarknutMain:
@@ -132,11 +131,11 @@ En_DarknutMain:
     cmp en0Y,x
     bne .move
 
-    dec enDarknutStep
+    dec enDarknutStep,x
     bpl .seek_next
     jsr Random
     and #7
-    sta enDarknutStep
+    sta enDarknutStep,x
 
     jsr EnMov_Card_WallCheck
     jsr EnMov_Card_RandDir

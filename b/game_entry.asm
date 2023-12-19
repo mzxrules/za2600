@@ -29,6 +29,9 @@ ENTRY: SUBROUTINE ; Address FC00
 .ENTRY_RAM_BANKS
     .byte #SLOT_RW0, #SLOT_RW1, #SLOT_RW2
 
+.ENTRY_SLOT_SPR
+    .byte #SLOT_SPR_A, #SLOT_SPR_B, #SLOT_SPR_B
+
 ENTRY_INIT:  ; Address F000
     ldy #SLOT_MAIN
     sty BANK_SLOT
@@ -48,6 +51,10 @@ ENTRY_INIT:  ; Address F000
     sta wKERNEL-1,x
     dex
     bne .initWorldKernMem
+
+    lda .ENTRY_SLOT_SPR,y
+    sta wWorldSprBank
+
     dey
     bpl .init_ram_loop
 

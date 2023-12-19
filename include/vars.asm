@@ -275,6 +275,14 @@ enRopeTimer ds 2
 enRopeThink ds 2
     EN_SIZE ROPE
 
+; == Keese
+    ORG CLASS_EN_ENEMY_MOVE
+; enHp
+enKeeseDir      ds 2
+enKeeseThink    ds 2
+enKeeseDisp     ds 2
+enKeeseTemp     ds 1
+
 ; == Rolling Rocks
     ORG CLASS_EN_ENEMY_MOVE
 enRollingRockTimer  ds 2
@@ -554,10 +562,10 @@ BoardXL = $04
 BoardXR = $7C
 BoardYU = $50
 BoardYD = $08
-EnBoardXL = BoardXL+8
-EnBoardXR = BoardXR-8
-EnBoardYU = BoardYU-8
-EnBoardYD = BoardYD+8
+EnBoardXL = BoardXL+8 ; $0C
+EnBoardXR = BoardXR-8 ; $74
+EnBoardYU = BoardYU-8 ; $48
+EnBoardYD = BoardYD+8 ; $10
 
 ; U/D, pX $3C-$44
 ; L/R, pY $28-$30
@@ -660,6 +668,7 @@ SLOT_PF_A   = RAMSEG_F4 | 4
 SLOT_PF_B   = RAMSEG_F4 | 5
 SLOT_SPR_A  = RAMSEG_F0 | 6
 SLOT_SPR_A2 = RAMSEG_F4 | 6
+SLOT_SPR_B  = RAMSEG_F0 | 7
 SLOT_SPR_H  = RAMSEG_F0 | 38
 
 SLOT_W0     = RAMSEG_F4 | 12

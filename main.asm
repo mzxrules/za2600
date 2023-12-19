@@ -105,10 +105,10 @@ BANK_6
 
     align $20
     INCLUDE "spr/spr_pl.asm"
+    INCLUDE "spr/spr_rock.asm"
     INCLUDE "spr/spr_sh.asm"
     INCLUDE "spr/spr_gohma.asm"
     INCLUDE "spr/spr_waterfall.asm"
-    INCLUDE "spr/spr_rock.asm"
 
     LOG_BANK_SIZE "-BANK 6- Sprites", BANK_6
 
@@ -120,6 +120,17 @@ BANK_6
     RORG $F000
 
 BANK_7
+    INCLUDE "spr/spr_item.asm"
+    align $100
+    INCLUDE "spr/spr_en1.asm"
+    align $100
+
+    align $20
+    INCLUDE "spr/spr_pl.asm"
+    INCLUDE "spr/spr_rock.asm"
+    INCLUDE "spr/spr_sh.asm"
+    INCLUDE "spr/spr_gohma.asm"
+
     LOG_BANK_SIZE "-BANK 7- RESERVED", BANK_7
 
 ; ****************************************
@@ -480,6 +491,7 @@ BANK_28
     INCLUDE "en/EnDraw_Shopkeeper.asm"
     INCLUDE "en/EnDraw_NpcGiveOne.asm"
     INCLUDE "en/EnDraw_NpcPath.asm"
+    INCLUDE "en/EnDraw_Stalfos.asm"
 
     LOG_BANK_SIZE "-BANK 28- EnDraw/PushSystem", BANK_28
 
@@ -566,8 +578,6 @@ BANK_34
     INCLUDE "en/En_LikeLike.asm"
     INCLUDE "en/En_Octorok.asm"
     INCLUDE "en/En_Rope.asm"
-
-
     LOG_BANK_SIZE "-BANK 34- En1", BANK_34
 
 ; ****************************************
@@ -613,6 +623,9 @@ BANK_37
     INCLUDE "en/En_RollingRock.asm"
     INCLUDE "en/En_Appear.asm"
     INCLUDE "en/EnBoss_Cucco.asm"
+    INCLUDE "en/En_Stalfos.asm"
+    INCLUDE "en/En_Keese.asm"
+    INCLUDE "en/EnDraw_Keese.asm"
     LOG_BANK_SIZE "-BANK 37- En3", BANK_37
 
 ; ****************************************

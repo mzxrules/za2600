@@ -8,12 +8,18 @@ En_Appear: SUBROUTINE
     lda #2
     sta enState,x
 .skipInit
+
+    lda enSysType,x
+    cmp #EN_KEESE
+    beq .spawn_keese
+
     lda #4
     sta EnSysSpawnTry
     jsr EnRandSpawn
     lda EnSysSpawnTry
     beq .rts
     ldx enNum
+.set_fuzz
     lda #3
     sta enState,x
 
@@ -24,6 +30,26 @@ En_Appear: SUBROUTINE
 
 .rts
     rts
+.spawn_keese
+    ; Enemy Board Width = $40 (0-$3F)
+    ; Enemy Board Height = $38 (0-$37)
+
+    jsr Random
+    and #$3C
+    clc
+    adc #EnBoardXL + 8
+    cmp #$4C + 1
+    bcc .setX
+    lda #EnBoardXL + 8 + $1E
+.setX
+    sta en0X,x
+    jsr Random
+    and #$1C
+    clc
+    adc #$0C + EnBoardYD
+    sta en0Y,x
+    jmp .set_fuzz
+
 
 .transform
 

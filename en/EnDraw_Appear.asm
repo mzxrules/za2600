@@ -21,4 +21,11 @@ EnDraw_Appear: SUBROUTINE
 
 .setSpr
     sta enSpr
+
+    lda enSysType,x
+    cmp #EN_KEESE
+    bne .rts
+    lda #%10011
+    sta wNUSIZ1_T
+.rts
     rts
