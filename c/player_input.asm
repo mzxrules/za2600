@@ -426,7 +426,7 @@ PlayerFlute: SUBROUTINE
 .tornadoAnimWidth:
     .byte $20, $30, $10
 
-PauseGame: SUBROUTINE
+PlayerPause: SUBROUTINE
     bit INPT1
     bmi .skipCheckForPause
     lda plItemTimer
@@ -480,17 +480,20 @@ PlayerInput: SUBROUTINE
     sta plState
 
 ; Player Recoil
-    ldx plStun
-    dex
-    cpx #PL_STUN_TIME+8-1
+    lda plStun
+    bpl .noRecoil
+    cmp #PL_STUN_RT
     bcs .noRecoil
-    txa
+    lsr
+    lsr
     and #3
     tax
     lda PlayerStunColors,x
     sta wPlColor
 
-    ldy plDir               ; 3
+    lda plStun
+    and #3
+    tay ; plRecoilDir
     ldx PlayerXYAddr,y      ; 4
     lda #$00,x              ; 4
     clc
@@ -520,7 +523,7 @@ PlayerInput: SUBROUTINE
     sty plY
     rts
 .noRecoil
-    ; lda plState
+    lda plState
     ldx #COLOR_PLAYER_02
     bit ITEMV_RING_RED
     bmi .setPlColor

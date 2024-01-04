@@ -88,6 +88,7 @@ SPAWN_PATTERN = [
     ["En_BossDig"],
     ["En_BossPatra"],
     ["En_BossGanon"],
+    ["En_TestMissile"]
 ]
 
 def GenerateEncounterDisplay(spawnPatterns):

@@ -3,11 +3,6 @@
 ;==============================================================================
 
 EnDraw_LikeLike: SUBROUTINE
-    lda en0X,x
-    sta enX
-    lda en0Y,x
-    sta enY
-
     lda #>SprE16
     sta enSpr+1
     lda Frame
@@ -15,11 +10,8 @@ EnDraw_LikeLike: SUBROUTINE
     clc
     adc #<SprE16
     sta enSpr
-    lda enStun,x
-    asl
-    asl
-    adc #COLOR_EN_RED
-    sta wEnColor
-    rts
+
+    lda #COLOR_EN_RED
+    jmp EnDraw_PosAndStunColor
 
     LOG_SIZE "EnDraw_LikeLike", EnDraw_LikeLike

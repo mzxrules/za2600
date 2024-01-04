@@ -33,7 +33,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
 
     lda #SLOT_PL
     sta BANK_SLOT
-    jsr PauseGame
+    jsr PlayerPause
 PAUSE_RETURN:
     jsr PlayerInput
     jsr PlayerItem
@@ -79,9 +79,11 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 
 ; update player stun timer
     lda plStun
-    cmp #1
-    adc #0
+    bpl .end_plStun_inc
+    clc
+    adc #4
     sta plStun
+.end_plStun_inc
 
 ; test player board bounds
     ldy roomId
@@ -284,7 +286,7 @@ endPFCollision
     cmp roomDoors ; if roomDoors changed, at least one shutter opened
     sta roomDoors
     beq .endOpenShutterDoor
-    lda #SFX_BOMB
+    lda #SFX_SHUTTER_DOOR
     sta SfxFlags
 .endOpenShutterDoor
 
@@ -372,8 +374,12 @@ UPDATE_PL_HEALTH: SUBROUTINE
 ; damage
     bit plStun
     bmi .rts
-    ldy #PL_STUN_TIME
-    sty plStun
+    tay
+    clc
+    lda #PL_STUN_TIME
+    adc plDir
+    sta plStun
+    tya
     bit ITEMV_RING_RED
     bpl .checkBlueRing ; #ITEMF_RING_RED
     sec

@@ -30,16 +30,16 @@ HITBOX_INFO = [
 
 HITBOX_INFO2 = [
 # player shield hb
-    (1, 8,  8,  0),
-    (1, 8, -1,  0),
-    (8, 1,  0, -1),
-    (8, 1,  0,  8),
+    (3, 8,  6,  0),
+    (3, 8, -1,  0),
+    (8, 3,  0, -1),
+    (8, 3,  0,  6),
 # player hitbox (missiles)
     (6, 6, 1, 1),
 ]
 
 HITBOX_INFO_MISSILE = [
-    (2, 2)
+    (2, 2, 3, 3)
 ]
 
 def get_hitbox_info():
@@ -47,11 +47,11 @@ def get_hitbox_info():
     aa_oy = []
     aa_w_PLUS_bb_w = []
     aa_h_PLUS_bb_h = []
-    for aa_w, aa_h, xshift in HITBOX_INFO:
+    for aa_w, aa_h, aa_xshift in HITBOX_INFO:
         bb_w = 8
         bb_h = 8
 
-        aa_ox.append(aa_w-1+xshift-1)
+        aa_ox.append(aa_w-1+aa_xshift-1)
         aa_oy.append(aa_h-1)
         aa_w_PLUS_bb_w.append(aa_w + bb_w -1)
         aa_h_PLUS_bb_h.append(aa_h + bb_h -1)
@@ -72,11 +72,11 @@ def get_hitbox_info2():
     aa_w_PLUS_bb_w = []
     aa_h_PLUS_bb_h = []
 
-    for bb_w, bb_h in HITBOX_INFO_MISSILE:
-        for aa_w, aa_h, xshift, yshift in HITBOX_INFO2:
+    for bb_w, bb_h, bb_xshift, bb_yshift in HITBOX_INFO_MISSILE:
+        for aa_w, aa_h, aa_xshift, aa_yshift in HITBOX_INFO2:
 
-            aa_ox.append(aa_w-1+xshift)
-            aa_oy.append(aa_h-1+yshift)
+            aa_ox.append(aa_w-1+aa_xshift-bb_xshift)
+            aa_oy.append(aa_h-1+aa_yshift-bb_yshift)
             aa_w_PLUS_bb_w.append(aa_w + bb_w -1)
             aa_h_PLUS_bb_h.append(aa_h + bb_h -1)
 

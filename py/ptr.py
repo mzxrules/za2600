@@ -89,7 +89,7 @@ Entity_Table = [
     "En_ZolSplit",     "SEG_NA", "SEG_28", "EnDraw_None",
 
     "En_Test",         "SEG_35", "SEG_28", "EnDraw_Darknut",
-    "En_TestMissile",  "SEG_35", "SEG_28", "EnDraw_TestMissile",
+    "En_TestMissile",  "SEG_35", "SEG_39", "EnDraw_TestMissile",
 
     "En_BossGohma",    "SEG_35", "SEG_39", "EnDraw_BossGohma",
     "En_BossGlock",    "SEG_35", "SEG_39", "EnDraw_BossGlock",
@@ -290,6 +290,7 @@ tbl = [
         "SfxDelay",
         "SfxQuake",
         "SfxWarp",
+        "SfxShutterDoor",
     ],
     bankLut=None),
     GameEnum("PlMoveDir", "PlDir",

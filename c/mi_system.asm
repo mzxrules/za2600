@@ -110,6 +110,7 @@ MiSystem: SUBROUTINE
 
     jsr MiProcess
     jsr MiPlCol
+
     lda mi0X,x
     cmp #EnBoardXL
     bmi .kill
@@ -117,9 +118,9 @@ MiSystem: SUBROUTINE
     bpl .kill
 
     lda mi0Y,x
-    cmp #EnBoardYU
+    cmp #EnBoardYU+7
     bpl .kill
-    cmp #EnBoardYD+7
+    cmp #EnBoardYD
     bpl .continue
 .kill
     lda #0
@@ -155,14 +156,33 @@ MiProcess: SUBROUTINE
 
 MiSpawnAtan: SUBROUTINE
     stx MiSysEnNum
-    lda plY
+
+    jsr Random
+    and #$07
+    bne .skip_middle_y
+    lda #4
+.skip_middle_y
+
+    clc
+    adc plY
+    adc #$FC
     sec
     sbc mi0Y,x
     tay
-    lda plX
+
+    jsr Random
+    and #$07
+    bne .skip_middle_x
+    lda #4
+.skip_middle_x
+
+    clc
+    adc plX
+    adc #$FC
     sec
     sbc mi0X,x
     tax
+
     jsr Atan2
     ldx MiSysEnNum
     sta mi0Dir,x
@@ -182,14 +202,7 @@ MiSpawnRock: SUBROUTINE
 ; X is missile slot
 MiPlCol: SUBROUTINE
 
-    lda enType,x
-    cmp #EN_TEST_MISSILE
-    bne .skipTestReset
-    lda #0
-    sta enTestMissileResult,x
-
-.skipTestReset
-
+; Shield HB test
     lda plDir
     and #3
     tay
@@ -201,10 +214,8 @@ MiPlCol: SUBROUTINE
     sta Hb_bb_x
     lda mi0Y,x
     sta Hb_bb_y
-HbEnAttCollide:
-    ;ldy Hb_aa_Box
-    ;beq .no_hit ; null box
 
+HbEnAttCollide:
 .valid_box
     lda Hb_aa_x
     clc
@@ -213,12 +224,7 @@ HbEnAttCollide:
     sec
     sbc Hb_bb_x
     cmp hitbox2_aa_w_plus_bb_w,y
-    ;bcc .pass_x
-    bcs .no_hit
-;.no_hit
-;    lda #0
-;    sta HbFlags
-;    rts
+    bcs .no_shield_hit
 
 .pass_x
     lda Hb_aa_y
@@ -228,16 +234,54 @@ HbEnAttCollide:
     sec
     sbc Hb_bb_y
     cmp hitbox2_aa_h_plus_bb_h,y
-    bcs .no_hit
+    bcs .no_shield_hit
 
     lda enType,x
     cmp #EN_TEST_MISSILE
-    bne .skipTestSet
+    bne .skipTestMissileGreen
+    lda #COLOR_EN_GREEN
+    sta enTestMissileResult,x
+.skipTestMissileGreen
+
+    lda #0
+    sta miType,x
+    lda #SFX_DEF
+    sta SfxFlags
+    rts
+
+.no_shield_hit
+    lda Hb_aa_x
+    clc
+    adc hitbox2_aa_ox+4
+
+    sec
+    sbc Hb_bb_x
+    cmp hitbox2_aa_w_plus_bb_w+4
+    bcs .no_player_hit
+
+.pass_player_x
+    lda Hb_aa_y
+    clc
+    adc hitbox2_aa_oy+4
+
+    sec
+    sbc Hb_bb_y
+    cmp hitbox2_aa_h_plus_bb_h+4
+    bcs .no_player_hit
+
+    lda enType,x
+    cmp #EN_TEST_MISSILE
+    bne .skipTestMissileRed
     lda #COLOR_EN_RED
     sta enTestMissileResult,x
-.skipTestSet
+.skipTestMissileRed
 
-.no_hit
+    lda #0
+    sta miType,x
+    lda #-4
+    jsr UPDATE_PL_HEALTH
+
+.no_player_hit
     rts
 
     INCLUDE "gen/hitbox_info2.asm"

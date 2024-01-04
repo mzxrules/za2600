@@ -84,9 +84,10 @@ PS_ACTIVE_ITEM  = $07 ; 0000_0111 Mask to fetch current active item
                       ;       100 Flute
                       ;       101 Wand
                       ;       110 Meat?
-plStun      ds 1
-PL_STUN_TIME = -30
-plRecoil    ds 1
+plStun      ds 1    ; 1111_1100 ; player stun timer
+PL_STUN_TIME = [-30*4] ; Frames of invunerability
+PL_STUN_RT   = [-24*4] ; End of recoil time
+; plRecoilDir       ; 0000_0011 ; recoil direction
 plHealthMax ds 1
 plHealth    ds 1 ; $0 exact for gameover, negative for gameover state is init
 plItemTimer ds 1
@@ -321,6 +322,8 @@ enTestTimer ds 1
     ORG CLASS_EN_ENEMY_MOVE_SHOOT
 enTestMissileType   ds 2
 enTestMissileResult ds 2
+enTestMissileTimer  ds 1
+enTestMissileCount  ds 1
 
     ORG EN_VARS_END
 
@@ -346,6 +349,10 @@ Temp3       ds 1
 Temp4       ds 1
 Temp5       ds 1
 TRoomSprB   ds 1 ; LoadRoom sprite bank
+
+    SEG.U VARS_ENDRAW
+    ORG Temp0
+EnDrawColor ds 1
 
     SEG.U VARS_AUD_ZERO
     ORG Temp0 + 1

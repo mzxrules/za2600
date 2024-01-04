@@ -137,6 +137,7 @@ SfxSurf: SUBROUTINE
     bpl SfxStop
     rts
 
+SfxShutterDoor: SUBROUTINE
 SfxBomb: SUBROUTINE
     lda SfxCur
     cmp #16

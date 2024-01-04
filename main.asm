@@ -100,17 +100,16 @@ BANK_5
 BANK_6
     INCLUDE "spr/spr_item.asm"
     align $100
-    INCLUDE "spr/spr_en.asm"
+    INCLUDE "spr/spr_en0.asm"
     align $100
 
     align $20
     INCLUDE "spr/spr_pl.asm"
     INCLUDE "spr/spr_rock.asm"
     INCLUDE "spr/spr_sh.asm"
-    INCLUDE "spr/spr_gohma.asm"
     INCLUDE "spr/spr_waterfall.asm"
 
-    LOG_BANK_SIZE "-BANK 6- Sprites", BANK_6
+    LOG_BANK_SIZE "-BANK 6- Sprites World", BANK_6
 
 ; ****************************************
 ; *               BANK 7                 *
@@ -131,7 +130,7 @@ BANK_7
     INCLUDE "spr/spr_sh.asm"
     INCLUDE "spr/spr_gohma.asm"
 
-    LOG_BANK_SIZE "-BANK 7- RESERVED", BANK_7
+    LOG_BANK_SIZE "-BANK 7- Sprites Dung", BANK_7
 
 ; ****************************************
 ; *               BANK 8                 *
@@ -492,6 +491,8 @@ BANK_28
     INCLUDE "en/EnDraw_NpcGiveOne.asm"
     INCLUDE "en/EnDraw_NpcPath.asm"
     INCLUDE "en/EnDraw_Stalfos.asm"
+    INCLUDE "en/EnDraw_Gibdo.asm"
+    INCLUDE "b/endraw_common.asm"
 
     LOG_BANK_SIZE "-BANK 28- EnDraw/PushSystem", BANK_28
 

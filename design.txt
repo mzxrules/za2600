@@ -15,11 +15,14 @@ Bosses
 
 Game Loop:
 
+    Random
+    VerticalSync
     RoomLoad
     if not RoomLoad:
+        Missile System
+        PlayerPause
         PlayerInput
-        Random
-        PlayerItem logic
+        PlayerItem
     Check Keydoor unlock
     Update Doors
     Process Audio
@@ -29,12 +32,11 @@ Game Loop:
         Draw Text
     Draw World
     Test Board Exit
-    Test Player Phases through walls / collision reset
+    Test Player Collision
     Process ClearDrop
     Process Enemy System
     Process Room Script
-    Process Entity
-    Process Missile System
+    Process Entities
     Process Ball Script
     Update Room Clear
     Update Shutter Door
@@ -745,13 +747,18 @@ wand
 Boomerang ?
 
 
-Enemy Missile positioning guidelines
+Enemy Missile system
 
-mi0X,mi0Y must consistently correlate to plX, plY. Kernel limitations make it
-impossible for sprites to align perfectly.
+mi0X,mi0Y is the lower left position of an 8x8 missile sprite. This is done so
+that displacement calculations can be simplified regardless of the true size
+of the missile.
 
-m1x needs to be inc by 1 over mi0X to overlap bottom left player pixel
-m1y does not need to be adjusted, but the missle will appear 1 scanline above
+m0x,m0y is the true lower left position of the sprite when drawn by the kernel.
+
+m0x needs to be +1 over mi0X to properly overlap bottom left player pixel.
+m0y does not need to be adjusted, but the missle will appear 1 scanline above.
+Kernel limitations make it impossible for sprites to align perfectly.
+
 
 
 Pause Map:

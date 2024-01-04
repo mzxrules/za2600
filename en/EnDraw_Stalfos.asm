@@ -2,25 +2,11 @@
 ; mzxrules 2023
 ;==============================================================================
 EnDraw_Stalfos: SUBROUTINE
-    lda en0X,x
-    sta enX
-    lda en0Y,x
-    sta enY
-
-    lda enState,x
-    lsr
-    and #1
-    tay
-
-    lda #>SprE12
+    lda #>SprE11
     sta enSpr+1
-    lda enStun,x
-    asl
-    asl
-    adc #COLOR_WHITE
-    sta wEnColor
-
-    lda #<SprE12
+    lda #<SprE11
     sta enSpr
-    rts
+
+    lda #COLOR_WHITE
+    jmp EnDraw_PosAndStunColor
     LOG_SIZE "EnDraw_Stalfos", EnDraw_Stalfos

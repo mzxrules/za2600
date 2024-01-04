@@ -15,10 +15,13 @@ EnDraw_TestMissile: SUBROUTINE
     lda #$40
     sta enY
 
+    clc
     lda mi0X,x
+    adc #3+1
     sta m1X
-    inc m1X
+    clc
     lda mi0Y,x
+    adc #3
     sta m1Y
 
 ; 2x2 Missile
