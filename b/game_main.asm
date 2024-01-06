@@ -497,9 +497,6 @@ RETURN_WORLD: SUBROUTINE
 En_Leever:
 En_LeeverBlue:
 En_LeeverMain:
-En_Lynel:
-En_LynelBlue:
-En_LynelMain:
 En_Moblin:
 En_MoblinBlue:
 En_MoblinMain:

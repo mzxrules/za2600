@@ -9,9 +9,17 @@ SPAWN_PATTERN = [
     ["EnNone"],
     ["En_Octorok"] * 1,
     ["En_Octorok"] * 2,
+    ["En_OctorokBlue"] * 1,
+    ["En_OctorokBlue"] * 2,
     ["En_Octorok", "En_OctorokBlue"] * 1,
     ["En_Octorok", "En_OctorokBlue", "En_Octorok"] * 1,
     ["En_OctorokBlue", "En_Octorok", "En_OctorokBlue"] * 1,
+
+    ["En_Tektite"] * 2,
+    ["En_Tektite"] * 3,
+
+    ["En_TektiteBlue"] * 2,
+    ["En_TektiteBlue"] * 3,
 
     ["En_Peehat"] * 2,
     ["En_Peehat"] * 3,

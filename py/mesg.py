@@ -71,6 +71,10 @@ mesg_table = [
         " DODONGO DISLIKES SMOKE ",
         "                        ",
         ],
+    "MesgHintGrave", [
+        "    MEET THE OLD MAN    ",
+        "      AT THE GRAVE.     ",
+        ],
     "MesgHintLostWoods", [
         "NORTH, WEST, SOUTH, WEST",
         "TO CROSS THE LOST WOODS ",
@@ -110,10 +114,6 @@ mesg_table = [
     "MesgTreeAtDeadEnd", [
         " SECRET IS IN THE TREE  ",
         "    AT THE DEAD-END.    ",
-        ],
-    "MesgHintGrave", [
-        "    MEET THE OLD MAN    ",
-        "      AT THE GRAVE.     ",
         ],
     "MesgHintNose", [
         "  THERE'S A SECRET IN   ",

@@ -4,7 +4,7 @@
 
 Cv_Del:
     ldx roomEX
-    cpx CV_DOOR_REPAIR+1
+    cpx CV_MESG_HINT_LOST_HILLS+1
     bpl .rts
     lda CaveTypeH,x
     pha
@@ -14,7 +14,6 @@ Cv_Del:
 Cv_MoneyGame:
 Cv_GiveHeartPotion:
 Cv_TakeHeartRupee:
-Cv_Rupees:
 Cv_DoorRepair:
 .rts
     rts
@@ -28,20 +27,24 @@ Cv_Path4:
     sta enType
     rts
 
+
 Cv_Sword1:
 Cv_Sword2:
 Cv_Sword3:
 Cv_Note:
+Cv_Rupees100:
+Cv_Rupees30:
+Cv_Rupees10:
     lda #EN_NPC_GIVE_ONE
     sta enType
     rts
 
 
-Cv_Potion:
 Cv_Shop1:
 Cv_Shop2:
 Cv_Shop3:
 Cv_Shop4:
+Cv_Potion:
     lda #EN_NPC_SHOPKEEPER
     sta enType
     rts
@@ -112,6 +115,16 @@ Rs_Cave: SUBROUTINE
 .rts
     rts
 
+
+Cv_MesgHintGrave: SUBROUTINE
+Cv_MesgHintLostWoods:
+Cv_MesgHintLostHills:
+    lda roomEX
+    sec
+    sbc #CV_MESG_HINT_GRAVE
+    adc #MESG_HINT_GRAVE-1
+    sta roomEX
+    bne Rs_Npc
 Rs_NpcTriforce: SUBROUTINE
     ldy #$FF
     cpy itemTri
@@ -122,7 +135,6 @@ Rs_NpcTriforce: SUBROUTINE
     sta roomFlags
     lda #MESG_NEED_TRIFORCE
     sta roomEX
-
 Rs_Npc: ; SUBROUTINE
     lda #EN_NPC_OLD_MAN
     sta enType
@@ -155,16 +167,32 @@ Rs_Item: SUBROUTINE
 .rts
     rts
 
+Rs_EntDungData_TestX:
+    .byte #$40, #$40, #$58
+Rs_EntDungData_TestY:
+    .byte #$28, #$1C, #$20
+Rs_EntDungData_RetX:
+    .byte #$40, #$48, #$58
+Rs_EntDungData_RetY:
+    .byte #$20, #$1C, #$1C
+
 Rs_EntDungMid: SUBROUTINE
+Rs_EntDungBush:
+Rs_EntDungSpectacleRock:
+    sec
+    lda roomRS
+    sbc #RS_ENT_DUNG_MID
+    tax
+
     lda plX
-    cmp #$40
+    cmp Rs_EntDungData_TestX,x
     bne .rts
     lda plY
-    cmp #$28
+    cmp Rs_EntDungData_TestY,x
     bne .rts
-    lda #$40
+    lda Rs_EntDungData_RetX,x
     sta worldSX
-    lda #$20
+    lda Rs_EntDungData_RetY,x
     sta worldSY
     lda roomId
     sta worldSR
@@ -200,6 +228,9 @@ Rs_EntCaveWallLeftBlocked:
     bne .main
 Rs_EntCaveWallRightBlocked:
     ldx #RS_ENT_CAVE_WALL_RIGHT
+    bne .main
+Rs_EntDungSpectacleRockBlocked:
+    ldx #RS_ENT_DUNG_SPECTACLE_ROCK
 .main
     bit CXM0FB
     bvc .rts
@@ -226,8 +257,25 @@ Rs_EntCaveWallRightBlocked:
     beq .left
     cpx #RS_ENT_CAVE_WALL_RIGHT
     beq .right
-    lda #$7F
+    cpx #RS_ENT_CAVE_WALL_CENTER
+    beq .center
+    cpx #RS_ENT_DUNG_SPECTACLE_ROCK
+    bne .rts
 
+.spectacle_rock
+    lda #$19
+    sta wPF2Room + 6
+    lda #$39
+    sta wPF2Room + 7
+    ;sta wPF2Room + 8
+    lda #$28+1
+    sta blX
+    lda #$20
+    sta blY
+    rts
+
+.center
+    lda #$7F
     sta wPF2Room + 12
     sta wPF2Room + 13
     sta wPF2Room + 14
@@ -242,6 +290,34 @@ Rs_EntCaveWallRightBlocked:
     sta wPF1RoomR + 12
     sta wPF1RoomR + 13
     sta wPF1RoomR + 14
+
+.rts
+    rts
+
+Rs_EntDungBushBlocked: SUBROUTINE ; $40, $1C
+    ldx #RS_ENT_DUNG_BUSH
+    bne .main ; jmp
+.main
+    bit CXM0FB
+    bvc .rts
+    lda plState2
+    and #PS_ACTIVE_ITEM
+    cmp #PLAYER_FIRE
+    bne .rts
+    ldy plItemTimer
+    cpy #ITEM_ANIM_FIRE_BURNBUSH
+    bmi .rts
+
+; opening destroyed
+    stx roomRS
+    lda #SFX_SOLVE
+    sta SfxFlags
+    ldy roomId
+    lda rRoomFlag,y
+    ora #RF_SV_DESTROY
+    sta wRoomFlag,y
+    lda #$80
+    sta blY
 
 .rts
     rts

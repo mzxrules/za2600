@@ -408,21 +408,21 @@ PF1Room23:
     .byte $00 ; |........|
 PF1Room24:
     .byte $00 ; |........|
+    .byte $DB ; |XX.XX.XX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $00 ; |........|
+    .byte $DB ; |XX.XX.XX|
+    .byte $DB ; |XX.XX.XX|
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
 PF1Room25:
     .byte $00 ; |........|
     .byte $00 ; |........|

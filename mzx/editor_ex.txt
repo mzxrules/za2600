@@ -21,6 +21,7 @@ if "&$$&" === "Rs_EntCaveWallCenterBlocked" then "Cv_Type"
 if "&$$&" === "Rs_EntCaveWallRight" then "Cv_Type"
 if "&$$&" === "Rs_EntCaveWallRightBlocked" then "Cv_Type"
 if "&$$&" === "Rs_EntCaveMid" then "Cv_Type"
+if "&$$&" === "Rs_Waterfall" then "Cv_Type"
 
 : "NoValue"
 put c0f CustomBlock "$x2_&local2&.0" at "('thisx'+1)" "thisy"

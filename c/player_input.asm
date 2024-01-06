@@ -294,7 +294,7 @@ PlayerFlute: SUBROUTINE
     lda plItemDir
     and #~$C0
     sta plItemDir
-    lda #$40
+    lda #$34
     sta plX
     lda #$10
     sta plY

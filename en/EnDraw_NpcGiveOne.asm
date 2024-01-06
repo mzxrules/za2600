@@ -3,7 +3,6 @@
 ;==============================================================================
 
 EnDraw_NpcGiveOne: SUBROUTINE
-
     ldy #$F0
     bit enState
     bvs .noDraw
@@ -24,3 +23,6 @@ EnDraw_NpcGiveOne: SUBROUTINE
     .byte GI_SWORD2
     .byte GI_SWORD3
     .byte GI_NOTE
+    .byte GI_RUPEE
+    .byte GI_RUPEE
+    .byte GI_RUPEE

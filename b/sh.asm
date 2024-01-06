@@ -156,6 +156,7 @@ GiRupee5: SUBROUTINE
     lda #5
     bne AddRupees
 
+; Assume returns not zero
 AddRupees: SUBROUTINE
     sed
     clc
@@ -411,23 +412,22 @@ EnRandomDrops:
     .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
 
 En_NpcGiveOne: SUBROUTINE
+    ldx roomEX
     lda roomId
     and #$7F
     tay
     lda rRoomFlag,y
-    bpl .skipSetObtained ; RF_SV_ITEM_GET
+    bpl .skip_SetItemGet ; RF_SV_ITEM_GET
     lda #$C0
     sta enState
-.skipSetObtained
+.skip_SetItemGet
 
     bit enState
     bvs .rts
     bmi .main
 
 .init
-
-    ldy roomEX
-    lda NpcGiveOneDialogs-CV_SWORD1,y
+    lda NpcGiveOneDialogs-CV_SWORD1,x
     sta mesgId
     lda #1
     sta KernelId
@@ -435,28 +435,36 @@ En_NpcGiveOne: SUBROUTINE
     sta enState
 
 .main
-
     bit CXPPMM
     bpl .rts
+    cpx #CV_RUPEES100
+    bcc .maxHealthTest
+.rupee
+    lda NpcGiveOneData-CV_SWORD1,x
+    jsr AddRupees
+    bne .give_item ; jmp
+.maxHealthTest
+    lda plHealthMax
+    cmp NpcGiveOneData-CV_SWORD1,x
+    bcc .rts
+.give_item
 ; Set RF_SV_ITEM_GET Flag
-    lda roomId
-    and #$7F
-    tay
     lda rRoomFlag,y
     ora #RF_SV_ITEM_GET
     sta wRoomFlag,y
 ; Trigger ItemGet
     lda #[$C0 | GI_EVENT_CAVE]
     sta enState
+
     lda #0
     sta KernelId
-    ldx roomEX
     lda NpcGiveOneItems-CV_SWORD1,x
     sta cdAType
     jmp ItemGet
 
 .rts
     rts
+
 
 En_NpcShopkeeper: SUBROUTINE
     bit enState
@@ -501,7 +509,7 @@ En_NpcShopkeeper: SUBROUTINE
 .itemSelected
     sed
     lda itemRupees
-    cmp shopDigit,x
+    cmp shopDigit,x ; item price
     bcs .buyItem
     cld
     bcc .shopEnd
@@ -579,14 +587,28 @@ NpcGiveOneItems:
     .byte GI_SWORD2
     .byte GI_SWORD3
     .byte GI_NOTE
+    .byte GI_RUPEE
+    .byte GI_RUPEE
+    .byte GI_RUPEE
 
 NpcGiveOneDialogs:
     .byte MESG_TAKE_THIS
     .byte MESG_MASTER_SWORD
     .byte MESG_MASTER_SWORD
     .byte MESG_NOTE
+    .byte MESG_GIVE_RUPEES
+    .byte MESG_GIVE_RUPEES
+    .byte MESG_GIVE_RUPEES
 
-SecretRupees:
-    .byte $40, $12, $05 ; 100, 30, 10
+NpcGiveOneData:
+; plHealthMax requirements
+    .byte #0
+    .byte #5*8
+    .byte #12*8
+    .byte #0
+; secret rupee amounts minus 1
+    .byte $39 ; $40 -> Rupee100
+    .byte $11 ; $12 -> Rupee30
+    .byte $04 ; $05 -> Rupee10
 
 LifeCost = $20 ; -50

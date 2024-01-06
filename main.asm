@@ -515,6 +515,8 @@ BANK_29
     INCLUDE "rs/RsInit_EntCaveWallRightBlocked.asm"
     INCLUDE "rs/RsInit_FairyFountain.asm"
     INCLUDE "rs/RsInit_EntDungFlute.asm"
+    INCLUDE "rs/RsInit_EntDungBush.asm"
+    INCLUDE "rs/RsInit_SpectacleRock.asm"
 
     LOG_BANK_SIZE "-BANK 29- RoomScriptInit", BANK_29
 
@@ -666,6 +668,17 @@ BANK_39
     INCLUDE "en/EnDraw_RollingRock.asm"
     INCLUDE "en/EnDraw_Appear.asm"
     LOG_BANK_SIZE "-BANK 39- En3", BANK_39
+
+; ****************************************
+; *               BANK 40                *
+; ****************************************
+    SEG Bank39
+    ORG $A000
+    RORG $F400
+
+BANK_40
+    INCLUDE "en/En_Lynel.asm"
+    LOG_BANK_SIZE "-BANK 40- En4", BANK_40
 
 ; End
 
