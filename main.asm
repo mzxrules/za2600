@@ -398,6 +398,8 @@ BANK_23
     INCLUDE "b/en_common.asm"
     INCLUDE "b/en_movement.asm"
     INCLUDE "gen/seekdir.asm"
+    align 128
+    INCLUDE "gen/en_offgrid.asm"
     LOG_BANK_SIZE "-BANK 23- Entity Movement", BANK_23
 
 ; ****************************************

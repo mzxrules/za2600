@@ -30,13 +30,6 @@ En_WallmasterInit: SUBROUTINE
     ldx enNum
     sta en0X,x
     sty en0Y,x
-    lsr
-    lsr
-    sta enNX,x
-    tya
-    lsr
-    lsr
-    sta enNY,x
 
     lda #EN_WALLMASTER_INIT
     sta enState,x
@@ -69,45 +62,16 @@ En_Wallmaster: SUBROUTINE
     rts
 
 .main_thing
-; update stun timer
-    lda enStun,x
-    cmp #1
-    adc #0
-    sta enStun,x
-
-.checkDamaged
-    lda enHp,x
-    sta itemRupees
-; if collided with weapon && stun == 0,
-    lda enStun,x
-    bne .endCheckDamaged
+; check damaged
     lda #SLOT_BATTLE
     sta BANK_SLOT
-    jsr HbGetPlAtt
-    jsr HbPlAttCollide_EnBB
-
-; Get damage
-    ldy HbDamage
-    lda EnDam_Wallmaster,y
-    sta Temp0
+    jsr HbCheckDamaged_CommonRecoil
 
     lda #SLOT_EN_A
     sta BANK_SLOT
-    lda HbFlags
-    beq .endCheckDamaged
-
-.gethit
-    lda Temp0 ; fetch damage
-    ldy #-32
-    sty enStun,x
-    clc
-    adc enHp,x
-    sta enHp,x
+    lda enHp,x
     bpl .endCheckDamaged
     jmp EnSysEnDie
-.defSfx
-    lda #SFX_DEF
-    sta SfxFlags
 .endCheckDamaged
 
 
@@ -136,23 +100,30 @@ En_Wallmaster: SUBROUTINE
 .handleMovement
     lda #SLOT_EN_MOV
     sta BANK_SLOT
-    ldx enNum
 
-; update EnMoveNX
-    lda enNX,x
+; update EnMoveNX/NY
+    lda en0X,x
+    lsr
+    lsr
     sta EnMoveNX
-    lda enNY,x
+    lda en0Y,x
+    lsr
+    lsr
     sta EnMoveNY
 
-    lda enNX,x
-    asl
-    asl
-    cmp en0X,x
+; check recoil movement
+    lda enState,x
+    and #EN_ENEMY_MOVE_RECOIL
+    beq .normal_movement
+    jmp EnMov_Recoil
+
+.normal_movement
+
+    ldy en0X,x
+    lda en_offgrid_lut,y
     bne .move
-    lda enNY,x
-    asl
-    asl
-    cmp en0Y,x
+    ldy en0Y,x
+    lda en_offgrid_lut,y
     bne .move
 
 .solveNextDirection

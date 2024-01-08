@@ -7,16 +7,14 @@
 
 ; HbDamage tables
 
-EnDam_Stalfos:
-    .byte -1, -2, -3, -1, -1, -2
 EnDam_Darknut:
     .byte -1, -2, -3,  0,  0, -4
 EnDam_Lynel:
-    .byte -1, -2, -3, -1, -1, -4
 EnDam_Rope:
 EnDam_Octorok:
 EnDam_Wallmaster:
-    .byte -1, -2, -3, -1, -1, -2
+EnDam_Stalfos:
+    .byte -1, -2, -3, -1, -1, -4
 
 HbGetPlAtt: SUBROUTINE
     lda #0
@@ -142,10 +140,93 @@ HbPlAttCollide: SUBROUTINE
     sbc Hb_bb_y
     cmp hitbox_aa_h_plus_bb_h,y
     bcs .no_hit
+; Kill the player arrow if it hit something
     lda #HB_PL_ARROW
     and HbFlags
     beq .rts
     lda #$80
     sta m0Y
+.rts
+    rts
+
+;==============================================================================
+; HbCheckDamaged_CommonRecoil
+;----------
+; Performs enemy damage check and effective state changes
+; X = enNum
+;==============================================================================
+HbCheckDamaged_CommonRecoil: SUBROUTINE
+; update stun timer
+    lda enStun,x
+    bpl .checkDamaged
+    clc
+    adc #4
+    bmi .skip
+    lda #0
+.skip
+    sta enStun,x
+    rts
+
+.checkDamaged
+; if collided with weapon && stun >= 0,
+    jsr HbGetPlAtt
+    jsr HbPlAttCollide_EnBB
+
+; If no hit
+    lda HbFlags
+    beq .rts
+
+    lda #enType,x
+    cmp #EN_DARKNUT_MAIN
+    bne .gethit
+
+; Test if darknut takes damage
+    lda HbFlags
+    and #HB_PL_SWORD | #HB_PL_BOMB
+    beq .immune ; block non-damaging attacks
+
+; Test if item hit Darknut's shield
+    ldy enDir,x
+    cpy plItemDir
+    ; bne .gethit
+    beq .immune
+
+/*
+    ; Test if sword hit shield
+    and #HB_PL_SWORD
+    bne .immune
+    ; Bomb hit shield
+    lda #-2
+    bmi .gethit_override_damage ;jmp
+*/
+
+.gethit
+    ldy HbDamage
+    lda EnDam_Darknut,y
+.gethit_override_damage
+    clc
+    adc enHp,x
+    sta enHp,x
+
+    ldy #SFX_EN_DAMAGE
+    sty SfxFlags
+
+    lda plItemDir
+    and #3
+    eor #1
+    clc
+    adc #(-32*4)
+    sta enStun,x
+    lda enState,x
+    ora #EN_ENEMY_MOVE_RECOIL
+    sta enState,x
+    rts
+
+.immune
+    lda HbFlags
+    and #HB_PL_FIRE
+    bne .rts
+    lda #SFX_DEF
+    sta SfxFlags
 .rts
     rts

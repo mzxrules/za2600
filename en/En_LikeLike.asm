@@ -9,56 +9,17 @@ En_LikeLike: SUBROUTINE
 
     lda #6 -1
     sta enHp,x
-
-; target next
-    lda en0X,x
-    lsr
-    lsr
-    sta enNX,x
-    lda en0Y,x
-    lsr
-    lsr
-    sta enNY,x
-
     rts
 
 En_LikeLikeMain: SUBROUTINE
-; update stun timer
-    lda enStun,x
-    cmp #1
-    adc #0
-    sta enStun,x
-
-.checkDamaged
-; if collided with weapon && stun == 0,
-    lda enStun,x
-    cmp #-8
-    bmi .endCheckDamaged
-
+; check damaged
     lda #SLOT_BATTLE
     sta BANK_SLOT
-    jsr HbGetPlAtt
-    jsr HbPlAttCollide_EnBB
-
-; Get damage
-    ldy HbDamage
-    lda EnDam_Rope,y
-    sta Temp0
+    jsr HbCheckDamaged_CommonRecoil
 
     lda #SLOT_EN_A
     sta BANK_SLOT
-    lda HbFlags
-    beq .endCheckDamaged
-
-.gethit
-    lda Temp0 ; fetch damage
-    ldy #-32
-    sty enStun,x
-    ldy #SFX_EN_DAMAGE
-    sty SfxFlags
-    clc
-    adc enHp,x
-    sta enHp,x
+    lda enHp,x
     bpl .endCheckDamaged
     lda plState
     and #~PS_LOCK_MOVE
@@ -121,21 +82,29 @@ En_LikeLikeMain: SUBROUTINE
     adc #0
     sta enLLThink,x
 
-; update EnMoveNX
-    lda enNX,x
+; update EnMoveNX/NY
+    lda en0X,x
+    lsr
+    lsr
     sta EnMoveNX
-    lda enNY,x
+    lda en0Y,x
+    lsr
+    lsr
     sta EnMoveNY
 
-    lda enNX,x
-    asl
-    asl
-    cmp en0X,x
+; check recoil movement
+    lda enState,x
+    and #EN_ENEMY_MOVE_RECOIL | #EN_LIKELIKE_LOCK
+    cmp #EN_ENEMY_MOVE_RECOIL
+    bne .normal_movement
+    jmp EnMov_Recoil
+
+.normal_movement
+    ldy en0X,x
+    lda en_offgrid_lut,y
     bne .move
-    lda enNY,x
-    asl
-    asl
-    cmp en0Y,x
+    ldy en0Y,x
+    lda en_offgrid_lut,y
     bne .move
 
 .solveNextDirection

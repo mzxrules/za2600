@@ -196,7 +196,6 @@ SfxStop:
     sta SfxFlags
     rts
 
-SfxEnDamage:
 SfxDef: SUBROUTINE
     lda SfxCur
     cmp #6
@@ -212,6 +211,7 @@ SfxDef: SUBROUTINE
 SfxArrowFreq:
     .byte 2, 6, 11
 
+SfxEnDamage:
 SfxArrow: SUBROUTINE
     ldx SfxCur
     cpx #3

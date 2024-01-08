@@ -22,53 +22,17 @@ En_Octorok: SUBROUTINE
     lda #2 -1
     sta enHp,x
 
-; target next
-    lda en0X,x
-    lsr
-    lsr
-    sta enNX,x
-    lda en0Y,x
-    lsr
-    lsr
-    sta enNY,x
-
-    jsr En_Octorok_Think
-    rts
+    jmp En_Octorok_Think
 
 En_OctorokMain:
-; update stun timer
-    lda enStun,x
-    cmp #1
-    adc #0
-    sta enStun,x
-
-
-.checkDamaged
-; if collided with weapon && stun == 0,
-    lda enStun,x
-    bne .endCheckDamaged
+; check damaged
     lda #SLOT_BATTLE
     sta BANK_SLOT
-    jsr HbGetPlAtt
-    jsr HbPlAttCollide_EnBB
-
-; Get damage
-    ldy HbDamage
-    lda EnDam_Octorok,y
-    sta Temp0
+    jsr HbCheckDamaged_CommonRecoil
 
     lda #SLOT_EN_A
     sta BANK_SLOT
-    lda HbFlags
-    beq .endCheckDamaged
-
-.gethit
-    lda Temp0 ; fetch damage
-    ldy #-32
-    sty enStun,x
-    clc
-    adc enHp,x
-    sta enHp,x
+    lda enHp,x
     bpl .endCheckDamaged
     jmp EnSysEnDie
 .endCheckDamaged
@@ -88,11 +52,23 @@ En_OctorokMain:
     lda #SLOT_EN_MOV
     sta BANK_SLOT
 
-; update EnMoveNX
-    lda enNX,x
+; update EnMoveNX/NY
+    lda en0X,x
+    lsr
+    lsr
     sta EnMoveNX
-    lda enNY,x
+    lda en0Y,x
+    lsr
+    lsr
     sta EnMoveNY
+
+; check recoil movement
+    lda enState,x
+    and #EN_ENEMY_MOVE_RECOIL
+    beq .normal_movement
+    jmp EnMov_Recoil
+
+.normal_movement
 
 ; What's the plan, octo dad?
     lda enState,x
@@ -100,15 +76,11 @@ En_OctorokMain:
     cmp enDir,x
     bne .spinInPlace
 
-    lda enNX,x
-    asl
-    asl
-    cmp en0X,x
+    ldy en0X,x
+    lda en_offgrid_lut,y
     bne .move
-    lda enNY,x
-    asl
-    asl
-    cmp en0Y,x
+    ldy en0Y,x
+    lda en_offgrid_lut,y
     bne .move
 
 .solveNextDirection

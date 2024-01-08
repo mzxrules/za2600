@@ -29,10 +29,12 @@ EnMoveNextDel:
 EnMoveDeltaX:
     .byte -1,  1,  0,  0 ; cardinals
     .byte -1, -1,  1,  1 ; diagonals
+    .byte -4,  4,  0,  0 ; cardinals 4x
 
 EnMoveDeltaY:
     .byte  0,  0,  1, -1 ; cardinals
     .byte  1, -1,  1, -1 ; diagonals
+    .byte  0,  0,  4, -4 ; cardinals 4x
 
 
 nextdir_step_lut:

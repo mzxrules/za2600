@@ -424,6 +424,16 @@ def get_bitcount():
         table.append(count)
     return ToAsm(table)
 
+def get_en_offgrid():
+    table = [0]*128
+    pattern = [0, 0xFF, 2, 1]
+    for i in range(128):
+        v = i % 4
+        table[i] = pattern[v]
+    with open(f'gen/en_offgrid.asm', "w") as file:
+        file.write("en_offgrid_lut:\n")
+        file.write(ToAsm(table,16))
+
 def get_roomheight():
     roomHeight = []
     roomHeight8 = []
@@ -447,6 +457,7 @@ get_hitbox_info2()
 get_room_px_check()
 get_randdir_lut()
 get_pause_map_codegen()
+get_en_offgrid()
 
 with open(f'gen/bitcount.asm', "w") as file:
     file.write(bitcountOut)

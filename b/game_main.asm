@@ -68,8 +68,8 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     sta WSYNC
     lda #2
     sta VBLANK
-    lda #32
-    sta TIM64T ; 27 scanline timer
+    lda #36
+    sta TIM64T ; 30 scanline timer
 ; reset world kernel vars
     lda #7
     sta wENH
@@ -305,9 +305,6 @@ OVERSCAN_WAIT:
     sta WSYNC
     lda INTIM
     bne OVERSCAN_WAIT
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
     sta WSYNC
 
     jmp MAIN_VERTICAL_SYNC

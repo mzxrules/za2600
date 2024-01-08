@@ -180,7 +180,6 @@ EnMov_Card_WallCheck: SUBROUTINE
 
 ;==============================================================================
 ; Randomly selects a new cardinal direction
-; enNX, enNY are update to new destination point
 ; enNextDir returns new direction
 ; X = enNum
 ; Y = enNextDir
@@ -216,13 +215,12 @@ EnMov_Card_RandDir: SUBROUTINE
     bpl .loop
 .select
 .miss
-    jsr EnMoveNextDel
+    ldx enNum
     sty enNextDir
     rts
 
 ;==============================================================================
 ; Attempts to select enDir, then if blocked randomly selects cardinal direction
-; enNX, enNY are update to new destination point
 ; enNextDir returns new direction
 ; X = enNum
 ; Y = enNextDir
@@ -313,7 +311,7 @@ EnMov_Card_SeekDir:
     and EnMoveBlockedDir
     bne .loop
 .found_dir
-    jsr EnMoveNextDel
+    ldx enNum
     sty enNextDir
     rts
 
@@ -332,3 +330,70 @@ EnMov_Card_ContDir: SUBROUTINE
     jmp EnMov_Card_RandDirIfBlocked
 .contdir_seek
     jmp EnMov_Card_SeekDirIfBlocked
+
+;==============================================================================
+; Applies recoil movement, if applicable
+; X = enNum
+;==============================================================================
+EnMov_Recoil: SUBROUTINE
+    lda enStun,x
+    bmi .doThings
+.end_recoil
+    lda enState,x
+    and #~EN_ENEMY_MOVE_RECOIL
+    sta enState,x
+.rts
+    rts
+.doThings
+    cmp #EN_STUN_RT
+    bcs .end_recoil
+    and #3
+    sta Temp0 ; enRecoilDir
+    and #2
+    bne .recoil_ud
+.recoil_lr
+    ; if not x grid aligned
+    ldy en0Y,x
+    lda en_offgrid_lut,y
+    bne .end_recoil
+
+    lda enStun,x
+    cmp #EN_STUN_TIME1
+    bcs .tryMove
+
+    ldy en0X,x
+    lda en_offgrid_lut,y
+    clc
+    adc en0X,x
+    sta en0X,x
+    rts
+
+.recoil_ud
+    ; if not y grid aligned
+    ldy en0X,x
+    lda en_offgrid_lut,y
+    bne .end_recoil
+
+    lda enStun,x
+    cmp #EN_STUN_TIME1
+    bcs .tryMove
+
+    ldy en0Y,x
+    lda en_offgrid_lut,y
+    clc
+    adc en0Y,x
+    sta en0Y,x
+    rts
+
+.tryMove
+    jsr EnMov_Card_WallCheck
+    ldy Temp0
+    lda Bit8,y
+    and EnMoveBlockedDir
+    bne .rts
+.moveDel
+    lda #8
+    clc
+    adc Temp0
+    tay
+    jmp EnMoveDel

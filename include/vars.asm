@@ -180,9 +180,14 @@ enSysTimer  ds 2
 ; Class ENEMY
     ORG EN_VARS
 enState     ds 2
+EN_ENEMY_MOVE_RECOIL = $20 ; triggers recoil movement
 miType      ds 2
 enHp        ds 2
-enStun      ds 2
+enStun      ds 2    ; 1111_1100 ; enemy stun timer
+EN_STUN_TIME = [-32*4] ; Frames of invunerability
+EN_STUN_TIME1 = EN_STUN_TIME + 4
+EN_STUN_RT   = [-24*4] ; End of recoil time
+; enRecoilDir       ; 0000_0011 ; recoil direction
 CLASS_EN_ENEMY_BASE
 enDir       ds 2
 mi0Xf       ds 1
@@ -261,8 +266,7 @@ enWallPhase ds 2 ; anim timer for phasing through wall
 ; == Octorok
     ORG CLASS_EN_ENEMY_MOVE_SHOOT
 enOctorokThink  ds 2
-enMDX           ds 1
-enMDY           ds 1
+enOctorokShootT ds 2
     EN_SIZE OCTOROK
 
 ; == LikeLike
