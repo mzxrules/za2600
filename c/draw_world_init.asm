@@ -20,10 +20,13 @@
     sta m0DY
 
 .player_sprite_setup
-    ldx plDir
+    lda ITEMV_SHIELD
+    and #ITEMF_SHIELD
+    ora plDir
+    tax
     bit plState2
     bpl .loadSprP ; #PS_HOLD_ITEM
-    ldx #4
+    ldx #8
 .loadSprP
     lda .plSpriteL,x
     sec

@@ -114,7 +114,7 @@ itemFlags   ds 3
 ; ITEMF_name = item flag
     ITEM COMPASS_1,     0,$01
     ITEM MAP_1,         0,$02
-    ITEM SHIELD,        0,$10
+    ITEM SHIELD,        0,$04
     ITEM SWORD1,        0,$20
     ITEM SWORD2,        0,$40
     ITEM SWORD3,        0,$80
@@ -574,6 +574,8 @@ BoardXL = $04
 BoardXR = $7C
 BoardYU = $50
 BoardYD = $08
+BoardXC = [BoardXL + BoardXR] / 2 ; $40
+BoardYC = [BoardYU + BoardYD] / 2 ; $2C
 EnBoardXL = BoardXL+8 ; $0C
 EnBoardXR = BoardXR-8 ; $74
 EnBoardYU = BoardYU-8 ; $48

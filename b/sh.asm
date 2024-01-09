@@ -179,10 +179,15 @@ GiRecoverHeart:
     jmp UPDATE_PL_HEALTH
 
 GiShield:
+    lda #ITEMF_SHIELD
+    ora ITEMV_SHIELD
+    sta ITEMV_SHIELD
+    rts
+
 GiSword1:
 GiSword2:
 GiSword3:
-    lda Bit8+4-GI_SHIELD,x
+    lda Bit8+5-GI_SWORD1,x
     ora itemFlags
     sta itemFlags
     rts

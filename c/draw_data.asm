@@ -11,6 +11,7 @@
 
 .plSpriteL:
     .byte #<(SprP0 + 7), #<(SprP1 + 7), #<(SprP2 + 7), #<(SprP3 + 7)
+    .byte #<(SprP5 + 7), #<(SprP6 + 7), #<(SprP7 + 7), #<(SprP3 + 7)
     .byte #<(SprP4 + 7)
 
 .RoomHeight

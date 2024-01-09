@@ -43,4 +43,31 @@ SprP4:
     .byte $2E ; |..X.XXX.|
     .byte $16 ; |...X.XX.|
     .byte $BD ; |X.XXXX.X|
+SprP5:
+    .byte $36 ; |..XX.XX.|
+    .byte $24 ; |..X..X..|
+    .byte $19 ; |...XX..X|
+    .byte $9B ; |X..XX.XX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $68 ; |.XX.X...|
+    .byte $3C ; |..XXXX..|
+SprP6:
+    .byte $6C ; |.XX.XX..|
+    .byte $24 ; |..X..X..|
+    .byte $98 ; |X..XX...|
+    .byte $D9 ; |XX.XX..X|
+    .byte $DB ; |XX.XX.XX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $16 ; |...X.XX.|
+    .byte $3C ; |..XXXX..|
+SprP7:
+    .byte $66 ; |.XX..XX.|
+    .byte $24 ; |..X..X..|
+    .byte $58 ; |.X.XX...|
+    .byte $E9 ; |XXX.X..X|
+    .byte $EB ; |XXX.X.XX|
+    .byte $EE ; |XXX.XXX.|
+    .byte $16 ; |...X.XX.|
+    .byte $3C ; |..XXXX..|
 

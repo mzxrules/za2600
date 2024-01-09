@@ -6,31 +6,48 @@ EN_WALLMASTER_CAPTURE = $80
 EN_WALLMASTER_INIT = $40
 
 En_WallmasterInit: SUBROUTINE
-; calculate initial position
     lda #3
     sta enHp,x
-    lda #0 ; up wall phase
-    ldy #EnBoardYU
-    ldx #EnBoardXL
-    cpy plY
-    beq .contInit
-    cpx plX
-    beq .contInit
-    lda #32 ; down wall phase
-    ldy #EnBoardYD
-    ldx #EnBoardXR
-    cpy plY
-    beq .contInit
-    cpx plX
-    bne .rts
 
-.contInit
-    sta enWallPhase
-    txa
-    ldx enNum
+; calculate initial position
+.calcX
+    lda #EnBoardXL
+    ldy plX
+    cpy #BoardXC
+    bcc .setX
+    lda #EnBoardXR
+.setX
     sta en0X,x
+
+.calcY
+    ldy plY
+    cpy #BoardYC
+    bcc .down
+.up
+    lda #0
+    ldy #EnBoardYU
+    bcs .setY ; jmp
+.down
+    lda #32
+    ldy #EnBoardYD
+.setY
+    sta enWallPhase
     sty en0Y,x
 
+; test if the wallmaster should appear
+    lda plX
+    ldy plY
+    cmp #EnBoardXL
+    beq .setPos
+    cmp #EnBoardXR
+    beq .setPos
+
+    cpy #EnBoardYU
+    beq .setPos
+    cpy #EnBoardYD
+    bne .rts
+
+.setPos
     lda #EN_WALLMASTER_INIT
     sta enState,x
     rts

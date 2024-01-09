@@ -12,6 +12,10 @@ En_Appear: SUBROUTINE
     lda enSysType,x
     cmp #EN_KEESE
     beq .spawn_keese
+    cmp #EN_WALLMASTER
+    beq .fast_spawn
+    cmp #EN_ROLLING_ROCK
+    beq .fast_spawn
 
     lda #4
     sta EnSysSpawnTry
@@ -61,6 +65,7 @@ En_Appear: SUBROUTINE
     bmi .rts
 
     lda enSysType,x
+.fast_spawn
     sta enType,x
 
     ; zero entity variable data
@@ -75,8 +80,7 @@ En_Appear: SUBROUTINE
     dey
     dey
     bpl .EnInitLoop
-    inc enNum
-    rts
+    jmp En_Del
 
 
 EnRandSpawnRetry: SUBROUTINE

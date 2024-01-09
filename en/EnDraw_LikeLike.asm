@@ -3,12 +3,12 @@
 ;==============================================================================
 
 EnDraw_LikeLike: SUBROUTINE
-    lda #>SprE16
+    lda #>SprE14
     sta enSpr+1
     lda Frame
     and #8
     clc
-    adc #<SprE16
+    adc #<SprE14
     sta enSpr
 
     lda #COLOR_EN_RED
