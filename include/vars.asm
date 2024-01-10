@@ -461,6 +461,9 @@ MiSysEnNum      ds 1
 MiSysDir        ds 1
 MiSysDX         ds 1
 MiSysDY         ds 1
+MiSysColDX      ds 1
+MiSysColDY      ds 1
+MiSysColFlag    ds 1
 
     SEG.U VARS_SHOP_KERNEL
     ORG Temp0

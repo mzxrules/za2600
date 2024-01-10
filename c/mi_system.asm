@@ -267,8 +267,11 @@ HbEnAttCollide:
     sec
     sbc Hb_bb_y
     cmp hitbox2_aa_h_plus_bb_h+4
-    bcs .no_player_hit
+    bcc .player_hit
+.no_player_hit
+    rts
 
+.player_hit
     lda enType,x
     cmp #EN_TEST_MISSILE
     bne .skipTestMissileRed
@@ -281,7 +284,80 @@ HbEnAttCollide:
     lda #-4
     jsr UPDATE_PL_HEALTH
 
-.no_player_hit
+; compute player recoil position (we are already recoiling opposite plDir)
+    sec
+    lda plX
+    sbc mi0X,x
+    bpl .storeDX
+    sbc #0
+    eor #$ff
+    clc
+.storeDX
+    sta MiSysColDX
+    lda #$80
+    rol ; set A to zero, sec
+    sta MiSysColFlag
+    lda plY
+    sbc mi0Y,x
+    bpl .storeDY
+    sbc #0
+    eor #$ff
+    clc
+.storeDY
+    sta MiSysColDY
+    lda MiSysColFlag
+    rol
+    sta MiSysColFlag ; Current state:
+    ; xxxx_xx1x DX is positive (player to right)
+    ; xxxx_xxx1 DY is positive (player to up)
+
+    ; if plX is offgrid
+    lda plX
+    and #1
+    bne .recoil_y
+    ; if plY is offgrid
+    lda plY
+    and #1
+    bne .recoil_x
+
+.recoil_shortest_dist
+    lda MiSysColDX
+    cmp MiSysColDY
+    bne .recoil_pick_axis
+
+    lda Frame
+    and #1
+    beq .recoil_y
+
+.recoil_pick_axis
+    bcc .recoil_y
+
+.recoil_x
+    ; load deltaX, test sign
+    lda MiSysColFlag
+    and #2
+    bne .player_recoil_right
+.player_recoil_left
+    lda #PL_DIR_R | #PL_STUN_TIME
+    sta plStun
+    rts
+.player_recoil_right
+    lda #PL_DIR_L | #PL_STUN_TIME
+    sta plStun
+    rts
+
+.recoil_y
+    ; load deltaY, test sign
+    lda MiSysColFlag
+    and #1
+    bne .player_recoil_up
+.player_recoil_down
+    lda #PL_DIR_U | #PL_STUN_TIME
+    sta plStun
+    rts
+.player_recoil_up
+    lda #PL_DIR_D | #PL_STUN_TIME
+    sta plStun
     rts
 
     INCLUDE "gen/hitbox_info2.asm"

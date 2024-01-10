@@ -363,6 +363,7 @@ RoomFlagPFCollision
 ;----------
 ; Changes player health
 ; A = amount to change health by
+; X untouched
 ;==============================================================================
 UPDATE_PL_HEALTH: SUBROUTINE
     cmp #0

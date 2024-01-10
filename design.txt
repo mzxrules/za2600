@@ -759,6 +759,24 @@ m0x needs to be +1 over mi0X to properly overlap bottom left player pixel.
 m0y does not need to be adjusted, but the missle will appear 1 scanline above.
 Kernel limitations make it impossible for sprites to align perfectly.
 
+Player Recoil
+
+Opposite plDir when colliding with enemies
+Direction when colliding with projectiles is based on this algo:
+
+    compute deltaX
+    compute deltaY
+    If plOffGrid x,y = 0
+        compare absDeltaX with absDeltaY
+            greater distance sets direction
+            equal distance use opposite plDir
+
+
+    Else if plOffGrid x = 0
+        sign of delta y sets direction
+    Else if plOffGrid y = 0
+        sign of delta x sets direction
+
 
 
 Pause Map:
