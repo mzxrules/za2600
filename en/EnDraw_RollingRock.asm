@@ -14,7 +14,7 @@ EnDraw_RollingRock: SUBROUTINE
     sta enSpr+1
     lda #<SprRock0
     sta enSpr
-    lda #COLOR_WHITE
+    lda #COLOR_EN_WHITE
     sta wEnColor
     rts
 

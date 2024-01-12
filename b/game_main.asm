@@ -504,8 +504,6 @@ En_Tektite:
 En_TektiteBlue:
 En_TektiteMain:
 En_Gibdo:
-En_Goriya:
-En_GoriyaBlue:
 En_Pols:
 En_Vire:
 En_VireSplit:

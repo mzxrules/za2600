@@ -3,9 +3,9 @@
 ;==============================================================================
 LoadCaveRoom: SUBROUTINE
     ; Don't overwrite room vars
-    lda #COLOR_CHOCOLATE
+    lda #COLOR_PF_CHOCOLATE
     sta wFgColor
-    lda #COLOR_BLACK
+    lda #COLOR_PF_BLACK
     sta wBgColor
     lda #RS_CAVE
     sta roomRS
@@ -265,9 +265,9 @@ LoadRoom: SUBROUTINE
     bpl .dungRoomUpDownBorder
 ; RF_PF_AXIS test
     lda rFgColor
-    cmp #COLOR_RED_ROCK
+    cmp #COLOR_PF_RED
     beq .SetPFAxis
-    cmp #COLOR_LIGHT_WATER
+    cmp #COLOR_PF_WATER
     bne .rts
 .SetPFAxis
     lda roomFlags
@@ -632,19 +632,19 @@ WorldDoorPF1C:
 
 
 WorldColors:
-    /* 00 */ .byte COLOR_BLACK
-    /* 01 */ .byte COLOR_DARK_GRAY
-    /* 02 */ .byte COLOR_GRAY
-    /* 03 */ .byte COLOR_DARK_BLUE
-    /* 04 */ .byte COLOR_LIGHT_BLUE
-    /* 05 */ .byte COLOR_LIGHT_WATER
-    /* 06 */ .byte COLOR_DARK_TEAL
-    /* 07 */ .byte COLOR_DARK_PURPLE
-    /* 08 */ .byte COLOR_PURPLE
-    /* 09 */ .byte COLOR_GREEN_ROCK
-    /* 0A */ .byte COLOR_LIGHT_TEAL
-    /* 0B */ .byte COLOR_CHOCOLATE
-    /* 0C */ .byte COLOR_RED_ROCK
-    /* 0D */ .byte COLOR_PATH
-    /* 0E */ .byte COLOR_SACRED
-    /* 0F */ .byte COLOR_WHITE
+    /* 00 */ .byte COLOR_PF_BLACK
+    /* 01 */ .byte COLOR_PF_GRAY_D
+    /* 02 */ .byte COLOR_PF_GRAY_L
+    /* 03 */ .byte COLOR_PF_BLUE_D
+    /* 04 */ .byte COLOR_PF_BLUE_L
+    /* 05 */ .byte COLOR_PF_WATER
+    /* 06 */ .byte COLOR_PF_TEAL_D
+    /* 07 */ .byte COLOR_PF_PURPLE_D
+    /* 08 */ .byte COLOR_PF_PURPLE
+    /* 09 */ .byte COLOR_PF_GREEN
+    /* 0A */ .byte COLOR_PF_TEAL_L
+    /* 0B */ .byte COLOR_PF_CHOCOLATE
+    /* 0C */ .byte COLOR_PF_RED
+    /* 0D */ .byte COLOR_PF_PATH
+    /* 0E */ .byte COLOR_PF_SACRED
+    /* 0F */ .byte COLOR_PF_WHITE

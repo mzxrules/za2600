@@ -36,7 +36,7 @@ EnDraw_Waterfall: SUBROUTINE
     and #$7
     adc #<SprWaterfall1-7
     sta enSpr
-    lda #COLOR_LIGHT_WATER
+    lda #COLOR_PF_WATER
     sta wEnColor
     rts
 

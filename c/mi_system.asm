@@ -199,6 +199,11 @@ MiSpawnRock: SUBROUTINE
     sta miType,x
     rts
 
+MiSpawnRang: SUBROUTINE
+    lda #0 ;#MI_RUN_RANG
+    sta miType,x
+    rts
+
 ; X is missile slot
 MiPlCol: SUBROUTINE
 

@@ -9,6 +9,7 @@ EnDraw_Octorok: SUBROUTINE
     and #1
     tay
     lda EnDraw_OctorokColors,y
+    tay
     jsr EnDraw_PosAndStunColor
 
     lda #>SprE4
@@ -18,10 +19,6 @@ EnDraw_Octorok: SUBROUTINE
     clc
     adc #<SprE4
     sta enSpr
-
     jmp EnDraw_SmallMissile
-
-EnDraw_OctorokColors
-    .byte COLOR_EN_RED, COLOR_EN_ROK_BLUE
 
     LOG_SIZE "EnDraw_Octorok", EnDraw_Octorok

@@ -9,7 +9,7 @@ EnDraw_Gibdo: SUBROUTINE
     lda .sprites,y
     sta enSpr
 
-    lda #COLOR_WHITE
+    ldy #CI_EN_WHITE
     jmp EnDraw_PosAndStunColor
 
 .sprites

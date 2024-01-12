@@ -2,7 +2,7 @@
 ; mzxrules 2023
 ;==============================================================================
 EnDraw_NpcPath: SUBROUTINE
-    lda #COLOR_GRAY
+    lda #COLOR_EN_GRAY_L
     sta wEnColor
     lda #<SprItem31
     sta enSpr

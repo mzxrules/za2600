@@ -162,6 +162,7 @@ en1Y        ds 1
 EN_VARS:    ds 26 ; Zero initialized entity vars
 EN_VARS_END:
 EN_VARS_COUNT = EN_VARS_END - EN_VARS
+    EN_SIZE MAX
 
 ; Class NPC
     ORG EN_VARS
@@ -190,16 +191,8 @@ EN_STUN_RT   = [-24*4] ; End of recoil time
 ; enRecoilDir       ; 0000_0011 ; recoil direction
 CLASS_EN_ENEMY_BASE
 enDir       ds 2
-mi0Xf       ds 1
-mi1Xf       ds 1
-mi0Yf       ds 1
-mi1Yf       ds 1
-CLASS_EN_BOSS
-    ORG CLASS_EN_ENEMY_BASE
-enDir       ds 2
-enNX        ds 2
-enNY        ds 2
 CLASS_EN_ENEMY_MOVE
+CLASS_EN_BOSS
 ; Missile Vars
 mi0Dir      ds 1
 mi1Dir      ds 1
@@ -208,6 +201,10 @@ mi1X        ds 1
 mi0Y        ds 1
 mi1Y        ds 1
 CLASS_EN_ENEMY_MOVE_SHOOT
+mi0Xf       ds 1
+mi1Xf       ds 1
+mi0Yf       ds 1
+mi1Yf       ds 1
 CLASS_EN_BOSS_SHOOT
 
 ; == Gameover
@@ -253,8 +250,6 @@ enGFairyDie ds 1
 
 ; == Darknut
     ORG CLASS_EN_ENEMY_MOVE
-enDarknutTemp   ds 2
-                ; xx1x_xxxx = new direction toggle
 enDarknutStep   ds 2
     EN_SIZE DARKNUT
 
@@ -268,6 +263,12 @@ enWallPhase ds 2 ; anim timer for phasing through wall
 enOctorokThink  ds 2
 enOctorokShootT ds 2
     EN_SIZE OCTOROK
+
+; == Goriya
+    ORG CLASS_EN_ENEMY_MOVE_SHOOT
+enGoriyaThink   ds 2
+enGoriyaStep    ds 2
+    EN_SIZE GORIYA
 
 ; == LikeLike
     ORG CLASS_EN_ENEMY_MOVE
@@ -611,37 +612,57 @@ BoardBreakwallEX = $76
 
 ;ItemTimerSword  =  ; counts up to 0
 
+; Color Index
+CI_EN_RED       = 0
+CI_EN_GREEN     = 2
+CI_EN_BLUE      = 4
+CI_EN_YELLOW    = 6
+CI_EN_WHITE     = 8
+
     COLOR UNDEF,        $00,$00
     COLOR BLACK,        $00,$00
-    COLOR DARK_GRAY,    $02,$06
-    COLOR GRAY,         $06,$0C
     COLOR WHITE,        $0E,$0E
-
-    COLOR EN_RED,       $42,$64
-    COLOR EN_BLUE,      $74,$B4
-    COLOR EN_GREEN,     $DA,$5C
-    COLOR EN_ROK_BLUE,  $72,$C4
-    COLOR EN_LIGHT_BLUE,$88,$D8 ; Item secondary flicker
-    COLOR EN_TRIFORCE,  $2A,$2A
-    COLOR EN_BROWN,     $F0,$22
 
     COLOR PLAYER_00,    $C6,$58
     COLOR PLAYER_01,    $0E,$0E
     COLOR PLAYER_02,    $46,$66
 
-    COLOR PATH,         $3C,$4C
-    COLOR GREEN_ROCK,   $D0,$52
-    COLOR RED_ROCK,     $42,$64
-    COLOR CHOCOLATE,    $F0,$22
-    COLOR LIGHT_WATER,  $AE,$9E
+    COLOR EN_RED,       $42,$64
+    COLOR EN_RED_L,     $4A,$6A
+    COLOR EN_GREEN,     $DA,$5C
+    COLOR EN_BLUE,      $74,$B4
+    COLOR EN_BLUE_L,    $8C,$BC
+    COLOR EN_YELLOW,    $24,$24
+    COLOR EN_YELLOW_L,  $2A,$2A
 
-    COLOR DARK_BLUE,    $90,$C0
-    COLOR LIGHT_BLUE,   $86,$D6 ; World
-    COLOR DARK_PURPLE,  $60,$A2
-    COLOR PURPLE,       $64,$A6
-    COLOR DARK_TEAL,    $B0,$72
-    COLOR LIGHT_TEAL,   $B2,$74
-    COLOR SACRED,       $1E,$2E ; No good PAL equivalent
+    COLOR EN_BLACK,     $00,$00
+    COLOR EN_GRAY_D,    $02,$06
+    COLOR EN_GRAY_L,    $06,$0C
+    COLOR EN_WHITE,     $0E,$0E
+
+    COLOR EN_ROK_BLUE,  $72,$C4
+    COLOR EN_LIGHT_BLUE,$88,$D8 ; Item secondary flicker
+    COLOR EN_TRIFORCE,  $2A,$2A
+    COLOR EN_BROWN,     $F0,$22
+
+    COLOR PF_BLACK,     $00,$00
+    COLOR PF_GRAY_D,    $02,$06
+    COLOR PF_GRAY_L,    $06,$0C
+    COLOR PF_WHITE,     $0E,$0E
+
+    COLOR PF_PATH,      $3C,$4C
+    COLOR PF_GREEN,     $D0,$52
+    COLOR PF_RED,       $42,$64
+    COLOR PF_CHOCOLATE, $F0,$22
+    COLOR PF_WATER,     $AE,$9E
+
+    COLOR PF_BLUE_D,    $90,$C0
+    COLOR PF_BLUE_L,    $86,$D6 ; World
+    COLOR PF_PURPLE_D,  $60,$A2
+    COLOR PF_PURPLE,    $64,$A6
+    COLOR PF_TEAL_D,    $B0,$72
+    COLOR PF_TEAL_L,    $B2,$74
+    COLOR PF_SACRED,    $1E,$2E ; No good PAL equivalent
 
     COLOR MINIMAP,      $84,$08 ; Different colors
     COLOR HEALTH,       $46,$64

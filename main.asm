@@ -476,6 +476,7 @@ BANK_26
 
 BANK_28
     INCLUDE "en/EnDraw_Del.asm"
+    INCLUDE "b/endraw_common.asm"
     INCLUDE "gen/EntityDraw.asm"
     INCLUDE "gen/EntityDraw_bank.asm"
     INCLUDE "gen/Ball.asm"
@@ -494,7 +495,7 @@ BANK_28
     INCLUDE "en/EnDraw_NpcPath.asm"
     INCLUDE "en/EnDraw_Stalfos.asm"
     INCLUDE "en/EnDraw_Gibdo.asm"
-    INCLUDE "b/endraw_common.asm"
+    INCLUDE "en/EnDraw_Goriya.asm"
 
     LOG_BANK_SIZE "-BANK 28- EnDraw/PushSystem", BANK_28
 
@@ -680,6 +681,7 @@ BANK_39
 
 BANK_40
     INCLUDE "en/En_Lynel.asm"
+    INCLUDE "en/En_Goriya.asm"
     LOG_BANK_SIZE "-BANK 40- En4", BANK_40
 
 ; End

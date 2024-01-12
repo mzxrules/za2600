@@ -1,6 +1,6 @@
-load char set "@48digits.chr"
-load char set "@65letters.chr"
-load char set "@96lowcase.chr"
+load char set "@48digithex.chr"
+load char set "@65letters2.chr"
+load char set "@96lowcase2.chr"
 lockplayer
 wait 1
 . "init ex data"

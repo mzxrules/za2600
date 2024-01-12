@@ -9,7 +9,7 @@ EnDraw_Rope: SUBROUTINE
     lda .sprites,y
     sta enSpr
 
-    lda #COLOR_EN_TRIFORCE
+    ldy #CI_EN_YELLOW
     jmp EnDraw_PosAndStunColor
 
 .sprites

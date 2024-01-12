@@ -7,13 +7,13 @@ KERNEL_WORLD: SUBROUTINE ; rKERNEL
     sta BANK_SLOT
 
     VKERNEL1 BgColor
-    lda #COLOR_PATH
+    lda #COLOR_PF_PATH
     sta COLUBK
     VKERNEL1 FgColor
-    lda #COLOR_GREEN_ROCK
+    lda #COLOR_PF_GREEN
     sta COLUPF
     VKERNEL1 EnColor
-    lda #COLOR_GREEN_ROCK
+    lda #COLOR_EN_GREEN
     sta COLUP1
     VKERNEL1 PlColor
     lda #COLOR_PLAYER_00

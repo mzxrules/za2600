@@ -47,7 +47,7 @@ DivideLoop
     rts
 
 GiItemColors:
-    .byte COLOR_BLACK       ; GiNone
+    .byte COLOR_EN_BLACK    ; GiNone
     .byte COLOR_EN_RED      ; GiRecoverHeart
     .byte COLOR_EN_RED      ; GiFairy
     .byte COLOR_EN_BLUE     ; GiBomb
@@ -62,12 +62,12 @@ GiItemColors:
 
     .byte COLOR_EN_BROWN    ; GiShield
     .byte COLOR_EN_BROWN    ; GiSword1
-    .byte COLOR_GRAY        ; GiSword2
-    .byte COLOR_WHITE       ; GiSword3
+    .byte COLOR_EN_GRAY_L   ; GiSword2
+    .byte COLOR_EN_WHITE    ; GiSword3
 
     .byte COLOR_EN_BROWN    ; GiBow
     .byte COLOR_EN_BROWN    ; GiRaft
-    .byte COLOR_WHITE       ; GiBoots
+    .byte COLOR_EN_WHITE    ; GiBoots
     .byte COLOR_EN_TRIFORCE ; GiFlute
 
     .byte COLOR_EN_RED      ; GiFireMagic
@@ -76,7 +76,7 @@ GiItemColors:
     .byte COLOR_EN_RED      ; GiRingRed
 
     .byte COLOR_EN_TRIFORCE ; GiArrow
-    .byte COLOR_WHITE       ; GiArrowSilver
+    .byte COLOR_EN_WHITE    ; GiArrowSilver
     .byte COLOR_EN_BLUE     ; GiCandleBlue
     .byte COLOR_EN_RED      ; GiCandleRed
     .byte COLOR_EN_RED      ; GiMeat
@@ -87,7 +87,7 @@ GiItemColors:
     .byte COLOR_EN_TRIFORCE ; GiMap
     .byte COLOR_EN_TRIFORCE ; GiCompass
     .byte COLOR_EN_BROWN    ; GiBowArrow
-    .byte COLOR_WHITE       ; GiBowArrowSilver
+    .byte COLOR_EN_WHITE    ; GiBowArrowSilver
 
 
 GiItemSpr:

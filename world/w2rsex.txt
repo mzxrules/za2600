@@ -78,8 +78,8 @@ Rs_Item
 GiMap
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_BlockDiamondStairs
+zz105
 Rs_None
 zz0
 Rs_None
@@ -208,8 +208,8 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_BlockDiamondStairs
+zz40
 Rs_Item
 GiRupee5
 Rs_Stairs

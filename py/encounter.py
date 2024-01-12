@@ -57,6 +57,9 @@ SPAWN_PATTERN = [
     ["En_Stalfos"] * 3,
     ["En_Stalfos"] * 4,
 
+    ["En_Goriya"] * 3,
+    ["En_GoriyaBlue"] * 3,
+
     ["En_Rope"] * 2,
     ["En_Rope"] * 3,
     ["En_Rope"] * 4,

@@ -11,7 +11,7 @@ DRAW_PAUSE_MENU: SUBROUTINE
 
     lda #%00110000 ; ball size 8, reflect playfield
     sta CTRLPF
-    lda #COLOR_DARK_BLUE
+    lda #COLOR_PF_BLUE_D
     sta COLUPF
     lda #1
     sta VDELP0

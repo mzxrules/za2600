@@ -76,8 +76,9 @@ Entity_Table = [
     "En_Wallmaster",   "SEG_35", "SEG_28", "EnDraw_Wallmaster",
 
     "En_Gibdo",        "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_Goriya",       "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_GoriyaBlue",   "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Goriya",       "SEG_40", "SEG_28", "EnDraw_None",
+    "En_GoriyaBlue",   "SEG_40", "SEG_28", "EnDraw_None",
+    "En_GoriyaMain",   "SEG_40", "SEG_40", "EnDraw_Goriya",
     "En_Keese",        "SEG_37", "SEG_37", "EnDraw_Keese",
     "En_Pols",         "SEG_NA", "SEG_28", "EnDraw_None",
     "En_Stalfos",      "SEG_37", "SEG_28", "EnDraw_Stalfos",

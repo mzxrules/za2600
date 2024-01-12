@@ -641,6 +641,6 @@ PlayerRecoilDist:
     .byte -2, 2, 2, -2
 
 PlayerStunColors:
-    .byte #COLOR_PLAYER_00, #COLOR_PLAYER_02, #COLOR_PLAYER_01, #COLOR_BLACK
+    .byte #COLOR_PLAYER_00, #COLOR_PLAYER_02, #COLOR_PLAYER_01, #COLOR_EN_BLACK
 
     LOG_SIZE "Input", PlayerInput

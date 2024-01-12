@@ -17,8 +17,6 @@ EnDraw_Darknut: SUBROUTINE
     and #1
     tay
     lda EnDraw_DarknutColor,y
+    tay
     jmp EnDraw_PosAndStunColor
     LOG_SIZE "EnDraw_Darknut", EnDraw_Darknut
-
-EnDraw_DarknutColor:
-    .byte #COLOR_EN_RED, #COLOR_EN_BLUE

@@ -24,7 +24,7 @@ EnDraw_Keese: SUBROUTINE
     adc Mul8,y
 
     sta enSpr
-    lda #COLOR_BLACK
+    lda #COLOR_EN_BLACK
     sta wEnColor
     rts
 

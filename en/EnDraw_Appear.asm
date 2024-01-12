@@ -7,7 +7,7 @@ EnDraw_Appear: SUBROUTINE
     lda en0Y,x
     sta enY
 
-    lda #COLOR_WHITE
+    lda #COLOR_EN_WHITE
     sta wEnColor
 
     lda #>SprRock0

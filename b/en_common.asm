@@ -13,18 +13,6 @@ EnMoveDel:
 
     rts             ; 6 (34)
 
-EnMoveNextDel:
-    ldx enNum
-    lda enNX,x
-    clc                 ; 2
-    adc EnMoveDeltaX,y  ; 4
-    sta enNX,x
-
-    lda enNY,x
-    clc                 ; 2
-    adc EnMoveDeltaY,y  ; 4
-    sta enNY,x
-    rts                 ; 6
 
 EnMoveDeltaX:
     .byte -1,  1,  0,  0 ; cardinals
