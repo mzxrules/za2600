@@ -16,6 +16,8 @@ En_Appear: SUBROUTINE
     beq .fast_spawn
     cmp #EN_ROLLING_ROCK
     beq .fast_spawn
+    cmp #EN_TEST_COLOR
+    beq .fast_spawn
 
     lda #4
     sta EnSysSpawnTry

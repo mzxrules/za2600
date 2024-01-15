@@ -54,7 +54,7 @@ ROOM_BGCOLOR_TABLE = [
     "COLOR_PF_PURPLE_D", #
 
     "COLOR_PF_PURPLE",
-    "COLOR_PF_GREEN",
+    #"COLOR_PF_GREEN",
     "COLOR_PF_TEAL_L", #
     #"COLOR_PF_CHOCOLATE",
 
@@ -89,16 +89,21 @@ ROOM_COLOR_TABLE = [
 GAME_COLOR_TABLE = {
     "COLOR_UNDEF":          (0x00,0x00),
     "COLOR_PLAYER_00":      (0xC6,0x58),
-    "COLOR_PLAYER_01":      (0x0E,0x0E),
+    "COLOR_PLAYER_01":      (0xAE,0x9A), # 0xAE, 0x9A
     "COLOR_PLAYER_02":      (0x46,0x66),
 
     "COLOR_EN_RED":         (0x42,0x64),
     "COLOR_EN_RED_L":       (0x4A,0x6A),
     "COLOR_EN_GREEN":       (0xDA,0x5C),
     "COLOR_EN_BLUE":        (0x74,0xB4),
-    "COLOR_EN_BLUE_L":      (0x7C,0xBC),
+    "COLOR_EN_BLUE_L":      (0x8C,0xBC),
     "COLOR_EN_YELLOW":      (0x24,0x24),
     "COLOR_EN_YELLOW_L":    (0x2A,0x2A),
+
+    "COLOR_EN_BLACK":       (0x00,0x00),
+    "COLOR_EN_GRAY_D":      (0x02,0x06),
+    "COLOR_EN_GRAY_L":      (0x06,0x0C),
+    "COLOR_EN_WHITE":       (0x0E,0x0E),
 
     "COLOR_EN_ROK_BLUE":    (0x72,0xC4),
     "COLOR_EN_LIGHT_BLUE":  (0x88,0xD8), # Item
@@ -111,10 +116,10 @@ GAME_COLOR_TABLE = {
     "COLOR_PF_WHITE":       (0x0E,0x0E),
 
     "COLOR_PF_PATH":        (0x3C,0x4C),
+    "COLOR_PF_CHOCOLATE":   (0xF0,0x22),
     "COLOR_PF_GREEN":       (0xD0,0x52),
     "COLOR_PF_RED":         (0x42,0x64),
-    "COLOR_PF_CHOCOLATE":   (0xF0,0x22),
-    "COLOR_PF_WATER":       (0xAE,0x9E),
+    "COLOR_PF_WATER":       (0x7C,0xBA), #(0xAE,0x9E), # ??, BA
 
     "COLOR_PF_BLUE_D":      (0x90,0xC0),
     "COLOR_PF_BLUE_L":      (0x86,0xD6), # World
@@ -178,8 +183,44 @@ def color_distance(rgb1, rgb2):
     b = rgb1[2] - rgb2[2]
     return  (((512+rmean)*r*r)/256) + 4*g*g + (((767-rmean)*b*b)/256) ** 0.5
 
+def color_test(palette):
+    output = f"==========\n{palette} TEST\n==========\n"
+    color_player = []
+    color_en = []
+    color_pf = []
+    for k in GAME_COLOR_TABLE:
+        if k.startswith("COLOR_PLAYER_"):
+            color_player.append(k)
+
+        elif k.startswith("COLOR_EN_"):
+            color_en.append(k)
+
+        elif k.startswith("COLOR_PF_"):
+            color_pf.append(k)
+
+    output += "PF vs Player\n"
+    mtx = get_color_dist_matrix(palette, color_pf, color_player)
+    output += print_color_dist_matrix(color_pf, color_player, mtx)
+
+    mtx = get_luminocity_a_matrix(palette, color_pf, color_player)
+    output += print_color_dist_matrix(color_pf, color_player, mtx)
+
+    output += "En vs PF\n"
+    mtx = get_color_dist_matrix(palette, color_en, color_pf)
+    output += print_color_dist_matrix(color_en, color_pf, mtx)
+    mtx = get_luminocity_a_matrix(palette, color_en, color_pf)
+    output += print_color_dist_matrix(color_en, color_pf, mtx)
+
+    output += "En vs Player\n"
+    mtx = get_color_dist_matrix(palette, color_en, color_player)
+    output += print_color_dist_matrix(color_en, color_player, mtx)
+    mtx = get_luminocity_a_matrix(palette, color_en, color_player)
+    output += print_color_dist_matrix(color_en, color_player, mtx)
+    return output
+
+
+
 def luminocity_delta_test(key):
-    i = 0 if key == "ntsc" else 1
     for k, v in GAME_COLOR_TABLE.items():
         if k in ROOM_COLOR_TABLE:
             continue
@@ -190,20 +231,76 @@ def luminocity_delta_test(key):
         color = ATARI_COLOR_TABLE[key][(v[i])//2]
         lum = luminocity_a(color)
         for bgColorKey in ROOM_COLOR_TABLE:
-            if bgColorKey not in ROOM_BGCOLOR_TABLE:
-                lumDelta.append("---")
-                continue
+            #if bgColorKey not in ROOM_BGCOLOR_TABLE:
+            #    lumDelta.append("  ---  ")
+            #    continue
             vBg = GAME_COLOR_TABLE[bgColorKey]
             bgColor = ATARI_COLOR_TABLE[key][(vBg[i])//2]
             #bgLum = luminocity_a(bgColor)
             #lumDelta.append(f'{abs(bgLum - lum):>3.0f}')
 
             colorDist = color_distance(color, bgColor)
-            lumDelta.append(f'{colorDist:>7.0f}')
+            if colorDist < 14000:
+                lumDelta.append(f'{colorDist:>7.0f}')
+            else:
+                lumDelta.append("  ---  ")
 
         print(f"{k:<20} " + ", ".join(lumDelta))
 
+def print_color_dist_matrix(rowList, columnList, mtx):
+    output = ""
+    maxRowStrLen = len(max(rowList, key=len))-8
+    maxColStrLen = len(max(columnList, key=len))-8
+    maxColStrLen = max(maxColStrLen, 7)
 
+    columnRow = "".rjust(maxRowStrLen)
+    columnFmt = f"{{:>{maxColStrLen}}}"
+    columnRow += "".join([columnFmt.format(x[9:]) for x in columnList])
+    output += columnRow + '\n'
+
+    things = zip(rowList, mtx)
+    for colorName, list in things:
+        rowStr = f"{colorName[9:]}".ljust(maxRowStrLen)
+        for item in list:
+            cellStr = f"{item:7.0f}".rjust(maxColStrLen, " ") if item >= 0 else "---".rjust(maxColStrLen, " ")
+            rowStr+= cellStr
+        output += rowStr +'\n'
+
+    return output
+
+def get_color_dist_matrix(palette, rowList, columnList, threshold = 14000):
+    i = 0 if palette == "ntsc" else 1
+    colorDistMtx = []
+    for name1 in rowList:
+        colorDistList = []
+        colorId1 = GAME_COLOR_TABLE[name1]
+        color1 = ATARI_COLOR_TABLE[palette][(colorId1[i])//2]
+        for name2 in columnList:
+            colorId2 = GAME_COLOR_TABLE[name2]
+            color2 = ATARI_COLOR_TABLE[palette][(colorId2[i])//2]
+            colorDist = color_distance(color1, color2)
+            colorDist = colorDist if colorDist < threshold else -1
+            colorDistList.append(colorDist)
+        colorDistMtx.append(colorDistList)
+    return colorDistMtx
+
+
+def get_luminocity_a_matrix(palette, rowList, columnList):
+    i = 0 if palette == "ntsc" else 1
+    resultMtx = []
+    for name1 in rowList:
+        resultList = []
+        colorId1 = GAME_COLOR_TABLE[name1]
+        color1 = ATARI_COLOR_TABLE[palette][(colorId1[i])//2]
+        for name2 in columnList:
+            colorId2 = GAME_COLOR_TABLE[name2]
+            color2 = ATARI_COLOR_TABLE[palette][(colorId2[i])//2]
+
+            lumDelta = abs(luminocity_a(color1) - luminocity_a(color2))
+
+            resultList.append(lumDelta)
+        resultMtx.append(resultList)
+    return resultMtx
 
 def luminocity_test():
     for k, (ntsc, pal) in GAME_COLOR_TABLE.items():
@@ -215,8 +312,15 @@ def luminocity_test():
         print(f"{k:<20} {nl:>3.0f}, {pl:>3.0f}")
 
 # luminocity_test()
-# luminocity_delta_test("ntsc")
-# quit()
+
+output = ''
+output += color_test("ntsc")
+output += '\n\n'
+output += color_test("pal")
+with open(f'gen/color_stats.txt', "w") as file:
+    file.write(output)
+
+#quit()
 
 output = ""
 output += gen_color_lookups()

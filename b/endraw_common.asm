@@ -8,9 +8,8 @@
 ; X = EnNum
 ;==============================================================================
 EnDraw_PosAndStunColor: SUBROUTINE
-    lda rBgColor
-    and #8
-    bne .fetchColor
+    lda worldId
+    beq .fetchColor
     iny
 .fetchColor
     lda EnDrawColor_LUT,y

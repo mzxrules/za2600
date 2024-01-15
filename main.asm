@@ -496,6 +496,7 @@ BANK_28
     INCLUDE "en/EnDraw_Stalfos.asm"
     INCLUDE "en/EnDraw_Gibdo.asm"
     INCLUDE "en/EnDraw_Goriya.asm"
+    INCLUDE "en/EnDraw_TestColor.asm"
 
     LOG_BANK_SIZE "-BANK 28- EnDraw/PushSystem", BANK_28
 
@@ -682,6 +683,7 @@ BANK_39
 BANK_40
     INCLUDE "en/En_Lynel.asm"
     INCLUDE "en/En_Goriya.asm"
+    INCLUDE "en/En_TestColor.asm"
     LOG_BANK_SIZE "-BANK 40- En4", BANK_40
 
 ; End

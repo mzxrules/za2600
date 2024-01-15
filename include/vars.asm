@@ -331,6 +331,14 @@ enTestMissileResult ds 2
 enTestMissileTimer  ds 1
 enTestMissileCount  ds 1
 
+; == TestColor
+    ORG CLASS_EN_NPC
+enTestColorBoard    ds 1
+enTestColorEn       ds 1
+enTestColorEnColor  ds 1
+enTestColorPlColor  ds 1
+
+
     ORG EN_VARS_END
 
 ;==============================================================================
@@ -624,7 +632,7 @@ CI_EN_WHITE     = 8
     COLOR WHITE,        $0E,$0E
 
     COLOR PLAYER_00,    $C6,$58
-    COLOR PLAYER_01,    $0E,$0E
+    COLOR PLAYER_01,    $AE,$9A
     COLOR PLAYER_02,    $46,$66
 
     COLOR EN_RED,       $42,$64
@@ -654,7 +662,7 @@ CI_EN_WHITE     = 8
     COLOR PF_GREEN,     $D0,$52
     COLOR PF_RED,       $42,$64
     COLOR PF_CHOCOLATE, $F0,$22
-    COLOR PF_WATER,     $AE,$9E
+    COLOR PF_WATER,     $7C,$BA
 
     COLOR PF_BLUE_D,    $90,$C0
     COLOR PF_BLUE_L,    $86,$D6 ; World
