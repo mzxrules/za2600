@@ -14,10 +14,8 @@ En_Appear: SUBROUTINE
     beq .spawn_keese
     cmp #EN_WALLMASTER
     beq .fast_spawn
-    cmp #EN_ROLLING_ROCK
-    beq .fast_spawn
-    cmp #EN_TEST_COLOR
-    beq .fast_spawn
+    cmp #EN_TEST
+    bcs .fast_spawn
 
     lda #4
     sta EnSysSpawnTry

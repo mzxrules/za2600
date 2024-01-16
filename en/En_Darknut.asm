@@ -43,7 +43,7 @@ En_DarknutMain:
     jmp EnSysEnDie
 .endCheckDamaged
 
-    ; Check player hit
+; Check player hit
     lda enStun,x
     bmi .endCheckHit
     bit plState2

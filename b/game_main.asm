@@ -511,7 +511,6 @@ En_Wizrobe:
 En_WizrobeBlue:
 En_Zol:
 En_ZolSplit:
-En_BossAqua:
 En_BossManhandla:
 En_BossDon:
 En_BossDig:

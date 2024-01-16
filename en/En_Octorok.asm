@@ -9,6 +9,9 @@ En_OctorokBlue: SUBROUTINE
     ora #EN_OCTOROK_RARE
     sta enState,x
 
+    lda #2 -1
+    sta enHp,x
+
 En_Octorok: SUBROUTINE
     lda #EN_OCTOROK_MAIN
     sta enType,x
@@ -18,9 +21,6 @@ En_Octorok: SUBROUTINE
     sta enDir,x
     ora enState,x
     sta enState,x
-
-    lda #2 -1
-    sta enHp,x
 
     jmp En_Octorok_Think
 

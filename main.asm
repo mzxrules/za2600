@@ -129,6 +129,7 @@ BANK_7
     INCLUDE "spr/spr_rock.asm"
     INCLUDE "spr/spr_sh.asm"
     INCLUDE "spr/spr_gohma.asm"
+    INCLUDE "spr/spr_aqua.asm"
 
     LOG_BANK_SIZE "-BANK 7- Sprites Dung", BANK_7
 
@@ -663,6 +664,7 @@ MINIMAP
 
 BANK_39
     INCLUDE "en/EnDraw_Del.asm"
+    INCLUDE "b/endraw_common.asm"
     INCLUDE "en/EnDraw_BossGohma.asm"
     INCLUDE "en/EnDraw_GreatFairy.asm"
     INCLUDE "en/EnDraw_BossGlock.asm"
@@ -671,6 +673,7 @@ BANK_39
     INCLUDE "en/EnDraw_Waterfall.asm"
     INCLUDE "en/EnDraw_RollingRock.asm"
     INCLUDE "en/EnDraw_Appear.asm"
+    INCLUDE "en/EnDraw_BossAqua.asm"
     LOG_BANK_SIZE "-BANK 39- En3", BANK_39
 
 ; ****************************************
@@ -684,6 +687,7 @@ BANK_40
     INCLUDE "en/En_Lynel.asm"
     INCLUDE "en/En_Goriya.asm"
     INCLUDE "en/En_TestColor.asm"
+    INCLUDE "en/En_BossAqua.asm"
     LOG_BANK_SIZE "-BANK 40- En4", BANK_40
 
 ; End

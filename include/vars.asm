@@ -317,6 +317,12 @@ enGlockHeadDir      ds 1
 enGlockHeadThink    ds 1
     EN_SIZE BOSS_GLOCK
 
+; == Aqua
+    ORG CLASS_EN_BOSS_SHOOT
+enAquaTimer         ds 1
+enAquaThink         ds 1
+    EN_SIZE BOSS_AQUA
+
 ; == Test
     ORG EN_VARS + 2
 enTestDir   ds 1

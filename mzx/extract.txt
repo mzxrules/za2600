@@ -137,6 +137,23 @@ loop for 5
 set "$sht" to "spr/spr_gohma.asm"
 goto "#dumpsht"
 
+. "Aqua Boss"
+set "CHAR" to "(102)"
+loop start
+inc "$" by "SprAqua&loopcount&:\n"
+inc "CHAR" 32
+set "sp&sp&" to 4
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+dec "CHAR" 32
+set "sp&sp&" to 14
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop 2
+set "$sht" to "spr/spr_aqua.asm"
+goto "#dumpsht"
+
 . "Waterfall"
 set "CHAR" to "(69)"
 loop start
