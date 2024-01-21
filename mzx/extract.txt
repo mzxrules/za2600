@@ -154,6 +154,49 @@ loop 2
 set "$sht" to "spr/spr_aqua.asm"
 goto "#dumpsht"
 
+
+. "Manhandla Boss"
+set "CHAR" to "(12*256 + 64+64)"
+
+. "16 byte chars
+loop start
+inc "$" by "SprManhandla16_&loopcount&:\n"
+inc "CHAR" 32
+set "sp&sp&" to 2
+set "yrepeat" to 1
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+dec "CHAR" 32
+set "sp&sp&" to 14
+set "yrepeat" to 1
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop 2
+
+. "12 byte chars
+loop start
+inc "$" by "SprManhandla12_&loopcount&:\n"
+set "sp&sp&" to 12
+set "yrepeat" to 1
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop 5
+
+. "8 byte chars
+loop start
+inc "$" by "SprManhandla8_&loopcount&:\n"
+set "sp&sp&" to 8
+set "yrepeat" to 1
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop 1
+
+set "$sht" to "spr/spr_manhandla.asm"
+goto "#dumpsht"
+
 . "Waterfall"
 set "CHAR" to "(69)"
 loop start
@@ -275,6 +318,7 @@ goto "#return"
 . "Dumps the data for the current char in atari format"
 . "sp[0] = num lines"
 . "yl_ = offset from top"
+. "yrepeat = num line dupes (0, 1, 3)
 . "===================="
 set "$dumpchr" to ""
 set "char_x" to "('CHAR'%32*8)"
@@ -310,7 +354,14 @@ if "yl" < "sp('sp')" then "yloop"
 : "flip_char"
 dec "yl" by 1
 inc "$dumpchr" by "$line&yl&"
+if "yrepeat" == 0 "yrepeat_end"
+inc "$dumpchr" by "$line&yl&"
+if "yrepeat" == 1 "yrepeat_end"
+inc "$dumpchr" by "$line&yl&"
+inc "$dumpchr" by "$line&yl&"
+: "yrepeat_end"
 if "yl" > "yl_" then "flip_char"
 set "yl_" to 0
+set "yrepeat" to 0
 goto "#return"
 

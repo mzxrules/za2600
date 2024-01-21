@@ -482,9 +482,8 @@ DoorCheck: SUBROUTINE
     cmp #BoardDungDoorEX
     beq .UnlockRight
     cmp #BoardDungDoorWX
-    beq .UnlockLeft
-    bne .rtsBreakwall
-    rts
+    ; beq .UnlockLeft
+    bne .rtsBreakwall ; jmp
 .UnlockUp
 .UnlockLeft
     inx

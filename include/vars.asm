@@ -323,6 +323,12 @@ enAquaTimer         ds 1
 enAquaThink         ds 1
     EN_SIZE BOSS_AQUA
 
+; == Manhandla
+    ORG CLASS_EN_BOSS_SHOOT
+enManhandlaTimer    ds 1
+enManhandlaThink    ds 1
+    EN_SIZE BOSS_MANHANDLA
+
 ; == Test
     ORG EN_VARS + 2
 enTestDir   ds 1

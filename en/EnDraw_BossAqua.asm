@@ -3,9 +3,6 @@
 ;==============================================================================
 
 EnDraw_BossAqua: SUBROUTINE
-    lda Frame
-    and #1
-    tax
     lda en0X
     sta enX
     sec
@@ -13,9 +10,10 @@ EnDraw_BossAqua: SUBROUTINE
     sbc #18-8
     sta enY
 
-    txa
-    ror
-    bcc .skipSprShift
+    lda Frame
+    and #1
+    tax
+    beq .skipSprShift
     lda enX
     adc #8-1
     sta enX

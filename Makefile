@@ -17,6 +17,7 @@ zelda_dep := main.asm \
   gen/ms_header.asm \
   gen/bitcount.asm \
   gen/spr_tri.asm \
+  gen/EnDraw_BossManhandlaGen.asm \
   gen/editor_color.txt \
   gen/editor_en_bindings.txt \
 
@@ -70,3 +71,6 @@ gen/bitcount.asm: py/bitcount.py
 
 gen/spr_tri.asm: py/spr_tri.py
 	python3 py/spr_tri.py
+
+gen/EnDraw_BossManhandlaGen.asm: py/spr_manhandla.py
+	python3 py/spr_manhandla.py

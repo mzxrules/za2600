@@ -130,6 +130,8 @@ BANK_7
     INCLUDE "spr/spr_sh.asm"
     INCLUDE "spr/spr_gohma.asm"
     INCLUDE "spr/spr_aqua.asm"
+    align $20
+    INCLUDE "spr/spr_manhandla.asm"
 
     LOG_BANK_SIZE "-BANK 7- Sprites Dung", BANK_7
 
@@ -674,6 +676,7 @@ BANK_39
     INCLUDE "en/EnDraw_RollingRock.asm"
     INCLUDE "en/EnDraw_Appear.asm"
     INCLUDE "en/EnDraw_BossAqua.asm"
+    INCLUDE "en/EnDraw_BossManhandla.asm"
     LOG_BANK_SIZE "-BANK 39- En3", BANK_39
 
 ; ****************************************
@@ -688,6 +691,7 @@ BANK_40
     INCLUDE "en/En_Goriya.asm"
     INCLUDE "en/En_TestColor.asm"
     INCLUDE "en/En_BossAqua.asm"
+    INCLUDE "en/En_BossManhandla.asm"
     LOG_BANK_SIZE "-BANK 40- En4", BANK_40
 
 ; End

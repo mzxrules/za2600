@@ -3,6 +3,7 @@
 ;==============================================================================
 MAIN_ENTRY:
     jsr RESPAWN
+MAIN_ENTRY_OVERRIDE:
 
 ;TOP_FRAME ;3 37 192 30
 MAIN_VERTICAL_SYNC: ; 3 SCANLINES
@@ -511,7 +512,6 @@ En_Wizrobe:
 En_WizrobeBlue:
 En_Zol:
 En_ZolSplit:
-En_BossManhandla:
 En_BossDon:
 En_BossDig:
 En_BossPatra:
