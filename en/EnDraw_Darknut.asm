@@ -13,7 +13,6 @@ EnDraw_Darknut: SUBROUTINE
     sta enSpr
 
     lda enState,x
-    lsr
     and #1
     tay
     lda EnDraw_DarknutColor,y

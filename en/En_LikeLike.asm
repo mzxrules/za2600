@@ -7,7 +7,7 @@ En_LikeLike: SUBROUTINE
     lda #EN_LIKE_LIKE_MAIN
     sta enType,x
 
-    lda #6 -1
+    lda #10 -1
     sta enHp,x
     rts
 
@@ -38,7 +38,6 @@ En_LikeLikeMain: SUBROUTINE
     sta plState
 
     lda Frame
-    and #$3F
     cmp enLLTimer,x
     bne .skipSuccDamage
     lda #-8
@@ -69,7 +68,6 @@ En_LikeLikeMain: SUBROUTINE
     ora #EN_LIKELIKE_LOCK
     sta enState,x
     lda Frame
-    and #$3F
     sta enLLTimer,x
 .endCheckHit
 

@@ -1,8 +1,9 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-EN_DARKNUT_TYPE_RED = $1
-EN_DARKNUT_TYPE_BLUE = $3
+EN_DARKNUT_TYPE_RED = $0
+EN_DARKNUT_TYPE_BLUE = $1
+EN_DARKNUT_TYPE_MASK = $1
 
 
 En_DarknutBlue: SUBROUTINE
@@ -98,10 +99,18 @@ En_DarknutMain:
     jsr EnMov_Card_RandDirIfBlocked
     sty enDir,x
 .move
-    lda Frame
-    and #1
-    beq .rts
+    lda enState
+    and #EN_DARKNUT_TYPE_MASK
+    tay
+    lda enDarknutSpdFrac,x
+    clc
+    adc En_DarknutSpeed,y
+    sta enDarknutSpdFrac,x
+    bcc .rts
     jsr EnMoveDir
 .rts
     rts
     LOG_SIZE "En_Darknut", En_Darknut
+
+En_DarknutSpeed:
+    .byte #$80, #$A0

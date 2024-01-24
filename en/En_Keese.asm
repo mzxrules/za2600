@@ -30,29 +30,27 @@ En_Keese: SUBROUTINE
     jsr HbGetPlAtt
 .test_001
     jsr HbPlAttCollide_EnBB
-    lda HbFlags
-    beq .test_010
+    lda HbFlags2
+    bpl .test_010
     lda #%110
     sta enKeeseTemp
 .test_010
-    inc HbFlags
     lda Hb_bb_x
     adc #DISPLACE
     sta Hb_bb_x
     jsr HbPlAttCollide
-    lda HbFlags
-    beq .test_100
+    lda HbFlags2
+    bpl .test_100
     lda #%101
     and enKeeseTemp
     sta enKeeseTemp
 .test_100
-    inc HbFlags
     lda Hb_bb_x
     adc #DISPLACE
     sta Hb_bb_x
     jsr HbPlAttCollide
-    lda HbFlags
-    beq .end_checkhit
+    lda HbFlags2
+    bpl .end_checkhit
     lda #%011
     and enKeeseTemp
     sta enKeeseTemp
@@ -139,7 +137,7 @@ En_Keese: SUBROUTINE
     ldy enKeeseDir,x
     lda En_Keese_Bounce,y
     sta enKeeseDir,x
-    lda #EN_KEESE_END_BOUNCE | EN_KEESE_INIT
+    lda #EN_KEESE_END_BOUNCE | #EN_KEESE_INIT
     sta enState,x
 .endBounce
 .endThink

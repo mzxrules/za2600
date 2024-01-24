@@ -24,6 +24,16 @@ EnMoveDeltaY:
     .byte  1, -1,  1, -1 ; diagonals
     .byte  0,  0,  4, -4 ; cardinals 4x
 
+EnMoveBounce:
+    .byte EN_DIR_R
+    .byte EN_DIR_L
+    .byte EN_DIR_D
+    .byte EN_DIR_U
+
+    .byte EN_DIR_RD
+    .byte EN_DIR_RU
+    .byte EN_DIR_LD
+    .byte EN_DIR_LU
 
 nextdir_step_lut:
     .byte 16, 17, 18, 19, 20, 21, 22, 23

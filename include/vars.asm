@@ -250,36 +250,37 @@ enGFairyDie ds 1
 
 ; == Darknut
     ORG CLASS_EN_ENEMY_MOVE
-enDarknutStep   ds 2
+enDarknutStep       ds 2
+enDarknutSpdFrac    ds 2
     EN_SIZE DARKNUT
 
 ; == Wallmaster
     ORG CLASS_EN_ENEMY_MOVE
-enWallPhase ds 2 ; anim timer for phasing through wall
+enWallPhase         ds 2 ; anim timer for phasing through wall
     EN_SIZE WALLMASTER
 
 ; == Octorok
     ORG CLASS_EN_ENEMY_MOVE_SHOOT
-enOctorokThink  ds 2
-enOctorokShootT ds 2
+enOctorokThink      ds 2
+enOctorokShootT     ds 2
     EN_SIZE OCTOROK
 
 ; == Goriya
     ORG CLASS_EN_ENEMY_MOVE_SHOOT
-enGoriyaThink   ds 2
-enGoriyaStep    ds 2
+enGoriyaThink       ds 2
+enGoriyaStep        ds 2
     EN_SIZE GORIYA
 
 ; == LikeLike
     ORG CLASS_EN_ENEMY_MOVE
-enLLTimer   ds 2
-enLLThink   ds 2
+enLLTimer           ds 2
+enLLThink           ds 2
     EN_SIZE LIKE_LIKE
 
 ; == Rope
     ORG CLASS_EN_ENEMY_MOVE
-enRopeTimer ds 2
-enRopeThink ds 2
+enRopeTimer         ds 2
+enRopeThink         ds 2
     EN_SIZE ROPE
 
 ; == Keese
@@ -326,7 +327,10 @@ enAquaThink         ds 1
 ; == Manhandla
     ORG CLASS_EN_BOSS_SHOOT
 enManhandlaTimer    ds 1
-enManhandlaThink    ds 1
+enManhandlaSpdFrac  ds 1
+enManhandlaHitFlags ds 1
+enManhandlaStun     ds 1
+enManhandlaInvince  ds 1
     EN_SIZE BOSS_MANHANDLA
 
 ; == Test
@@ -463,13 +467,15 @@ HB_DMG_ARROW    = 3
 HB_DMG_FIRE     = 4
 HB_DMG_BOMB     = 5
 
-HbFlags         ds 1
+HbPlFlags       ds 1
 HB_PL_SWORD     = $01
 HB_PL_ARROW     = $02
 HB_PL_FIRE      = $04
 HB_PL_BOMB      = $08
 HB_PL_WAVE      = $10
 HB_PL_WAND      = $20
+HbFlags2        ds 1
+HB_BOX_HIT      = $80
 Hb_aa_Box       ds 1
 Hb_aa_x         ds 1
 Hb_aa_y         ds 1

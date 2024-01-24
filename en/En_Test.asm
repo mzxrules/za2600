@@ -26,13 +26,13 @@ En_Test: SUBROUTINE
     jsr HbPlAttCollide
 
     lda #HB_PL_SWORD
-    and HbFlags
+    and HbPlFlags
     bne .sword_hit
     lda #HB_PL_BOMB
-    and HbFlags
+    and HbPlFlags
     bne .bomb_hit
     lda #HB_PL_ARROW
-    and HbFlags
+    and HbPlFlags
     bne .arrow_hit
     beq .continue
 

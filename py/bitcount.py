@@ -47,24 +47,23 @@ def get_hitbox_info():
     aa_oy = []
     aa_w_PLUS_bb_w = []
     aa_h_PLUS_bb_h = []
-    for aa_w, aa_h, aa_xshift in HITBOX_INFO:
-        bb_w = 8
-        bb_h = 8
+    for bb_w, bb_h, bb_xshift, bb_yshift in [(8, 8, 0, 0), (12, 12, -2, -2)]:
+        for aa_w, aa_h, aa_xshift in HITBOX_INFO:
 
-        aa_ox.append(aa_w-1+aa_xshift-1)
-        aa_oy.append(aa_h-1)
-        aa_w_PLUS_bb_w.append(aa_w + bb_w -1)
-        aa_h_PLUS_bb_h.append(aa_h + bb_h -1)
+            aa_ox.append(aa_w-1+aa_xshift-bb_xshift-1)
+            aa_oy.append(aa_h-1+0-bb_yshift)
+            aa_w_PLUS_bb_w.append(aa_w + bb_w -1)
+            aa_h_PLUS_bb_h.append(aa_h + bb_h -1)
 
     with open(f'gen/hitbox_info.asm', "w") as file:
         file.write("hitbox_aa_ox:\n")
-        file.write(ToAsm(aa_ox))
+        file.write(ToAsm(aa_ox, len(HITBOX_INFO)))
         file.write("hitbox_aa_oy:\n")
-        file.write(ToAsm(aa_oy))
+        file.write(ToAsm(aa_oy, len(HITBOX_INFO)))
         file.write("hitbox_aa_w_plus_bb_w:\n")
-        file.write(ToAsm(aa_w_PLUS_bb_w))
+        file.write(ToAsm(aa_w_PLUS_bb_w, len(HITBOX_INFO)))
         file.write("hitbox_aa_h_plus_bb_h:\n")
-        file.write(ToAsm(aa_h_PLUS_bb_h))
+        file.write(ToAsm(aa_h_PLUS_bb_h, len(HITBOX_INFO)))
 
 def get_hitbox_info2():
     aa_ox = []

@@ -332,6 +332,58 @@ EnMov_Card_ContDir: SUBROUTINE
     jmp EnMov_Card_SeekDirIfBlocked
 
 ;==============================================================================
+; Selects a new direction based on the shortest path to the player
+; X = enNum
+;==============================================================================
+EnMov_Ord_SeekDir: SUBROUTINE
+    lda #0
+    sta EnMoveSeekFlags
+
+    lda en0X,x
+    sec
+    sbc plX
+    sta Temp0   ; enX - plX >= 0, left
+                ; enX - plX <  0, right
+
+    rol EnMoveSeekFlags
+    bit Temp0
+    bpl .checkY
+    ; negate A
+    eor #$FF
+    adc #1
+    sta Temp0
+
+.checkY
+    lda en0Y,x
+    sec
+    sbc plY
+    sta Temp1   ; enY - plY >= 0, down
+                ; enY - plY <  0, up
+
+    rol EnMoveSeekFlags
+    bit Temp1
+    bpl .checkAxis
+    ; negate A
+    eor #$FF
+    adc #1
+    sta Temp1
+
+.checkAxis
+    lda Temp0
+    sec
+    sbc Temp1 ; abs(xDelta) - abs(yDelta)
+    lda EnMoveSeekFlags
+    rol
+    asl
+    asl
+    tax
+.loop
+    inx
+    ldy seekdir_lut-1,x
+    ldx enNum
+    rts
+
+;==============================================================================
 ; Applies recoil movement, if applicable
 ; X = enNum
 ;==============================================================================

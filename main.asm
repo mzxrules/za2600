@@ -689,7 +689,7 @@ BANK_39
 BANK_40
     INCLUDE "en/En_Lynel.asm"
     INCLUDE "en/En_Goriya.asm"
-    INCLUDE "en/En_TestColor.asm"
+    ; INCLUDE "en/En_TestColor.asm"
     INCLUDE "en/En_BossAqua.asm"
     INCLUDE "en/En_BossManhandla.asm"
     LOG_BANK_SIZE "-BANK 40- En4", BANK_40

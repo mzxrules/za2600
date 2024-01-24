@@ -8,17 +8,18 @@
 ; HbDamage tables
 
 EnDam_Darknut:
-    .byte -1, -2, -3,  0,  0, -4
+    .byte -1, -2, -4,  0,  0, -4
 EnDam_Lynel:
 EnDam_Rope:
 EnDam_Octorok:
 EnDam_Wallmaster:
 EnDam_Stalfos:
-    .byte -1, -2, -3, -1, -1, -4
+EnDam_Manhandla:
+    .byte -1, -2, -4, -1, -1, -4
 
 HbGetPlAtt: SUBROUTINE
     lda #0
-    sta HbFlags
+    sta HbPlFlags
     sta Hb_aa_Box
     lda m0X
     sta Hb_aa_x
@@ -41,7 +42,7 @@ HbGetPlAtt: SUBROUTINE
 HbPlWand: SUBROUTINE
 HbPlSword: SUBROUTINE
     lda #HB_PL_SWORD
-    sta HbFlags
+    sta HbPlFlags
     cpy #ITEM_ANIM_SWORD_STAB_SHORT
     bcs .rts ; if y >= Stab Short
     cpy #ITEM_ANIM_SWORD_STAB_LONG
@@ -71,7 +72,7 @@ HbPlBomb: SUBROUTINE
     lda #HB_DMG_BOMB
     sta HbDamage
     lda #HB_PL_BOMB
-    sta HbFlags
+    sta HbPlFlags
 .rts
     rts
 
@@ -83,7 +84,7 @@ HbPlBow: SUBROUTINE
     lda #HB_DMG_ARROW
     sta HbDamage
     lda #HB_PL_ARROW
-    sta HbFlags
+    sta HbPlFlags
 .rts
     rts
 
@@ -93,12 +94,22 @@ HbPlCandle: SUBROUTINE
     lda #HB_DMG_FIRE
     sta HbDamage
     lda #HB_PL_FIRE
-    sta HbFlags
+    sta HbPlFlags
     rts
 
 HbPlFlute: SUBROUTINE
 HbPlMeat: SUBROUTINE
 HbPlPotion: SUBROUTINE
+    rts
+
+; Sets 12x12 hitbox
+HbManhandla: SUBROUTINE
+    lda Hb_aa_Box
+    beq .rts
+    clc
+    adc #11
+    sta Hb_aa_Box
+.rts
     rts
 
 ;==============================================================================
@@ -114,6 +125,8 @@ HbPlAttCollide_EnBB:
     lda en0Y,x
     sta Hb_bb_y
 HbPlAttCollide: SUBROUTINE
+    lda #HB_BOX_HIT
+    sta HbFlags2
     ldy Hb_aa_Box
     beq .no_hit ; null box
 
@@ -128,7 +141,7 @@ HbPlAttCollide: SUBROUTINE
     bcc .pass_x
 .no_hit
     lda #0
-    sta HbFlags
+    sta HbFlags2 ; clear HB_BOX_HIT
     rts
 
 .pass_x
@@ -142,7 +155,7 @@ HbPlAttCollide: SUBROUTINE
     bcs .no_hit
 ; Kill the player arrow if it hit something
     lda #HB_PL_ARROW
-    and HbFlags
+    and HbPlFlags
     beq .rts
     lda #$80
     sta m0Y
@@ -173,15 +186,15 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
     jsr HbPlAttCollide_EnBB
 
 ; If no hit
-    lda HbFlags
-    beq .rts
+    lda HbFlags2
+    bpl .rts ; HB_BOX_HIT
 
     lda #enType,x
     cmp #EN_DARKNUT_MAIN
     bne .gethit
 
 ; Test if darknut takes damage
-    lda HbFlags
+    lda HbPlFlags
     and #HB_PL_SWORD | #HB_PL_BOMB
     beq .immune ; block non-damaging attacks
 
@@ -223,7 +236,7 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
     rts
 
 .immune
-    lda HbFlags
+    lda HbPlFlags
     and #HB_PL_FIRE
     bne .rts
     lda #SFX_DEF

@@ -3,24 +3,15 @@
 ;==============================================================================
 
 EnDraw_BossManhandla: SUBROUTINE
-    bit plState
-    bvc .useCurEnState ; PS_USE_ITEM
-    lda enState
-    clc
-    adc #1
-    and #$0F
-    sta enState
-    sta itemRupees
-.useCurEnState
     lda Frame
     ror ; carry = frame % 2
     lda enState
     and #$0F
-    tax
-    lda Manhandla_FlagsHeight,x
     bcs .renderRight
 
 .renderLeft
+    tax
+    lda Manhandla_FlagsHeight,x
     rol
     bcc .skipReflectLeft
     ldy #%1000
@@ -31,11 +22,9 @@ EnDraw_BossManhandla: SUBROUTINE
     bpl .writeHeight ; jmp
 
 .renderRight
-    tay
-    txa
     ora #$10
     tax
-    tya
+    lda Manhandla_FlagsHeight-$10,x
     ror
     bcc .skipReflectRight
     ldy #%1000
@@ -62,8 +51,11 @@ EnDraw_BossManhandla: SUBROUTINE
     lda ManhandlaL_SprH,x
     sta enSpr
 
-
-    lda #COLOR_EN_BLUE
+    clc
+    lda enManhandlaStun
+    asl
+    asl
+    adc #COLOR_EN_BLUE
     sta wEnColor
 
     lda #%0101

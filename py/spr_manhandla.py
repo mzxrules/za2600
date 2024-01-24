@@ -49,12 +49,12 @@ class SprVector:
 
     def GenPosXTable(self):
         output = f"{self.name}_x:\n"
-        output += ToAsmD([x * 2-1 for x in self.x])
+        output += ToAsmD([x * 2-1 - 12 for x in self.x])
         return output
 
     def GenPosYTable(self):
         output = f"{self.name}_y:\n"
-        output += ToAsmD([y * 2 for y in self.y])
+        output += ToAsmD([y * 2 - 12 for y in self.y])
         return output
 
     def GenSprHTable(self):

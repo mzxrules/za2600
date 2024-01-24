@@ -215,6 +215,7 @@ ENTRY_START_GAME:
 
     ; set player stats
     lda #$18
+    sta plHealth
     sta plHealthMax
 
     jmp MAIN_ENTRY
