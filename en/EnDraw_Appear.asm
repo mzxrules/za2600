@@ -12,15 +12,15 @@ EnDraw_Appear: SUBROUTINE
 
     lda #>SprRock0
     sta enSpr+1
+    lda #<SprRock0
+    sta enSpr
 
     lda enSysTimer,x
-    and #2
+    and #%0010
 
-    beq .setSpr
-    lda #<SprRock0
-
-.setSpr
-    sta enSpr
+    asl
+    asl
+    sta wREFP1_T
 
     lda enSysType,x
     cmp #EN_KEESE

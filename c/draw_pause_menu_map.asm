@@ -24,7 +24,7 @@
     sta PF2
 
 
-    lda #SLOT_RW_MAP
+    lda #SLOT_RW_F0_DUNG_MAP
     sta BANK_SLOT_RAM
 
     lda #$01

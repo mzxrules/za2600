@@ -22,7 +22,7 @@ DRAW_PAUSE_MENU: SUBROUTINE
     sta GRP0
     sta REFP1
 
-    lda #SLOT_SPR_A
+    lda #SLOT_F0_SPR0
     sta BANK_SLOT
     lda #$34
     ldx #0

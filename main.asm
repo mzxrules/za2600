@@ -182,67 +182,7 @@ BANK_12
     INCBIN "world/w0rs.bin"
     INCBIN "world/w0ex.bin"
     INCBIN "gen/world/b0en.bin"
-/*
-; == $00
-    repeat 5
-    .byte $01, $02
-    repend
 
-    .byte #12, $02
-
-    repeat 2
-    .byte $01, $02
-    repend
-
-; == $10
-    repeat 4
-    .byte $02, $01
-    repend
-
-
-    .byte #13, #13
-
-    .byte $00, $01
-
-    repeat 2
-    .byte $02, $01
-    repend
-
-; == $20
-    repeat 4
-    .byte $01, $02, $02, $01
-    repend
-
-    repeat 4
-    .byte $02, $01, $01, $02
-    repend
-
-    .byte $01, $02, $00, $01
-    repeat 3
-    .byte $01, $02, $02, $01
-    repend
-
-    repeat 4
-    .byte $02, $01, $01, $02
-    repend
-
-    .byte $01, $02, $01, $01
-    .byte $02, $01, $01, $01
-    .byte $01, $01, $02, $02
-    .byte $02, $02, $01, $01
-
-
-    repeat 3
-    .byte $01, $01
-    repend
-
-    .byte $01
-; $77
-    .byte $00
-    repeat 0x4
-    .byte $01, $01
-    repend
-*/
     LOG_BANK_SIZE "-BANK 12- World 0", BANK_12
 
 ; ****************************************
@@ -260,18 +200,6 @@ BANK_13
     INCBIN "world/w1ex.bin"
     INCBIN "gen/world/b1en.bin"
 
-/*
-    .byte $00, $03, $04, $00,  $00, $06, $00, $00,  $00, $03, $03, $00,  $00, $00, $07, $00
-    .byte $04, $00, $05, $07,  $00, $00, $06, $00,  $07, $04, $04, $03,  $07, $00, $03, $00
-    .byte $04, $00, $03, $03,  $06, $03, $03, $02,  $00, $00, $02, $00,  $00, $00, $03, $04
-    .byte $04, $04, $05, $02,  $06, $05, $00, $05,  $00, $00, $00, $04,  $00, $00, $03, $03
-
- ;                                   v--WALLMASTA
-    .byte $04, $00, $03, $03,  $04, $08, $00, $03,  $00, $02, $03, $04,  $03, $04, $02, $03
-    .byte $05, $04, $03, $01,  $02, $00, $04, $03,  $00, $05, $03, $05,  $05, $05, $03, $04
-    .byte $00, $06, $04, $01,  $06, $04, $04, $00,  $00, $05, $00, $01,  $03, $03, $04, $04
-    .byte $02, $00, $01, $00,  $03, $00, $00, $04,  $00, $00, $06, $03,  $00, $00, $04, $00
-*/
     LOG_BANK_SIZE "-BANK 13- Dungeon 1", BANK_13
 
 ; ****************************************
@@ -548,7 +476,7 @@ BANK_30
     RORG $F400
 
 BANK_31
-DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_DRAW_PAUSE_2
+DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_DRAW_PAUSE_2
     INCLUDE "c/draw_pause_world.asm"
     INCLUDE "c/draw_pause_menu.asm"
     LOG_BANK_SIZE "-BANK 31- Draw Paused World", BANK_31
@@ -615,11 +543,16 @@ BANK_35
 ; ****************************************
     SEG Bank36
     ORG $9000
-    RORG $F400
+    RORG $F000
 
 BANK_36
+    INCLUDE "b/pause_menu_map.asm"
+    RORG [. & $3FF] + $F400
 Pause_MapPlot:
+    lda #SLOT_RW_F0_DUNG_MAP
+    sta BANK_SLOT_RAM
     INCLUDE "gen/pause_map.asm"
+    RORG [. & $3FF] + $F000
     LOG_BANK_SIZE "-BANK 36- Pause Map generator", BANK_36
 
 ; ****************************************
@@ -632,7 +565,6 @@ Pause_MapPlot:
 BANK_37
     INCLUDE "en/En_RollingRock.asm"
     INCLUDE "en/En_Appear.asm"
-    INCLUDE "en/EnBoss_Cucco.asm"
     INCLUDE "en/En_Stalfos.asm"
     INCLUDE "en/En_Keese.asm"
     INCLUDE "en/EnDraw_Keese.asm"

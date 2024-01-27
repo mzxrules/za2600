@@ -27,13 +27,13 @@ ENTRY: SUBROUTINE ; Address FC00
     jmp ENTRY_INIT ; jump to F000 address space
 
 .ENTRY_RAM_BANKS
-    .byte #SLOT_RW0, #SLOT_RW1, #SLOT_RW2
+    .byte #SLOT_RW_F8_W0, #SLOT_RW_F8_W1, #SLOT_RW_F8_W2
 
 .ENTRY_SLOT_SPR
-    .byte #SLOT_SPR_A, #SLOT_SPR_B, #SLOT_SPR_B
+    .byte #SLOT_F0_SPR0, #SLOT_F0_SPR1, #SLOT_F0_SPR1
 
 ENTRY_INIT:  ; Address F000
-    ldy #SLOT_MAIN
+    ldy #SLOT_FC_MAIN
     sty BANK_SLOT
 
 ; initialize extended ram
@@ -59,7 +59,7 @@ ENTRY_INIT:  ; Address F000
     bpl .init_ram_loop
 
     ; kernel48 transfer
-    ldy #SLOT_RW_S6_4
+    ldy #SLOT_RW_F4_KERNEL48
     sty BANK_SLOT_RAM
 
     ldx #KERNEL48_LEN

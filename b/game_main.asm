@@ -13,12 +13,12 @@ MAIN_VERTICAL_SYNC: ; 3 SCANLINES
     jsr VERTICAL_SYNC
 
 VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
-    lda #SLOT_ROOM
+    lda #SLOT_F0_ROOM
     sta BANK_SLOT
     jsr RoomUpdate
     bit roomFlags
     bvc .roomSkipInit
-    lda #SLOT_RS_INIT
+    lda #SLOT_F0_RS_INIT
     sta BANK_SLOT
     jsr RsInit_Del
     lda #0
@@ -26,13 +26,13 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
 .roomSkipInit
 
 .Missile:
-    lda #SLOT_RS_A
+    lda #SLOT_F0_RS0
     sta BANK_SLOT
-    lda #SLOT_RS_B
+    lda #SLOT_F4_RS1
     sta BANK_SLOT
     jsr MiSystem
 
-    lda #SLOT_PL
+    lda #SLOT_F0_PL
     sta BANK_SLOT
     jsr PlayerPause
 PAUSE_RETURN:
@@ -43,17 +43,17 @@ PAUSE_RETURN:
 ; room setup
     lda worldId
     beq .skipRoomChecks
-    lda #SLOT_ROOM
+    lda #SLOT_F0_ROOM
     sta BANK_SLOT
     jsr DoorCheck
     jsr UpdateDoors
 .skipRoomChecks
 
-    lda #SLOT_AU_B
+    lda #SLOT_F4_AU1
     sta BANK_SLOT
     jsr UpdateAudio
 
-    lda #SLOT_EN_D
+    lda #SLOT_F0_ENDRAW
     sta BANK_SLOT
     jsr EnDraw_Del
 
@@ -61,7 +61,7 @@ PAUSE_RETURN:
 ; Pre-Position Sprites and Draw Frame
 ;==============================================================================
 
-    lda #SLOT_DRAW
+    lda #SLOT_F4_DRAW
     sta BANK_SLOT
     jsr POSITION_SPRITES
 
@@ -221,7 +221,7 @@ PFCollision: SUBROUTINE
     sta plYL
 endPFCollision
 
-    lda #SLOT_EN_A
+    lda #SLOT_F0_EN
     sta BANK_SLOT
 .ClearDrop_EnSystem:
     jsr ClearDropSystem
@@ -243,12 +243,12 @@ endPFCollision
     dec enNum
     bpl .EntityLoop
 
-    lda #SLOT_EN_A
+    lda #SLOT_F0_EN
     sta BANK_SLOT
     jsr EnSysCleanShift
 
 .BallScript:
-    lda #SLOT_PU_A
+    lda #SLOT_F0_PU
     sta BANK_SLOT
     jsr BlSystem
 
@@ -294,9 +294,9 @@ endPFCollision
 ; Game Over check
     ldy plHealth
     bne .skipGameOver
-    lda #SLOT_RS_A
+    lda #SLOT_F0_RS0
     sta BANK_SLOT
-    lda #SLOT_RS_B
+    lda #SLOT_F4_RS1
     sta BANK_SLOT
 
     jsr Rs_GameOver
@@ -519,7 +519,7 @@ En_BossGanon:
     jmp EnSysEnDie
 
 En_Del:
-    lda #SLOT_EN_A
+    lda #SLOT_F0_EN
     sta BANK_SLOT
     ldy enType,x
     lda EntityH,y
@@ -531,9 +531,9 @@ En_Del:
     rts
 
 Rs_Del:
-    lda #SLOT_RS_A
+    lda #SLOT_F0_RS0
     sta BANK_SLOT
-    lda #SLOT_RS_B
+    lda #SLOT_F4_RS1
     sta BANK_SLOT
     ldx roomRS
     lda RoomScriptH,x

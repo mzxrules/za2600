@@ -2,7 +2,7 @@
 ; mzxrules 2021
 ;==============================================================================
 UpdateAudio: SUBROUTINE
-    lda #SLOT_AU_A
+    lda #SLOT_F0_AU0
     sta BANK_SLOT
     lda SeqFlags
     bit SeqFlags

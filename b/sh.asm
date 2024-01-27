@@ -2,11 +2,11 @@
 ; mzxrules 2021
 ;==============================================================================
 ; match code in tx.asm to line up PC after bank swap
-ShopKernel: BHA_BANK_FALL #SLOT_SH
+ShopKernel: BHA_BANK_FALL #SLOT_F0_SH
 
 KERNEL_SHOP: SUBROUTINE
 ; Load Sprites
-    lda #SLOT_SPR_A2
+    lda #SLOT_F4_SPR0
     sta BANK_SLOT
 
 ; Position P0 in the middle of the screen
@@ -80,7 +80,7 @@ KERNEL_SHOP: SUBROUTINE
     stx GRP1
 
 .waitTimerLoop
-    lda #SLOT_DRAW
+    lda #SLOT_F4_DRAW
     sta BANK_SLOT
     ldy #SHOP_ROOM_HEIGHT
     jsr PosWorldObjects

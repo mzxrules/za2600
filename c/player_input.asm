@@ -318,7 +318,7 @@ PlayerFlute: SUBROUTINE
 .SpawnTornado
     lda #SFX_WARP
     sta SfxFlags
-    lda #SLOT_HALT
+    lda #SLOT_FC_HALT
     sta BANK_SLOT
     jmp HALT_FLUTE_ENTRY
 
@@ -443,7 +443,7 @@ PlayerPause: SUBROUTINE
     ldx plHealth
     dex
     bmi .skipCheckForPause
-    lda #SLOT_PAUSE
+    lda #SLOT_FC_PAUSE
     sta BANK_SLOT
     jmp PAUSE_ENTRY
 .skipCheckForPause

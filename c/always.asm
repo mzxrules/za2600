@@ -11,7 +11,7 @@ Bit8:
 
     INCLUDE "gen/mesg_digits.asm"
 
-MAIN_UNPAUSE: BHA_BANK_JMP #SLOT_MAIN, PAUSE_RETURN
+MAIN_UNPAUSE: BHA_BANK_JMP #SLOT_FC_MAIN, PAUSE_RETURN
 
 ;==============================================================================
 ; PosWorldObjects
@@ -247,13 +247,13 @@ WorldBankOff:
     .byte 0, 1, 1, 1, 1, 1, 1, 2, 2, 2
 
 WorldRom:
-    .byte #SLOT_W0, #SLOT_W1, #SLOT_W2
+    .byte #SLOT_F4_W0, #SLOT_F4_W1, #SLOT_F4_W2
 
 WorldRam:
-    .byte #SLOT_RW0, #SLOT_RW1, #SLOT_RW2
+    .byte #SLOT_RW_F8_W0, #SLOT_RW_F8_W1, #SLOT_RW_F8_W2
 
 WorldRoomSprites:
-    .byte #SLOT_PF_A, #SLOT_PF_B, #SLOT_PF_B
+    .byte #SLOT_F4_PF_OVER, #SLOT_F4_PF_DUNG, #SLOT_F4_PF_DUNG
 
 WorldCompassRoom:
     .byte $00

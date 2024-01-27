@@ -25,7 +25,7 @@ En_Keese: SUBROUTINE
 .checkDamaged
     lda #%111
     sta enKeeseTemp
-    lda #SLOT_BATTLE
+    lda #SLOT_F0_BATTLE
     sta BANK_SLOT
     jsr HbGetPlAtt
 .test_001
@@ -57,7 +57,7 @@ En_Keese: SUBROUTINE
 
 .end_checkhit
 ; restore common enemy bank
-    lda #SLOT_EN_A
+    lda #SLOT_F0_EN
     sta BANK_SLOT
 
 .update_health

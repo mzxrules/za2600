@@ -33,11 +33,11 @@ En_Darknut:
 
 En_DarknutMain:
 ; check damaged
-    lda #SLOT_BATTLE
+    lda #SLOT_F0_BATTLE
     sta BANK_SLOT
     jsr HbCheckDamaged_CommonRecoil
 
-    lda #SLOT_EN_A
+    lda #SLOT_F0_EN
     sta BANK_SLOT
     lda enHp,x
     bpl .endCheckDamaged
@@ -56,7 +56,7 @@ En_DarknutMain:
 .endCheckHit
 
 ; Movement
-    lda #SLOT_EN_MOV
+    lda #SLOT_F0_EN_MOV
     sta BANK_SLOT
 
 ; update EnMoveNX/NY

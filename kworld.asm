@@ -3,7 +3,7 @@
 ;==============================================================================
 KERNEL_WORLD: SUBROUTINE ; rKERNEL
     VKERNEL1 WorldSprBank
-    lda #SLOT_SPR_A
+    lda #SLOT_F0_SPR0
     sta BANK_SLOT
 
     VKERNEL1 BgColor

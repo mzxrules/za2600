@@ -159,7 +159,7 @@ KERNEL_HUD:
     lda #COLOR_HEALTH
     sta COLUPF
 
-    lda #SLOT_SPR_H
+    lda #SLOT_F0_SPR_HUD
     sta BANK_SLOT
 
     lda #COLOR_PLAYER_00
@@ -305,7 +305,7 @@ KERNEL_HUD_LOOP:
     LOG_SIZE "-HUD KERNEL-", KERNEL_HUD
     lda KernelId
     beq .defaultWorldKernel
-    lda #SLOT_TX
+    lda #SLOT_F0_TX
     sta BANK_SLOT
     jmp TextKernel
 

@@ -7,6 +7,8 @@ En_Appear: SUBROUTINE
     bcs .transform
     lda #2
     sta enState,x
+    lda #$80
+    sta en0Y,x
 .skipInit
 
     lda enSysType,x
@@ -56,7 +58,6 @@ En_Appear: SUBROUTINE
 
 
 .transform
-
 ;   update spawn delay
     lda enSysTimer,x
     cmp #1

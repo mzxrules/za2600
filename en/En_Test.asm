@@ -15,7 +15,7 @@ En_Test: SUBROUTINE
     adc #0
     sta enStun
 
-    lda #SLOT_BATTLE
+    lda #SLOT_F0_BATTLE
     sta BANK_SLOT
 
     jsr HbGetPlAtt
@@ -53,7 +53,7 @@ En_Test: SUBROUTINE
 
 .continue
 
-    lda #SLOT_EN_MOV
+    lda #SLOT_F0_EN_MOV
     sta BANK_SLOT
     ldx plX
     ldy plY
@@ -61,6 +61,6 @@ En_Test: SUBROUTINE
     lda EnMoveBlockedDir
     sta itemRupees
 
-    lda #SLOT_MAIN
+    lda #SLOT_FC_MAIN
     sta BANK_SLOT
     rts

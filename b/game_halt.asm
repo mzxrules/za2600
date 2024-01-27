@@ -37,20 +37,20 @@ HALT_FROM_FLUTE:
     stx plItemTimer
     lda #0
     sta m0X
-    lda #SLOT_PL
+    lda #SLOT_F0_PL
     sta BANK_SLOT
     jmp MAIN_UNPAUSE
 
 .runHaltUpdate
-    lda #SLOT_AU_B
+    lda #SLOT_F4_AU1
     sta BANK_SLOT
     jsr UpdateAudio
 
-    lda #SLOT_EN_D
+    lda #SLOT_F0_ENDRAW
     sta BANK_SLOT
     jsr EnDraw_Del
 
-    lda #SLOT_DRAW_PAUSE_WORLD
+    lda #SLOT_F4_DRAW_PAUSE_WORLD
     sta BANK_SLOT
 
     jsr DRAW_PAUSE_WORLD

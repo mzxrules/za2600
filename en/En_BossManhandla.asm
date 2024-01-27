@@ -27,7 +27,7 @@ En_BossManhandla: SUBROUTINE
 .main
 
 .checkDamaged
-    lda #SLOT_BATTLE
+    lda #SLOT_F0_BATTLE
     sta BANK_SLOT
     jsr HbGetPlAtt
     jsr HbManhandla
@@ -99,7 +99,7 @@ En_BossManhandla: SUBROUTINE
     asl
     sta HbDamage
 
-    lda #SLOT_EN_A
+    lda #SLOT_F0_EN
     sta BANK_SLOT
 
     lda enManhandlaInvince
@@ -176,7 +176,7 @@ En_BossManhandla: SUBROUTINE
 .skipResetInvince
 
 ; Movement
-    lda #SLOT_EN_MOV
+    lda #SLOT_F0_EN_MOV
     sta BANK_SLOT
 
     lda #1
