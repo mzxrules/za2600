@@ -1,7 +1,7 @@
 ;==============================================================================
 ; mzxrules 2023
 ;==============================================================================
-EnMov_Card_WallCheck_TEST: SUBROUTINE
+EnMove_Card_WallCheck_TEST: SUBROUTINE
 ; adjust x coordinate
     txa
     lsr
@@ -21,7 +21,7 @@ EnMov_Card_WallCheck_TEST: SUBROUTINE
 ; X = enNum
 ; Clobbers Y register
 ;==============================================================================
-EnMov_Card_WallCheck: SUBROUTINE
+EnMove_Card_WallCheck: SUBROUTINE
     lda #0
 ; Check board boundaries
     ldx EnMoveNX
@@ -184,7 +184,7 @@ EnMov_Card_WallCheck: SUBROUTINE
 ; X = enNum
 ; Y = enNextDir
 ;==============================================================================
-EnMov_Card_RandDir: SUBROUTINE
+EnMove_Card_RandDir: SUBROUTINE
     lda #3
     sta EnMoveRandDirCount
     jsr Random              ; 32
@@ -225,7 +225,7 @@ EnMov_Card_RandDir: SUBROUTINE
 ; X = enNum
 ; Y = enNextDir
 ;==============================================================================
-EnMov_Card_RandDirIfBlocked:
+EnMove_Card_RandDirIfBlocked:
     lda #3
     sta EnMoveRandDirCount
     jsr Random
@@ -251,7 +251,7 @@ EnMov_Card_RandDirIfBlocked:
 ; X = enNum
 ; Y = enNextDir
 ;==============================================================================
-EnMov_Card_SeekDirIfBlocked: SUBROUTINE
+EnMove_Card_SeekDirIfBlocked: SUBROUTINE
     ldy enDir,x
     lda Bit8,y
     and EnMoveBlockedDir
@@ -262,7 +262,7 @@ EnMov_Card_SeekDirIfBlocked: SUBROUTINE
 ; X = enNum
 ; Y = enNextDir
 ;==============================================================================
-EnMov_Card_SeekDir:
+EnMove_Card_SeekDir:
     lda #0
     sta EnMoveSeekFlags
 
@@ -306,7 +306,7 @@ EnMov_Card_SeekDir:
     tax
 .loop
     inx
-    ldy seekdir_lut-1,x
+    ldy EnMove_SeekDirLUT-1,x
     lda Bit8,y
     and EnMoveBlockedDir
     bne .loop
@@ -315,27 +315,27 @@ EnMov_Card_SeekDir:
     sty enNextDir
     rts
 
-EnMov_Card_NewDir: SUBROUTINE
+EnMove_Card_NewDir: SUBROUTINE
     lda Rand16
     and #2
     bne .contdir_seek
-    jmp EnMov_Card_RandDir
+    jmp EnMove_Card_RandDir
 .contdir_seek
-    jmp EnMov_Card_SeekDir
+    jmp EnMove_Card_SeekDir
 
-EnMov_Card_ContDir: SUBROUTINE
+EnMove_Card_ContDir: SUBROUTINE
     lda Rand16
     and #2
     bne .contdir_seek
-    jmp EnMov_Card_RandDirIfBlocked
+    jmp EnMove_Card_RandDirIfBlocked
 .contdir_seek
-    jmp EnMov_Card_SeekDirIfBlocked
+    jmp EnMove_Card_SeekDirIfBlocked
 
 ;==============================================================================
 ; Selects a new direction based on the shortest path to the player
 ; X = enNum
 ;==============================================================================
-EnMov_Ord_SeekDir: SUBROUTINE
+EnMove_Ord_SeekDir: SUBROUTINE
     lda #0
     sta EnMoveSeekFlags
 
@@ -379,7 +379,7 @@ EnMov_Ord_SeekDir: SUBROUTINE
     tax
 .loop
     inx
-    ldy seekdir_lut-1,x
+    ldy EnMove_SeekDirLUT-1,x
     ldx enNum
     rts
 
@@ -387,7 +387,7 @@ EnMov_Ord_SeekDir: SUBROUTINE
 ; Applies recoil movement, if applicable
 ; X = enNum
 ;==============================================================================
-EnMov_Recoil: SUBROUTINE
+EnMove_Recoil: SUBROUTINE
     lda enStun,x
     bmi .doThings
 .end_recoil
@@ -406,7 +406,7 @@ EnMov_Recoil: SUBROUTINE
 .recoil_lr
     ; if not x grid aligned
     ldy en0Y,x
-    lda en_offgrid_lut,y
+    lda EnMove_OffgridLUT,y
     bne .end_recoil
 
     lda enStun,x
@@ -414,7 +414,7 @@ EnMov_Recoil: SUBROUTINE
     bcs .tryMove
 
     ldy en0X,x
-    lda en_offgrid_lut,y
+    lda EnMove_OffgridLUT,y
     clc
     adc en0X,x
     sta en0X,x
@@ -423,7 +423,7 @@ EnMov_Recoil: SUBROUTINE
 .recoil_ud
     ; if not y grid aligned
     ldy en0X,x
-    lda en_offgrid_lut,y
+    lda EnMove_OffgridLUT,y
     bne .end_recoil
 
     lda enStun,x
@@ -431,14 +431,14 @@ EnMov_Recoil: SUBROUTINE
     bcs .tryMove
 
     ldy en0Y,x
-    lda en_offgrid_lut,y
+    lda EnMove_OffgridLUT,y
     clc
     adc en0Y,x
     sta en0Y,x
     rts
 
 .tryMove
-    jsr EnMov_Card_WallCheck
+    jsr EnMove_Card_WallCheck
     ldy Temp0
     lda Bit8,y
     and EnMoveBlockedDir

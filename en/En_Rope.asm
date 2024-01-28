@@ -52,7 +52,7 @@ En_RopeMain: SUBROUTINE
 .endCheckHit
 
 .ROPE_MOVEMENT
-    lda #SLOT_F0_EN_MOV
+    lda #SLOT_F0_EN_MOVE
     sta BANK_SLOT
 
 ; update EnMoveNX/NY
@@ -69,20 +69,20 @@ En_RopeMain: SUBROUTINE
     lda enState,x
     and #EN_ENEMY_MOVE_RECOIL
     beq .normal_movement
-    jmp EnMov_Recoil
+    jmp EnMove_Recoil
 
 .normal_movement
     ldy en0X,x
-    lda en_offgrid_lut,y
+    lda EnMove_OffgridLUT,y
     bne .move
     ldy en0Y,x
-    lda en_offgrid_lut,y
+    lda EnMove_OffgridLUT,y
     bne .move
 
 .solveNextDirection
 
 ; What's the plan, snake man?
-    jsr EnMov_Card_WallCheck
+    jsr EnMove_Card_WallCheck
     lda enState,x
     and #EN_ROPE_ATTACK
     bne .tryContMoveDir
@@ -126,14 +126,14 @@ En_RopeMain: SUBROUTINE
     beq .newDir
 
 .tryContMoveDir ; We want to continue moving in the current direction
-    jsr EnMov_Card_RandDirIfBlocked
+    jsr EnMove_Card_RandDirIfBlocked
     tya
     cmp enDir,x
     beq .move
     ; hit a wall or something, so reset
     bne .setNewDir
 .newDir
-    jsr EnMov_Card_RandDir
+    jsr EnMove_Card_RandDir
 .setNewDir
     sty enDir,x
 

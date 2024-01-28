@@ -26,9 +26,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
 .roomSkipInit
 
 .Missile:
-    lda #SLOT_F0_RS0
-    sta BANK_SLOT
-    lda #SLOT_F4_RS1
+    lda #SLOT_F0_MISSILE
     sta BANK_SLOT
     jsr MiSystem
 
@@ -61,7 +59,7 @@ PAUSE_RETURN:
 ; Pre-Position Sprites and Draw Frame
 ;==============================================================================
 
-    lda #SLOT_F4_DRAW
+    lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT
     jsr POSITION_SPRITES
 
@@ -354,7 +352,7 @@ PlDirL:
 WORLD_ENT: ; Initial room spawns for worlds 0-9
     .byte $77, $73, $7D, $7C, $71, $76, $79, $71, $76, $7E
 
-    INCLUDE "gen/PlMoveDir.asm"
+    INCLUDE "gen/PlMoveDir_DelLUT.asm"
 
 RoomFlagPFCollision
     .byte #[RF_PF_IGNORE + RF_PF_AXIS], #[RF_PF_IGNORE]
@@ -522,11 +520,11 @@ En_Del:
     lda #SLOT_F0_EN
     sta BANK_SLOT
     ldy enType,x
-    lda EntityH,y
+    lda EnH,y
     pha
-    lda EntityL,y
+    lda EnL,y
     pha
-    lda Entity_BankLUT,y
+    lda En_BankLUT,y
     sta BANK_SLOT
     rts
 
@@ -536,9 +534,9 @@ Rs_Del:
     lda #SLOT_F4_RS1
     sta BANK_SLOT
     ldx roomRS
-    lda RoomScriptH,x
+    lda RsH,x
     pha
-    lda RoomScriptL,x
+    lda RsL,x
     pha
 Rs_None:
 Rs_BlockCentral:

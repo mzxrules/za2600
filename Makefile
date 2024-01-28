@@ -12,7 +12,7 @@ zelda_dep := main.asm \
   kworld.asm \
   gen/atan2.asm \
   gen/world/b1world.asm \
-  gen/RoomScript.asm \
+  gen/Rs_DelLUT.asm \
   gen/mesg_data_0A.asm \
   gen/ms_header.asm \
   gen/bitcount.asm \
@@ -45,7 +45,7 @@ zelda.bin: $(zelda_dep)
 	dasm main.asm -f3 -ozelda_PAL60.bin -DPAL60 -Iinclude $(flags)
 	dasm main.asm -f3 -ozelda.bin -szelda.sym -T1 -Iinclude $(flags)
 
-gen/RoomScript.asm: py/mesg.py py/ptr.py
+gen/Rs_DelLUT.asm: py/mesg.py py/ptr.py
 	python3 py/ptr.py
 
 gen/ms_header.asm: py/sound_common.py py/seq.py py/sound.py

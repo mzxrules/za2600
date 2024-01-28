@@ -12,11 +12,11 @@ EnDraw_Del:
     tax
 .skip
     ldy enType,x
-    lda EntityDrawH,y
+    lda EnDrawH,y
     pha
-    lda EntityDrawL,y
+    lda EnDrawL,y
     pha
-    lda EntityDraw_BankLUT,y
+    lda EnDraw_BankLUT,y
     sta BANK_SLOT
     lda plState2
     and #~EN_LAST_DRAWN

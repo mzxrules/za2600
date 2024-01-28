@@ -140,7 +140,7 @@ ITER    SET ITER+1
     jsr EnDraw_Del
 
 .skip_draw_en
-    lda #SLOT_F4_DRAW_PAUSE_WORLD
+    lda #SLOT_F4_PAUSE_DRAW_WORLD
     sta BANK_SLOT
     bit PauseState
     bvs .draw_menu
@@ -322,7 +322,7 @@ PickItemDel:
     rts
 
 
-    INCLUDE "gen/PlItemPick.asm"
+    INCLUDE "gen/PlItemPick_DelLUT.asm"
     .byte 7
 Pause_Menu_Item_Next:
     .byte 0, 1, 2, 3, 4, 5, 6, 7

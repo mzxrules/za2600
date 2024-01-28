@@ -50,7 +50,7 @@ HALT_FROM_FLUTE:
     sta BANK_SLOT
     jsr EnDraw_Del
 
-    lda #SLOT_F4_DRAW_PAUSE_WORLD
+    lda #SLOT_F4_PAUSE_DRAW_WORLD
     sta BANK_SLOT
 
     jsr DRAW_PAUSE_WORLD

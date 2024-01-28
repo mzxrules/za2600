@@ -4,9 +4,9 @@
 
 RsInit_Del: SUBROUTINE
     ldx roomRS
-    lda RoomScriptInitH,x
+    lda RsInitH,x
     pha
-    lda RoomScriptInitL,x
+    lda RsInitL,x
     pha
     rts
     LOG_SIZE "RsInit_Del", RsInit_Del

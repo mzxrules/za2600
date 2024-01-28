@@ -66,20 +66,6 @@ EnNone:
 ; ENTITY
 ;==============================================================================
 
-EnSysEncounter:
-    INCLUDE "gen/EnSysEncounter.asm"
-/*
-    .byte EN_NONE, EN_OCTOROK_BLUE, EN_OCTOROK, EN_ROPE
-    .byte EN_ROPE, EN_DARKNUT, EN_DARKNUT, EN_BOSS_GOHMA
-    .byte EN_WALLMASTER, EN_TEST_MISSILE, EN_LIKE_LIKE, EN_BOSS_GLOCK
-    .byte EN_WATERFALL, EN_ROLLING_ROCK
-EnSysEncounterCount:
-    .byte 0, 1, 2, 1
-    .byte 2, 1, 2, 1
-    .byte 1, 1, 1, 1
-    .byte 1, 2, 0, 0
-*/
-
 ClearDropSystem: SUBROUTINE
     lda enType
     bne .ClearDropSystem_rts

@@ -115,7 +115,7 @@ En_Wallmaster: SUBROUTINE
 .endCheckHit
 
 .handleMovement
-    lda #SLOT_F0_EN_MOV
+    lda #SLOT_F0_EN_MOVE
     sta BANK_SLOT
 
 ; update EnMoveNX/NY
@@ -132,20 +132,20 @@ En_Wallmaster: SUBROUTINE
     lda enState,x
     and #EN_ENEMY_MOVE_RECOIL
     beq .normal_movement
-    jmp EnMov_Recoil
+    jmp EnMove_Recoil
 
 .normal_movement
 
     ldy en0X,x
-    lda en_offgrid_lut,y
+    lda EnMove_OffgridLUT,y
     bne .move
     ldy en0Y,x
-    lda en_offgrid_lut,y
+    lda EnMove_OffgridLUT,y
     bne .move
 
 .solveNextDirection
-    jsr EnMov_Card_WallCheck
-    jsr EnMov_Card_SeekDir
+    jsr EnMove_Card_WallCheck
+    jsr EnMove_Card_SeekDir
     sty enDir,x
 .move
     lda Frame

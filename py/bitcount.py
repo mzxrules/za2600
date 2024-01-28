@@ -404,8 +404,8 @@ def get_seek_lut():
             b = xAxisClose if a == 0 else yAxisClose
             c = b if dir == CLOSE else 1 - b
             seek.append(map[a][c])
-    with open(f'gen/seekdir.asm', "w") as file:
-        file.write("seekdir_lut:\n")
+    with open(f'gen/EnMove_SeekDirLUT.asm', "w") as file:
+        file.write("EnMove_SeekDirLUT:\n")
         file.write(ToAsm(seek,4))
 
 def get_bitcount():
@@ -423,14 +423,14 @@ def get_bitcount():
         table.append(count)
     return ToAsm(table)
 
-def get_en_offgrid():
+def get_en_offgrid_lut():
     table = [0]*128
     pattern = [0, 0xFF, 2, 1]
     for i in range(128):
         v = i % 4
         table[i] = pattern[v]
-    with open(f'gen/en_offgrid.asm', "w") as file:
-        file.write("en_offgrid_lut:\n")
+    with open(f'gen/EnMove_OffgridLUT.asm', "w") as file:
+        file.write("EnMove_OffgridLUT:\n")
         file.write(ToAsm(table,16))
 
 def get_roomheight():
@@ -456,7 +456,7 @@ get_hitbox_info2()
 get_room_px_check()
 get_randdir_lut()
 get_pause_map_codegen()
-get_en_offgrid()
+get_en_offgrid_lut()
 
 with open(f'gen/bitcount.asm', "w") as file:
     file.write(bitcountOut)

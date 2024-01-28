@@ -53,11 +53,11 @@ En_Test: SUBROUTINE
 
 .continue
 
-    lda #SLOT_F0_EN_MOV
+    lda #SLOT_F0_EN_MOVE
     sta BANK_SLOT
     ldx plX
     ldy plY
-    jsr EnMov_Card_WallCheck_TEST
+    jsr EnMove_Card_WallCheck_TEST
     lda EnMoveBlockedDir
     sta itemRupees
 

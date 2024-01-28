@@ -698,7 +698,7 @@ ReflectP1:
     SEG Bank1
     ORG $0400
     RORG $F000
-    INCLUDE "gen/PlItem.asm"
+    INCLUDE "gen/PlItem_DelLUT.asm"
 
     ;align 4
 ArrowWidth4:

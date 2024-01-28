@@ -56,7 +56,7 @@ En_DarknutMain:
 .endCheckHit
 
 ; Movement
-    lda #SLOT_F0_EN_MOV
+    lda #SLOT_F0_EN_MOVE
     sta BANK_SLOT
 
 ; update EnMoveNX/NY
@@ -73,14 +73,14 @@ En_DarknutMain:
     lda enState,x
     and #EN_ENEMY_MOVE_RECOIL
     beq .normal_movement
-    jmp EnMov_Recoil
+    jmp EnMove_Recoil
 
 .normal_movement
     ldy en0X,x
-    lda en_offgrid_lut,y
+    lda EnMove_OffgridLUT,y
     bne .move
     ldy en0Y,x
-    lda en_offgrid_lut,y
+    lda EnMove_OffgridLUT,y
     bne .move
 
     dec enDarknutStep,x
@@ -89,14 +89,14 @@ En_DarknutMain:
     and #7
     sta enDarknutStep,x
 
-    jsr EnMov_Card_WallCheck
-    jsr EnMov_Card_RandDir
+    jsr EnMove_Card_WallCheck
+    jsr EnMove_Card_RandDir
     sty enDir,x
     bpl .move ; jmp
 
 .seek_next
-    jsr EnMov_Card_WallCheck
-    jsr EnMov_Card_RandDirIfBlocked
+    jsr EnMove_Card_WallCheck
+    jsr EnMove_Card_RandDirIfBlocked
     sty enDir,x
 .move
     lda enState

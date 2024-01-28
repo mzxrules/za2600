@@ -72,7 +72,7 @@ En_LikeLikeMain: SUBROUTINE
 .endCheckHit
 
 ; Movement Routine
-    lda #SLOT_F0_EN_MOV
+    lda #SLOT_F0_EN_MOVE
     sta BANK_SLOT
 
     lda enLLThink,x
@@ -95,28 +95,28 @@ En_LikeLikeMain: SUBROUTINE
     and #EN_ENEMY_MOVE_RECOIL | #EN_LIKELIKE_LOCK
     cmp #EN_ENEMY_MOVE_RECOIL
     bne .normal_movement
-    jmp EnMov_Recoil
+    jmp EnMove_Recoil
 
 .normal_movement
     ldy en0X,x
-    lda en_offgrid_lut,y
+    lda EnMove_OffgridLUT,y
     bne .move
     ldy en0Y,x
-    lda en_offgrid_lut,y
+    lda EnMove_OffgridLUT,y
     bne .move
 
 .solveNextDirection
-    jsr EnMov_Card_WallCheck
+    jsr EnMove_Card_WallCheck
 
     lda enLLThink,x
     bne .contdir
 
 .newdir
-    jsr EnMov_Card_NewDir
+    jsr EnMove_Card_NewDir
     bpl .setNewDir
 
 .contdir
-    jsr EnMov_Card_ContDir
+    jsr EnMove_Card_ContDir
     tya
     cmp enDir,x
     beq .move

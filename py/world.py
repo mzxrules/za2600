@@ -122,7 +122,7 @@ def BuildRoomEncounterTables(encounterToRoom):
         [0] * 128,
         [0] * 128,
     ]
-    encounterTableStr = ""
+    encounterTableStr = "EnSysEncounter:\n"
     curEN = 0
 
     for k, rooms in encounterToRoom.items():

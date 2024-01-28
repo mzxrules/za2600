@@ -176,7 +176,7 @@ En_BossManhandla: SUBROUTINE
 .skipResetInvince
 
 ; Movement
-    lda #SLOT_F0_EN_MOV
+    lda #SLOT_F0_EN_MOVE
     sta BANK_SLOT
 
     lda #1
@@ -232,7 +232,7 @@ En_BossManhandla: SUBROUTINE
     bne .move
 
     ldx enNum
-    jsr EnMov_Ord_SeekDir
+    jsr EnMove_Ord_SeekDir
     jsr Random
     lsr
     bcs .dirSet

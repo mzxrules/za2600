@@ -3,7 +3,7 @@
 ; TextKernel is based on text24.asm
 ; https://atariage.com/forums/topic/317782-text-kernel-approaches/
 ;==============================================================================
-ShopKernel: BHA_BANK_FALL #SLOT_F0_SH
+ShopKernel: BHA_BANK_FALL #SLOT_F0_SHOP
 
 TextKernel: SUBROUTINE
     nop ; Scanlines 56 to 97 (3116) (TIM64T 48)
@@ -46,7 +46,7 @@ TextDisplayLoop:
     and #1
     ora TextLoop
     clc
-    adc #SLOT_F4_MG
+    adc #SLOT_F4_MESG
     sta BANK_SLOT
     ldx mesgId
     lda MesgAL,x
@@ -422,7 +422,7 @@ FinishVS
 .waitTimerLoop
     lda INTIM
     bne .waitTimerLoop
-    lda #SLOT_F4_DRAW
+    lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT
     ldy #TEXT_ROOM_HEIGHT
     sta WSYNC ; 95

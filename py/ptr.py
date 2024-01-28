@@ -36,77 +36,77 @@ class GameEnum:
         return x
 
 Entity_Table = [
-    "EnNone",          "SEG_NA", "SEG_28", "EnDraw_None",
-    "EnClearDrop",     "SEG_SH", "SEG_28", "EnDraw_ClearDrop",
-    "EnItem",          "SEG_NA", "SEG_28", "EnDraw_None",
-    "EnStairs",        "SEG_SH", "SEG_28", "EnDraw_None",
-    "En_ItemGet",      "SEG_35", "SEG_28", "EnDraw_ItemGet",
-    "En_NpcShopkeeper","SEG_SH", "SEG_28", "EnDraw_NpcShopkeeper",
-    "En_NpcGiveOne",   "SEG_SH", "SEG_28", "EnDraw_NpcGiveOne",
-    "En_NpcPath",      "SEG_35", "SEG_28", "EnDraw_NpcPath",
-    "En_NpcOldMan",    "SEG_35", "SEG_28", "EnDraw_NpcOldMan",
-    "En_GreatFairy",   "SEG_35", "SEG_39", "EnDraw_GreatFairy",
+    "EnNone",          "SEG_NA", "SEG_42", "EnDraw_None",
+    "EnClearDrop",     "SEG_SH", "SEG_42", "EnDraw_ClearDrop",
+    "EnItem",          "SEG_NA", "SEG_42", "EnDraw_None",
+    "EnStairs",        "SEG_SH", "SEG_42", "EnDraw_None",
+    "En_ItemGet",      "SEG_44", "SEG_42", "EnDraw_ItemGet",
+    "En_NpcShopkeeper","SEG_SH", "SEG_42", "EnDraw_NpcShopkeeper",
+    "En_NpcGiveOne",   "SEG_SH", "SEG_42", "EnDraw_NpcGiveOne",
+    "En_NpcPath",      "SEG_44", "SEG_42", "EnDraw_NpcPath",
+    "En_NpcOldMan",    "SEG_44", "SEG_42", "EnDraw_NpcOldMan",
+    "En_GreatFairy",   "SEG_44", "SEG_46", "EnDraw_GreatFairy",
 
-    "En_Octorok",      "SEG_34", "SEG_28", "EnDraw_Octorok",
-    "En_OctorokBlue",  "SEG_34", "SEG_28", "EnDraw_Octorok",
-    "En_OctorokMain",  "SEG_34", "SEG_28", "EnDraw_Octorok",
+    "En_Octorok",      "SEG_43", "SEG_42", "EnDraw_Octorok",
+    "En_OctorokBlue",  "SEG_43", "SEG_42", "EnDraw_Octorok",
+    "En_OctorokMain",  "SEG_43", "SEG_42", "EnDraw_Octorok",
 
-    "En_Leever",       "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_LeeverBlue",   "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_LeeverMain",   "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_Lynel",        "SEG_40", "SEG_28", "EnDraw_Darknut",
-    "En_LynelBlue",    "SEG_40", "SEG_28", "EnDraw_Darknut",
-    "En_LynelMain",    "SEG_40", "SEG_28", "EnDraw_Darknut",
-    "En_Moblin",       "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_MoblinBlue",   "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_MoblinMain",   "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_Peehat",       "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_Zora",         "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_Tektite",      "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_TektiteBlue",  "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_TektiteMain",  "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Leever",       "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_LeeverBlue",   "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_LeeverMain",   "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_Lynel",        "SEG_47", "SEG_42", "EnDraw_Darknut",
+    "En_LynelBlue",    "SEG_47", "SEG_42", "EnDraw_Darknut",
+    "En_LynelMain",    "SEG_47", "SEG_42", "EnDraw_Darknut",
+    "En_Moblin",       "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_MoblinBlue",   "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_MoblinMain",   "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_Peehat",       "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_Zora",         "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_Tektite",      "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_TektiteBlue",  "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_TektiteMain",  "SEG_NA", "SEG_42", "EnDraw_None",
 
-    "En_Darknut",      "SEG_34", "SEG_28", "EnDraw_Darknut",
-    "En_DarknutBlue",  "SEG_34", "SEG_28", "EnDraw_Darknut",
-    "En_DarknutMain",  "SEG_34", "SEG_28", "EnDraw_Darknut",
-    "En_LikeLike",     "SEG_34", "SEG_28", "EnDraw_LikeLike",
-    "En_LikeLikeMain", "SEG_34", "SEG_28", "EnDraw_LikeLike",
-    "En_Rope",         "SEG_34", "SEG_28", "EnDraw_Rope",
-    "En_RopeMain",     "SEG_34", "SEG_28", "EnDraw_Rope",
-    "En_Wallmaster",   "SEG_35", "SEG_28", "EnDraw_Wallmaster",
+    "En_Darknut",      "SEG_43", "SEG_42", "EnDraw_Darknut",
+    "En_DarknutBlue",  "SEG_43", "SEG_42", "EnDraw_Darknut",
+    "En_DarknutMain",  "SEG_43", "SEG_42", "EnDraw_Darknut",
+    "En_LikeLike",     "SEG_43", "SEG_42", "EnDraw_LikeLike",
+    "En_LikeLikeMain", "SEG_43", "SEG_42", "EnDraw_LikeLike",
+    "En_Rope",         "SEG_43", "SEG_42", "EnDraw_Rope",
+    "En_RopeMain",     "SEG_43", "SEG_42", "EnDraw_Rope",
+    "En_Wallmaster",   "SEG_44", "SEG_42", "EnDraw_Wallmaster",
 
-    "En_Gibdo",        "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_Goriya",       "SEG_40", "SEG_28", "EnDraw_None",
-    "En_GoriyaBlue",   "SEG_40", "SEG_28", "EnDraw_None",
-    "En_GoriyaMain",   "SEG_40", "SEG_40", "EnDraw_Goriya",
-    "En_Keese",        "SEG_37", "SEG_37", "EnDraw_Keese",
-    "En_Pols",         "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_Stalfos",      "SEG_37", "SEG_28", "EnDraw_Stalfos",
-    "En_Vire",         "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_VireSplit",    "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_Wizrobe",      "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_WizrobeBlue",  "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_Zol",          "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_ZolSplit",     "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_Gibdo",        "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_Goriya",       "SEG_47", "SEG_42", "EnDraw_None",
+    "En_GoriyaBlue",   "SEG_47", "SEG_42", "EnDraw_None",
+    "En_GoriyaMain",   "SEG_47", "SEG_47", "EnDraw_Goriya",
+    "En_Keese",        "SEG_45", "SEG_45", "EnDraw_Keese",
+    "En_Pols",         "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_Stalfos",      "SEG_45", "SEG_42", "EnDraw_Stalfos",
+    "En_Vire",         "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_VireSplit",    "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_Wizrobe",      "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_WizrobeBlue",  "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_Zol",          "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_ZolSplit",     "SEG_NA", "SEG_42", "EnDraw_None",
 
-    "En_Test",         "SEG_35", "SEG_28", "EnDraw_Darknut",
-    "En_TestMissile",  "SEG_35", "SEG_39", "EnDraw_TestMissile",
-    #"En_TestColor",    "SEG_40", "SEG_28", "EnDraw_TestColor",
+    "En_Test",         "SEG_44", "SEG_42", "EnDraw_Darknut",
+    "En_TestMissile",  "SEG_44", "SEG_46", "EnDraw_TestMissile",
+    #"En_TestColor",    "SEG_47", "SEG_42", "EnDraw_TestColor",
 
-    "En_BossGohma",    "SEG_35", "SEG_39", "EnDraw_BossGohma",
-    "En_BossGlock",    "SEG_35", "SEG_39", "EnDraw_BossGlock",
-    "En_BossGlockHead","SEG_35", "SEG_39", "EnDraw_BossGlockHead",
-    "En_BossAqua",     "SEG_40", "SEG_39", "EnDraw_BossAqua",
-    "En_BossManhandla","SEG_40", "SEG_39", "EnDraw_BossManhandla",
-    "En_BossDon",      "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_BossDig",      "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_BossPatra",    "SEG_NA", "SEG_28", "EnDraw_None",
-    "En_BossGanon",    "SEG_NA", "SEG_28", "EnDraw_None",
-    #"EnBoss_Cucco",    "SEG_NA", "SEG_28", "EnDraw_None",
+    "En_BossGohma",    "SEG_44", "SEG_46", "EnDraw_BossGohma",
+    "En_BossGlock",    "SEG_44", "SEG_46", "EnDraw_BossGlock",
+    "En_BossGlockHead","SEG_44", "SEG_46", "EnDraw_BossGlockHead",
+    "En_BossAqua",     "SEG_47", "SEG_46", "EnDraw_BossAqua",
+    "En_BossManhandla","SEG_47", "SEG_46", "EnDraw_BossManhandla",
+    "En_BossDon",      "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_BossDig",      "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_BossPatra",    "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_BossGanon",    "SEG_NA", "SEG_42", "EnDraw_None",
+    #"EnBoss_Cucco",    "SEG_NA", "SEG_42", "EnDraw_None",
 
-    "En_Waterfall",    "SEG_NA", "SEG_39", "EnDraw_Waterfall",
-    "En_RollingRock",  "SEG_37", "SEG_39", "EnDraw_RollingRock",
-    "En_Appear",       "SEG_37", "SEG_39", "EnDraw_Appear",
+    "En_Waterfall",    "SEG_NA", "SEG_46", "EnDraw_Waterfall",
+    "En_RollingRock",  "SEG_45", "SEG_46", "EnDraw_RollingRock",
+    "En_Appear",       "SEG_45", "SEG_46", "EnDraw_Appear",
 ]
 
 RoomScript_Table = [
@@ -143,25 +143,25 @@ RoomScript_Table = [
 ]
 
 tbl = [
-    GameEnum("Entity", "En",
+    GameEnum("En", "En",
     genEditorBindings=False,
     genPtrTable=True,
     genConstants=True,
     vals=Entity_Table[0::4],
     bankLut=Entity_Table[1::4]),
-    GameEnum("EntityDraw", "EnDraw",
+    GameEnum("EnDraw", "EnDraw",
     genEditorBindings=False,
     genPtrTable=True,
     genConstants=False,
     vals=Entity_Table[3::4],
     bankLut=Entity_Table[2::4]),
-    GameEnum("RoomScript", "Rs",
+    GameEnum("Rs", "Rs",
     genEditorBindings=True,
     genPtrTable=True,
     genConstants=True,
     vals=RoomScript_Table[0::2],
     bankLut=None),
-    GameEnum("RoomScriptInit", "RsInit",
+    GameEnum("RsInit", "RsInit",
     genEditorBindings=False,
     genPtrTable=True,
     genConstants=False,
@@ -463,6 +463,8 @@ def DumpPtrAsm():
         out = ""
         l = []
         h = []
+        print(e.name)
+        print(e.shortName)
 
         for item in e.vals:
             l.append(f"<({item}-1)")
@@ -471,7 +473,7 @@ def DumpPtrAsm():
         out += f"{e.name}L:\n" + ToAsm(l,8) + '\n'
         out += f"{e.name}H:\n" + ToAsm(h,8)
 
-        with open(f'gen/{e.name}.asm', "w") as file:
+        with open(f'gen/{e.name}_DelLUT.asm', "w") as file:
             file.write(out)
 
         if e.bankLut is not None:
@@ -481,7 +483,7 @@ def DumpPtrAsm():
             for thing, segment in test:
                 out += f"    .byte  {segment} ; {thing}\n"
 
-            with open(f'gen/{e.name}_bank.asm', "w") as file:
+            with open(f'gen/{e.name}_DelBankLUT.asm', "w") as file:
                 file.write(out)
 
 

@@ -2,7 +2,7 @@
 ; mzxrules 2023
 ;==============================================================================
 
-    INCLUDE "gen/HbPlAtt.asm"
+    INCLUDE "gen/HbPlAtt_DelLUT.asm"
     INCLUDE "gen/hitbox_info.asm"
 
 ; HbDamage tables
