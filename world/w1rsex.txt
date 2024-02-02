@@ -17,7 +17,7 @@ zz0
 Rs_None
 zz0
 Rs_Item
-GiFireMagic
+GiWand
 Rs_None
 zz0
 Rs_Npc

@@ -151,10 +151,10 @@ DRAW_PAUSE_MENU: SUBROUTINE
     sta PGiItems+0
 
 ; Wand
-    lda ITEMV_FIRE_MAGIC
-    and #ITEMF_FIRE_MAGIC
+    lda ITEMV_WAND
+    and #ITEMF_WAND
     beq .setWandItem
-    lda #GI_FIRE_MAGIC
+    lda #GI_WAND
 .setWandItem
     sta PGiItems+1
 

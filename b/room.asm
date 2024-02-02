@@ -62,6 +62,7 @@ LoadRoom: SUBROUTINE
     sta blType
     sta roomPush
     sta plItemTimer
+    sta plItem2Time
     sta KernelId
 
     ; load world bank data

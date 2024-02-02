@@ -35,6 +35,8 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     jsr PlayerPause
 PAUSE_RETURN:
     jsr PlayerInput
+    lda #SLOT_F4_PL2
+    sta BANK_SLOT
     jsr PlayerItem
 .roomLoadCpuSkip
 
@@ -132,11 +134,11 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 ;==============================================================================
 
 ; Check Warp in
-    lda plState2
-    and #PS_ACTIVE_ITEM
-    cmp #PLAYER_FLUTE
+    lda plState3
+    and #PS_ACTIVE_ITEM2
+    cmp #PLAYER_FLUTE_FX
     bne .runCollision
-    bit plItemDir
+    bit plItem2Dir ; PS_CATCH_WIND
     bpl .runCollision
     jmp endPFCollision
 .runCollision

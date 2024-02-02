@@ -86,7 +86,9 @@ En_DarknutMain:
     dec enDarknutStep,x
     bpl .seek_next
     jsr Random
-    and #7
+    clc
+    adc #4
+    and #$1C
     sta enDarknutStep,x
 
     jsr EnMove_Card_WallCheck

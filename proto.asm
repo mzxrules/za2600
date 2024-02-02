@@ -740,14 +740,14 @@ PlayerItem: SUBROUTINE
     pha
     rts
 
-PlayerBomb:
-PlayerArrow:
-PlayerMeat:
-PlayerWand:
-PlayerFlute:
-PlayerFire:
+PlayerUseBomb:
+PlayerUseArrow:
+PlayerUseMeat:
+PlayerUseWand:
+PlayerUseFlute:
+PlayerUseCandle:
 PlayerPotion:
-PlayerSword: SUBROUTINE
+PlayerUseSword: SUBROUTINE
 ; If Item Button, use item
     bit plState
     bvc .skipSlashSword ;PS_USE_ITEM

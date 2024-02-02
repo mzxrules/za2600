@@ -300,11 +300,11 @@ Rs_EntDungBushBlocked: SUBROUTINE ; $40, $1C
 .main
     bit CXM0FB
     bvc .rts
-    lda plState2
-    and #PS_ACTIVE_ITEM
-    cmp #PLAYER_FIRE
+    lda plState3
+    and #PS_ACTIVE_ITEM2
+    cmp #PLAYER_FIRE_FX
     bne .rts
-    ldy plItemTimer
+    ldy plItem2Time
     cpy #ITEM_ANIM_FIRE_BURNBUSH
     bmi .rts
 

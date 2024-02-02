@@ -11,11 +11,17 @@ enX         ds 1
 m0X         ds 1
 m1X         ds 1
 blX         ds 1
+plm0X       ds 1
+plm1X       ds 1
+
 plY         ds 1
 enY         ds 1
 m0Y         ds 1
 m1Y         ds 1
 blY         ds 1
+plm0Y       ds 1
+plm1Y       ds 1
+            ds 2
 
 ; KERNEL VARS
 ; ENH
@@ -63,7 +69,7 @@ roomWA      ds 1
 blType      ds 1 ;
 roomPush    ds 1 ; Room ball state
 blDir       ds 1
-plState     ds 1
+plState     ds 1 ; ---------------
 INPT_FIRE_PREV  = $80 ; 1000_0000 Fire Pressed Last Frame
 PS_USE_ITEM     = $40 ; 0100_0000 Use Current Item Event
 PS_GLIDE        = $20 ; 0010_0000 Move Until Unblocked
@@ -72,7 +78,7 @@ PS_P1_WALL      = $08 ; 0000_1000 P1 Is Wall
 PS_PF_IGNORE    = $04 ; 0000_0100 Playfield Ignore
 PS_LOCK_ALL     = $02 ; 0000_0010 Lock Player
 PS_LOCK_AXIS    = $01 ; 0000_0001 Lock Player Axis - Hover Boots
-plState2    ds 1
+plState2    ds 1 ; ---------------
 PS_HOLD_ITEM    = $80 ; 1000_0000
 EN_LAST_DRAWN   = $40 ; 0100_0000
                       ; xxxx_1xxx RESERVED
@@ -84,6 +90,9 @@ PS_ACTIVE_ITEM  = $07 ; 0000_0111 Mask to fetch current active item
                       ;       100 Flute
                       ;       101 Wand
                       ;       110 Meat?
+plState3    ds 1 ; ---------------
+PS_ACTIVE_ITEM2 = $07 ; 0000_0111 Mask to fetch current secondary item
+
 plStun      ds 1    ; 1111_1100 ; player stun timer
 PL_STUN_TIME = [-30*4] ; Frames of invunerability
 PL_STUN_RT   = [-24*4] ; End of recoil time
@@ -91,18 +100,21 @@ PL_STUN_RT   = [-24*4] ; End of recoil time
 plHealthMax ds 1
 plHealth    ds 1 ; $0 exact for gameover, negative for gameover state is init
 plItemTimer ds 1
-
+plItem2Time ds 1
 ITEM_ANIM_SWORD_STAB_LONG   = -7
 ITEM_ANIM_SWORD_STAB_SHORT  = -1
+ITEM_ANIM_WAND_STAB_LONG    = -7
+ITEM_ANIM_WAND_STAB_SHORT   = -1
 ITEM_ANIM_BOMB_DETONATE     = -11 ; Bombs active detonation
 ITEM_ANIM_BOMB_BREAKWALL    = -6  ;
 ITEM_ANIM_FIRE_BURNBUSH     = -5
+
 plItemDir   ds 1
+plItem2Dir  ds 1
                       ; 0000_0011 Attack Direction, most items
-                      ; 1000_0000 Flute, tornado in on respawn
-                      ;
-    ORG plItemDir
-PauseState  ds 1
+PS_CATCH_WIND   = $80 ; 1000_0000 Flute, tornado in on respawn
+                      ; 0000_0111 Flute selection index
+PauseState  = plItemDir
 itemRupees  ds 1
 itemKeys    ds 1 ; Sign bit = Master Key
 itemBombs   ds 1
@@ -123,7 +135,7 @@ itemFlags   ds 3
     ITEM RAFT,          1,$02
     ITEM BOOTS,         1,$04
     ITEM FLUTE,         1,$08
-    ITEM FIRE_MAGIC,    1,$10
+    ITEM WAND,          1,$10
     ITEM BRACELET,      1,$20
     ITEM RING_BLUE,     1,$40
     ITEM RING_RED,      1,$80
@@ -359,8 +371,6 @@ enTestColorPlColor  ds 1
 
 ;==============================================================================
 
-atan2Temp   ds 1
-
 ; Kernel_World temps
 KERNEL_TEMP ds 6
     ORG KERNEL_TEMP
@@ -491,6 +501,7 @@ MiSysDY         ds 1
 MiSysColDX      ds 1
 MiSysColDY      ds 1
 MiSysColFlag    ds 1
+atan2Temp       ds 1
 
     SEG.U VARS_SHOP_KERNEL
     ORG Temp0
@@ -761,7 +772,7 @@ SLOT_00_HALT_RESERVE1       = 27
 SLOT_00_HALT_RESERVE2       = 28
 
 SLOT_F0_PL      = RAMSEG_F0 | 29
-SLOT_00_PL2     = 30
+SLOT_F4_PL2     = RAMSEG_F4 | 30
 
 SLOT_F0_EN      = RAMSEG_F0 | 31
 SLOT_F0_ENDRAW  = RAMSEG_F0 | 32

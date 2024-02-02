@@ -92,7 +92,7 @@ En_BossManhandla: SUBROUTINE
 
 ; compute damage dealt per head
     ldy HbDamage
-    lda EnDam_Darknut,y
+    lda EnDam_Manhandla,y
     asl
     asl
     asl
@@ -159,7 +159,7 @@ En_BossManhandla: SUBROUTINE
 .endCheckDamaged
 
 ; Check player hit
-    lda enStun,x
+    lda enManhandlaStun,x
     bmi .endCheckHit
     bit CXPPMM
     bpl .endCheckHit

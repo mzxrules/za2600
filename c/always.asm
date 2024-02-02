@@ -70,7 +70,7 @@ GiItemColors:
     .byte COLOR_EN_WHITE    ; GiBoots
     .byte COLOR_EN_TRIFORCE ; GiFlute
 
-    .byte COLOR_EN_RED      ; GiFireMagic
+    .byte COLOR_EN_BLUE     ; GiWand
     .byte COLOR_EN_RED      ; GiBracelet
     .byte COLOR_EN_BLUE     ; GiRingBlue
     .byte COLOR_EN_RED      ; GiRingRed
@@ -114,7 +114,7 @@ GiItemSpr:
     .byte $68   ; GiBoots
     .byte $70   ; GiFlute
 
-    .byte $78   ; GiFireMagic
+    .byte $78   ; GiWand
     .byte $80   ; GiBracelet
     .byte $88   ; GiRingBlue
     .byte $88   ; GiRingRed

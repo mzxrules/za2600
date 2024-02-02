@@ -22,7 +22,8 @@ HALT_FROM_FLUTE:
     bne .runHaltUpdate
 
 .spawnTornado
-    ldx #-8
+    lda #-4
+    sta plItemTimer
     lda itemTri
     beq .noTornado
     lda worldId
@@ -30,13 +31,49 @@ HALT_FROM_FLUTE:
     lda roomId
     bmi .noTornado
 
-    lda plY
-    sta m0Y
-    ldx #-85
-.noTornado
-    stx plItemTimer
+; update next dest if tornado was set
+    ldx #-1
+    lda plState3
+    and #PS_ACTIVE_ITEM2
+    tay
+    cpy #PLAYER_FLUTE_FX
+    bne .loop
+    lda plItem2Dir
+    and #7
+    tax
+.loop
+    inx
+    cpx #8
+    bne .skipRollover
+    ldx #0
+.skipRollover
+    lda Bit8,x
+    and itemTri
+    beq .loop
+; x = next destination index
+
+; If the timer is 0, spawn the tornado and set destination
+    lda plItem2Time
+    beq .spawn_tornado
+; If timer is not zero, but a tornado is active, just update destination
+    cpy #PLAYER_FLUTE_FX
+    beq .update_dest
+    bne .noTornado
+
+.spawn_tornado
+    lda #-85
+    sta plItem2Time
     lda #0
-    sta m0X
+    sta plm1X
+    lda plY
+    sta plm1Y
+    lda #PLAYER_FLUTE_FX
+    sta plState3
+
+.update_dest
+    stx plItem2Dir
+
+.noTornado
     lda #SLOT_F0_PL
     sta BANK_SLOT
     jmp MAIN_UNPAUSE

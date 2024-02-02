@@ -33,6 +33,8 @@ class GameEnum:
             return 0x81 + x
         if self.name == "EnBlockedDir":
             return 1 << x
+        if self.name == "PlItem":
+            return x if x < 8 else (x-8)
         return x
 
 Entity_Table = [
@@ -78,7 +80,7 @@ Entity_Table = [
     "En_Gibdo",        "SEG_NA", "SEG_42", "EnDraw_None",
     "En_Goriya",       "SEG_47", "SEG_42", "EnDraw_None",
     "En_GoriyaBlue",   "SEG_47", "SEG_42", "EnDraw_None",
-    "En_GoriyaMain",   "SEG_47", "SEG_47", "EnDraw_Goriya",
+    "En_GoriyaMain",   "SEG_47", "SEG_42", "EnDraw_Goriya",
     "En_Keese",        "SEG_45", "SEG_45", "EnDraw_Keese",
     "En_Pols",         "SEG_NA", "SEG_42", "EnDraw_None",
     "En_Stalfos",      "SEG_45", "SEG_42", "EnDraw_Stalfos",
@@ -212,7 +214,7 @@ tbl = [
         "GiBoots",
         "GiFlute",
 
-        "GiFireMagic",
+        "GiWand",
         "GiBracelet",
         "GiRingBlue",
         "GiRingRed",
@@ -378,17 +380,82 @@ tbl = [
     bankLut=None),
     GameEnum("PlItem", "PlItem",
     genEditorBindings=False,
-    genPtrTable=True,
+    genPtrTable=False,
     genConstants=True,
     vals=[
         "PlayerSword",
         "PlayerBomb",
         "PlayerArrow",
-        "PlayerFire",
+        "PlayerCandle",
         "PlayerFlute",
         "PlayerWand",
         "PlayerMeat",
         "PlayerPotion",
+
+        "PlayerSwordFx",
+        "PlayerFireFx",
+        "PlayerFluteFx",
+        "PlayerFluteFx2",
+        "PlayerWandFx",
+        "PlayerMeatFx",
+        "PlayerRangFx",
+    ],
+    bankLut=None),
+    GameEnum("PlUseItem", "PlUseItem",
+    genEditorBindings=False,
+    genPtrTable=True,
+    genConstants=False,
+    vals=[
+        "PlayerUseSword",
+        "PlayerUseBomb",
+        "PlayerUseArrow",
+        "PlayerUseCandle",
+        "PlayerUseFlute",
+        "PlayerUseWand",
+        "PlayerUseMeat",
+        "PlayerUsePotion",
+    ],
+    bankLut=None),
+    GameEnum("PlUpdateItem", "PlUpdateItem",
+    genEditorBindings=False,
+    genPtrTable=True,
+    genConstants=False,
+    vals=[
+        "PlayerUpdateSword",    # Sword
+        "PlayerUpdateBomb",     # Bomb
+        "PlayerUpdateArrow",    # Arrow
+        "PlayerUpdateCandle",   # Candle
+        "PlayerUpdateFlute",    # Flute
+        "PlayerUpdateWand",     # Wand
+        "PlayerUpdateMeat",     # Meat
+        "PlayerUpdatePotion",   # Potion
+
+        "PlayerUpdateSwordFx",
+        "PlayerUpdateFireFx",
+        "PlayerUpdateFluteFx",
+        "PlayerUpdateFluteFx2",
+        "PlayerUpdateWandFx",
+    ],
+    bankLut=None),
+    GameEnum("PlDrawItem", "PlDrawItem",
+    genEditorBindings=False,
+    genPtrTable=True,
+    genConstants=False,
+    vals=[
+        "PlayerDrawSword",  # Sword
+        "PlayerDrawBomb",   # Bomb
+        "PlayerDrawArrow",  # Arrow
+        "PlayerDrawSword",  # Candle
+        "PlayerDrawNone",   # Flute
+        "PlayerDrawWand",   # Wand
+        "PlayerDrawMeat",   # Meat
+        "PlayerDrawPotion",
+
+        "PlayerDrawSwordFx",
+        "PlayerDrawFireFx",
+        "PlayerDrawFluteFx",
+        "PlayerDrawFluteFx",
+        "PlayerDrawWandFx",
     ],
     bankLut=None),
     GameEnum("PlItemPick", "PlItemPick",
@@ -415,11 +482,19 @@ tbl = [
         "HbPlSword",
         "HbPlBomb",
         "HbPlBow",
-        "HbPlCandle",
+        "HbPlCandle", # Candle
         "HbPlFlute",
         "HbPlWand",
         "HbPlMeat",
         "HbPlPotion",
+
+        "HbPlSwordFx",
+        "HbPlFireFx",
+        "HbPlFluteFx",
+        "HbPlFluteFx2",
+        "HbPlWandFx",
+        "HbPlMeatFx",
+        "HbPlRangFx",
     ],
     bankLut=None),
 ]
@@ -463,8 +538,6 @@ def DumpPtrAsm():
         out = ""
         l = []
         h = []
-        print(e.name)
-        print(e.shortName)
 
         for item in e.vals:
             l.append(f"<({item}-1)")

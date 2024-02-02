@@ -294,8 +294,8 @@ PickFlute: SUBROUTINE
     rts
 
 PickWand: SUBROUTINE
-    lda ITEMV_FIRE_MAGIC
-    and #ITEMF_FIRE_MAGIC
+    lda ITEMV_WAND
+    and #ITEMF_WAND
     rts
 
 PickMeat: SUBROUTINE

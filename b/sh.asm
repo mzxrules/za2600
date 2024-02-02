@@ -199,7 +199,7 @@ GiBow:
 GiRaft:
 GiBoots:
 GiFlute:
-GiFireMagic:
+GiWand:
 GiBracelet:
 GiRingBlue:
     lda Bit8-GI_BOW,x

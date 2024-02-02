@@ -331,6 +331,7 @@ BANK_23
     ORG $6000
     RORG $F400
 
+BANK_24
 DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_PAUSE_DRAW_MENU2
     INCLUDE "c/draw_pause_world.asm"
     INCLUDE "c/draw_pause_menu.asm"
@@ -392,7 +393,6 @@ BANK_28
     RORG $F000
 
 BANK_29
-    INCLUDE "gen/PlItem_DelLUT.asm"
     INCLUDE "c/player_input.asm"
 
     LOG_BANK_SIZE "-BANK 29- Player", BANK_29
@@ -402,9 +402,13 @@ BANK_29
 ; ****************************************
     SEG Bank30
     ORG $7800
-    RORG $F000
+    RORG $F400
 
 BANK_30
+    INCLUDE "gen/PlUseItem_DelLUT.asm"
+    INCLUDE "gen/PlUpdateItem_DelLUT.asm"
+    INCLUDE "gen/PlDrawItem_DelLUT.asm"
+    INCLUDE "c/player_item.asm"
     LOG_BANK_SIZE "-BANK 30- Player RESERVE", BANK_30
 
 ; ****************************************

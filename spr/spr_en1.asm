@@ -233,41 +233,41 @@ SprE25:
     .byte $00 ; |........|
     .byte $00 ; |........|
 SprE26:
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $66 ; |.XX..XX.|
+    .byte $24 ; |..X..X..|
+    .byte $18 ; |...XX...|
+    .byte $5A ; |.X.XX.X.|
+    .byte $99 ; |X..XX..X|
+    .byte $99 ; |X..XX..X|
+    .byte $BD ; |X.XXXX.X|
+    .byte $42 ; |.X....X.|
 SprE27:
     .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $66 ; |.XX..XX.|
+    .byte $5A ; |.X.XX.X.|
+    .byte $18 ; |...XX...|
+    .byte $5A ; |.X.XX.X.|
+    .byte $99 ; |X..XX..X|
+    .byte $BD ; |X.XXXX.X|
+    .byte $42 ; |.X....X.|
 SprE28:
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $66 ; |.XX..XX.|
+    .byte $24 ; |..X..X..|
+    .byte $18 ; |...XX...|
+    .byte $7E ; |.XXXXXX.|
+    .byte $FF ; |XXXXXXXX|
+    .byte $D7 ; |XX.X.XXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $5A ; |.X.XX.X.|
 SprE29:
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $66 ; |.XX..XX.|
+    .byte $24 ; |..X..X..|
+    .byte $18 ; |...XX...|
+    .byte $7E ; |.XXXXXX.|
+    .byte $FF ; |XXXXXXXX|
+    .byte $D7 ; |XX.X.XXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $5A ; |.X.XX.X.|
 SprE30:
     .byte $00 ; |........|
     .byte $00 ; |........|

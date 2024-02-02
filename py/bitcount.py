@@ -19,13 +19,21 @@ HITBOX_INFO = [
     (2, 8, 0),
     (2, 8, 0),
 # sword retract
-    (4, 2, 0),
-    (4, 2, 0),
-    (2, 4, 0),
-    (2, 4, 0),
+    #(4, 2, 0),
+    #(4, 2, 0),
+    #(2, 4, 0),
+    #(2, 4, 0),
 
     (4, 4, 0),
     (8, 8, 0),
+]
+
+HITBOX_INFO_CONST = [
+    ("HITBOX_AA_NONE", 0),
+    ("HITBOX_AA_SWORD", 1),
+    ("HITBOX_AA_SQ4", 5),
+    ("HITBOX_AA_SQ8", 6),
+    ("HITBOX_AA_COUNT", len(HITBOX_INFO)),
 ]
 
 HITBOX_INFO2 = [
@@ -55,7 +63,12 @@ def get_hitbox_info():
             aa_w_PLUS_bb_w.append(aa_w + bb_w -1)
             aa_h_PLUS_bb_h.append(aa_h + bb_h -1)
 
+    hitbox_aa_const = ""
+    for name, val in HITBOX_INFO_CONST:
+        hitbox_aa_const += f"{name} = {val}\n"
+
     with open(f'gen/hitbox_info.asm', "w") as file:
+        file.write(hitbox_aa_const)
         file.write("hitbox_aa_ox:\n")
         file.write(ToAsm(aa_ox, len(HITBOX_INFO)))
         file.write("hitbox_aa_oy:\n")

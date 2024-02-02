@@ -134,14 +134,14 @@ SprItem14:
     .byte $14 ; |...X.X..|
     .byte $1C ; |...XXX..|
 SprItem15:
-    .byte $3C ; |..XXXX..|
-    .byte $66 ; |.XX..XX.|
-    .byte $C3 ; |XX....XX|
-    .byte $D3 ; |XX.X..XX|
-    .byte $C7 ; |XX...XXX|
-    .byte $6E ; |.XX.XXX.|
-    .byte $39 ; |..XXX..X|
-    .byte $14 ; |...X.X..|
+    .byte $10 ; |...X....|
+    .byte $10 ; |...X....|
+    .byte $10 ; |...X....|
+    .byte $10 ; |...X....|
+    .byte $10 ; |...X....|
+    .byte $54 ; |.X.X.X..|
+    .byte $28 ; |..X.X...|
+    .byte $38 ; |..XXX...|
 SprItem16:
     .byte $3C ; |..XXXX..|
     .byte $4A ; |.X..X.X.|

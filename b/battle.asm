@@ -15,6 +15,7 @@ EnDam_Octorok:
 EnDam_Wallmaster:
 EnDam_Stalfos:
 EnDam_Manhandla:
+EnDam_Common:
     .byte -1, -2, -4, -1, -1, -4
 
 HbGetPlAtt: SUBROUTINE
@@ -27,7 +28,14 @@ HbGetPlAtt: SUBROUTINE
     sta Hb_aa_y
 
     lda plItemTimer
-    beq .rts
+    beq .hbFxTimeTest
+
+    lda plItem2Time
+    beq .hbStandard
+    ror
+    bcs .hbFx
+
+.hbStandard
     lda plState2
     and #PS_ACTIVE_ITEM
     tay
@@ -38,8 +46,51 @@ HbGetPlAtt: SUBROUTINE
     ldy plItemTimer
 .rts
     rts
+.hbFxTimeTest
+    lda plItem2Time
+    beq .rts
+.hbFx
+    lda plState3
+    and #PS_ACTIVE_ITEM2
+    tay
+    lda HbPlAttH+8,y
+    pha
+    lda HbPlAttL+8,y
+    pha
+HbPlSwordFx:
+HbPlFluteFx:
+HbPlFluteFx2:
+HbPlMeatFx:
+HbPlRangFx:
+    rts
 
 HbPlWand: SUBROUTINE
+    lda #HB_PL_SWORD
+    sta HbPlFlags
+    cpy #ITEM_ANIM_WAND_STAB_SHORT
+    bcs .rts ; if y >= Stab Short
+    cpy #ITEM_ANIM_WAND_STAB_LONG
+    bcc .rts ; if y < Stab Short
+    ldy plItemDir
+    iny ; HITBOX_AA_SWORD + plItemDir
+    sty Hb_aa_Box
+    lda #HB_DMG_SWORD2
+    sta HbDamage
+.rts
+    rts
+
+HbPlWandFx: SUBROUTINE
+    lda #HITBOX_AA_SQ4
+    sta Hb_aa_Box
+    lda #HB_DMG_FIRE
+    sta HbDamage
+    lda plm1X
+    sta Hb_aa_x
+    lda plm1Y
+    sta Hb_aa_y
+    rts
+
+HbPlCandle: SUBROUTINE
 HbPlSword: SUBROUTINE
     lda #HB_PL_SWORD
     sta HbPlFlags
@@ -48,7 +99,7 @@ HbPlSword: SUBROUTINE
     cpy #ITEM_ANIM_SWORD_STAB_LONG
     bcc .rts ; if y < Stab Short
     ldy plItemDir
-    iny
+    iny ; HITBOX_AA_SWORD + plItemDir
     sty Hb_aa_Box
 
     ldy #HB_DMG_SWORD3
@@ -67,7 +118,7 @@ HbPlSword: SUBROUTINE
 HbPlBomb: SUBROUTINE
     cpy #ITEM_ANIM_BOMB_DETONATE
     bcc .rts
-    lda #10 ; 8x8 hitbox
+    lda #HITBOX_AA_SQ8 ; 8x8 hitbox
     sta Hb_aa_Box
     lda #HB_DMG_BOMB
     sta HbDamage
@@ -77,9 +128,8 @@ HbPlBomb: SUBROUTINE
     rts
 
 HbPlBow: SUBROUTINE
-    lda m0Y
     ldy plItemDir
-    iny
+    iny ; HITBOX_AA_SWORD + plItemDir
     sty Hb_aa_Box
     lda #HB_DMG_ARROW
     sta HbDamage
@@ -88,8 +138,8 @@ HbPlBow: SUBROUTINE
 .rts
     rts
 
-HbPlCandle: SUBROUTINE
-    lda #9 ; 4x4 hitbox
+HbPlFireFx:
+    lda #HITBOX_AA_SQ4 ; 4x4 hitbox
     sta Hb_aa_Box
     lda #HB_DMG_FIRE
     sta HbDamage
@@ -107,7 +157,7 @@ HbManhandla: SUBROUTINE
     lda Hb_aa_Box
     beq .rts
     clc
-    adc #11
+    adc #HITBOX_AA_COUNT
     sta Hb_aa_Box
 .rts
     rts
@@ -215,7 +265,7 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
 
 .gethit
     ldy HbDamage
-    lda EnDam_Darknut,y
+    lda EnDam_Common,y
 .gethit_override_damage
     clc
     adc enHp,x
