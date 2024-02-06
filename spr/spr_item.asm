@@ -188,14 +188,14 @@ SprItem20:
     .byte $D8 ; |XX.XX...|
     .byte $40 ; |.X......|
 SprItem21:
+    .byte $00 ; |........|
     .byte $7E ; |.XXXXXX.|
-    .byte $66 ; |.XX..XX.|
-    .byte $7A ; |.XXXX.X.|
-    .byte $6A ; |.XX.X.X.|
+    .byte $6E ; |.XX.XXX.|
     .byte $52 ; |.X.X..X.|
     .byte $6E ; |.XX.XXX.|
     .byte $52 ; |.X.X..X.|
     .byte $7E ; |.XXXXXX.|
+    .byte $00 ; |........|
 SprItem22:
     .byte $00 ; |........|
     .byte $3C ; |..XXXX..|

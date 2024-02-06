@@ -6,7 +6,7 @@ PosMenuObject: SUBROUTINE
     INCLUDE "c/sub_PosObject.asm"
 
 ;   Sword, Bomb, Bow,   Candle
-;   Flute, Wand, Meat,  Potion
+;   Flute, Wand, Meat,  Rang
 DRAW_PAUSE_MENU: SUBROUTINE
 
     lda #%00110000 ; ball size 8, reflect playfield
@@ -83,41 +83,9 @@ DRAW_PAUSE_MENU: SUBROUTINE
 
 ; Bow
     lda ITEMV_BOW
-    and #ITEMF_BOW
-    beq .tryDisplayArrow
-
-    lda ITEMV_ARROW
+    and #7
     tax
-    and #ITEMF_ARROW_SILVER
-    bne .displayBowArrowSilver
-    txa
-    and #ITEMF_ARROW
-    bne .displayBowArrow
-    lda #GI_BOW
-    bpl .setBowItem
-.displayBowArrow
-    lda #GI_BOW_ARROW
-    bpl .setBowItem
-
-.displayBowArrowSilver
-    lda #GI_BOW_ARROW_SILVER
-    bpl .setBowItem
-
-
-.tryDisplayArrow
-    lda ITEMV_ARROW
-    tax
-    and #ITEMF_ARROW_SILVER
-    bne .displaySilverArrow
-    txa
-    and #ITEMF_ARROW
-    beq .setBowItem
-    lda #GI_ARROW
-    bpl .setBowItem
-
-.displaySilverArrow
-    lda #GI_ARROW_SILVER
-
+    lda draw_pause_menu_bow_gi_disp,x
 .setBowItem
     sta PGiItems+2
 
@@ -136,10 +104,10 @@ DRAW_PAUSE_MENU: SUBROUTINE
     sta PGiItems+3
 
 ; Precompute first 4 item's sprite ptr and colors
-    INCLUDE "c/draw_pause_item4_init.asm"
+    jsr draw_pause_item4_init
 
 ;==============================================================================
-; Initialize PGiItems for Flute, Wand, Meat, Potion
+; Initialize PGiItems for Flute, Wand, Meat, Rang
 ;==============================================================================
 
 ; Flute
@@ -152,9 +120,9 @@ DRAW_PAUSE_MENU: SUBROUTINE
 
 ; Wand
     lda ITEMV_WAND
-    and #ITEMF_WAND
-    beq .setWandItem
-    lda #GI_WAND
+    and #3
+    tax
+    lda draw_pause_menu_wand_gi_disp,x
 .setWandItem
     sta PGiItems+1
 
@@ -166,22 +134,12 @@ DRAW_PAUSE_MENU: SUBROUTINE
 .setMeatItem
     sta PGiItems+2
 
-; Potion
-    bit ITEMV_POTION_RED
-    bmi .displayPotionRed
-    bvs .displayPotionBlue
-    lda ITEMV_NOTE
-    and #ITEMF_NOTE
-    beq .setPotionItem
-    lda #GI_NOTE
-    bpl .setPotionItem
-.displayPotionRed
-    lda #GI_POTION_RED
-    bpl .setPotionItem
-
-.displayPotionBlue
-    lda #GI_POTION_BLUE
-.setPotionItem
+; Rang
+    lda ITEMV_RANG
+    and #ITEMF_RANG
+    beq .setRangItem
+    lda #GI_RANG
+.setRangItem
     sta PGiItems+3
 
 KERNEL_PAUSE_MENU_MAIN: SUBROUTINE ; 192 scanlines
@@ -258,7 +216,7 @@ KERNEL_PAUSE_MENU_MAIN: SUBROUTINE ; 192 scanlines
 ; Draw Bottom Row Items
 ;==============================================================================
     SUBROUTINE
-    INCLUDE "c/draw_pause_item4_init.asm"
+    jsr draw_pause_item4_init
     INCLUDE "c/draw_pause_item4_kernel.asm"
 
 ;==============================================================================
@@ -306,6 +264,50 @@ KERNEL_PAUSE_MENU_MAIN: SUBROUTINE ; 192 scanlines
 
     sta WSYNC
     sta WSYNC
+
+; Raft
+    lda ITEMV_RAFT
+    and #ITEMF_RAFT
+    beq .setRaftItem
+    lda #GI_RAFT
+.setRaftItem
+    sta PGiItems+0
+; Boots
+    lda ITEMV_BOOTS
+    and #ITEMF_BOOTS
+    beq .setBootsItem
+    lda #GI_BOOTS
+.setBootsItem
+    sta PGiItems+1
+; Bracelet
+    lda ITEMV_BRACELET
+    and #ITEMF_BRACELET
+    beq .setBraceletItem
+    lda #GI_BRACELET
+.setBraceletItem
+    sta PGiItems+2
+
+; Potion
+    bit ITEMV_POTION_RED
+    bmi .displayPotionRed
+    bvs .displayPotionBlue
+    lda ITEMV_NOTE
+    and #ITEMF_NOTE
+    beq .setPotionItem
+    lda #GI_NOTE
+    bpl .setPotionItem
+.displayPotionRed
+    lda #GI_POTION_RED
+    bpl .setPotionItem
+
+.displayPotionBlue
+    lda #GI_POTION_BLUE
+.setPotionItem
+    sta PGiItems+3
+
+    SUBROUTINE
+    jsr draw_pause_item4_init
+    INCLUDE "c/draw_pause_item4_kernel.asm"
     jmp DRAW_PAUSE_MENU_TRI
 
 draw_pause_menu_item_cursor_pos:
@@ -313,3 +315,23 @@ draw_pause_menu_item_cursor_pos:
 
 draw_pause_menu_item_sprite_zp:
     .byte #<PItemSpr0, #<PItemSpr1, #<PItemSpr2, #<PItemSpr3
+
+draw_pause_menu_bow_gi_disp:
+    .byte #GI_NONE
+    .byte #GI_BOW
+    .byte #GI_ARROW
+    .byte #GI_BOW_ARROW
+    .byte #GI_ARROW_SILVER
+    .byte #GI_BOW_ARROW_SILVER
+    .byte #GI_ARROW_SILVER
+    .byte #GI_BOW_ARROW_SILVER
+
+draw_pause_menu_wand_gi_disp:
+    .byte #GI_NONE
+    .byte #GI_WAND
+    .byte #GI_BOOK
+    .byte #GI_WAND_BOOK
+
+draw_pause_item4_init: SUBROUTINE
+    INCLUDE "c/draw_pause_item4_init.asm"
+    rts

@@ -61,25 +61,29 @@ GiItemColors:
     .byte COLOR_EN_TRIFORCE ; GiMasterKey
 
     .byte COLOR_EN_BROWN    ; GiShield
+    .byte COLOR_EN_TRIFORCE ; GiFlute
+
+    .byte COLOR_EN_RED      ; GiMeat
     .byte COLOR_EN_BROWN    ; GiSword1
     .byte COLOR_EN_GRAY_L   ; GiSword2
     .byte COLOR_EN_WHITE    ; GiSword3
 
-    .byte COLOR_EN_BROWN    ; GiBow
-    .byte COLOR_EN_BROWN    ; GiRaft
-    .byte COLOR_EN_WHITE    ; GiBoots
-    .byte COLOR_EN_TRIFORCE ; GiFlute
-
     .byte COLOR_EN_BLUE     ; GiWand
+    .byte COLOR_EN_RED      ; GiBook
+    .byte COLOR_EN_BLUE     ; GiRang
+    .byte COLOR_EN_BROWN    ; GiRaft
+
+    .byte COLOR_EN_WHITE    ; GiBoots
     .byte COLOR_EN_RED      ; GiBracelet
     .byte COLOR_EN_BLUE     ; GiRingBlue
     .byte COLOR_EN_RED      ; GiRingRed
 
+    .byte COLOR_EN_BROWN    ; GiBow
     .byte COLOR_EN_TRIFORCE ; GiArrow
     .byte COLOR_EN_WHITE    ; GiArrowSilver
     .byte COLOR_EN_BLUE     ; GiCandleBlue
+
     .byte COLOR_EN_RED      ; GiCandleRed
-    .byte COLOR_EN_RED      ; GiMeat
     .byte COLOR_EN_BLUE     ; GiNote
     .byte COLOR_EN_BLUE     ; GiPotionBlue
     .byte COLOR_EN_RED      ; GiPotionRed
@@ -88,6 +92,7 @@ GiItemColors:
     .byte COLOR_EN_TRIFORCE ; GiCompass
     .byte COLOR_EN_BROWN    ; GiBowArrow
     .byte COLOR_EN_WHITE    ; GiBowArrowSilver
+    .byte COLOR_PF_PURPLE   ; GiWandBook
 
 
 GiItemSpr:
@@ -105,25 +110,29 @@ GiItemSpr:
     .byte $40   ; GiMasterKey
 
     .byte $D0   ; GiShield
+    .byte $70   ; GiFlute
+
+    .byte $A0   ; GiMeat
     .byte $48   ; GiSword1
     .byte $48   ; GiSword2
     .byte $50   ; GiSword3
 
-    .byte $58   ; GiBow
-    .byte $60   ; GiRaft
-    .byte $68   ; GiBoots
-    .byte $70   ; GiFlute
-
     .byte $78   ; GiWand
+    .byte $E0   ; GiBook
+    .byte $C8   ; GiRang
+    .byte $60   ; GiRaft
+
+    .byte $68   ; GiBoots
     .byte $80   ; GiBracelet
     .byte $88   ; GiRingBlue
     .byte $88   ; GiRingRed
 
+    .byte $58   ; GiBow
     .byte $90   ; GiArrow
     .byte $90   ; GiArrowSilver
     .byte $98   ; GiCandleBlue
+
     .byte $98   ; GiCandleRed
-    .byte $A0   ; GiMeat
     .byte $A8   ; GiNote
     .byte $B0   ; GiPotionBlue
     .byte $B0   ; GiPotionRed
@@ -132,6 +141,8 @@ GiItemSpr:
     .byte $D8   ; GiCompass
     .byte $C0   ; GiBowArrow
     .byte $C0   ; GiBowArrowSilver
+
+    .byte $78   ; GiWandBook
 
 VERTICAL_SYNC: SUBROUTINE
     lda #2

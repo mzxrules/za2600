@@ -144,6 +144,56 @@ RoomScript_Table = [
     "Rs_GameOver",                  "RsInit_None",
 ]
 
+GiValues_Table = [
+    "GiNone",
+    "GiRecoverHeart",
+    "GiFairy",
+    "GiBomb",
+
+    "GiRupee",
+    "GiRupee5",
+    "GiTriforce",
+    "GiHeart",
+# above items have hardcoded ordering, and flash blue
+    "GiKey",
+    "GiMasterKey",
+
+    "GiShield",
+    "GiFlute",
+
+    "GiMeat",
+    "GiSword1",
+    "GiSword2",
+    "GiSword3",
+
+    "GiWand",
+    "GiBook",
+    "GiRang",
+    "GiRaft",
+
+    "GiBoots",
+    "GiBracelet",
+    "GiRingBlue",
+    "GiRingRed",
+
+    "GiBow",
+    "GiArrow",
+    "GiArrowSilver",
+    "GiCandleBlue",
+
+    "GiCandleRed",
+    "GiNote",
+    "GiPotionBlue",
+    "GiPotionRed",
+
+    "GiMap",
+    "GiCompass",
+# below items are not real items
+    "GiBowArrow",
+    "GiBowArrowSilver",
+    "GiWandBook",
+]
+
 tbl = [
     GameEnum("En", "En",
     genEditorBindings=False,
@@ -189,52 +239,14 @@ tbl = [
     GameEnum("ItemId", "Gi",
     genEditorBindings=True,
     genPtrTable=True,
+    genConstants=False,
+    vals=GiValues_Table[:-3],
+    bankLut=None),
+    GameEnum("ItemId", "Gi",
+    genEditorBindings=True,
+    genPtrTable=False,
     genConstants=True,
-    vals=[
-        "GiNone",
-        "GiRecoverHeart",
-        "GiFairy",
-        "GiBomb",
-
-        "GiRupee",
-        "GiRupee5",
-        "GiTriforce",
-        "GiHeart",
-# above items have hardcoded ordering, and flash blue
-        "GiKey",
-        "GiMasterKey",
-
-        "GiShield",
-        "GiSword1",
-        "GiSword2",
-        "GiSword3",
-
-        "GiBow",
-        "GiRaft",
-        "GiBoots",
-        "GiFlute",
-
-        "GiWand",
-        "GiBracelet",
-        "GiRingBlue",
-        "GiRingRed",
-
-        "GiArrow",
-        "GiArrowSilver",
-        "GiCandleBlue",
-        "GiCandleRed",
-
-        "GiMeat",
-        "GiNote",
-        "GiPotionBlue",
-        "GiPotionRed",
-
-        "GiMap",
-        "GiCompass",
-# below items are not real items
-        "GiBowArrow",
-        "GiBowArrowSilver",
-    ],
+    vals=GiValues_Table,
     bankLut=None),
     GameEnum("MusicSeq", "Ms",
     genEditorBindings=False,
@@ -537,6 +549,8 @@ def DumpConstants():
 
 def DumpPtrAsm():
     for e in tbl:
+        if e.genPtrTable is False:
+            continue
         out = ""
         l = []
         h = []

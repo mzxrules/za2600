@@ -179,44 +179,41 @@ GiRecoverHeart:
     jmp UPDATE_PL_HEALTH
 
 GiShield:
-    lda #ITEMF_SHIELD
-    ora ITEMV_SHIELD
-    sta ITEMV_SHIELD
-    rts
-
+GiFlute:
+GiMeat:
 GiSword1:
 GiSword2:
 GiSword3:
-    lda Bit8+5-GI_SWORD1,x
+    lda Bit8+2-GI_SHIELD,x
     ora itemFlags
     sta itemFlags
     rts
 
 GiRingRed:
     lda #[ITEMF_RING_RED | ITEMF_RING_BLUE]
-    bmi .cGiRedRing
-GiBow:
+    bmi .cGiRedRing ; JMP
+GiWand:
+GiBook:
+GiRang:
 GiRaft:
 GiBoots:
-GiFlute:
-GiWand:
 GiBracelet:
 GiRingBlue:
-    lda Bit8-GI_BOW,x
+    lda Bit8-GI_WAND,x
 .cGiRedRing
     ora itemFlags+1
     sta itemFlags+1
     rts
 
+GiBow:
 GiArrow:
 GiArrowSilver:
 GiCandleBlue:
 GiCandleRed:
-GiMeat:
 GiNote:
 GiPotionBlue:
 GiPotionRed:
-    lda Bit8-GI_ARROW,x
+    lda Bit8-GI_BOW,x
     ora itemFlags+2
     sta itemFlags+2
     rts
@@ -279,8 +276,6 @@ GiCompass: SUBROUTINE
     rts
 
 GiNone:
-GiBowArrow:
-GiBowArrowSilver:
     rts
 
 ;==============================================================================

@@ -156,8 +156,8 @@ Rs_Item
 GiHeart
 Rs_Item
 GiKey
-Rs_None
-zz0
+Rs_Item
+GiRang
 Rs_None
 zz0
 Rs_Item

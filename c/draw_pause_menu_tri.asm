@@ -2,7 +2,16 @@
 ; mzxrules 2022
 ;==============================================================================
 DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_PAUSE_DRAW_MENU2
+    lda worldId
+    beq .continue_draw_tri
+    ldy #17
+.line_delay
+    sta WSYNC
+    dey
+    bpl .line_delay
+    jmp draw_pause_menu_map
 
+.continue_draw_tri
 ;==============================================================================
 ; Initialize Sprite
 ;==============================================================================
@@ -107,10 +116,18 @@ DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_PAUSE_DRAW_MENU2
     sta GRP0            ; 3 (66)
     sta REFP1 ; Disable P1 mirroring
 
+    lda #%00110001 ; ball size 8, reflect playfield
+    sta CTRLPF
+    lda #0
+    sta COLUP0
+    sta COLUP1
+    ldy #86
+    jmp draw_pause_finish_frame
+
 ;==============================================================================
 ; Map Draw Test
 ;==============================================================================
-
+draw_pause_menu_map:
 ; Reset CTRLPF
     lda #%00110001 ; ball size 8, reflect playfield
     sta CTRLPF
@@ -122,8 +139,9 @@ DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_PAUSE_DRAW_MENU2
 ;==============================================================================
 ; Finish Frame
 ;==============================================================================
-    ldy #107-86
+    ldy #21
 .dummy_end
+draw_pause_finish_frame:
     sta WSYNC
     dey
     bne .dummy_end

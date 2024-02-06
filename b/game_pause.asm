@@ -274,13 +274,14 @@ PickBomb: SUBROUTINE
 
 PickBow: SUBROUTINE
     lda ITEMV_BOW
-    and #ITEMF_BOW
-    beq .rts
-    lda ITEMV_ARROW
-    and #[ITEMF_ARROW | ITEMF_ARROW_SILVER]
-    beq .rts
+    ror ; #ITEMF_BOW
+    bcc .skip
+    and #[[ITEMF_ARROW | ITEMF_ARROW_SILVER]>>1]
+    beq .skip
     lda itemRupees
-.rts
+    rts
+.skip
+    lda #0
     rts
 
 PickCandle: SUBROUTINE
@@ -304,8 +305,8 @@ PickMeat: SUBROUTINE
     rts
 
 PickRang: SUBROUTINE
-    lda ITEMV_POTION_RED
-    and #[ITEMF_POTION_RED | ITEMF_POTION_BLUE | ITEMF_NOTE]
+    lda ITEMV_RANG
+    and #ITEMF_RANG
     rts
 
 PickItemDel:

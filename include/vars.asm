@@ -136,24 +136,26 @@ itemFlags   ds 3
     ITEM COMPASS_1,     0,$01
     ITEM MAP_1,         0,$02
     ITEM SHIELD,        0,$04
+    ITEM FLUTE,         0,$08
+    ITEM MEAT,          0,$10
     ITEM SWORD1,        0,$20
     ITEM SWORD2,        0,$40
     ITEM SWORD3,        0,$80
 
-    ITEM BOW,           1,$01
-    ITEM RAFT,          1,$02
-    ITEM BOOTS,         1,$04
-    ITEM FLUTE,         1,$08
-    ITEM WAND,          1,$10
+    ITEM WAND,          1,$01
+    ITEM BOOK,          1,$02
+    ITEM RANG,          1,$04
+    ITEM RAFT,          1,$08
+    ITEM BOOTS,         1,$10
     ITEM BRACELET,      1,$20
     ITEM RING_BLUE,     1,$40
     ITEM RING_RED,      1,$80
 
-    ITEM ARROW,         2,$01
-    ITEM ARROW_SILVER,  2,$02
-    ITEM CANDLE_BLUE,   2,$04
-    ITEM CANDLE_RED,    2,$08
-    ITEM MEAT,          2,$10
+    ITEM BOW,           2,$01
+    ITEM ARROW,         2,$02
+    ITEM ARROW_SILVER,  2,$04
+    ITEM CANDLE_BLUE,   2,$08
+    ITEM CANDLE_RED,    2,$10
     ITEM NOTE,          2,$20
     ITEM POTION_BLUE,   2,$40
     ITEM POTION_RED,    2,$80
