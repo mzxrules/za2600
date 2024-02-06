@@ -66,7 +66,7 @@ PAUSE_FROM_GAME:
 ; blink dungeon map position
     lda Frame
     clc
-    adc $4
+    adc #$3
     and #7
     sta PMapY
     lda roomId
@@ -303,7 +303,7 @@ PickMeat: SUBROUTINE
     and #ITEMF_MEAT
     rts
 
-PickPotion: SUBROUTINE
+PickRang: SUBROUTINE
     lda ITEMV_POTION_RED
     and #[ITEMF_POTION_RED | ITEMF_POTION_BLUE | ITEMF_NOTE]
     rts

@@ -44,7 +44,7 @@ EnDraw_SmallMissile: SUBROUTINE
     lda #1
     sta wM1H
     lda rNUSIZ1_T
-    ora %10000
+    ora #%10000
     sta wNUSIZ1_T
 .rts
     rts

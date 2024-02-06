@@ -303,7 +303,7 @@ tbl = [
     bankLut=None),
     GameEnum("PlMoveDir", "PlDir",
     genEditorBindings=False,
-    genPtrTable=True,
+    genPtrTable=False,
     genConstants=True,
     vals=[
         "PlDirR",
@@ -390,12 +390,12 @@ tbl = [
         "PlayerFlute",
         "PlayerWand",
         "PlayerMeat",
-        "PlayerPotion",
+        "PlayerRang",
 
         "PlayerSwordFx",
         "PlayerFireFx",
         "PlayerFluteFx",
-        "PlayerFluteFx2",
+        "PlayerFluteFx2", # Must be AND $FE to PlayerFluteFx
         "PlayerWandFx",
         "PlayerMeatFx",
         "PlayerRangFx",
@@ -413,7 +413,7 @@ tbl = [
         "PlayerUseFlute",
         "PlayerUseWand",
         "PlayerUseMeat",
-        "PlayerUsePotion",
+        "PlayerUseRang",
     ],
     bankLut=None),
     GameEnum("PlUpdateItem", "PlUpdateItem",
@@ -422,19 +422,20 @@ tbl = [
     genConstants=False,
     vals=[
         "PlayerUpdateSword",    # Sword
-        "PlayerUpdateBomb",     # Bomb
+        "PlayerUpdateNone",     # Bomb
         "PlayerUpdateArrow",    # Arrow
-        "PlayerUpdateCandle",   # Candle
-        "PlayerUpdateFlute",    # Flute
+        "PlayerUpdateNone",     # Candle
+        "PlayerUpdateNone",     # Flute
         "PlayerUpdateWand",     # Wand
-        "PlayerUpdateMeat",     # Meat
-        "PlayerUpdatePotion",   # Potion
+        "PlayerUpdateNone",     # Meat
+        "PlayerUpdateNone",     # Rang
 
-        "PlayerUpdateSwordFx",
-        "PlayerUpdateFireFx",
+        "PlayerUpdateSwordFx",  # SwordFx
+        "PlayerUpdateNone",     # FireFx
         "PlayerUpdateFluteFx",
         "PlayerUpdateFluteFx2",
         "PlayerUpdateWandFx",
+        "PlayerUpdateMeatFx",
     ],
     bankLut=None),
     GameEnum("PlDrawItem", "PlDrawItem",
@@ -448,14 +449,15 @@ tbl = [
         "PlayerDrawSword",  # Candle
         "PlayerDrawNone",   # Flute
         "PlayerDrawWand",   # Wand
-        "PlayerDrawMeat",   # Meat
-        "PlayerDrawPotion",
+        "PlayerDrawSword",  # Meat
+        "PlayerDrawNone",   # Rang
 
         "PlayerDrawSwordFx",
         "PlayerDrawFireFx",
         "PlayerDrawFluteFx",
         "PlayerDrawFluteFx",
         "PlayerDrawWandFx",
+        "PlayerDrawMeatFx",
     ],
     bankLut=None),
     GameEnum("PlItemPick", "PlItemPick",
@@ -470,7 +472,7 @@ tbl = [
         "PickFlute",
         "PickWand",
         "PickMeat",
-        "PickPotion",
+        "PickRang",
     ],
     bankLut=None),
 
@@ -482,19 +484,19 @@ tbl = [
         "HbPlSword",
         "HbPlBomb",
         "HbPlBow",
-        "HbPlCandle", # Candle
-        "HbPlFlute",
+        "HbPlSword",    # Candle
+        "HbPlNone",     # Flute
         "HbPlWand",
-        "HbPlMeat",
-        "HbPlPotion",
+        "HbPlSword",    # Meat
+        "HbPlSword",    # Rang
 
-        "HbPlSwordFx",
-        "HbPlFireFx",
-        "HbPlFluteFx",
-        "HbPlFluteFx2",
-        "HbPlWandFx",
-        "HbPlMeatFx",
-        "HbPlRangFx",
+        "HbPlSwordFx",  # SwordFx
+        "HbPlFireFx",   # FireFx
+        "HbPlNone",     # FluteFx
+        "HbPlNone",     # FluteFx2
+        "HbPlWandFx",   # WandFx
+        "HbPlNone",     # MeatFx
+        "HbPlRangFx",   # RangFx
     ],
     bankLut=None),
 ]

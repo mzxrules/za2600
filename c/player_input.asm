@@ -70,11 +70,11 @@ PlayerInput: SUBROUTINE
     lda plStun
     and #3
     tay ; plRecoilDir
-    ldx PlayerXYAddr,y      ; 4
-    lda #$00,x              ; 4
+    ldx ObjXYAddr,y      ; 4
+    lda OBJ_PL,x            ; 4
     clc
     adc PlayerRecoilDist,y  ; 4*
-    sta #$00,x              ; 4
+    sta OBJ_PL,x            ; 4
 ; clamp recoil movement to board bounds
     ldx plX
     ldy plY
@@ -210,9 +210,6 @@ MovePlayerUp:
 ContFin:
     rts
 
-PlayerXYAddr:
-    .byte plX, plX, plY, plY
-
 PlayerRecoilDist:
     .byte -2, 2, 2, -2
 
@@ -308,8 +305,6 @@ PlayerDrawItem: SUBROUTINE
     pha
     rts
 
-PlayerDrawMeat:
-PlayerDrawPotion:
 PlayerDrawSwordFx:
 PlayerDrawNone:
 .noDraw

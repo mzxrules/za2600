@@ -103,7 +103,7 @@ En_BossManhandla: SUBROUTINE
     sta BANK_SLOT
 
     lda enManhandlaInvince
-    eor %1111
+    eor #%1111
     and enManhandlaHitFlags
     and enState
     sta enManhandlaHitFlags

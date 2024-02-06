@@ -28,8 +28,8 @@ EnDraw_TestMissile: SUBROUTINE
     lda #1
     sta wM1H
     lda rNUSIZ1_T
-    and %11001111
-    ora %00010000
+    and #%11001111
+    ora #%00010000
     sta wNUSIZ1_T
 
     rts

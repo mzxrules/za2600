@@ -58,10 +58,8 @@ HbGetPlAtt: SUBROUTINE
     lda HbPlAttL+8,y
     pha
 HbPlSwordFx:
-HbPlFluteFx:
-HbPlFluteFx2:
-HbPlMeatFx:
 HbPlRangFx:
+HbPlNone:
     rts
 
 HbPlWand: SUBROUTINE
@@ -90,7 +88,6 @@ HbPlWandFx: SUBROUTINE
     sta Hb_aa_y
     rts
 
-HbPlCandle: SUBROUTINE
 HbPlSword: SUBROUTINE
     lda #HB_PL_SWORD
     sta HbPlFlags
@@ -145,11 +142,6 @@ HbPlFireFx:
     sta HbDamage
     lda #HB_PL_FIRE
     sta HbPlFlags
-    rts
-
-HbPlFlute: SUBROUTINE
-HbPlMeat: SUBROUTINE
-HbPlPotion: SUBROUTINE
     rts
 
 ; Sets 12x12 hitbox

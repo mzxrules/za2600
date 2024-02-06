@@ -143,7 +143,6 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     jmp endPFCollision
 .runCollision
 
-    ldy #0 ; PFCollision
     lda plState
     and #~PS_LOCK_AXIS
     sta plState
@@ -157,11 +156,14 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 ; Check if player should be pushed through wall
     bit CXP0FB ; if player collided with playfield, keep moving through wall
     bpl .completePlayerWallPass
-    ldx plDir
-    jsr PlMoveDirDel
+    ldy plDir
+    ldx ObjXYAddr,y
+    lda OBJ_PL,x
+    clc
+    adc PlayerXYDist1,y
+    sta OBJ_PL,x
 ; Skip player PFCollision
-    ldy #1
-    bne endPFCollision ;bne PFCollision
+    jmp endPFCollision
 
 .completePlayerWallPass
     lda #$00
@@ -177,8 +179,8 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 PFCollision: SUBROUTINE
 
     ; Check RF_PF_IGNORE
-    lda RoomFlagPFCollision
-    and roomFlags
+    lda roomFlags
+    and #[RF_PF_IGNORE + RF_PF_AXIS]
     beq .collisionPosReset
     ldx plX
     cpx #EnBoardXL
@@ -193,15 +195,15 @@ PFCollision: SUBROUTINE
 
 
     ; Check if RF_PF_AXIS should be in effect for the player
-    bit RF_PF_AXIS
+    and #RF_PF_AXIS
     beq .SkipPFCollision ; branch on RF_PF_IGNORE
     bit CXP0FB
     bpl .collisionPosReset
-    lda ITEMV_BOOTS
-    bit ITEMF_BOOTS ; Is this a bug?
+    lda #ITEMF_BOOTS
+    bit ITEMV_BOOTS
     beq .collisionPosReset
     lda plState
-    ora PS_LOCK_AXIS
+    ora #PS_LOCK_AXIS
     sta plState
     bne .SkipPFCollision ; branch always
 
@@ -328,36 +330,16 @@ noeor:
     eor Rand16 + 1
     rts
 
-PlMoveDirDel:
-    lda PlMoveDirH,x
-    pha
-    lda PlMoveDirL,x
-    pha
-    rts
+ObjXYAddr:
+    .byte plX, plX, plY, plY
 
-PlDirU:
-    inc plY
-    rts
-PlDirD:
-    dec plY
-    rts
-
-PlDirR:
-    inc plX
-    rts
-PlDirL:
-    dec plX
-    rts
+PlayerXYDist1:
+    .byte 1, -1, -1, 1
 
     ;align 16
 
 WORLD_ENT: ; Initial room spawns for worlds 0-9
     .byte $77, $73, $7D, $7C, $71, $76, $79, $71, $76, $7E
-
-    INCLUDE "gen/PlMoveDir_DelLUT.asm"
-
-RoomFlagPFCollision
-    .byte #[RF_PF_IGNORE + RF_PF_AXIS], #[RF_PF_IGNORE]
 
 ;==============================================================================
 ; UPDATE_PL_HEALTH

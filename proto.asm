@@ -746,7 +746,7 @@ PlayerUseMeat:
 PlayerUseWand:
 PlayerUseFlute:
 PlayerUseCandle:
-PlayerPotion:
+PlayerUseRang:
 PlayerUseSword: SUBROUTINE
 ; If Item Button, use item
     bit plState

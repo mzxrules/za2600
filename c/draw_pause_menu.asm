@@ -88,10 +88,10 @@ DRAW_PAUSE_MENU: SUBROUTINE
 
     lda ITEMV_ARROW
     tax
-    and ITEMF_ARROW_SILVER
+    and #ITEMF_ARROW_SILVER
     bne .displayBowArrowSilver
     txa
-    and ITEMF_ARROW
+    and #ITEMF_ARROW
     bne .displayBowArrow
     lda #GI_BOW
     bpl .setBowItem
@@ -107,10 +107,10 @@ DRAW_PAUSE_MENU: SUBROUTINE
 .tryDisplayArrow
     lda ITEMV_ARROW
     tax
-    and ITEMF_ARROW_SILVER
+    and #ITEMF_ARROW_SILVER
     bne .displaySilverArrow
     txa
-    and ITEMF_ARROW
+    and #ITEMF_ARROW
     beq .setBowItem
     lda #GI_ARROW
     bpl .setBowItem

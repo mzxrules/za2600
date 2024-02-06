@@ -6,6 +6,7 @@
 Frame       ds 1
 Rand16      ds 2
 KernelId    ds 1
+; Object coordinates
 plX         ds 1
 enX         ds 1
 m0X         ds 1
@@ -21,7 +22,15 @@ m1Y         ds 1
 blY         ds 1
 plm0Y       ds 1
 plm1Y       ds 1
-            ds 2
+FREE_RAM    ds 2
+; ObjectId
+OBJ_PL      = 0
+OBJ_EN      = 1
+OBJ_M0      = 2
+OBJ_M1      = 3
+OBJ_BL      = 4
+OBJ_PLM0    = 5
+OBJ_PLM1    = 6
 
 ; KERNEL VARS
 ; ENH

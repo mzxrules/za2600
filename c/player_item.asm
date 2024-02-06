@@ -47,11 +47,11 @@ PlayerUseArrow: SUBROUTINE
 
 PlayerUpdateArrow: SUBROUTINE
     ldy plItemDir
-    ldx SpriteXYAddr,y
-    lda #$05,x
+    ldx ObjXYAddr,y
+    lda OBJ_PLM0,x
     clc
     adc PlayerXYDist2,y
-    sta #$05,x
+    sta OBJ_PLM0,x
 
     cmp PlayerXYBoardLimitL,y
     bmi .offScreen
@@ -65,7 +65,6 @@ PlayerUpdateArrow: SUBROUTINE
     sta plm0X
     rts
 
-; y = direction
 PlayerDrawArrow: SUBROUTINE
 ; Draw Arrow
     ldy plItemDir
@@ -93,7 +92,7 @@ PlayerUseCandle: SUBROUTINE
     lda #PLAYER_FIRE_FX
     sta plState3
 
-    ldx #6
+    ldx #OBJ_PLM1
     jsr PlayerPlaceNearbyTypeB
     sty plItem2Dir
     rts
@@ -124,7 +123,7 @@ PlayerUseBomb: SUBROUTINE
     lda #-32
     sta plItemTimer
 
-    ldx #5
+    ldx #OBJ_PLM0
     jsr PlayerPlaceNearbyTypeB
     sty plItemDir
     rts
@@ -223,8 +222,26 @@ PlayerUseSword: SUBROUTINE
     lda #SFX_STAB
     sta SfxFlags
 .rts
-PlayerUseMeat:
-PlayerUsePotion:
+    rts
+
+PlayerUseMeat: SUBROUTINE
+    lda plItem2Time
+    beq .continue
+    jmp PlayerUseSword
+.continue
+; Spawn
+    lda #-64
+    sta plItem2Time
+
+    lda #PLAYER_MEAT_FX
+    sta plState3
+
+    ldx #OBJ_PLM1
+    jsr PlayerPlaceNearbyTypeB
+    sty plItem2Dir
+    rts
+
+PlayerUseRang:
     rts
 
 PlayerDrawSword: SUBROUTINE
@@ -443,7 +460,7 @@ PlayerUpdateWand: SUBROUTINE
 ; Todo: check for book
 
 ; Set Magic
-    ldx #6
+    ldx #OBJ_PLM1
     jsr PlayerPlaceNearbyTypeB
     sty plItem2Dir
     lda #PLAYER_WAND_FX
@@ -453,8 +470,12 @@ PlayerUpdateWand: SUBROUTINE
 .skipSetMagic
     rts
 
-; x = objectId
-; y returns plDir
+;==============================================================================
+; Position a boxlike item next to the player
+;-----------------------
+;   X = ObjectId
+;   Y returns plDir
+;==============================================================================
 PlayerPlaceNearbyTypeB: SUBROUTINE
     ldy plDir
     lda plX
@@ -471,11 +492,11 @@ PlayerPlaceNearbyTypeB: SUBROUTINE
 PlayerUpdateWandFx: SUBROUTINE
 ; handle magic attack logic
     ldy plItem2Dir
-    ldx SpriteXYAddr,y
-    lda #$06,x
+    ldx ObjXYAddr,y
+    lda OBJ_PLM1,x
     clc
     adc PlayerXYDist2,y
-    sta #$06,x
+    sta OBJ_PLM1,x
     cmp PlayerXYBoardLimitL,y
     bmi .offScreen
     cmp PlayerXYBoardLimitH,y
@@ -531,9 +552,6 @@ PlayerDrawWandFx: SUBROUTINE
     sta m0Y
     rts
 
-SpriteXYAddr:
-    .byte plX, plX, plY, plY
-
 PlayerXYDist2:
     .byte 2, -2, -2, 2
 
@@ -542,13 +560,26 @@ PlayerXYBoardLimitL:
 PlayerXYBoardLimitH:
     .byte #BoardXR, #BoardXR, #BoardYU, #BoardYU
 
-PlayerUpdateMeat:
-PlayerUpdatePotion:
-PlayerUpdateBomb: SUBROUTINE
+PlayerUpdateMeatFx: SUBROUTINE
+    lda Frame
+    and #7
+    beq .rts
+    dec plItem2Time
+.rts
+    rts
+
 PlayerUpdateSword:
 PlayerUpdateSwordFx:
-PlayerUpdateCandle: SUBROUTINE
-PlayerUpdateFireFx: SUBROUTINE
-PlayerUpdateFlute: SUBROUTINE
 PlayerUpdateNone:
+    rts
+
+PlayerDrawMeatFx: SUBROUTINE
+    lda #$20
+    sta wNUSIZ0_T
+    lda #2
+    sta wM0H
+    lda plm1X
+    sta m0X
+    lda plm1Y
+    sta m0Y
     rts
