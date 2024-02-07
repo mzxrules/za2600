@@ -136,17 +136,29 @@ GiBomb: SUBROUTINE
     lda #SFX_ITEM_PICKUP
     sta SfxFlags
 .skipSfx
-    sed
-    clc
     lda itemBombs
+    and #$1F
+    clc
     adc #4
-    cmp #$16
-    bmi .skipCap
-    lda #$16
+    sta Temp0
+    lda itemBombs
+    rol
+    rol
+    rol
+    and #3
+    tax
+    lda .MaxBombs,x
+    cmp Temp0
+    bcs .skipCap
+    sta Temp0
 .skipCap
+    lda itemBombs
+    and #$E0
+    ora Temp0
     sta itemBombs
-    cld
     rts
+.MaxBombs
+    .byte 8, 12, 16, 16
 
 GiRupee: SUBROUTINE
     lda #1

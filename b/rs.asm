@@ -4,7 +4,7 @@
 
 Cv_Del:
     ldx roomEX
-    cpx CV_MESG_HINT_LOST_HILLS+1
+    cpx #CV_MESG_HINT_LOST_HILLS+1
     bpl .rts
     lda CaveTypeH,x
     pha
@@ -136,8 +136,9 @@ Rs_NpcTriforce: SUBROUTINE
     lda #MESG_NEED_TRIFORCE
     sta roomEX
 Rs_Npc: ; SUBROUTINE
-    lda #EN_NPC_OLD_MAN
-    sta enType
+    ldy #EN_NPC_OLD_MAN
+.setType
+    sty enType
 Rs_Text: ; SUBROUTINE
     lda roomEX
 EnableText: ; SUBROUTINE ; A = messageId
@@ -145,6 +146,25 @@ EnableText: ; SUBROUTINE ; A = messageId
     lda #1
     sta KernelId
 .rts
+    rts
+
+Rs_NpcMonster:
+    lda roomId
+    and #$7F
+    tay
+    lda rRoomFlag,y
+    and #RF_SV_ITEM_GET
+    bne .end
+
+    ldy #EN_NPC_MONSTER
+    sty enType
+    lda roomEX
+    sta mesgId
+    lda #1
+    sta KernelId
+.end
+    lda #0
+    sta roomRS
     rts
 
 Rs_Item: SUBROUTINE
@@ -179,8 +199,8 @@ Rs_EntDungData_RetY:
 Rs_EntDungMid: SUBROUTINE
 Rs_EntDungBush:
 Rs_EntDungSpectacleRock:
-    sec
     lda roomRS
+    sec
     sbc #RS_ENT_DUNG_MID
     tax
 
@@ -290,7 +310,6 @@ Rs_EntDungSpectacleRockBlocked:
     sta wPF1RoomR + 12
     sta wPF1RoomR + 13
     sta wPF1RoomR + 14
-
 .rts
     rts
 
@@ -366,6 +385,7 @@ Rs_EntDungFlute: SUBROUTINE
     lda plItemTimer
     bpl .rts
 
+; reveal dungeon
     lda plState
     ora #PS_LOCK_ALL
     sta plState
@@ -380,6 +400,13 @@ Rs_EntDungFlute: SUBROUTINE
     lda rRoomFlag,y
     ora #RF_SV_DESTROY
     sta wRoomFlag,y
+
+    lda plState3
+    and #PS_ACTIVE_ITEM2
+    cmp #PLAYER_FLUTE_FX
+    bne .rts
+    lda #0
+    sta plItem2Time
 .rts
     rts
 

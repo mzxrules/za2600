@@ -241,12 +241,14 @@ HbEnAttCollide:
     cmp hitbox2_aa_h_plus_bb_h,y
     bcs .no_shield_hit
 
+/*
     lda enType,x
     cmp #EN_TEST_MISSILE
     bne .skipTestMissileGreen
     lda #COLOR_EN_GREEN
     sta enTestMissileResult,x
 .skipTestMissileGreen
+*/
 
     lda #0
     sta miType,x
@@ -277,12 +279,14 @@ HbEnAttCollide:
     rts
 
 .player_hit
+/*
     lda enType,x
     cmp #EN_TEST_MISSILE
     bne .skipTestMissileRed
     lda #COLOR_EN_RED
     sta enTestMissileResult,x
 .skipTestMissileRed
+*/
 
     lda #0
     sta miType,x

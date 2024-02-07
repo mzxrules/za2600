@@ -270,6 +270,7 @@ PickSword: SUBROUTINE
 
 PickBomb: SUBROUTINE
     lda itemBombs
+    and #$1F
     rts
 
 PickBow: SUBROUTINE

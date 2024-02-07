@@ -38,7 +38,7 @@ SprE4:
     .byte $66 ; |.XX..XX.|
     .byte $22 ; |..X...X.|
     .byte $1C ; |...XXX..|
-    .byte $18 ; |...XX...|
+    .byte $1C ; |...XXX..|
     .byte $58 ; |.X.XX...|
     .byte $7E ; |.XXXXXX.|
     .byte $2C ; |..X.XX..|
@@ -47,7 +47,7 @@ SprE5:
     .byte $66 ; |.XX..XX.|
     .byte $44 ; |.X...X..|
     .byte $38 ; |..XXX...|
-    .byte $18 ; |...XX...|
+    .byte $38 ; |..XXX...|
     .byte $1A ; |...XX.X.|
     .byte $7E ; |.XXXXXX.|
     .byte $34 ; |..XX.X..|
@@ -56,7 +56,7 @@ SprE6:
     .byte $66 ; |.XX..XX.|
     .byte $24 ; |..X..X..|
     .byte $18 ; |...XX...|
-    .byte $14 ; |...X.X..|
+    .byte $55 ; |.X.X.X.X|
     .byte $0C ; |....XX..|
     .byte $1C ; |...XXX..|
     .byte $3E ; |..XXXXX.|
@@ -65,7 +65,7 @@ SprE7:
     .byte $66 ; |.XX..XX.|
     .byte $24 ; |..X..X..|
     .byte $18 ; |...XX...|
-    .byte $28 ; |..X.X...|
+    .byte $AA ; |X.X.X.X.|
     .byte $30 ; |..XX....|
     .byte $38 ; |..XXX...|
     .byte $54 ; |.X.X.X..|

@@ -183,7 +183,6 @@ ENTRY_POST_DRAW:
     beq ENTRY_START_GAME
     jmp ENTRY_VERTICAL_SYNC
 
-
 ENTRY_START_GAME:
     IFCONST ITEMS
 .cheats
@@ -191,8 +190,9 @@ ENTRY_START_GAME:
     sta itemKeys
     lda #16
     sta itemRupees
-    sta itemBombs
     lda #$F0
+    sta itemBombs
+    lda #$FC
     sta itemFlags
     lda #$FF
     sta itemFlags+1
@@ -215,8 +215,14 @@ ENTRY_START_GAME:
 
     ; set player stats
     lda #$18
-    sta plHealth
     sta plHealthMax
+    jsr RESPAWN
+    IFCONST TESTPOS
+    lda #0
+    sta worldId
+    lda #$0
+    sta roomId
+    ENDIF
 
     jmp MAIN_ENTRY
 

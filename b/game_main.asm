@@ -2,8 +2,6 @@
 ; mzxrules 2021
 ;==============================================================================
 MAIN_ENTRY:
-    jsr RESPAWN
-MAIN_ENTRY_OVERRIDE:
 
 ;TOP_FRAME ;3 37 192 30
 MAIN_VERTICAL_SYNC: ; 3 SCANLINES

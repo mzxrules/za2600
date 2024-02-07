@@ -112,14 +112,11 @@ PlayerDrawFireFx: SUBROUTINE
 
 PlayerUseBomb: SUBROUTINE
     lda itemBombs
+    and #$1F
     bne .useBomb
     jmp PlayerEquipSword
 .useBomb
-    sed
-    sec
-    sbc #1
-    cld
-    sta itemBombs
+    dec itemBombs
     lda #-32
     sta plItemTimer
 
@@ -225,6 +222,9 @@ PlayerUseSword: SUBROUTINE
     rts
 
 PlayerUseMeat: SUBROUTINE
+    lda ITEMV_MEAT
+    and #ITEMF_MEAT
+    beq PlayerEquipSword
     lda plItem2Time
     beq .continue
     jmp PlayerUseSword
@@ -561,10 +561,17 @@ PlayerXYBoardLimitH:
     .byte #BoardXR, #BoardXR, #BoardYU, #BoardYU
 
 PlayerUpdateMeatFx: SUBROUTINE
+    ldx plItem2Time
+    cpx #$E8
+    bcs .rts
+
     lda Frame
-    and #7
-    beq .rts
-    dec plItem2Time
+    and #$F
+    bne .rts
+    txa
+    sec
+    sbc #$E
+    sta plItem2Time
 .rts
     rts
 
@@ -574,6 +581,13 @@ PlayerUpdateNone:
     rts
 
 PlayerDrawMeatFx: SUBROUTINE
+    lda plItem2Time
+    cmp #$F0
+    bcc .drawNormal
+    and #$4
+    bne .drawNormal
+    jmp PlayerDrawNone
+.drawNormal
     lda #$20
     sta wNUSIZ0_T
     lda #2

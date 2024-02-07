@@ -126,7 +126,7 @@ PS_CATCH_WIND   = $80 ; 1000_0000 Flute, tornado in on respawn
 PauseState  = plItemDir
 itemRupees  ds 1
 itemKeys    ds 1 ; Sign bit = Master Key
-itemBombs   ds 1
+itemBombs   ds 1 ; 1100_0000 = bomb capacity
 itemTri     ds 1
 itemMaps    ds 1 ; Level 2-9
 itemCompass ds 1
@@ -269,6 +269,10 @@ cdBY        ds 1
 ;           ; 1xxx_xxxx init
 ;           ; x1xx_xxxx heal event
 enGFairyDie ds 1
+
+; == En_NpcMonster
+    ORG CLASS_EN_NPC
+enNpcMonsterTimer   ds 1
 
 
 ; == Darknut
@@ -553,6 +557,7 @@ WORLD_EN        ds 128 ; Enemy Encounter
     ORG $FA00
 wRAM_SEG
 wKERNEL     ds KERNEL_LEN
+wROOM_COLOR ds 1
 wPF1RoomL   ds ROOM_PX_HEIGHT
 wPF2Room    ds ROOM_PX_HEIGHT
 wPF1RoomR   ds ROOM_PX_HEIGHT
@@ -563,6 +568,7 @@ wRoomFlag   ds 256
     ORG $F800
 rRAM_SEG
 rKERNEL     ds KERNEL_LEN
+rROOM_COLOR ds 1
 rPF1RoomL   ds ROOM_PX_HEIGHT
 rPF2Room    ds ROOM_PX_HEIGHT
 rPF1RoomR   ds ROOM_PX_HEIGHT
@@ -608,7 +614,7 @@ rKERNEL48   ds KERNEL48_LEN
 ; * Constants                            *
 ; ****************************************
 
-KERNEL_LEN  = $90   ; World Kernel length
+KERNEL_LEN  = $8F   ; World Kernel length
 KERNEL48_LEN = $68  ; 48 pix kernel length
 
 ROOM_PX_HEIGHT      = 20 ; height of room in pixels

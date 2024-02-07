@@ -58,6 +58,8 @@ LoadRoom: SUBROUTINE
     lda #0      ;EN_NONE
     sta enType
     sta enType+1
+    sta miType
+    sta miType+1
     sta enState
     sta blType
     sta roomPush
@@ -91,18 +93,18 @@ LoadRoom: SUBROUTINE
 
     ; set fg/bg color
     lda WORLD_COLOR,y
+    sta wROOM_COLOR
     and #$0F
-    tax
-    lda WorldColors,x
-    sta wFgColor
-    lda WORLD_COLOR,y
-    lsr
-    lsr
-    lsr
-    lsr
-    tax
-    lda WorldColors,x
-    sta wBgColor
+; RF_PF_AXIS test
+    cmp #$0C ;#COLOR_PF_RED
+    beq .SetPFAxis
+    cmp #$05 ;#COLOR_PF_WATER
+    bne .skipSetPFAxis
+.SetPFAxis
+    lda roomFlags
+    ora #RF_PF_AXIS
+    sta roomFlags
+.skipSetPFAxis
 
     ; PF1 Right
     lda WORLD_T_PF1R,y
@@ -264,16 +266,6 @@ LoadRoom: SUBROUTINE
     sta wPF2Room+ROOM_PX_HEIGHT-2,y
     dey
     bpl .dungRoomUpDownBorder
-; RF_PF_AXIS test
-    lda rFgColor
-    cmp #COLOR_PF_RED
-    beq .SetPFAxis
-    cmp #COLOR_PF_WATER
-    bne .rts
-.SetPFAxis
-    lda roomFlags
-    ora #RF_PF_AXIS
-    sta roomFlags
 .rts
     rts
 
@@ -629,22 +621,3 @@ WorldDoorPF1B:
 WorldDoorPF1C:
     ; Bottom
     .byte $00, $00, $C0, $C0, $C0, $00, $AB, $AB
-
-
-WorldColors:
-    /* 00 */ .byte COLOR_PF_BLACK
-    /* 01 */ .byte COLOR_PF_GRAY_D
-    /* 02 */ .byte COLOR_PF_GRAY_L
-    /* 03 */ .byte COLOR_PF_BLUE_D
-    /* 04 */ .byte COLOR_PF_BLUE_L
-    /* 05 */ .byte COLOR_PF_WATER
-    /* 06 */ .byte COLOR_PF_TEAL_D
-    /* 07 */ .byte COLOR_PF_PURPLE_D
-    /* 08 */ .byte COLOR_PF_PURPLE
-    /* 09 */ .byte COLOR_PF_GREEN
-    /* 0A */ .byte COLOR_PF_TEAL_L
-    /* 0B */ .byte COLOR_PF_CHOCOLATE
-    /* 0C */ .byte COLOR_PF_RED
-    /* 0D */ .byte COLOR_PF_PATH
-    /* 0E */ .byte COLOR_PF_SACRED
-    /* 0F */ .byte COLOR_PF_WHITE

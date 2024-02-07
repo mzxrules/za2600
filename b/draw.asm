@@ -14,6 +14,20 @@ POSITION_SPRITES: SUBROUTINE
 
     INCLUDE "c/draw_world_init.asm"
 
+    lda rROOM_COLOR
+    and #$0F
+    tax
+    lda WorldColors,x
+    sta wFgColor
+    lda rROOM_COLOR
+    lsr
+    lsr
+    lsr
+    lsr
+    tax
+    lda WorldColors,x
+    sta wBgColor
+
 ;==============================================================================
 ; HUD Draw Setup
 ;==============================================================================
@@ -75,19 +89,12 @@ POSITION_SPRITES: SUBROUTINE
 
 .hud_bomb_init
     lda itemBombs
-    and #$0F
-    rol
-    rol
-    rol ;clc
-    adc #7
+    and #$1F
+    tay
+    lda .BombCountSprL,y
     sta THudDigits+1
     lda itemBombs
-    cmp #$10
-    bpl .hud_bomb_digit
-    lda #<SprN11_L - #<SprN0_L +7
-    .byte $2C
-.hud_bomb_digit
-    lda #<SprN1_L - #<SprN0_L +7
+    lda .BombCountSprH,y
     sta THudDigits+0
 
 
@@ -377,3 +384,33 @@ KERNEL_WORLD_RESUME:
     .byte $08 ; $23
     .byte $08 ; $24
     .byte $10 ; $3A
+
+.BombCountSprL
+    .byte 0*8+7, 1*8+7, 2*8+7, 3*8+7, 4*8+7, 5*8+7, 6*8+7, 7*8+7, 8*8+7, 9*8+7
+    .byte 0*8+7, 1*8+7, 2*8+7, 3*8+7, 4*8+7, 5*8+7, 6*8+7
+
+.BombCountSprH
+    REPEAT 10
+    .byte #<SprN11_L - #<SprN0_L +7
+    REPEND
+    REPEAT 7
+    .byte #<SprN1_L - #<SprN0_L +7
+    REPEND
+
+WorldColors:
+    /* 00 */ .byte COLOR_PF_BLACK
+    /* 01 */ .byte COLOR_PF_GRAY_D
+    /* 02 */ .byte COLOR_PF_GRAY_L
+    /* 03 */ .byte COLOR_PF_BLUE_D
+    /* 04 */ .byte COLOR_PF_BLUE_L
+    /* 05 */ .byte COLOR_PF_WATER
+    /* 06 */ .byte COLOR_PF_TEAL_D
+    /* 07 */ .byte COLOR_PF_PURPLE_D
+    /* 08 */ .byte COLOR_PF_PURPLE
+    /* 09 */ .byte COLOR_PF_GREEN
+    /* 0A */ .byte COLOR_PF_TEAL_L
+    /* 0B */ .byte COLOR_PF_CHOCOLATE
+    /* 0C */ .byte COLOR_PF_RED
+    /* 0D */ .byte COLOR_PF_PATH
+    /* 0E */ .byte COLOR_PF_SACRED
+    /* 0F */ .byte COLOR_PF_WHITE

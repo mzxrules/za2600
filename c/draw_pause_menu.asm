@@ -75,6 +75,7 @@ DRAW_PAUSE_MENU: SUBROUTINE
 
 ; Bombs
     lda itemBombs
+    and #$1F
     beq .setBombItem
     lda #GI_BOMB
 

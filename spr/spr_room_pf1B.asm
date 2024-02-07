@@ -492,22 +492,22 @@ PF1Room28:
     .byte $00 ; |........|
     .byte $00 ; |........|
 PF1Room29:
-    .byte $E0 ; |XXX.....|
-    .byte $E0 ; |XXX.....|
-    .byte $E7 ; |XXX..XXX|
-    .byte $E7 ; |XXX..XXX|
-    .byte $E7 ; |XXX..XXX|
-    .byte $E7 ; |XXX..XXX|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
+    .byte $C7 ; |XX...XXX|
+    .byte $C7 ; |XX...XXX|
+    .byte $C7 ; |XX...XXX|
+    .byte $C7 ; |XX...XXX|
     .byte $07 ; |.....XXX|
-    .byte $06 ; |.....XX.|
-    .byte $06 ; |.....XX.|
     .byte $07 ; |.....XXX|
-    .byte $E7 ; |XXX..XXX|
-    .byte $E7 ; |XXX..XXX|
-    .byte $E7 ; |XXX..XXX|
-    .byte $E7 ; |XXX..XXX|
-    .byte $E0 ; |XXX.....|
-    .byte $E0 ; |XXX.....|
+    .byte $07 ; |.....XXX|
+    .byte $07 ; |.....XXX|
+    .byte $C7 ; |XX...XXX|
+    .byte $C7 ; |XX...XXX|
+    .byte $C7 ; |XX...XXX|
+    .byte $C7 ; |XX...XXX|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
 PF1Room30:
     .byte $C0 ; |XX......|
     .byte $C0 ; |XX......|

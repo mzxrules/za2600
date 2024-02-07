@@ -588,7 +588,7 @@ BANK_42
     INCLUDE "en/EnDraw_ItemGet.asm"
     INCLUDE "en/EnDraw_Darknut.asm"
     INCLUDE "en/EnDraw_LikeLike.asm"
-    INCLUDE "en/EnDraw_OldMan.asm"
+    INCLUDE "en/EnDraw_NpcOldMan.asm"
     INCLUDE "en/EnDraw_Wallmaster.asm"
     INCLUDE "en/EnDraw_Octorok.asm"
     INCLUDE "en/EnDraw_Rope.asm"
@@ -624,7 +624,6 @@ BANK_43
     RORG $F400
 
 BANK_44
-    INCLUDE "en/En_Oldman.asm"
     INCLUDE "en/En_NpcPath.asm"
     INCLUDE "en/En_GreatFairy.asm"
     INCLUDE "en/En_ItemGet.asm"
@@ -645,6 +644,7 @@ BANK_44
     RORG $F400
 
 BANK_45
+    INCLUDE "en/En_NpcOldman.asm"
     INCLUDE "en/En_RollingRock.asm"
     INCLUDE "en/En_Appear.asm"
     INCLUDE "en/En_Stalfos.asm"

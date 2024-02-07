@@ -498,10 +498,10 @@ PF2Room29:
     .byte $FF ; |XXXXXXXX| mirrored
     .byte $3F ; |XXXXXX..| mirrored
     .byte $3F ; |XXXXXX..| mirrored
-    .byte $3F ; |XXXXXX..| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $3F ; |XXXXXX..| mirrored
+    .byte $01 ; |X.......| mirrored
+    .byte $01 ; |X.......| mirrored
+    .byte $01 ; |X.......| mirrored
+    .byte $01 ; |X.......| mirrored
     .byte $3F ; |XXXXXX..| mirrored
     .byte $3F ; |XXXXXX..| mirrored
     .byte $FF ; |XXXXXXXX| mirrored
