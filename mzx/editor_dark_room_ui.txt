@@ -1,0 +1,9 @@
+color c00
+: "q"
+wait for 1
+set "local" to "('ui_darkrooms'*0x0F)"
+set "$" "DARK"
+loop start
+put "local" CustomBlock "('$.&loopcount&')" at "('loopcount'+'thisx'+1)" "('loopcount'+'thisy')"
+loop for 3
+goto "q"

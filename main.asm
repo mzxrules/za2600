@@ -255,7 +255,7 @@ MINIMAP
 BANK_18
     INCLUDE "gen/world/b0world.asm"
     INCBIN "gen/world/b0wa.bin"
-    INCBIN "world/w0co.bin"
+    INCBIN "gen/world/b0co.bin"
     INCBIN "world/w0rs.bin"
     INCBIN "world/w0ex.bin"
     INCBIN "gen/world/b0en.bin"
@@ -272,7 +272,7 @@ BANK_18
 BANK_19
     INCLUDE "gen/world/b1world.asm"
     INCBIN "gen/world/b1wa.bin"
-    INCBIN "world/w1co.bin"
+    INCBIN "gen/world/b1co.bin"
     INCBIN "world/w1rs.bin"
     INCBIN "world/w1ex.bin"
     INCBIN "gen/world/b1en.bin"
@@ -288,7 +288,7 @@ BANK_19
 BANK_20
     INCLUDE "gen/world/b2world.asm"
     INCBIN "gen/world/b2wa.bin"
-    INCBIN "world/w2co.bin"
+    INCBIN "gen/world/b2co.bin"
     INCBIN "world/w2rs.bin"
     INCBIN "world/w2ex.bin"
     INCBIN "gen/world/b2en.bin"

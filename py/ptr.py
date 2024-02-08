@@ -445,7 +445,7 @@ tbl = [
         "PlayerUpdateNone",     # Rang
 
         "PlayerUpdateSwordFx",  # SwordFx
-        "PlayerUpdateNone",     # FireFx
+        "PlayerUpdateFireFx",   # FireFx
         "PlayerUpdateFluteFx",
         "PlayerUpdateFluteFx2",
         "PlayerUpdateWandFx",

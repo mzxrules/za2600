@@ -39,6 +39,6 @@ def ToAsmLabel(data, n=16):
     cur = 0
     while cur < len(data):
         b = data[cur:cur+n]
-        result += "    .byte " + ", ".join(b) + "\n"
+        result += f"    /* {cur:02X} */ .byte {', '.join(b)}\n"
         cur += n
     return result

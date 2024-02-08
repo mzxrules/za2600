@@ -79,13 +79,24 @@ PlayerDrawArrow: SUBROUTINE
     rts
 
 PlayerUseCandle: SUBROUTINE
-    ; TODO: implement fire check
+    lda ITEMV_CANDLE_RED
+    and #ITEMF_CANDLE_RED
+    bne .red_candle_used
+    lda roomFlags
+    ror ; #RF_USED_CANDLE
+    bcs .blue_candle_blocked
 
+.red_candle_used
     lda plItem2Time
     beq .continue
+.blue_candle_blocked
     jmp PlayerUseSword
 .continue
 ; Spawn
+    lda roomFlags
+    ora #RF_USED_CANDLE
+    sta roomFlags
+
     lda #-64
     sta plItem2Time
 
@@ -95,6 +106,16 @@ PlayerUseCandle: SUBROUTINE
     ldx #OBJ_PLM1
     jsr PlayerPlaceNearbyTypeB
     sty plItem2Dir
+    rts
+
+PlayerUpdateFireFx: SUBROUTINE
+    lda plItem2Time
+    cmp #-60
+    bne .rts
+    lda rROOM_COLOR
+    and #~#RF_WC_ROOM_DARK
+    sta wROOM_COLOR
+.rts
     rts
 
 PlayerDrawFireFx: SUBROUTINE

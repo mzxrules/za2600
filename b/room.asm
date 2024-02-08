@@ -3,10 +3,8 @@
 ;==============================================================================
 LoadCaveRoom: SUBROUTINE
     ; Don't overwrite room vars
-    lda #COLOR_PF_CHOCOLATE
-    sta wFgColor
-    lda #COLOR_PF_BLACK
-    sta wBgColor
+    lda #1
+    sta wROOM_COLOR
     lda #RS_CAVE
     sta roomRS
     lda #$F3
@@ -44,9 +42,9 @@ RoomUpdate:  ; SUBROUTINE
     lda roomFlags
     and #~RF_EV_LOADED
     sta roomFlags
-    bpl .rts ; RF_EV_LOAD
+    bpl .rts ; #RF_EV_LOAD
     ora #RF_EV_LOADED
-    and #~[RF_EV_LOAD + RF_NO_ENCLEAR + RF_EV_CLEAR + RF_PF_IGNORE + RF_PF_AXIS + RF_PF_DARK]
+    and #~[RF_EV_LOAD + RF_NO_ENCLEAR + RF_EV_CLEAR + RF_PF_IGNORE + RF_PF_AXIS + RF_USED_CANDLE]
     sta roomFlags
     lda #-$18
     sta roomTimer
@@ -94,13 +92,8 @@ LoadRoom: SUBROUTINE
     ; set fg/bg color
     lda WORLD_COLOR,y
     sta wROOM_COLOR
-    and #$0F
 ; RF_PF_AXIS test
-    cmp #$0C ;#COLOR_PF_RED
-    beq .SetPFAxis
-    cmp #$05 ;#COLOR_PF_WATER
-    bne .skipSetPFAxis
-.SetPFAxis
+    bpl .skipSetPFAxis ; #RF_WC_ROOM_BOOT
     lda roomFlags
     ora #RF_PF_AXIS
     sta roomFlags

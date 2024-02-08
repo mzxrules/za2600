@@ -635,6 +635,7 @@ A, S, D - dec Room Tile  Left, Mid, Right
 R, T    - inc, dec Room Script
 F, G    - inc, dec, Room Ex
 6, 7    - inc, dec, Room EN
+I       - Enable Dark Room Editor (Space to toggle room)
 O       - Toggle Palette
 P       - Save
 M       - switch active world

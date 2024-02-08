@@ -6,8 +6,7 @@ Rs_GameOver: SUBROUTINE
     ldx plHealth
     bne .skipInit
     dec plHealth
-    stx wBgColor
-    stx wFgColor
+    stx wROOM_COLOR
     stx enType
     stx enType+1
     stx roomFlags

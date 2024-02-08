@@ -64,7 +64,7 @@ RF_NO_ENCLEAR   = $10 ; 0001_0000 Blocks Enemy Cleared from setting Room Cleared
 RF_EV_CLEAR     = $08 ; 0000_1000 Room Cleared (Enemies dead, or puzzle solved)
 RF_PF_IGNORE    = $04 ; 0000_0100 Room PF ignored in center room
 RF_PF_AXIS      = $02 ; 0000_0010 Room PF triggers axis only movement
-RF_PF_DARK      = $01 ; 0000_0001 Room is dark
+RF_USED_CANDLE  = $01 ; 0000_0001 Candle was used this room
 roomDoors   ds 1
     ; xxxx_xx11 N
     ; xxxx_11xx S
@@ -558,6 +558,8 @@ WORLD_EN        ds 128 ; Enemy Encounter
 wRAM_SEG
 wKERNEL     ds KERNEL_LEN
 wROOM_COLOR ds 1
+RF_WC_ROOM_BOOT = $80
+RF_WC_ROOM_DARK = $40
 wPF1RoomL   ds ROOM_PX_HEIGHT
 wPF2Room    ds ROOM_PX_HEIGHT
 wPF1RoomR   ds ROOM_PX_HEIGHT
