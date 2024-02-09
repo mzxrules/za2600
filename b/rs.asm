@@ -235,10 +235,63 @@ Rs_ExitDung2:
 .rts
     rts
 
-Rs_BlockDiamondStairs: SUBROUTINE
-    lda #RS_STAIRS
-    sta roomRS
+STAIR_POS_CENTER = 0
+STAIR_POS_PATH = 1
+STAIR_POS_TOP_RIGHT = 2
+STAIR_POS_MID_RIGHT = 3
+STAIR_POS_LEFT_CENTER = 4
+
+PositionStairs: SUBROUTINE
+    lda .stairsX,x
+    sta cdAX
+    lda .stairsY,x
+    sta cdAY
+    lda #EN_STAIRS
+    sta cdAType
     rts
+.stairsX:
+    .byte #$40, #$18, #$74, #$74, #$28
+.stairsY
+    .byte #$2C, #$38, #$48, #$2C, #$28
+
+Rs_BlockPathStairs: SUBROUTINE
+    lda roomFlags
+    and #RF_EV_CLEAR
+    beq .rts
+    ldx #STAIR_POS_PATH
+    jmp PositionStairs
+
+Rs_BlockDiamondStairs: ;SUBROUTINE
+Rs_Stairs: ;SUBROUTINE
+    lda roomFlags
+    and #RF_EV_CLEAR
+    beq .rts
+    lda plX
+    cmp #$40
+    bne .place_stairs
+    lda plY
+    cmp #$2C
+    beq .rts
+.place_stairs
+    ldx #STAIR_POS_CENTER
+    jmp PositionStairs
+
+Rs_BlockLeftStairs: ;SUBROUTINE
+    lda roomFlags
+    and #RF_EV_CLEAR
+    beq .rts
+    ldx #STAIR_POS_TOP_RIGHT
+    jmp PositionStairs
+.rts
+    rts
+
+Rs_BlockSpiralStairs: ;SUBROUTINE
+    lda roomFlags
+    and #RF_EV_CLEAR
+    beq .rts
+    ldx #STAIR_POS_LEFT_CENTER
+    jmp PositionStairs
+
 
 Rs_EntCaveWallCenterBlocked: SUBROUTINE
     ldx #RS_ENT_CAVE_WALL_CENTER
@@ -338,32 +391,6 @@ Rs_EntDungBushBlocked: SUBROUTINE ; $40, $1C
     lda #$80
     sta blY
 
-.rts
-    rts
-
-Rs_BlockPathStairs: SUBROUTINE
-    lda roomFlags
-    and #RF_EV_CLEAR
-    beq .rts
-    lda #$18
-    sta cdAX
-    lda #$34
-    sta cdAY
-    lda #EN_STAIRS
-    sta cdAType
-.rts
-    rts
-
-Rs_Stairs: SUBROUTINE
-    lda roomFlags
-    and #RF_EV_CLEAR
-    beq .rts
-    lda #$40
-    sta cdAX
-    lda #$2C
-    sta cdAY
-    lda #EN_STAIRS
-    sta cdAType
 .rts
     rts
 

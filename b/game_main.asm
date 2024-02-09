@@ -492,6 +492,8 @@ En_Wizrobe:
 En_WizrobeBlue:
 En_Zol:
 En_ZolSplit:
+En_Gel:
+En_BossGhini:
 En_BossDon:
 En_BossDig:
 En_BossPatra:
@@ -521,6 +523,6 @@ Rs_Del:
     lda RsL,x
     pha
 Rs_None:
-Rs_BlockCentral:
+Rs_BlockCenter:
 Rs_FairyFountain:
     rts

@@ -225,7 +225,7 @@ BANK_15
     RORG $F000
 
 BANK_16
-    LOG_BANK_SIZE "-BANK 16 Sprites Boss", BANK_16
+    LOG_BANK_SIZE "-BANK 16- Sprites Boss", BANK_16
 
 
 ; ****************************************
@@ -453,8 +453,10 @@ BANK_33
     INCLUDE "gen/RsInit_DelLUT.asm"
     INCLUDE "rs/RsInit_Del.asm"
     INCLUDE "rs/RsInit_None.asm"
-    INCLUDE "rs/RsInit_BlockCentral.asm"
+    INCLUDE "rs/RsInit_BlockCenter.asm"
+    INCLUDE "rs/RsInit_BlockLeftStairs.asm"
     INCLUDE "rs/RsInit_BlockDiamondStairs.asm"
+    INCLUDE "rs/RsInit_BlockSpiral.asm"
     INCLUDE "rs/RsInit_BlockPathStairs.asm"
     INCLUDE "rs/RsInit_EntCaveWallLeftBlocked.asm"
     INCLUDE "rs/RsInit_EntCaveWallCenterBlocked.asm"
@@ -558,6 +560,7 @@ BANK_40
     INCLUDE "b/EnMove_Common.asm"
     INCLUDE "b/EnMove.asm"
     INCLUDE "gen/EnMove_SeekDirLUT.asm"
+    INCLUDE "gen/EnMove_BallBlockedLUT.asm"
     align 128
     INCLUDE "gen/EnMove_OffgridLUT.asm"
     LOG_BANK_SIZE "-BANK 40- Entity Movement", BANK_40

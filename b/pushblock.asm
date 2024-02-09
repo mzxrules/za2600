@@ -30,32 +30,56 @@ BlD:
 BlPathPushBlock: SUBROUTINE
     ldx roomENCount
     bne .rts
-    lda rPF1RoomL + 6
-    and #$06
-    beq .skipENCount
-    ldx #$19
-    stx blX
-    ldx #$20
-    stx blY
+
     lda rPF1RoomL + 6
     and #~$06
     sta wPF1RoomL + 6
     sta wPF1RoomL + 7
+
+    ldx #$18+1
+    stx blX
+    ldx #$20
+    stx blY
+    lda #BL_PUSH_BLOCK
+    sta blType
+.rts
     rts
 
-BlDiamondPushBlock: ; SUBROUTINE
+BlPushBlockLeft: SUBROUTINE
     ldx roomENCount
     bne .rts
-    ldx #$41
+
+    ldy #1
+.loop
+    lda rPF1RoomL+9,y
+    and #$FC
+    sta wPF1RoomL+9,y
+    dey
+    bpl .loop
+
+    ldx #$1C+1
+    stx blX
+    ldx #$2C
+    stx blY
+    lda #BL_PUSH_BLOCK
+    sta blType
+.rts
+    rts
+
+BlPushBlockDiamondTop: SUBROUTINE
+    ldx roomENCount
+    bne .rts
+    lda #0
+    sta wPF2Room + 13
+    sta wPF2Room + 14
+
+    ldx #$40+1
     stx blX
     lda #$3C
     sta blY
     lda #BL_PUSH_BLOCK
     sta blType
-    lda #0
-    sta wPF2Room + 13
-    sta wPF2Room + 14
-
+    rts
 
 BlPushBlock: ; SUBROUTINE
     ldx roomENCount

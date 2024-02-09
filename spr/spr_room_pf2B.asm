@@ -87,17 +87,17 @@ PF2Room5:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
+    .byte $03 ; |XX......| mirrored
+    .byte $03 ; |XX......| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
+    .byte $C0 ; |......XX| mirrored
+    .byte $C0 ; |......XX| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
+    .byte $03 ; |XX......| mirrored
+    .byte $03 ; |XX......| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
 PF2Room6:

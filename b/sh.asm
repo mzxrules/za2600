@@ -392,6 +392,10 @@ EnStairs:
 .worldStairs
     jmp ENTER_CAVE
 .dungeonStairs
+    lda #$40
+    sta plX
+    lda #$2C
+    sta plY
     lda roomEX
     sta roomId
     lda roomFlags

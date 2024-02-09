@@ -21,6 +21,11 @@ SPAWN_PATTERN = [
     ["En_TektiteBlue"] * 2,
     ["En_TektiteBlue"] * 3,
 
+    ["En_Leever"] * 2,
+    ["En_LeeverBlue"] * 2,
+    ["En_LeeverBlue"] * 3,
+    ["En_LeeverBlue", "En_Leever"] * 2,
+
     ["En_Peehat"] * 2,
     ["En_Peehat"] * 3,
     ["En_Peahat", "En_Octorok", "En_Peahat"],
@@ -32,6 +37,7 @@ SPAWN_PATTERN = [
     ["En_MoblinBlue"] * 2,
     ["En_MoblinBlue"] * 3,
 
+    ["En_Lynel"],
     ["En_Lynel"] * 2,
     ["En_Lynel"] * 3,
     ["En_LynelBlue"] * 1,
@@ -49,9 +55,13 @@ SPAWN_PATTERN = [
     ["En_Keese"] * 2,
     ["En_Keese"] * 3,
 
+    ["En_Gel"] * 2,
+    ["En_Gel"] * 3,
+
     ["En_Zol"] * 2,
     ["En_Zol"] * 3,
     ["En_Zol"] * 4,
+    ["En_Zol", "En_Keese", "En_Zol"],
 
     ["En_Stalfos"] * 2,
     ["En_Stalfos"] * 3,
@@ -66,11 +76,16 @@ SPAWN_PATTERN = [
 
     ["En_Vire"] * 2,
     ["En_Vire"] * 3,
+    ["En_Vire"] * 4,
+
+    ["En_Pols"] * 3,
+    ["En_Pols"] * 4,
 
     ["En_Gibdo"] * 2,
     ["En_Gibdo"] * 3,
     ["En_Gibdo"] * 4,
     ["En_Gibdo", "En_Keese", "En_Gibdo"] * 1,
+    ["En_Gibdo", "En_Keese", "En_Pols"] * 1,
 
     ["En_Darknut"] * 3,
     ["En_Darknut"] * 4,
@@ -80,6 +95,8 @@ SPAWN_PATTERN = [
     ["En_DarknutBlue"] * 4,
     ["En_DarknutBlue"] * 5,
 
+    ["En_LikeLike"] * 4,
+
     ["En_LikeLike", "En_Zol", "En_LikeLike"] * 1,
     ["En_LikeLike", "En_Wizrobe", "En_WizrobeBlue"] * 1,
     ["En_LikeLike", "En_Wizrobe", "En_WizrobeBlue"] * 2,
@@ -88,8 +105,11 @@ SPAWN_PATTERN = [
     ["En_Wizrobe", "En_WizrobeBlue"] * 2,
 
     ["En_Wizrobe"] * 4,
+    ["En_WizrobeBlue"] * 3,
 
     ["En_Wallmaster"],
+
+    ["En_BossGhini"],
 
     ["En_BossGohma"],
     ["En_BossGlock"],

@@ -446,6 +446,54 @@ def get_en_offgrid_lut():
         file.write("EnMove_OffgridLUT:\n")
         file.write(ToAsm(table,16))
 
+def get_bl_col_test_lut():
+    # I have a ball that's 8x8
+    # blX, blY is located lower left; blX value is +1 normal coordinate system
+
+    # bl - en is occurring so...
+    # + is ball to right, - is ball to left
+    # + is ball up, - is ball down
+
+    # LBLOCKED If deltaX = -8 to -1, deltaY = -7 to 7
+    # RBLOCKED If deltaX =  1 to  8, deltaY = -7 to 7
+
+    # DBLOCKED If deltaY = -8 to -1, deltaX = -7 to 7
+    # UBLOCKED If deltaY =  1 to  8, deltaX = -7 to 7
+
+    EN_BLOCKED_DIR_L = 1
+    EN_BLOCKED_DIR_R = 2
+    EN_BLOCKED_DIR_U = 4
+    EN_BLOCKED_DIR_D = 8
+
+    xLut = []
+    for x in range(-8, 8+1):
+        v = 0
+        if x <= -1:
+            v |= EN_BLOCKED_DIR_L
+        if x >= 1:
+            v |= EN_BLOCKED_DIR_R
+        if -7 <= x <= 7:
+            v |= EN_BLOCKED_DIR_U | EN_BLOCKED_DIR_D
+
+        xLut.append(v)
+
+    yLut = []
+    for y in range(-8, 8+1):
+        v = 0
+        if y <= -1:
+            v |= EN_BLOCKED_DIR_D
+        if y >= 1:
+            v |= EN_BLOCKED_DIR_U
+        if -7 <= y <= 7:
+            v |= EN_BLOCKED_DIR_L | EN_BLOCKED_DIR_R
+
+        yLut.append(v)
+    with open(f'gen/EnMove_BallBlockedLUT.asm', "w") as file:
+        file.write("EnMove_BallBlockedXLUT:\n")
+        file.write(ToAsm(xLut,16))
+        file.write("EnMove_BallBlockedYLUT:\n")
+        file.write(ToAsm(yLut,16))
+
 def get_roomheight():
     roomHeight = []
     roomHeight8 = []
@@ -470,6 +518,7 @@ get_room_px_check()
 get_randdir_lut()
 get_pause_map_codegen()
 get_en_offgrid_lut()
+get_bl_col_test_lut()
 
 with open(f'gen/bitcount.asm', "w") as file:
     file.write(bitcountOut)

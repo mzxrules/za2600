@@ -8,7 +8,7 @@ set "$$" to "$Rs&local1&"
 loop start
 put c0f CustomBlock p20 at "('thisx'+1+'loopcount')" "thisy"
 loop for 32
-
+. "KEEP SYNCED WITH editor.txt"
 if "&$$&" === "Rs_Item" then "Rs_Item"
 if "&$$&" === "Rs_ShoreItem" then "Rs_Item"
 if "&$$&" === "Rs_Npc" then "Npc_Mesg"

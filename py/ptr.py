@@ -91,10 +91,13 @@ Entity_Table = [
     "En_WizrobeBlue",  "SEG_NA", "SEG_42", "EnDraw_None",
     "En_Zol",          "SEG_NA", "SEG_42", "EnDraw_None",
     "En_ZolSplit",     "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_Gel",          "SEG_NA", "SEG_42", "EnDraw_None",
 
     "En_Test",         "SEG_44", "SEG_42", "EnDraw_Darknut",
     #"En_TestMissile",  "SEG_44", "SEG_46", "EnDraw_TestMissile",
     #"En_TestColor",    "SEG_47", "SEG_42", "EnDraw_TestColor",
+
+    "En_BossGhini",    "SEG_NA", "SEG_42", "EnDraw_None",
 
     "En_BossGohma",    "SEG_44", "SEG_46", "EnDraw_BossGohma",
     "En_BossGlock",    "SEG_44", "SEG_46", "EnDraw_BossGlock",
@@ -114,8 +117,10 @@ Entity_Table = [
 
 RoomScript_Table = [
     "Rs_None",                      "RsInit_None",
-    "Rs_BlockCentral",              "RsInit_BlockCentral",
+    "Rs_BlockCenter",               "RsInit_BlockCenter",
+    "Rs_BlockLeftStairs",           "RsInit_BlockLeftStairs",
     "Rs_BlockDiamondStairs",        "RsInit_BlockDiamondStairs",
+    "Rs_BlockSpiralStairs",         "RsInit_BlockSpiral",
     "Rs_BlockPathStairs",           "RsInit_BlockPathStairs",
     "Rs_EntCaveWallLeftBlocked",    "RsInit_EntCaveWallLeftBlocked",
     "Rs_EntCaveWallCenterBlocked",  "RsInit_EntCaveWallCenterBlocked",
@@ -233,7 +238,8 @@ tbl = [
         "BlD",
         "BlU",
         "BlPushBlock",
-        "BlDiamondPushBlock",
+        "BlPushBlockDiamondTop",
+        "BlPushBlockLeft",
         "BlPathPushBlock",
     ],
     bankLut=None

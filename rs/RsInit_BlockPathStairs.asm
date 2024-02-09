@@ -4,8 +4,8 @@
 RsInit_BlockPathStairs: SUBROUTINE
     lda #$80
     sta blY
-    lda #RF_NO_ENCLEAR
-    ora roomFlags
+    lda roomFlags
+    ora #RF_NO_ENCLEAR
     sta roomFlags
 
     ldx #$18

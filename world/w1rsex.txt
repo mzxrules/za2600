@@ -34,7 +34,7 @@ Rs_None
 zz0
 Rs_Item
 GiRupee5
-Rs_None
+Rs_BlockCenter
 zz0
 Rs_Item
 GiHeart
@@ -110,7 +110,7 @@ Rs_Item
 GiTriforce
 Rs_Item
 GiCompass
-Rs_None
+Rs_BlockCenter
 zz0
 Rs_None
 zz0
@@ -130,7 +130,7 @@ Rs_Item
 GiKey
 Rs_Npc
 MesgEastmostPeninsula
-Rs_BlockCentral
+Rs_BlockCenter
 zz0
 Rs_Item
 GiMap
@@ -182,7 +182,7 @@ Rs_Item
 GiCompass
 Rs_Item
 GiBomb
-Rs_BlockCentral
+Rs_BlockCenter
 zz0
 Rs_None
 zz0

@@ -22,7 +22,29 @@ EnMove_Card_WallCheck_TEST: SUBROUTINE
 ; Clobbers Y register
 ;==============================================================================
 EnMove_Card_WallCheck: SUBROUTINE
+; Check if ball is blocking the way
+    lda blY
+    sec
+    sbc en0Y,x
+    clc
+    adc #8
+    cmp #17
+    bcs .ballNotBlocking
+    tay
+    lda blX
+    clc ; subtract an extra 1 from blX
+    sbc en0X,x
+    clc
+    adc #8
+    cmp #17
+    bcs .ballNotBlocking
+    tax
+    lda EnMove_BallBlockedXLUT,x
+    and EnMove_BallBlockedYLUT,y
+    bpl .endBallCheck ;jmp
+.ballNotBlocking
     lda #0
+.endBallCheck
 ; Check board boundaries
     ldx EnMoveNX
     cpx #[EnBoardXR/4]
