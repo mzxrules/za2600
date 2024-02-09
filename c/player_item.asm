@@ -66,7 +66,6 @@ PlayerUpdateArrow: SUBROUTINE
     rts
 
 PlayerDrawArrow: SUBROUTINE
-; Draw Arrow
     ldy plItemDir
     lda ArrowWidth8,y
     sta wNUSIZ0_T
@@ -76,6 +75,20 @@ PlayerDrawArrow: SUBROUTINE
     sta m0X
     lda plm0Y
     sta m0Y
+    rts
+
+PlayerDrawSwordFx: SUBROUTINE
+    ldy plItem2Dir
+    lda SwordWidth4,y
+    sta wNUSIZ0_T
+    lda SwordHeight4,y
+    sta wM0H
+    ldx plm1X
+    inx
+    stx m0X
+    ldx plm1Y
+    inx
+    stx m0Y
     rts
 
 PlayerUseCandle: SUBROUTINE
@@ -491,6 +504,26 @@ PlayerUpdateWand: SUBROUTINE
 .skipSetMagic
     rts
 
+PlayerUpdateSword:
+    lda plHealth
+    cmp plHealthMax
+    bne .rts
+    lda plItem2Time
+    bne .rts
+    lda plItemTimer
+    cmp #ITEM_ANIM_SWORD_STAB_LONG + 3
+    bne .rts
+
+    ldx #OBJ_PLM1
+    jsr PlayerPlaceNearbyTypeB
+    sty plItem2Dir
+    lda #PLAYER_SWORD_FX
+    sta plState3
+    lda #-80
+    sta plItem2Time
+.rts
+    rts
+
 ;==============================================================================
 ; Position a boxlike item next to the player
 ;-----------------------
@@ -509,9 +542,8 @@ PlayerPlaceNearbyTypeB: SUBROUTINE
     sta plY,x
     rts
 
-
+PlayerUpdateSwordFx: SUBROUTINE
 PlayerUpdateWandFx: SUBROUTINE
-; handle magic attack logic
     ldy plItem2Dir
     ldx ObjXYAddr,y
     lda OBJ_PLM1,x
@@ -596,8 +628,6 @@ PlayerUpdateMeatFx: SUBROUTINE
 .rts
     rts
 
-PlayerUpdateSword:
-PlayerUpdateSwordFx:
 PlayerUpdateNone:
     rts
 

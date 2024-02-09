@@ -57,7 +57,6 @@ HbGetPlAtt: SUBROUTINE
     pha
     lda HbPlAttL+8,y
     pha
-HbPlSwordFx:
 HbPlRangFx:
 HbPlNone:
     rts
@@ -88,6 +87,21 @@ HbPlWandFx: SUBROUTINE
     sta Hb_aa_y
     rts
 
+HbPlSwordFx: SUBROUTINE
+    lda #HITBOX_AA_SQ4
+    sta Hb_aa_Box
+    ldy #0
+    lda plItem2Dir
+    cmp #2
+    bcc .applyMod
+    iny
+.applyMod
+    lda Hb_aa_x,y
+    sec
+    sbc #1
+    sta Hb_aa_x,y
+    jmp SetHbSwordDamage
+
 HbPlSword: SUBROUTINE
     lda #HB_PL_SWORD
     sta HbPlFlags
@@ -99,6 +113,7 @@ HbPlSword: SUBROUTINE
     iny ; HITBOX_AA_SWORD + plItemDir
     sty Hb_aa_Box
 
+SetHbSwordDamage:
     ldy #HB_DMG_SWORD3
     bit ITEMV_SWORD3
     bmi .sword3

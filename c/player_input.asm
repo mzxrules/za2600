@@ -305,7 +305,6 @@ PlayerDrawItem: SUBROUTINE
     pha
     rts
 
-PlayerDrawSwordFx:
 PlayerDrawNone:
 .noDraw
     lda #$80
