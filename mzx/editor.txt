@@ -16,6 +16,38 @@ set "$w0en" "$lvlen"
 set "$w1en" "$lvlen"
 set "$w2en" "$lvlen"
 
+. "init cave opening display data"
+loop start
+set "$" to "$Rs&loopcount&"
+set "ui_rs_cavesprite" 0
+if "$" === "Rs_BAD_HIDDEN_CAVE" "#ui_rs_cavesprite_0"
+if "$" === "Rs_BAD_CAVE" "#ui_rs_cavesprite_0"
+if "$" === "Rs_BlockPathStairs" "#ui_rs_cavesprite_0"
+if "$" === "Rs_EntCaveWallLeft" "#ui_rs_cavesprite_1"
+if "$" === "Rs_EntCaveWallLeftBlocked" "#ui_rs_cavesprite_1"
+if "$" === "Rs_EntCaveWallCenter" "#ui_rs_cavesprite_2"
+if "$" === "Rs_EntCaveWallCenterBlocked" "#ui_rs_cavesprite_2"
+if "$" === "Rs_EntCaveWallRight" "#ui_rs_cavesprite_3"
+if "$" === "Rs_EntCaveWallRightBlocked" "#ui_rs_cavesprite_3"
+if "$" === "Rs_EntCaveMid" "#ui_rs_cavesprite_0"
+if "$" === "Rs_Waterfall" "#ui_rs_cavesprite_2"
+set "ui_rs_cavesprite&loopcount&" to "ui_rs_cavesprite"
+loop "('RsCount'-1)"
+goto "ui_rs_cavesprite_end"
+: "#ui_rs_cavesprite_0"
+set "ui_rs_cavesprite" 3
+goto "#return"
+: "#ui_rs_cavesprite_1"
+set "ui_rs_cavesprite" 4
+goto "#return"
+: "#ui_rs_cavesprite_2"
+set "ui_rs_cavesprite" 5
+goto "#return"
+: "#ui_rs_cavesprite_3"
+set "ui_rs_cavesprite" 6
+goto "#return"
+
+: "ui_rs_cavesprite_end"
 set "mzx_speed" to 8
 
 . "mzx sprite reference"
@@ -160,10 +192,12 @@ goto "q"
 
 : "keyr"
 set "$lvlrs.&roomId&" "('$lvlrs.&roomId&'+1%'RsCount')"
+goto "#update_room"
 goto "q"
 
 : "keyt"
 set "$lvlrs.&roomId&" "('$lvlrs.&roomId&'+('RsCount'-1)%'RsCount')"
+goto "#update_room"
 goto "q"
 
 : "keyf"
@@ -289,6 +323,8 @@ if "$" === "Rs_Item" "#write_ex_Rs_Item"
 if "$" === "Rs_ShoreItem" "#write_ex_Rs_Item"
 if "$" === "Rs_Npc" "#write_ex_Npc_Mesg"
 if "$" === "Rs_NpcMonster" "#write_ex_Npc_Mesg"
+if "$" === "Rs_BAD_HIDDEN_CAVE" "#write_ex_Cv_Type"
+if "$" === "Rs_BAD_CAVE" "#write_ex_Cv_Type"
 if "$" === "Rs_BlockPathStairs" "#write_ex_Cv_Type"
 if "$" === "Rs_EntCaveWallLeft" "#write_ex_Cv_Type"
 if "$" === "Rs_EntCaveWallLeftBlocked" "#write_ex_Cv_Type"
@@ -573,6 +609,11 @@ loop start
 copy char "('roomTyM'*2+'loopcount'+'SPR_PF2')" to "('roomId'*8+'loopcount'+'SPR_WORK'+2)"
 copy char "('roomTyM'*2+'loopcount'+'SPR_PF1')" to "('roomId'*8+'loopcount'+'SPR_WORK'+4)"
 loop for 1
+set "ui_rs_cavesprite" to "('ui_rs_cavesprite('$lvlrs.&roomId&')')"
+if "ui_rs_cavesprite" = 0 "skip_ui_rs_cavesprite"
+set "sprA" "ui_rs_cavesprite"
+goto "#mask_room_spr"
+: "skip_ui_rs_cavesprite"
 set "sprA" "('worldId'=0*3)"
 goto "#mask_room_spr"
 set "sprA" to "('worldId'=0+ 1)"

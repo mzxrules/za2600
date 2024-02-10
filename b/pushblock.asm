@@ -32,11 +32,11 @@ BlPathPushBlock: SUBROUTINE
     bne .rts
 
     lda rPF1RoomL + 6
-    and #~$06
+    and #~$0C
     sta wPF1RoomL + 6
     sta wPF1RoomL + 7
 
-    ldx #$18+1
+    ldx #$14+1
     stx blX
     ldx #$20
     stx blY
@@ -114,5 +114,31 @@ BlPushBlock: ; SUBROUTINE
     lda roomFlags
     ora #RF_EV_CLEAR
     sta roomFlags
+.rts
+    rts
+
+BlPushBlockWaterfall: SUBROUTINE
+    ldx roomPush
+    inx
+    cpx #8+2 ; full move
+    bpl .pushDone
+    stx roomPush
+    cpx #2
+    bmi .pushCheck
+    ldx #BL_U
+    jmp BallDel
+
+.pushCheck
+    ; set direction
+    lda plDir
+    sta blDir
+
+    ldy #0
+    bit CXP0FB
+    bvs .rts
+    sty roomPush
+    rts
+
+.pushDone
 .rts
     rts

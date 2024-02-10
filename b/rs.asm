@@ -4,7 +4,7 @@
 
 Cv_Del:
     ldx roomEX
-    cpx #CV_MESG_HINT_LOST_HILLS+1
+    cpx #CV_MESG_HINT_TREE_AT_DEAD_END+1
     bpl .rts
     lda CaveTypeH,x
     pha
@@ -119,6 +119,7 @@ Rs_Cave: SUBROUTINE
 Cv_MesgHintGrave: SUBROUTINE
 Cv_MesgHintLostWoods:
 Cv_MesgHintLostHills:
+Cv_MesgHintTreeAtDeadEnd:
     lda roomEX
     sec
     sbc #CV_MESG_HINT_GRAVE
@@ -252,7 +253,7 @@ PositionStairs: SUBROUTINE
 .stairsX:
     .byte #$40, #$18, #$74, #$74, #$28
 .stairsY
-    .byte #$2C, #$38, #$48, #$2C, #$28
+    .byte #$2C, #$34, #$48, #$2C, #$28
 
 Rs_BlockPathStairs: SUBROUTINE
     lda roomFlags
@@ -325,7 +326,6 @@ Rs_EntDungSpectacleRockBlocked:
     lda #$80
     sta blY
 
-    lda #$F3
     cpx #RS_ENT_CAVE_WALL_LEFT
     beq .left
     cpx #RS_ENT_CAVE_WALL_RIGHT
@@ -340,30 +340,47 @@ Rs_EntDungSpectacleRockBlocked:
     sta wPF2Room + 6
     lda #$39
     sta wPF2Room + 7
-    ;sta wPF2Room + 8
     lda #$28+1
     sta blX
     lda #$20
     sta blY
+.rts
     rts
 
 .center
-    lda #$7F
+    lda rPF2Room + 12
+    and #$7F
     sta wPF2Room + 12
+    lda rPF2Room + 13
+    and #$7F
     sta wPF2Room + 13
+    lda rPF2Room + 14
+    and #$7F
     sta wPF2Room + 14
     rts
 
 .left
+    lda wPF1RoomL + 12
+    and #$F3
     sta wPF1RoomL + 12
+    lda wPF1RoomL + 13
+    and #$F3
     sta wPF1RoomL + 13
+    lda wPF1RoomL + 14
+    and #$F3
     sta wPF1RoomL + 14
     rts
 .right
+
+    lda rPF1RoomR + 12
+    and #$F3
     sta wPF1RoomR + 12
+    lda rPF1RoomR + 13
+    and #$F3
     sta wPF1RoomR + 13
+    lda rPF1RoomR + 14
+    and #$F3
     sta wPF1RoomR + 14
-.rts
     rts
 
 Rs_EntDungBushBlocked: SUBROUTINE ; $40, $1C

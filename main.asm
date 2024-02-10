@@ -465,6 +465,7 @@ BANK_33
     INCLUDE "rs/RsInit_EntDungFlute.asm"
     INCLUDE "rs/RsInit_EntDungBush.asm"
     INCLUDE "rs/RsInit_SpectacleRock.asm"
+    INCLUDE "rs/RsInit_Waterfall.asm"
 
     LOG_BANK_SIZE "-BANK 33- RoomScriptInit", BANK_33
 

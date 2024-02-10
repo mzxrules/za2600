@@ -83,6 +83,10 @@ mesg_table = [
         "GO UP, UP, THE MOUNTAIN ",
         "          AHEAD         ",
         ],
+    "MesgHintTreeAtDeadEnd", [
+        " SECRET IS IN THE TREE  ",
+        "    AT THE DEAD-END.    ",
+        ],
     "MesgPayHintStart", [
         "  PAY ME AND I'LL TALK  ",
         "   99      99      99   ",
@@ -110,10 +114,6 @@ mesg_table = [
     "MesgEyesOfSkull", [
         "  EYES OF SKULL HAVE A  ",
         "         SECRET         ",
-        ],
-    "MesgTreeAtDeadEnd", [
-        " SECRET IS IN THE TREE  ",
-        "    AT THE DEAD-END.    ",
         ],
     "MesgHintNose", [
         "  THERE'S A SECRET IN   ",

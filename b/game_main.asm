@@ -525,4 +525,6 @@ Rs_Del:
 Rs_None:
 Rs_BlockCenter:
 Rs_FairyFountain:
+Rs_BAD_CAVE:
+Rs_BAD_HIDDEN_CAVE:
     rts

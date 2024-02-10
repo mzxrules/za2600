@@ -3,31 +3,31 @@ PF2Room0:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
+    .byte $F8 ; |...XXXXX| mirrored
+    .byte $FC ; |..XXXXXX| mirrored
+    .byte $FC ; |..XXXXXX| mirrored
+    .byte $FC ; |..XXXXXX| mirrored
+    .byte $F8 ; |...XXXXX| mirrored
+    .byte $F8 ; |...XXXXX| mirrored
+    .byte $F0 ; |....XXXX| mirrored
+    .byte $E0 ; |.....XXX| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
 PF2Room1:
-    .byte $30 ; |....XX..| mirrored
-    .byte $30 ; |....XX..| mirrored
-    .byte $30 ; |....XX..| mirrored
-    .byte $30 ; |....XX..| mirrored
-    .byte $3F ; |XXXXXX..| mirrored
-    .byte $3F ; |XXXXXX..| mirrored
-    .byte $03 ; |XX......| mirrored
-    .byte $03 ; |XX......| mirrored
-    .byte $03 ; |XX......| mirrored
-    .byte $03 ; |XX......| mirrored
-    .byte $FF ; |XXXXXXXX| mirrored
-    .byte $FF ; |XXXXXXXX| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $B0 ; |....XX.X| mirrored
+    .byte $B0 ; |....XX.X| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $B0 ; |....XX.X| mirrored
+    .byte $B0 ; |....XX.X| mirrored
+    .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
@@ -162,12 +162,12 @@ PF2Room9:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
+    .byte $78 ; |...XXXX.| mirrored
     .byte $7C ; |..XXXXX.| mirrored
-    .byte $7E ; |.XXXXXX.| mirrored
-    .byte $7E ; |.XXXXXX.| mirrored
-    .byte $7E ; |.XXXXXX.| mirrored
-    .byte $7E ; |.XXXXXX.| mirrored
-    .byte $3E ; |.XXXXX..| mirrored
+    .byte $7C ; |..XXXXX.| mirrored
+    .byte $7C ; |..XXXXX.| mirrored
+    .byte $7C ; |..XXXXX.| mirrored
+    .byte $3C ; |..XXXX..| mirrored
 PF2Room10:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
@@ -341,16 +341,16 @@ PF2Room19:
 PF2Room20:
     .byte $0F ; |XXXX....| mirrored
     .byte $0F ; |XXXX....| mirrored
-    .byte $0C ; |..XX....| mirrored
-    .byte $0C ; |..XX....| mirrored
-    .byte $0C ; |..XX....| mirrored
-    .byte $0C ; |..XX....| mirrored
-    .byte $0C ; |..XX....| mirrored
-    .byte $0C ; |..XX....| mirrored
-    .byte $0C ; |..XX....| mirrored
     .byte $0F ; |XXXX....| mirrored
     .byte $0F ; |XXXX....| mirrored
-    .byte $00 ; |........| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $07 ; |XXX.....| mirrored
+    .byte $03 ; |XX......| mirrored
+    .byte $01 ; |X.......| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
@@ -441,8 +441,6 @@ PF2Room25:
     .byte $FF ; |XXXXXXXX| mirrored
     .byte $FF ; |XXXXXXXX| mirrored
 PF2Room26:
-    .byte $0C ; |..XX....| mirrored
-    .byte $0C ; |..XX....| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
@@ -452,7 +450,9 @@ PF2Room26:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
-    .byte $55 ; |X.X.X.X.| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $03 ; |XX......| mirrored
+    .byte $57 ; |XXX.X.X.| mirrored
     .byte $7F ; |XXXXXXX.| mirrored
     .byte $7F ; |XXXXXXX.| mirrored
     .byte $FF ; |XXXXXXXX| mirrored
