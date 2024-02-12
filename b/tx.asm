@@ -5,47 +5,46 @@
 ;==============================================================================
 ShopKernel: BHA_BANK_FALL #SLOT_F0_SHOP
 
-TextKernel: SUBROUTINE
-    nop ; Scanlines 56 to 97 (3116) (TIM64T 48)
-    lda #49
-    sta TIM64T
+TextKernel: SUBROUTINE ; Cycle 1
+    nop         ; 2 ; Scanlines 56 to 97 (3116) (TIM64T 48)
+    lda #49 + 0 ; 2
+    sta TIM64T  ; 4
 ; start
-    lda #6
-    sta NUSIZ0
-    sta NUSIZ1
-    lda #COLOR_WHITE
-    sta COLUP0
-    sta COLUP1
-    lda #1
-    sta VDELP0
-    sta VDELP1
+    lda #6      ; 2
+    sta NUSIZ0  ; 3
+    sta NUSIZ1  ; 3
+    lda #COLOR_WHITE ; 2 - 19
+    sta COLUP0 ; 3
+    sta COLUP1 ; 3
+    lda #1     ; 2
+    sta VDELP0 ; 3
+    sta RESP0  ; 3 - 33     TIA POS #36
+    nop        ; 2 - 35
+    sta RESP1  ; 3 - 38     TIA POS #51
+    sta VDELP1 ; 3 - 41
 
-TextSetPosition: SUBROUTINE
-    lda Frame
+    lda Frame  ; 3
     and #1
     tay
-    lda Mul8+4,y ; #32/#40
-    ldx #0
-    jsr SetHorizPos
-    lda Mul8+6,y ; #48/#56
-    inx
-    jsr SetHorizPos
+    lda TextSetHMP0,y
+    sta HMP0 ; #32/#40
+    lda TextSetHMP1,y
+    sta HMP1 ; #48/#56
 
     sta WSYNC ; To Scanline 59
     sta HMOVE
 
-    lda #$FE
+    lda #$FF
     sta TextLoop
 
 TextDisplayLoop:
     sta WSYNC
+    lda Frame
+    ror
 .SetVFlag
     inc TextLoop
-    inc TextLoop
-    lda Frame
-    and #1
-    ora TextLoop
-    clc
+    lda TextLoop
+    rol
     adc #SLOT_F4_MESG
     sta BANK_SLOT
     ldx mesgId
@@ -54,35 +53,38 @@ TextDisplayLoop:
     lda MesgAH,x
     sta TMesgPtr+1
 
-    clv ; Overflow stores text a/b
     ldy #11
-    lda Frame
-    and #1
-    eor #1
-    tax
-    bne .loadTextLoop
-    bit .SetVFlag
-
 .loadTextLoop
+    cpy mesgDY
+    bcc .drawChar
+    lda #MESG_CHAR_SPACE
+    .byte $2C
+.drawChar
     lda (TMesgPtr),y
     sta TextReg+0,y
     dey
     bpl .loadTextLoop
 
+    clv ; Overflow stores text a/b
+    lda Frame
+    and #1
+    eor #1
+    tax
+    bne .ClearVFlag
+    bit .SetVFlag
+.ClearVFlag
+
     lda #2
     cmp KernelId
     bne .drawText
-    cmp TextLoop
-    bne .drawText
+    lda TextLoop
+    beq .drawText
 
-    ldy shopDigit+0
-    lda MesgDigits,y
+    lda mesgChar+0
     sta TextReg+1,x
-    ldy shopDigit+1
-    lda MesgDigits,y
+    lda mesgChar+1
     sta TextReg+5,x
-    ldy shopDigit+2
-    lda MesgDigits,y
+    lda mesgChar+2
     sta TextReg+9,x
 
 .drawText
@@ -139,7 +141,7 @@ Frame0Text
     ora right_text,x        ; 4     (35)
 
     ldx TextTemp            ; 3     (38)
-    VSLEEP;sleep 4
+    VSLEEP ; sleep 4 or 6
     sty GRP1                ; 3     (41)
     stx GRP0                ; 3     (44)
     sta GRP1                ; 3     (47)
@@ -199,7 +201,7 @@ Frame0Text
     ora right_text+1,x      ; 4     (35)
 
     ldx TextTemp            ; 3     (38)
-    VSLEEP;sleep 4
+    VSLEEP ; sleep 4 or 6
     sty GRP1                ; 3     (41)
     stx GRP0                ; 3     (44)
     sta GRP1                ; 3     (47)
@@ -259,7 +261,7 @@ Frame0Text
     ora right_text+2,x      ; 4     (35)
 
     ldx TextTemp            ; 3     (38)
-    VSLEEP; sleep 4
+    VSLEEP ; sleep 4 or 6
     sty GRP1                ; 3     (41)
     stx GRP0                ; 3     (44)
     sta GRP1                ; 3     (47)
@@ -319,7 +321,7 @@ Frame0Text
     ora right_text+3,x      ; 4     (35)
 
     ldx TextTemp            ; 3     (38)
-    VSLEEP; sleep 4
+    VSLEEP ; sleep 4 or 6
     sty GRP1                ; 3     (41)
     stx GRP0                ; 3     (44)
     sta GRP1                ; 3     (47)
@@ -429,20 +431,10 @@ FinishVS
 
     jmp KERNEL_WORLD_RESUME
 
-SetHorizPos: SUBROUTINE
-    sta WSYNC   ; start a new line
-    bit 0       ; waste 3 cycles
-    sec     ; set carry flag
-.DivideLoop
-    sbc #15     ; subtract 15
-    bcs .DivideLoop  ; branch until negative
-    eor #7      ; calculate fine offset
-    asl
-    asl
-    asl
-    asl
-    sta RESP0,x ; fix coarse position
-    sta HMP0,x  ; set fine offset
-    rts     ; return to caller
+TextSetHMP0:
+    .byte $40, #$C0
+
+TextSetHMP1:
+    .byte $30, #$B0
 
     LOG_SIZE "TextKernel", TextKernel

@@ -192,6 +192,11 @@ EN_VARS_COUNT = EN_VARS_END - EN_VARS
 enState     ds 2
 miType      ds 2
 mesgId      ds 1
+mesgChar    ds 6
+mesgDY      ds 2
+mesgLength  ds 1
+MESG_MAX_LENGTH = 24
+npcType     ds 1
 CLASS_EN_NPC
 
 ; Class ENEMY_SPAWN
@@ -234,17 +239,22 @@ CLASS_EN_BOSS_SHOOT
     ORG CLASS_EN_NPC
 enInputDelay ds 1
 
-; == EnShopkeeper
+; == En_NpcAppear
+; == En_NpcShop
+; == En_NpcGiveOne
     ORG CLASS_EN_NPC
 ; enState
-                      ; 1xxx_xxxx Init
-                      ; x1xx_xxxx Item Bought
+NPC_INIT        = $80 ; 1xxx_xxxx Init
+NPC_ITEM_GOT    = $40 ; x1xx_xxxx Item Bought
 GI_EVENT_CAVE   = $20 ; xx1x_xxxx
 GI_EVENT_CD     = $10 ; xxx1_xxxx
 GI_EVENT_TRI    = $08 ; xxxx_1xxx
 GI_EVENT_INIT   = $04 ; xxxx_x1xx
 shopItem    ds 3
-shopDigit   ds 3
+shopPrice   ds 3
+shopRoom    ds 1
+npcTimer    ds 1
+    EN_SIZE NPC_SHOPKEEPER
 
 ; == En_ClearDrop
 ; == En_ItemGet
@@ -262,6 +272,7 @@ cdAX        ds 1
 cdBX        ds 1
 cdAY        ds 1
 cdBY        ds 1
+    EN_SIZE CLEAR_DROP
 
 ; == Great Fairy
     ORG CLASS_EN_NPC
@@ -817,6 +828,7 @@ SEG_44 = RAMSEG_F4 | 44
 SEG_45 = RAMSEG_F4 | 45
 SEG_46 = RAMSEG_F4 | 46
 SEG_47 = RAMSEG_F4 | 47
+SEG_48 = RAMSEG_F4 | 48
 
 
 SLOT_RW_F8_W0   = RAMSEG_F8 | 0

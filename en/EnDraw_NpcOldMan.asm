@@ -3,7 +3,10 @@
 ;==============================================================================
 
 EnDraw_NpcOldMan: SUBROUTINE
-    ; Draw Routine
+    lda mesgLength
+    lsr
+    sta mesgDY
+
     lda #COLOR_EN_RED
     sta wEnColor
     lda #<SprS0
@@ -14,7 +17,9 @@ EnDraw_NpcOldMan: SUBROUTINE
 
 
 EnDraw_NpcMonster: SUBROUTINE
-    ; Draw Routine
+    lda #MESG_MAX_LENGTH
+    sta mesgDY
+
     ldx #COLOR_EN_RED_L
     lda enNpcMonsterTimer
     and #$4

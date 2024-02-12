@@ -20,6 +20,7 @@ Rs_GameOver: SUBROUTINE
     stx roomRS
     ldx #$80
     stx plY
+    stx mesgDY
 
     ldx #MS_PLAY_OVER
     stx SeqFlags

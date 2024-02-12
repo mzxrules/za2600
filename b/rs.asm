@@ -6,25 +6,26 @@ Cv_Del:
     ldx roomEX
     cpx #CV_MESG_HINT_TREE_AT_DEAD_END+1
     bpl .rts
+    lda #EN_NPC_APPEAR
+    sta enType
     lda CaveTypeH,x
     pha
     lda CaveTypeL,x
     pha
-
-Cv_MoneyGame:
-Cv_GiveHeartPotion:
-Cv_TakeHeartRupee:
-Cv_DoorRepair:
 .rts
     rts
 
+Cv_DoorRepair:
+    lda #EN_NPC_OLD_MAN
+    sta npcType
+    rts
 
 Cv_Path1:
 Cv_Path2:
 Cv_Path3:
 Cv_Path4:
     lda #EN_NPC_PATH
-    sta enType
+    sta npcType
     rts
 
 
@@ -36,17 +37,32 @@ Cv_Rupees100:
 Cv_Rupees30:
 Cv_Rupees10:
     lda #EN_NPC_GIVE_ONE
-    sta enType
+    sta npcType
     rts
 
 
+Cv_MoneyGame:
 Cv_Shop1:
 Cv_Shop2:
 Cv_Shop3:
 Cv_Shop4:
 Cv_Potion:
-    lda #EN_NPC_SHOPKEEPER
-    sta enType
+    lda #EN_NPC_SHOP
+    sta npcType
+    rts
+
+Cv_TakeHeartRupee:
+Cv_GiveHeartPotion:
+    lda #EN_NPC_SHOP2
+    sta npcType
+    rts
+
+Cv_MesgHintGrave: SUBROUTINE
+Cv_MesgHintLostWoods:
+Cv_MesgHintLostHills:
+Cv_MesgHintTreeAtDeadEnd:
+    lda #EN_NPC_OLD_MAN
+    sta npcType
     rts
 
 Rs_EntCaveWallLeft: SUBROUTINE
@@ -79,6 +95,33 @@ Rs_EntCaveWallCenter:
     ldy #$38
     jmp ENTER_CAVE
 
+Rs_EntCaveMidSecretNorth:
+    lda plState
+    and #PS_GLIDE
+    bne .rts
+
+    ldy plY
+    cpy #48
+    bcc Rs_EntCaveMid
+    lda plX
+    sbc #$3C
+    cmp #$44+1 - #$3C
+    bcs .rts
+    bit CXP0FB
+    bpl .rts
+    lda plDir
+    cmp #PL_DIR_U
+    bne .rts
+    iny
+    sty plY
+    lda plState
+    ora #[#PS_GLIDE | #PS_LOCK_ALL]
+    sta plState
+    lda #SFX_SOLVE
+    sta SfxFlags
+.rts
+    rts
+
 Rs_EntCaveMid:
     ldx #$40
     cpx plX
@@ -88,7 +131,6 @@ Rs_EntCaveMid:
     bne .rts
     ldy #$20
     jmp ENTER_CAVE
-.rts
     rts
 
 Rs_Cave: SUBROUTINE
@@ -116,16 +158,6 @@ Rs_Cave: SUBROUTINE
     rts
 
 
-Cv_MesgHintGrave: SUBROUTINE
-Cv_MesgHintLostWoods:
-Cv_MesgHintLostHills:
-Cv_MesgHintTreeAtDeadEnd:
-    lda roomEX
-    sec
-    sbc #CV_MESG_HINT_GRAVE
-    adc #MESG_HINT_GRAVE-1
-    sta roomEX
-    bne Rs_Npc
 Rs_NpcTriforce: SUBROUTINE
     ldy #$FF
     cpy itemTri
@@ -264,15 +296,20 @@ Rs_BlockPathStairs: SUBROUTINE
 
 Rs_BlockDiamondStairs: ;SUBROUTINE
 Rs_Stairs: ;SUBROUTINE
+    ; position #$40, #$2C
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts
     lda plX
-    cmp #$40
-    bne .place_stairs
+    sec
+    sbc #$3C
+    cmp #$8+1
+    bcs .place_stairs
     lda plY
-    cmp #$2C
-    beq .rts
+    sec
+    sbc #$28
+    cmp #$8+1
+    bcc .rts
 .place_stairs
     ldx #STAIR_POS_CENTER
     jmp PositionStairs
@@ -360,13 +397,13 @@ Rs_EntDungSpectacleRockBlocked:
     rts
 
 .left
-    lda wPF1RoomL + 12
+    lda rPF1RoomL + 12
     and #$F3
     sta wPF1RoomL + 12
-    lda wPF1RoomL + 13
+    lda rPF1RoomL + 13
     and #$F3
     sta wPF1RoomL + 13
-    lda wPF1RoomL + 14
+    lda rPF1RoomL + 14
     and #$F3
     sta wPF1RoomL + 14
     rts

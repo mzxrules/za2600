@@ -60,7 +60,7 @@ Rs_BlockPathStairs
 Cv_Path2
 Rs_EntCaveWallRightBlocked
 Cv_DoorRepair
-Rs_EntCaveMid
+Rs_EntCaveMidSecretNorth
 Cv_MoneyGame
 Rs_None
 zz0
@@ -220,7 +220,7 @@ Rs_EntDungBushBlocked
 zz8
 Rs_None
 zz0
-Rs_EntCaveWallLeftBlocked
+Rs_EntCaveWallLeft
 Cv_Shop2
 Rs_EntCaveWallLeft
 Cv_MesgHintLostWoods

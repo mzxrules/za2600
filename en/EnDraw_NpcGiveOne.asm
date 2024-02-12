@@ -6,8 +6,10 @@ EnDraw_NpcGiveOne: SUBROUTINE
     ldy #$F0
     bit enState
     bvs .noDraw
+    lda #MESG_MAX_LENGTH
+    sta mesgDY
     ldy roomEX
-    lda .NpcGiveOneItems,y
+    lda NpcGiveOneItems,y
     tay
     jsr EnItemDraw
 
@@ -17,12 +19,3 @@ EnDraw_NpcGiveOne: SUBROUTINE
 .noDraw
     sty enY
     rts
-
-.NpcGiveOneItems:
-    .byte GI_SWORD1
-    .byte GI_SWORD2
-    .byte GI_SWORD3
-    .byte GI_NOTE
-    .byte GI_RUPEE
-    .byte GI_RUPEE
-    .byte GI_RUPEE

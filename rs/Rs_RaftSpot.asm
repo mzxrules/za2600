@@ -3,7 +3,7 @@
 ;==============================================================================
 Rs_RaftSpot: SUBROUTINE
     lda plState
-    and #$20
+    and #PS_GLIDE
     bne .fixPos
 ; If item not obtained
     lda #ITEMF_RAFT
@@ -23,7 +23,7 @@ Rs_RaftSpot: SUBROUTINE
     lda #PL_DIR_U
     sta plDir
     lda plState
-    ora #$22
+    ora #[#PS_GLIDE | #PS_LOCK_ALL]
     sta plState
     lda #SFX_SURF
     sta SfxFlags

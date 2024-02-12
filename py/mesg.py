@@ -25,23 +25,28 @@ mesg_table = [
         ],
     "MesgShopCheap", [
         " BUY SOMETHING WILL YA? ",
-        "   99      99      99   ", # 34, 12, 9A
+        "                        ",
+        #"   99      99      99   ", # 34, 12, 9A
         ],
     "MesgShopExpensive", [
         "THIS STUFF SURE IS PRICY",
-        "   99      99      99   ", # 34, 12, 9A
+        "                        ",
+        #"   99      99      99   ", # 34, 12, 9A
         ],
     "MesgPotion", [
         "PLEASE SAVE THE PRINCESS",
-        "   99      99      99   ",
+        "                        ",
+        #"   99      99      99   ",
         ],
     "MesgChoiceGiveItem", [
         " TAKE ANY ONE YOU WANT  ",
-        "   99              99   ",
+        "                        ",
+        #"   99              99   ",
         ],
     "MesgChoiceTakeItem", [
         "LEAVE YOUR LIFE OR MONEY",
-        "  -40             -01   ",
+        "                        ",
+        #"  -40             -01   ",
         ],
     "MesgPotion0", [
         "     I DO NOT HELP      ",

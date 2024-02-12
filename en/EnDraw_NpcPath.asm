@@ -2,6 +2,8 @@
 ; mzxrules 2023
 ;==============================================================================
 EnDraw_NpcPath: SUBROUTINE
+    lda #MESG_MAX_LENGTH
+    sta mesgDY
     lda #COLOR_EN_GRAY_L
     sta wEnColor
     lda #<SprItem31

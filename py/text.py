@@ -580,7 +580,8 @@ strOut = ""
 for char in "0123456789 +-":
     raw.append(charSprRef[char][0])
 
-strOut = "MesgDigits:\n" + ToAsm(raw)
+strOut = f"MESG_CHAR_SPACE = ${raw[10]:02X}\n"
+strOut += "MesgDigits:\n" + ToAsm(raw)
 
 with open("gen/mesg_digits.asm", "w") as file:
     file.write(strOut)

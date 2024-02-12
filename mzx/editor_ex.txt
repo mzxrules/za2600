@@ -24,6 +24,7 @@ if "&$$&" === "Rs_EntCaveWallCenterBlocked" then "Cv_Type"
 if "&$$&" === "Rs_EntCaveWallRight" then "Cv_Type"
 if "&$$&" === "Rs_EntCaveWallRightBlocked" then "Cv_Type"
 if "&$$&" === "Rs_EntCaveMid" then "Cv_Type"
+if "&$$&" === "Rs_EntCaveMidSecretNorth" then "Cv_Type"
 if "&$$&" === "Rs_Waterfall" then "Cv_Type"
 
 : "NoValue"

@@ -208,6 +208,16 @@ SfxDef: SUBROUTINE
     stx AUDFT1
     rts
 
+SfxTalk: SUBROUTINE
+    lda #4
+    sta AUDVT1
+    lda #1
+    sta AUDCT1
+    lda #4
+    sta AUDFT1
+    bne SfxStop
+    rts
+
 SfxArrowFreq:
     .byte 2, 6, 11
 

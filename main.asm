@@ -596,8 +596,6 @@ BANK_42
     INCLUDE "en/EnDraw_Wallmaster.asm"
     INCLUDE "en/EnDraw_Octorok.asm"
     INCLUDE "en/EnDraw_Rope.asm"
-    INCLUDE "en/EnDraw_Shopkeeper.asm"
-    INCLUDE "en/EnDraw_NpcGiveOne.asm"
     INCLUDE "en/EnDraw_NpcPath.asm"
     INCLUDE "en/EnDraw_Stalfos.asm"
     INCLUDE "en/EnDraw_Gibdo.asm"
@@ -691,6 +689,23 @@ BANK_47
     INCLUDE "en/En_BossAqua.asm"
     INCLUDE "en/En_BossManhandla.asm"
     LOG_BANK_SIZE "-BANK 47-", BANK_47
+
+; ****************************************
+; *               BANK 48                *
+; ****************************************
+    SEG Bank47
+    ORG $C000
+    RORG $F400
+
+BANK_48
+    INCLUDE "gen/mesg_digits.asm"
+    INCLUDE "en/En_NpcGiveOne.asm"
+    INCLUDE "en/EnDraw_NpcGiveOne.asm"
+    INCLUDE "en/En_NpcShop.asm"
+    INCLUDE "en/EnDraw_NpcShop.asm"
+    INCLUDE "en/En_NpcAppear.asm"
+    LOG_BANK_SIZE "-BANK 48-", BANK_48
+
 
 ; End
 
