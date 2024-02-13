@@ -54,3 +54,23 @@ def main():
     print(result)
 
 main()
+
+def entropy_test():
+    result = {}
+
+    for i in range(0,  1 << 12):
+        v = 0
+        for j in range(0,48, 8):
+            v += 1 if (i & (1 << (j + 0))) > 0 else 4
+            v += 2 if (i & (1 << (j + 1))) > 0 else 3
+            v += 3 if (i & (1 << (j + 2))) > 0 else 2
+            v += 4 if (i & (1 << (j + 3))) > 0 else 1
+            v += 5 if (i & (1 << (j + 4))) > 0 else 0
+            v += 6 if (i & (1 << (j + 5))) > 0 else -1
+
+        v = (v - 1) % 6
+
+        if v not in result:
+            result[v] = 0
+        result[v] += 1
+    print(result)

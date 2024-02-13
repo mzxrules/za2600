@@ -16,7 +16,7 @@ Cv_Del:
     rts
 
 Cv_DoorRepair:
-    lda #EN_NPC_OLD_MAN
+    lda #EN_NPC_DOOR_REPAIR
     sta npcType
     rts
 
@@ -27,7 +27,6 @@ Cv_Path4:
     lda #EN_NPC_PATH
     sta npcType
     rts
-
 
 Cv_Sword1:
 Cv_Sword2:
@@ -40,8 +39,11 @@ Cv_Rupees10:
     sta npcType
     rts
 
-
 Cv_MoneyGame:
+    lda #EN_NPC_GAME
+    sta npcType
+    rts
+
 Cv_Shop1:
 Cv_Shop2:
 Cv_Shop3:

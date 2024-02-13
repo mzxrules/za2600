@@ -45,8 +45,10 @@ Entity_Table = [
     "En_ItemGet",      "SEG_44", "SEG_42", "EnDraw_ItemGet",
     "En_NpcAppear",    "SEG_48", "SEG_42", "EnDraw_NpcOldMan",
     "En_NpcShop",      "SEG_48", "SEG_48", "EnDraw_NpcShop",
+    "En_NpcGame",      "SEG_48", "SEG_48", "EnDraw_NpcGame",
     "En_NpcShop2",     "SEG_48", "SEG_48", "EnDraw_NpcShop",
     "En_NpcGiveOne",   "SEG_48", "SEG_48", "EnDraw_NpcGiveOne",
+    "En_NpcDoorRepair","SEG_48", "SEG_42", "EnDraw_NpcOldMan",
     "En_NpcPath",      "SEG_44", "SEG_42", "EnDraw_NpcPath",
     "En_NpcOldMan",    "SEG_45", "SEG_42", "EnDraw_NpcOldMan",
     "En_NpcMonster",   "SEG_45", "SEG_42", "EnDraw_NpcMonster",
@@ -326,6 +328,7 @@ tbl = [
         "SfxWarp",
         "SfxShutterDoor",
         "SfxTalk",
+        "SfxItemRupee",
     ],
     bankLut=None),
     GameEnum("PlMoveDir", "PlDir",
@@ -392,13 +395,13 @@ tbl = [
         "Cv_TakeHeartRupee",
         "Cv_Potion",
 
+        "Cv_DoorRepair",
+        "Cv_MoneyGame",
+
         "Cv_Path1",
         "Cv_Path2",
         "Cv_Path3",
         "Cv_Path4",
-
-        "Cv_MoneyGame",
-        "Cv_DoorRepair",
 
         "Cv_MesgHintGrave",
         "Cv_MesgHintLostWoods",

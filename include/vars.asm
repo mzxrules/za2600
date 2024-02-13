@@ -193,10 +193,12 @@ enState     ds 2
 miType      ds 2
 mesgId      ds 1
 mesgChar    ds 6
-mesgDY      ds 2
+mesgDY      ds 1
 mesgLength  ds 1
 MESG_MAX_LENGTH = 24
 npcType     ds 1
+npcIncRupee ds 1
+npcDecRupee ds 1
 CLASS_EN_NPC
 
 ; Class ENEMY_SPAWN
@@ -250,11 +252,17 @@ GI_EVENT_CAVE   = $20 ; xx1x_xxxx
 GI_EVENT_CD     = $10 ; xxx1_xxxx
 GI_EVENT_TRI    = $08 ; xxxx_1xxx
 GI_EVENT_INIT   = $04 ; xxxx_x1xx
-shopItem    ds 3
 shopPrice   ds 3
 shopRoom    ds 1
 npcTimer    ds 1
-    EN_SIZE NPC_SHOPKEEPER
+CLASS_NPC_SHOP_COMMON
+shopItem    ds 3
+    EN_SIZE NPC_SHOP
+
+    ORG CLASS_NPC_SHOP_COMMON
+Rng2State   ds 5
+NpcGamePrizeTable = Temp2
+    EN_SIZE NPC_GAME
 
 ; == En_ClearDrop
 ; == En_ItemGet

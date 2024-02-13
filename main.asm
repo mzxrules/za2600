@@ -704,6 +704,8 @@ BANK_48
     INCLUDE "en/En_NpcShop.asm"
     INCLUDE "en/EnDraw_NpcShop.asm"
     INCLUDE "en/En_NpcAppear.asm"
+    INCLUDE "en/En_NpcGame.asm"
+    INCLUDE "en/En_NpcDoorRepair.asm"
     LOG_BANK_SIZE "-BANK 48-", BANK_48
 
 

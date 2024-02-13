@@ -426,3 +426,65 @@ EnClearDropTypeB: SUBROUTINE
 
 EnRandomDrops:
     .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
+
+NpcShop_UpdateRupees: SUBROUTINE
+    lda Frame
+    ror
+    bcc .rts
+    sed
+    lda npcIncRupee
+    beq .try_dec_rupees
+.inc_rupees
+    clc
+    sbc #0
+    sta npcIncRupee
+    lda itemRupees
+    cmp #$99
+    bcs .zero_inc
+    clc
+    adc #1
+    sta itemRupees
+    lda #SFX_ITEM_RUPEE
+    sta SfxFlags
+    bne .rts ;jmp
+.zero_inc
+    lda #0
+    sta npcIncRupee
+    beq .rts ;jmp
+
+.try_dec_rupees
+    lda npcDecRupee
+    beq .rts
+    clc
+    sbc #0
+    sta npcDecRupee
+    lda itemRupees
+    beq .zero_dec
+    clc
+    sbc #0
+    sta itemRupees
+    lda #SFX_ITEM_RUPEE
+    sta SfxFlags
+    bne .rts ;jmp
+.zero_dec
+    lda #0
+    sta npcDecRupee
+.rts
+    cld
+    rts
+
+En_NpcShopGetSelction: SUBROUTINE
+    ldx #-1
+    bit CXPPMM
+    bpl .rts
+    ldx #0 ; selected item index
+    lda plX
+    cmp #$30
+    bmi .itemSelected
+    inx
+    cmp #$50
+    bmi .itemSelected
+    inx
+.itemSelected
+.rts
+    rts

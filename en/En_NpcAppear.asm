@@ -117,17 +117,16 @@ NpcCaveOpeningDialogs:
     .byte MESG_CHOICE_TAKE_ITEM
 ; Potion
     .byte MESG_POTION
-    ;.byte MESG_POTION0
+; Door Repair
+    .byte MESG_TAKE_RUPEES
+; Money Making Game
+    .byte MESG_MONEY_GAME
 
 ; NpcPath
     .byte MESG_PATH
     .byte MESG_PATH
     .byte MESG_PATH
     .byte MESG_PATH
-
-; Other
-    .byte MESG_MONEY_GAME
-    .byte MESG_TAKE_RUPEES
 
 ; Hints
     .byte MESG_HINT_GRAVE

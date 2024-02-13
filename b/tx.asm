@@ -36,15 +36,15 @@ TextKernel: SUBROUTINE ; Cycle 1
 
     lda #$FF
     sta TextLoop
-
+    ; CYCLE 5
 TextDisplayLoop:
-    sta WSYNC
     lda Frame
     ror
 .SetVFlag
     inc TextLoop
     lda TextLoop
     rol
+    sta WSYNC
     adc #SLOT_F4_MESG
     sta BANK_SLOT
     ldx mesgId
@@ -79,20 +79,29 @@ TextDisplayLoop:
     bne .drawText
     lda TextLoop
     beq .drawText
-
-    lda mesgChar+0
-    sta TextReg+1,x
-    lda mesgChar+1
-    sta TextReg+5,x
-    lda mesgChar+2
-    sta TextReg+9,x
-
+    ; 12/15
+    lda mesgChar+0      ; 3
+    sta TextReg+1,x     ; 4
+    lda mesgChar+1      ; 3
+    sta TextReg+5,x     ; 4
+    lda mesgChar+2      ; 3
+    sta TextReg+9,x     ; 4
+    cpx #0
+    bne .drawText
+    ; set sign chars
+    lda mesgChar+3
+    sta TextReg+0
+    lda mesgChar+4
+    sta TextReg+4
+    lda mesgChar+5
+    sta TextReg+8
+    ; 33/36
 .drawText
-    ldx TextReg+0
-    lda left_text,x
-    ldx TextReg+1
-    ora right_text,x
-    ldy #0
+    ldx TextReg+0       ; 3
+    lda left_text,x     ; 4
+    ldx TextReg+1       ; 3
+    ora right_text,x    ; 4
+    ldy #0              ; 2
 Frame0Text
     ; Text line 1 / 5
 

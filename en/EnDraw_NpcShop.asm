@@ -6,6 +6,7 @@ EnDraw_NpcShop: SUBROUTINE
     ldy #$F0
     bit enState
     bvs .noDraw
+EnDraw_NpcGame:
     lda enType,x
     tay
     lda NpcRupeeNUSIZ-#EN_NPC_SHOP,y
@@ -22,6 +23,7 @@ EnDraw_NpcShop: SUBROUTINE
     sty enY
     rts
 NpcRupeeNUSIZ:
+    .byte #%00110 ; draw 3
     .byte #%00110 ; draw 3
     .byte #%00100 ; draw 2
 

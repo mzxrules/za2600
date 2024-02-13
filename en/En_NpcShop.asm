@@ -7,15 +7,16 @@ En_NpcShop: SUBROUTINE
     sta BANK_SLOT
     ldx roomEX
     bit enState
-    bvs .rts1
-    bmi .main
+    bvs .shop_end
+    bmi En_NpcShopMain
 
 .init
+    lda #0
+    sta npcIncRupee
+    sta npcDecRupee
+
+.init_default_shop
     lda #2
-    cpx #CV_MONEY_GAME
-    bne .setKernelId
-    lda #1
-.setKernelId
     sta KernelId
 
     lda roomId
@@ -42,42 +43,46 @@ En_NpcShop: SUBROUTINE
 
     lda #NPC_INIT
     sta enState
-.rts1
+.rts
     rts
 
-.main
+.shop_end
+    jmp NpcShop_UpdateRupees
 
+En_NpcShopMain: SUBROUTINE
+    lda roomEX
+    cmp #CV_MONEY_GAME
+    bne .no_rng
+    jsr Rng2
+.no_rng
+    lda #GI_EVENT_CAVE
+    bit enState
+    bne .rts
 ; Shop logic
-    bit CXPPMM
-    bpl .shopEnd
-    ldx #0 ; selected item index
-    lda plX
-    cmp #$30
-    bmi .itemSelected
-    inx
-    cmp #$50
-    bmi .itemSelected
-    inx
-.itemSelected
+    jsr En_NpcShopGetSelction
+    cpx #-1
+    beq .rts
     lda roomEX
     cmp #CV_TAKE_HEART_RUPEE
     beq .take_item
     cmp #CV_GIVE_HEART_POTION
-    bne .tryBuyItem
+    beq .give_item
+    bne .try_buy_item
+
+.give_item
     ldy shopRoom
     lda rRoomFlag,y
     ora #RF_SV_ITEM_GET
     sta wRoomFlag,y
     bne .getItem ;jmp
 
-
-.tryBuyItem
+.try_buy_item
     sed
     lda itemRupees
     cmp shopPrice,x ; item price
     bcs .buyItem
     cld
-    bcc .shopEnd
+    bcc .rts
 .buyItem
     sec
     sbc shopPrice,x
@@ -93,10 +98,6 @@ En_NpcShop: SUBROUTINE
 
     jmp ItemGet
 
-.shopEnd
-.rts
-    rts
-
 .take_item
     ldy shopRoom
     lda rRoomFlag,y
@@ -105,6 +106,7 @@ En_NpcShop: SUBROUTINE
     lda roomFlags
     ora #RF_EV_CLEAR
     sta roomFlags
+.rts
     rts
 
 ShopGiItems:
@@ -119,6 +121,10 @@ ShopGiItems:
     .byte GI_HEART, GI_NONE, GI_RUPEE
 ; Potion
     .byte GI_POTION_BLUE, GI_FAIRY, GI_POTION_RED
+; Door Repair
+    .byte GI_NONE, GI_RUPEE, GI_NONE
+; Money Game
+    .byte GI_RUPEE, GI_RUPEE, GI_RUPEE
 
 ShopPrices:
 ; Regular
@@ -132,3 +138,5 @@ ShopPrices:
     .byte $01, $AA, $20 ; LifeCost = $20 ; -50
 ; Potion
     .byte $16, $10, $25 ; 40, NA, 68
+; Door Repair
+    .byte $AA, $10, $AA ; NA, 20, NA

@@ -188,7 +188,7 @@ ENTRY_START_GAME:
 .cheats
     lda #8
     sta itemKeys
-    lda #16
+    lda #$99
     sta itemRupees
     lda #$F0
     sta itemBombs

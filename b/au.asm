@@ -179,6 +179,7 @@ SfxPlHeal:
     stx AUDVT1
     rts
 
+SfxItemRupee: SUBROUTINE
 SfxItemPickup:
     lda SfxCur
     cmp #4

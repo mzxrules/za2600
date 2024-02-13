@@ -58,15 +58,15 @@ mesg_table = [
         ],
     "MesgTakeRupees", [
         "PAY ME FOR DOOR REPAIRS.",
-        "          -99           ",
+        "          -10           ",
         ],
     "MesgPath", [
         " TAKE ANY ROAD YOU WANT ",
         "                        ",
         ],
     "MesgMoneyGame", [
-        " LET'S PLAY RUPEE GAME  ",
-        "   -90     -90     -90  ", # Since 0 is constant, offset to set +-
+        " LET'S PLAY MONEY GAME  ",
+        "  -05     -05     -05   ",
         ],
     "MesgEastmostPeninsula", [
         "  EASTMOST PENINSULA    ",
