@@ -18,6 +18,8 @@ Cv_Del:
 Cv_DoorRepair:
     lda #EN_NPC_DOOR_REPAIR
     sta npcType
+    lda #NPC_SPR_MAN
+    sta enState
     rts
 
 Cv_Path1:
@@ -26,45 +28,94 @@ Cv_Path3:
 Cv_Path4:
     lda #EN_NPC_PATH
     sta npcType
+    lda #NPC_SPR_MAN
+    sta enState
     rts
 
 Cv_Sword1:
 Cv_Sword2:
 Cv_Sword3:
 Cv_Note:
+    lda #EN_NPC_GIVE_ONE
+    sta npcType
+    lda #NPC_SPR_MAN
+    sta enState
+    rts
+
 Cv_Rupees100:
 Cv_Rupees30:
 Cv_Rupees10:
     lda #EN_NPC_GIVE_ONE
     sta npcType
+    lda #NPC_SPR_MONSTER
+    sta enState
     rts
 
 Cv_MoneyGame:
     lda #EN_NPC_GAME
     sta npcType
+    lda #NPC_SPR_MAN
+    sta enState
     rts
 
 Cv_Shop1:
 Cv_Shop2:
 Cv_Shop3:
 Cv_Shop4:
+    lda #EN_NPC_SHOP
+    sta npcType
+    lda #NPC_SPR_SHOP
+    sta enState
+    rts
+
 Cv_Potion:
     lda #EN_NPC_SHOP
     sta npcType
+    lda #NPC_SPR_WOMAN
+    sta enState
     rts
 
+Rs_TakeHeartRupee:
+    lda #EN_NPC_APPEAR
+    sta enType
+    lda #CV_TAKE_HEART_RUPEE
+    sta roomEX
+    lda #RS_NONE
+    sta roomRS
 Cv_TakeHeartRupee:
 Cv_GiveHeartPotion:
     lda #EN_NPC_SHOP2
     sta npcType
+    lda #NPC_SPR_MAN
+    sta enState
     rts
 
 Cv_MesgHintGrave: SUBROUTINE
 Cv_MesgHintLostWoods:
 Cv_MesgHintLostHills:
 Cv_MesgHintTreeAtDeadEnd:
-    lda #EN_NPC_OLD_MAN
+    lda #EN_NPC
     sta npcType
+    lda #NPC_SPR_WOMAN
+    sta enState
+    rts
+
+Rs_Npc:
+    lda #EN_NPC_APPEAR
+    sta enType
+    lda #EN_NPC
+    sta npcType
+    lda #RS_NONE
+    sta roomRS
+    rts
+
+Rs_NpcMonster:
+    lda #EN_NPC_APPEAR
+    sta enType
+    lda #EN_NPC_MONSTER
+    sta npcType
+    lda #RS_NONE
+    sta roomRS
     rts
 
 Rs_EntCaveWallLeft: SUBROUTINE
@@ -159,48 +210,6 @@ Rs_Cave: SUBROUTINE
 .rts
     rts
 
-
-Rs_NpcTriforce: SUBROUTINE
-    ldy #$FF
-    cpy itemTri
-    beq .rts
-
-    lda #RF_NO_ENCLEAR
-    ora roomFlags
-    sta roomFlags
-    lda #MESG_NEED_TRIFORCE
-    sta roomEX
-Rs_Npc: ; SUBROUTINE
-    ldy #EN_NPC_OLD_MAN
-.setType
-    sty enType
-Rs_Text: ; SUBROUTINE
-    lda roomEX
-EnableText: ; SUBROUTINE ; A = messageId
-    sta mesgId
-    lda #1
-    sta KernelId
-.rts
-    rts
-
-Rs_NpcMonster:
-    lda roomId
-    and #$7F
-    tay
-    lda rRoomFlag,y
-    and #RF_SV_ITEM_GET
-    bne .end
-
-    ldy #EN_NPC_MONSTER
-    sty enType
-    lda roomEX
-    sta mesgId
-    lda #1
-    sta KernelId
-.end
-    lda #0
-    sta roomRS
-    rts
 
 Rs_Item: SUBROUTINE
     lda enType

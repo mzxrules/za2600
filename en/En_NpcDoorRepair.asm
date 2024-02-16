@@ -8,6 +8,7 @@ En_NpcDoorRepair: SUBROUTINE
     bmi .end ; #NPC_INIT
 
     lda #NPC_INIT
+    ora enState
     sta enState
 
     lda #$10

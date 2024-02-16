@@ -252,6 +252,10 @@ GI_EVENT_CAVE   = $20 ; xx1x_xxxx
 GI_EVENT_CD     = $10 ; xxx1_xxxx
 GI_EVENT_TRI    = $08 ; xxxx_1xxx
 GI_EVENT_INIT   = $04 ; xxxx_x1xx
+NPC_SPR_MAN     = 0
+NPC_SPR_WOMAN   = 1
+NPC_SPR_SHOP    = 2
+NPC_SPR_MONSTER = 3
 shopPrice   ds 3
 shopRoom    ds 1
 npcTimer    ds 1
@@ -288,10 +292,6 @@ cdBY        ds 1
 ;           ; 1xxx_xxxx init
 ;           ; x1xx_xxxx heal event
 enGFairyDie ds 1
-
-; == En_NpcMonster
-    ORG CLASS_EN_NPC
-enNpcMonsterTimer   ds 1
 
 
 ; == Darknut

@@ -4,13 +4,45 @@
 
 En_NpcAppear: SUBROUTINE
     bit enState
-    bmi .main
+    bpl .init
+
+.main
+    lda npcTimer
+    cmp #1
+    adc #0
+    sta npcTimer
+    beq .end
+    lda npcTimer
+    ror
+    bcc .rts
+    inc mesgLength
+    lda #SFX_TALK
+    sta SfxFlags
+    rts
+
+.end
+    lda npcType
+    sta enType
+    lda enState
+    and #3
+    sta enState
+    lda plState
+    and #~#PS_LOCK_ALL
+    sta plState
+.rts
+    rts
 
 .init
     lda roomId
     and #$7F
     sta shopRoom
     tay
+
+    ldx npcType
+    cpx #EN_NPC
+    beq .en_npc
+    cpx #EN_NPC_MONSTER
+    beq .en_npc
 
     ldx roomEX
     cpx #CV_RUPEES10 + 1
@@ -20,16 +52,54 @@ En_NpcAppear: SUBROUTINE
     cpx #CV_GIVE_HEART_POTION
     beq .test_onetime_appear
     cpx #CV_TAKE_HEART_RUPEE
-    beq .test_onetime_appear
+    beq .test_take_heart_rupee
     cpx #CV_DOOR_REPAIR
     beq .test_onetime_appear
     bne .can_appear
+
+.en_npc
+    lda roomEX
+    sta mesgId
+    cmp #MESG_NEED_TRIFORCE
+    beq .test_need_triforce
+    cmp #MESG_GRUMBLE_GRUMBLE
+    beq .test_hungry
+    cmp #MESG_CHOICE_GIVE_BOMB
+    beq .test_choice_give_bomb
+    bne .can_appear_no_cv ; jmp
+
+.test_choice_give_bomb
+    lda rRoomFlag,y
+    bmi .cannot_appear ; #RF_SV_ITEM_GET
+    lda #EN_NPC_SHOP1
+    sta npcType
+    bne .can_appear_no_cv ; jmp
+
+.test_need_triforce
+    lda itemTri
+    cmp #$FF
+    beq .cannot_appear
+
+    lda #RF_NO_ENCLEAR
+    ora roomFlags
+    sta roomFlags
+    bne .can_appear_no_cv
+    rts
+
+.test_hungry
+    lda rRoomFlag,y
+    bmi .cannot_appear ; #RF_SV_ITEM_GET
+    lda #EN_NPC_MONSTER
+    sta npcType
+    lda #NPC_SPR_MONSTER
+    sta enState
+    bne .can_appear_no_cv ; jmp
 
 .test_silent_lady
     lda ITEMV_NOTE
     and #ITEMF_NOTE
     bne .can_appear
-    lda #EN_NPC_OLD_MAN
+    lda #EN_NPC
     sta enType
     lda #$40
     sta enX
@@ -45,9 +115,18 @@ En_NpcAppear: SUBROUTINE
     sta enType
     rts
 
+.test_take_heart_rupee
+    lda rRoomFlag,y
+    bmi .cannot_appear ; RF_SV_ITEM_GET
+    lda roomFlags
+    ora #RF_NO_ENCLEAR
+    sta roomFlags
+    bne .can_appear
+
 .can_appear
     lda NpcCaveOpeningDialogs-#CV_SWORD1,x
     sta mesgId
+.can_appear_no_cv
     lda #-48
     sta npcTimer
     lda plState
@@ -55,7 +134,8 @@ En_NpcAppear: SUBROUTINE
     sta plState
     lda #1
     sta KernelId
-    lda #NPC_INIT
+    lda enState
+    ora #NPC_INIT
     sta enState
     lda #0
     sta mesgLength
@@ -69,30 +149,6 @@ En_NpcAppear: SUBROUTINE
     sta mesgChar,y
     dey
     bpl .clearMesgChar
-    rts
-.main
-    lda npcTimer
-    cmp #1
-    adc #0
-    sta npcTimer
-    beq .end
-    lda npcTimer
-    ror
-    bcc .rts
-    inc mesgLength
-    lda #SFX_TALK
-    sta SfxFlags
-.rts
-    rts
-
-.end
-    lda npcType
-    sta enType
-    lda #0
-    sta enState
-    lda plState
-    and #~#PS_LOCK_ALL
-    sta plState
     rts
 
 

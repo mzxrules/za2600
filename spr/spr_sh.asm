@@ -8,6 +8,15 @@ SprS0:
     .byte $3C ; |..XXXX..|
     .byte $18 ; |...XX...|
 SprS1:
+    .byte $00 ; |........|
+    .byte $BA ; |X.XXX.X.|
+    .byte $D6 ; |XX.X.XX.|
+    .byte $D6 ; |XX.X.XX.|
+    .byte $EE ; |XXX.XXX.|
+    .byte $54 ; |.X.X.X..|
+    .byte $6C ; |.XX.XX..|
+    .byte $38 ; |..XXX...|
+SprS2:
     .byte $66 ; |.XX..XX.|
     .byte $3C ; |..XXXX..|
     .byte $BD ; |X.XXXX.X|
@@ -16,13 +25,4 @@ SprS1:
     .byte $34 ; |..XX.X..|
     .byte $0C ; |....XX..|
     .byte $38 ; |..XXX...|
-SprS2:
-    .byte $24 ; |..X..X..|
-    .byte $18 ; |...XX...|
-    .byte $5A ; |.X.XX.X.|
-    .byte $24 ; |..X..X..|
-    .byte $98 ; |X..XX...|
-    .byte $FC ; |XXXXXX..|
-    .byte $6B ; |.XX.X.XX|
-    .byte $3E ; |..XXXXX.|
 

@@ -62,7 +62,7 @@ Rs_Item
 GiBomb
 Rs_None
 zz0
-Rs_NpcMonster
+Rs_Npc
 MesgGrumbleGrumble
 Rs_BlockDiamondStairs
 zz5
@@ -206,7 +206,7 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_None
+Rs_TakeHeartRupee
 zz0
 Rs_BlockDiamondStairs
 zz40
@@ -218,8 +218,8 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_NpcTriforce
-zz0
+Rs_Npc
+MesgNeedTriforce
 Rs_None
 zz0
 Rs_Item

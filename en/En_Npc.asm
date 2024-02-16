@@ -2,39 +2,22 @@
 ; mzxrules 2021
 ;==============================================================================
 
-En_NpcOldMan: SUBROUTINE
-    lda #$40
-    sta enX
-    lda #$38
-    sta enY
-
-    lda roomFlags
-    and #RF_EV_LOAD
-    bne .skipSetPos
-    lda #$30
-    cmp plY
-    bpl .skipSetPos
-    sta plY
-.skipSetPos
-.rts
-    rts
-
-En_NpcMonster:
+En_NpcMonster: SUBROUTINE
     bit roomFlags
     bmi .rts ; RF_EV_LOAD
 
     bit enState
     bmi .main
 .init
-    lda #$E8
-    sta enNpcMonsterTimer
-    lda #$80
+    lda #[#NPC_INIT | #NPC_SPR_MONSTER]
     sta enState
     rts
 
 .main
     bvc .main_continue
-    inc enNpcMonsterTimer
+    inc npcTimer
+    lda npcTimer
+    cmp #$18
     bne .rts
 .kill
     lda #0
@@ -47,11 +30,11 @@ En_NpcMonster:
     lda plState3
     and #PS_ACTIVE_ITEM2
     cmp #PLAYER_MEAT_FX
-    bne .end
+    bne En_Npc
     lda plItem2Time
-    beq .end
+    beq En_Npc
 
-    lda #$C0
+    lda #[#NPC_INIT | #NPC_ITEM_GOT | #NPC_SPR_MONSTER]
     sta enState
 
     lda #$E8
@@ -76,5 +59,14 @@ En_NpcMonster:
     lda #SFX_SOLVE
     sta SfxFlags
 
-.end
-    jmp En_NpcOldMan
+En_Npc: ; SUBROUTINE
+    lda roomFlags
+    and #RF_EV_LOAD
+    bne .skipSetPos
+    lda #$30
+    cmp plY
+    bpl .skipSetPos
+    sta plY
+.skipSetPos
+.rts
+    rts

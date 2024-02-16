@@ -19,6 +19,13 @@ En_NpcShop: SUBROUTINE
     lda #2
     sta KernelId
 
+    cpx #CV_TAKE_HEART_RUPEE
+    bne .skip_MinusDisp
+    lda #MESG_CHAR_MINUS
+    sta mesgChar+3
+    sta mesgChar+5
+.skip_MinusDisp
+
     lda roomId
     and #$7F
     sta shopRoom
@@ -41,7 +48,8 @@ En_NpcShop: SUBROUTINE
     dey
     bpl .init_shop
 
-    lda #NPC_INIT
+    lda enState
+    ora #NPC_INIT
     sta enState
 .rts
     rts
@@ -90,6 +98,7 @@ En_NpcShopMain: SUBROUTINE
     cld
 .getItem
     lda #[#NPC_INIT | #NPC_ITEM_GOT | #GI_EVENT_CAVE]
+    ora enState
     sta enState
     lda #0
     sta KernelId
@@ -99,6 +108,18 @@ En_NpcShopMain: SUBROUTINE
     jmp ItemGet
 
 .take_item
+    cpx #2
+    beq .take_health
+.try_take_rupees
+    lda itemRupees
+    cmp #$20
+    bcc .rts
+    sec
+    sbc #$20
+    sta itemRupees
+    ;lda #$20
+    ;sta npcDecRupee
+.take_item_clear
     ldy shopRoom
     lda rRoomFlag,y
     ora #RF_SV_ITEM_GET
@@ -106,8 +127,30 @@ En_NpcShopMain: SUBROUTINE
     lda roomFlags
     ora #RF_EV_CLEAR
     sta roomFlags
+    lda #0
+    sta KernelId
+    lda #[#NPC_INIT | #NPC_ITEM_GOT | #GI_EVENT_CAVE]
+    ora enState
+    sta enState
 .rts
     rts
+
+.take_health
+    lda plHealthMax
+    cmp #3*8+1
+    bcs .steal_max_health
+    lda #1
+    sta plHealth
+    bpl .take_item_clear ; jmp
+.steal_max_health
+    sec
+    sbc #8
+    sta plHealthMax
+    cmp plHealth
+    bcs .take_item_clear
+    sta plHealth
+    bcc .take_item_clear ; jmp
+
 
 ShopGiItems:
 ; Regular

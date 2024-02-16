@@ -8,24 +8,35 @@ EnDraw_NpcShop: SUBROUTINE
     bvs .noDraw
 EnDraw_NpcGame:
     lda enType,x
+    sec
+    sbc #EN_NPC_SHOP
+    and #3
     tay
-    lda NpcRupeeNUSIZ-#EN_NPC_SHOP,y
+    lda NpcRupeeX,y
+    sta enX
+    lda NpcRupeeNUSIZ,y
     sta wNUSIZ1_T
 
     ldy #GI_RUPEE
     jsr EnItemDraw
     jsr NpcUpdateShopMesg
 
-    lda #$20
-    sta enX
     ldy #$28
 .noDraw
     sty enY
     rts
+
+NpcRupeeX:
+    .byte $20 ; draw 3
+    .byte $20 ; draw 3
+    .byte $20 ; draw 2
+    .byte $40 ; draw 1
+
 NpcRupeeNUSIZ:
     .byte #%00110 ; draw 3
     .byte #%00110 ; draw 3
     .byte #%00100 ; draw 2
+    .byte #%00000 ; draw 1
 
 ; Update shop price display digits
 NpcUpdateShopMesg: SUBROUTINE

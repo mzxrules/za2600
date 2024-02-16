@@ -24,7 +24,7 @@ En_NpcGame: SUBROUTINE
 
     lda #1
     sta KernelId
-    lda #NPC_INIT
+    lda #[#NPC_INIT | #NPC_SPR_MAN]
     sta enState
     rts
 
@@ -113,7 +113,7 @@ En_NpcGame_PlayGame: SUBROUTINE
     dey
     bpl .loop_init_game_results
 
-    lda #[#NPC_INIT | #NPC_ITEM_GOT | #GI_EVENT_CAVE]
+    lda #[#NPC_INIT | #NPC_ITEM_GOT | #GI_EVENT_CAVE | #NPC_SPR_MAN]
     sta enState
     lda #2
     sta KernelId

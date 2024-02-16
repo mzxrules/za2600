@@ -197,13 +197,13 @@ SprE21:
     .byte $3C ; |..XXXX..|
     .byte $18 ; |...XX...|
 SprE22:
+    .byte $00 ; |........|
     .byte $81 ; |X......X|
     .byte $99 ; |X..XX..X|
     .byte $A5 ; |X.X..X.X|
     .byte $A5 ; |X.X..X.X|
     .byte $BD ; |X.XXXX.X|
     .byte $5A ; |.X.XX.X.|
-    .byte $00 ; |........|
     .byte $00 ; |........|
 SprE23:
     .byte $3E ; |..XXXXX.|

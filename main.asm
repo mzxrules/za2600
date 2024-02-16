@@ -592,15 +592,19 @@ BANK_42
     INCLUDE "en/EnDraw_ItemGet.asm"
     INCLUDE "en/EnDraw_Darknut.asm"
     INCLUDE "en/EnDraw_LikeLike.asm"
-    INCLUDE "en/EnDraw_NpcOldMan.asm"
     INCLUDE "en/EnDraw_Wallmaster.asm"
     INCLUDE "en/EnDraw_Octorok.asm"
     INCLUDE "en/EnDraw_Rope.asm"
-    INCLUDE "en/EnDraw_NpcPath.asm"
     INCLUDE "en/EnDraw_Stalfos.asm"
     INCLUDE "en/EnDraw_Gibdo.asm"
     INCLUDE "en/EnDraw_Goriya.asm"
     INCLUDE "en/EnDraw_TestColor.asm"
+
+    INCLUDE "gen/mesg_digits.asm"
+    INCLUDE "en/EnDraw_Npc.asm"
+    INCLUDE "en/EnDraw_NpcPath.asm"
+    INCLUDE "en/EnDraw_NpcShop.asm"
+    INCLUDE "en/EnDraw_NpcGiveOne.asm"
     LOG_BANK_SIZE "-BANK 42-", BANK_42
 
 
@@ -646,7 +650,7 @@ BANK_44
     RORG $F400
 
 BANK_45
-    INCLUDE "en/En_NpcOldman.asm"
+    INCLUDE "en/En_Npc.asm"
     INCLUDE "en/En_RollingRock.asm"
     INCLUDE "en/En_Appear.asm"
     INCLUDE "en/En_Stalfos.asm"
@@ -698,11 +702,9 @@ BANK_47
     RORG $F400
 
 BANK_48
-    INCLUDE "gen/mesg_digits.asm"
     INCLUDE "en/En_NpcGiveOne.asm"
-    INCLUDE "en/EnDraw_NpcGiveOne.asm"
     INCLUDE "en/En_NpcShop.asm"
-    INCLUDE "en/EnDraw_NpcShop.asm"
+    INCLUDE "en/En_NpcShop1.asm"
     INCLUDE "en/En_NpcAppear.asm"
     INCLUDE "en/En_NpcGame.asm"
     INCLUDE "en/En_NpcDoorRepair.asm"

@@ -19,7 +19,7 @@ En_NpcGiveOne: SUBROUTINE
     bmi .main ; #NPC_INIT
 
 .init
-    lda #NPC_INIT
+    lda #[#NPC_INIT | #NPC_SPR_MAN]
     sta enState
 
 .main
@@ -41,7 +41,7 @@ En_NpcGiveOne: SUBROUTINE
     ora #RF_SV_ITEM_GET
     sta wRoomFlag,y
 ; Trigger ItemGet
-    lda #[#NPC_INIT | #NPC_ITEM_GOT | #GI_EVENT_CAVE]
+    lda #[#NPC_INIT | #NPC_ITEM_GOT | #GI_EVENT_CAVE | #NPC_SPR_MAN]
     sta enState
 
     lda #0
