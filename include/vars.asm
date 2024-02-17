@@ -258,7 +258,7 @@ NPC_SPR_SHOP    = 2
 NPC_SPR_MONSTER = 3
 shopPrice   ds 3
 shopRoom    ds 1
-npcTimer    ds 1
+npcTimer    ds 1 ; xxxx_xx11 Draw if 0
 CLASS_NPC_SHOP_COMMON
 shopItem    ds 3
     EN_SIZE NPC_SHOP

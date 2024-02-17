@@ -184,7 +184,7 @@ ENTRY_POST_DRAW:
     jmp ENTRY_VERTICAL_SYNC
 
 ENTRY_START_GAME:
-    IF ITEMS
+    IFCONST ITEMS
 .cheats
     lda #8
     sta itemKeys
@@ -217,7 +217,7 @@ ENTRY_START_GAME:
     lda #$18
     sta plHealthMax
     jsr RESPAWN
-    IF TESTPOS
+    IFCONST TESTPOS
     lda #0
     sta worldId
     lda #$0

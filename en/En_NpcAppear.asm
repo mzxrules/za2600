@@ -33,6 +33,9 @@ En_NpcAppear: SUBROUTINE
     rts
 
 .init
+    lda #-48
+    sta npcTimer
+
     lda roomId
     and #$7F
     sta shopRoom
@@ -101,10 +104,6 @@ En_NpcAppear: SUBROUTINE
     bne .can_appear
     lda #EN_NPC
     sta enType
-    lda #$40
-    sta enX
-    lda #$38
-    sta enY
     rts
 
 .test_onetime_appear
@@ -127,8 +126,6 @@ En_NpcAppear: SUBROUTINE
     lda NpcCaveOpeningDialogs-#CV_SWORD1,x
     sta mesgId
 .can_appear_no_cv
-    lda #-48
-    sta npcTimer
     lda plState
     ora #PS_LOCK_ALL
     sta plState
@@ -139,10 +136,6 @@ En_NpcAppear: SUBROUTINE
     sta enState
     lda #0
     sta mesgLength
-    lda #$40
-    sta enX
-    lda #$38
-    sta enY
     ldy #5
 .clearMesgChar
     lda #MESG_CHAR_SPACE

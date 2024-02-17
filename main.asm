@@ -604,7 +604,6 @@ BANK_42
     INCLUDE "en/EnDraw_Npc.asm"
     INCLUDE "en/EnDraw_NpcPath.asm"
     INCLUDE "en/EnDraw_NpcShop.asm"
-    INCLUDE "en/EnDraw_NpcGiveOne.asm"
     LOG_BANK_SIZE "-BANK 42-", BANK_42
 
 
@@ -703,6 +702,7 @@ BANK_47
 
 BANK_48
     INCLUDE "en/En_NpcGiveOne.asm"
+    INCLUDE "en/EnDraw_NpcGiveOne.asm"
     INCLUDE "en/En_NpcShop.asm"
     INCLUDE "en/En_NpcShop1.asm"
     INCLUDE "en/En_NpcAppear.asm"

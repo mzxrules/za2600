@@ -34,11 +34,11 @@ PlayerUseArrow: SUBROUTINE
 
     lda #SFX_ARROW
     sta SfxFlags
-    lda ArrowOff8X,y
+    lda WeaponOffX_8px,y
     clc
     adc plX
     sta plm0X
-    lda ArrowOff8Y,y
+    lda WeaponOffY_8px,y
     clc
     adc plY
     sta plm0Y
@@ -67,9 +67,9 @@ PlayerUpdateArrow: SUBROUTINE
 
 PlayerDrawArrow: SUBROUTINE
     ldy plItemDir
-    lda ArrowWidth8,y
+    lda WeaponWidth_8px_thin,y
     sta wNUSIZ0_T
-    lda ArrowHeight8,y
+    lda WeaponHeight_8px_thin,y
     sta wM0H
     lda plm0X
     sta m0X
@@ -79,9 +79,9 @@ PlayerDrawArrow: SUBROUTINE
 
 PlayerDrawSwordFx: SUBROUTINE
     ldy plItem2Dir
-    lda SwordWidth4,y
+    lda WeaponWidth_4px_thick,y
     sta wNUSIZ0_T
-    lda SwordHeight4,y
+    lda WeaponHeight_4px_thick,y
     sta wM0H
     ldx plm1X
     inx
@@ -196,46 +196,39 @@ PlayerDrawBomb: SUBROUTINE
     sta m0Y
     rts
 
-
-    ;align 4
-SwordWidth4:
+WeaponWidth:
+WeaponWidth_4px_thick:
     .byte $20, $20, $10, $10
-SwordWidth8:
+WeaponWidth_8px_thick:
     .byte $30, $30, $10, $10
-SwordHeight4:
+WeaponWidth_4px_thin:
+    .byte $20, $20, $00, $00
+WeaponWidth_8px_thin:
+    .byte $30, $30, $00, $00
+
+
+WeaponHeight:
+WeaponHeight_4px_thick:
     .byte 1, 1, 3, 3
-SwordHeight8:
+WeaponHeight_8px_thick:
     .byte 1, 1, 7, 7
-ArrowOff4X:
-SwordOff4X:
-WandOff4X:
+WeaponHeight_4px_thin:
+    .byte 0, 0, 3, 3
+WeaponHeight_8px_thin:
+    .byte 0, 0, 7, 7
+
+WeaponOffX:
+WeaponOffX_4px:
     .byte 8, -2, 4, 4
-ArrowOff8X:
-SwordOff8X:
-WandOff8X:
+WeaponOffX_8px:
     .byte 8, -6, 4, 4
-ArrowOff4Y:
-SwordOff4Y:
-WandOff4Y:
+
+WeaponOffY:
+WeaponOffY_4px:
     .byte 3, 3, -3, 7
-ArrowOff8Y:
-SwordOff8Y:
-WandOff8Y:
+WeaponOffY_8px:
     .byte 3, 3, -7, 7
 
-
-ArrowWidth4:
-WandWidth4:
-    .byte $20, $20, $00, $00
-ArrowWidth8:
-WandWidth8:
-    .byte $30, $30, $00, $00
-ArrowHeight4:
-WandHeight4:
-    .byte 0, 0, 3, 3
-ArrowHeight8:
-WandHeight8:
-    .byte 0, 0, 7, 7
 
 
 PlayerEquipSword: SUBROUTINE
@@ -279,21 +272,38 @@ PlayerUseRang:
     rts
 
 PlayerDrawSword: SUBROUTINE
+    lda #0
+    sta Temp0
+    bpl .draw_continue
+
+PlayerDrawWand:
+    lda #8
+    sta Temp0
+    bpl .draw_continue
+
+.draw_continue
     lda plDir
     sta plItemDir
+    ora Temp0
     cpy #ITEM_ANIM_SWORD_STAB_LONG
     bmi .endSword
     cpy #ITEM_ANIM_SWORD_STAB_SHORT
     beq .drawSword4
     clc
-    adc #4 ; Draw Sword 8
+    ora #4 ; Draw Sword 8
 .drawSword4
     tay
-    lda SwordWidth4,y
+    lda WeaponWidth,y
     sta wNUSIZ0_T
-    lda SwordHeight4,y
+    lda WeaponHeight,y
     sta wM0H
-    lda SwordOff4X,y
+
+; the next tables are only 8 bytes each
+    tya
+    and #7
+    tay
+
+    lda WeaponOffX,y
     clc
     adc plX
 .x_underflow_fix
@@ -305,7 +315,7 @@ PlayerDrawSword: SUBROUTINE
     adc plX
 .skip_fix
     sta m0X
-    lda SwordOff4Y,y
+    lda WeaponOffY,y
     clc
     adc plY
     sta m0Y
@@ -560,39 +570,6 @@ PlayerUpdateWandFx: SUBROUTINE
 .onScreen
     rts
 
-PlayerDrawWand: SUBROUTINE
-    lda plDir
-    sta plItemDir
-    cpy #ITEM_ANIM_WAND_STAB_LONG
-    bmi .endWand
-    cpy #ITEM_ANIM_WAND_STAB_SHORT
-    beq .drawWand4
-    clc
-    adc #4 ; Draw Sword 8
-.drawWand4
-    tay
-    lda WandWidth4,y
-    sta wNUSIZ0_T
-    lda WandHeight4,y
-    sta wM0H
-    lda WandOff4X,y
-    clc
-    adc plX
-.x_underflow_fix
-    cmp #$C0
-    bcc .skip_fix
-    lda #$20
-    sta wNUSIZ0_T
-    lda #-2 -1
-    adc plX
-.skip_fix
-    sta m0X
-    lda WandOff4Y,y
-    clc
-    adc plY
-    sta m0Y
-.endWand
-    rts
 
 PlayerDrawWandFx: SUBROUTINE
     lda #$20
@@ -626,8 +603,6 @@ PlayerUpdateMeatFx: SUBROUTINE
     sbc #$E
     sta plItem2Time
 .rts
-    rts
-
 PlayerUpdateNone:
     rts
 

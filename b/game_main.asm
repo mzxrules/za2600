@@ -169,11 +169,6 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 
 .skipPlayerWallPass
 
-;==============================================================================
-; PFCollision
-;----------
-; y = Player (0), Enemy (1)
-;==============================================================================
 PFCollision: SUBROUTINE
 
     ; Check RF_PF_IGNORE

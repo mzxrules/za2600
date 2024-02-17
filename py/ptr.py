@@ -50,7 +50,7 @@ Entity_Table = [
     "En_NpcGame",      "SEG_48", "SEG_42", "EnDraw_NpcGame",
     "En_NpcShop2",     "SEG_48", "SEG_42", "EnDraw_NpcShop",
     "En_NpcShop1",     "SEG_48", "SEG_42", "EnDraw_NpcShop",
-    "En_NpcGiveOne",   "SEG_48", "SEG_42", "EnDraw_NpcGiveOne",
+    "En_NpcGiveOne",   "SEG_48", "SEG_48", "EnDraw_NpcGiveOne",
     "En_NpcDoorRepair","SEG_48", "SEG_42", "EnDraw_Npc",
     "En_NpcPath",      "SEG_44", "SEG_42", "EnDraw_NpcPath",
     "En_GreatFairy",   "SEG_44", "SEG_46", "EnDraw_GreatFairy",
