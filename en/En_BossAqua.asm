@@ -32,6 +32,7 @@ En_BossAqua: SUBROUTINE
     sta BANK_SLOT
     lda enHp,x
     bpl .endCheckDamaged
+    jsr EnSysRoomKill
     jmp EnSysEnDie
 .endCheckDamaged
 

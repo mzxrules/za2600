@@ -22,7 +22,7 @@ m1Y         ds 1
 blY         ds 1
 plm0Y       ds 1
 plm1Y       ds 1
-FREE_RAM    ds 2
+FREE_RAM    ds 1
 ; ObjectId
 OBJ_PL      = 0
 OBJ_EN      = 1
@@ -54,6 +54,7 @@ worldId     ds 1
 worldSX     ds 1 ; respawn X
 worldSY     ds 1 ; respawn Y / Rs_Maze state
 worldSR     ds 1 ; respawn room / Rs_Maze init
+roomIdNext  ds 1
 roomId      ds 1
 roomTimer   ds 1 ; Dungeon Shutter / Room animation timer
 roomFlags   ds 1
@@ -439,6 +440,13 @@ AUDVT1      ds 1
 
     SEG.U VARS_PAUSE
 ; Pause perms must come after VARS_AUD_ZERO temps
+    ORG AUDVT1 + 1
+PFrame          ds 1
+PAnim           ds 1
+PHaltType       ds 1
+HALT_TYPE_FLUTE         = 1
+HALT_TYPE_DUNG_ENTRY    = 2
+
     ORG plSpr
 PItemSpr0       ds 2
     ORG enSpr
@@ -465,9 +473,6 @@ PMapY           ds 1
 PItemSpr3       ds 2
 PGiItems        ds 4
 
-PFrame          ds 1
-PAnim           ds 1
-
     SEG.U VARS_HUD_ZERO
     ORG Temp0
 THudMapSpr      ds 2
@@ -485,8 +490,6 @@ THudHealthDisp  ds 1
     SEG.U VARS_EN_SYS
     ORG Temp0 + 1
 EnSysSpawnTry       ds 1
-EnSysClearOff       ds 1 ; offset to byte that room clear is stored at
-EnSysClearMask      ds 1 ; stores bitmask for room clear flag
 
     SEG.U VARS_EN_MOV
     ORG Temp0 + 2
@@ -571,41 +574,44 @@ WORLD_RS        ds 128 ; Room Script
 WORLD_EX        ds 128 ; Extra Data (Exits, Items)
 WORLD_EN        ds 128 ; Enemy Encounter
 
-; Ram Bank 0
+; Ram Bank 0-2
     SEG.U VARS_RAM
     ORG $FA00
 wRAM_SEG
-wKERNEL     ds KERNEL_LEN
-wROOM_COLOR ds 1
+wKERNEL             ds KERNEL_LEN
+wPF1RoomL           ds ROOM_PX_HEIGHT
+wPF2Room            ds ROOM_PX_HEIGHT
+wPF1RoomR           ds ROOM_PX_HEIGHT
+wRoomColorFlags     ds 1
 RF_WC_ROOM_BOOT = $80
 RF_WC_ROOM_DARK = $40
-wPF1RoomL   ds ROOM_PX_HEIGHT
-wPF2Room    ds ROOM_PX_HEIGHT
-wPF1RoomR   ds ROOM_PX_HEIGHT
-wRoomClear  ds 256/8            ; All Enemies Defeated flags
+wRoomENFlags        ds 1
     ORG $FB00
-wRoomFlag   ds 256
+wWorldRoomENCount   ds 128
+wWorldRoomFlags     ds 128
 
     ORG $F800
 rRAM_SEG
-rKERNEL     ds KERNEL_LEN
-rROOM_COLOR ds 1
-rPF1RoomL   ds ROOM_PX_HEIGHT
-rPF2Room    ds ROOM_PX_HEIGHT
-rPF1RoomR   ds ROOM_PX_HEIGHT
-rRoomClear  ds 256/8            ; All Enemies Defeated flags
+rKERNEL             ds KERNEL_LEN
+rPF1RoomL           ds ROOM_PX_HEIGHT
+rPF2Room            ds ROOM_PX_HEIGHT
+rPF1RoomR           ds ROOM_PX_HEIGHT
+rRoomColorFlags     ds 1
+rRoomENFlags        ds 1
     ORG $F900
-rRoomFlag   ds 256
-    ; all world types
-RF_SV_ITEM_GET  = $80 ; 1xxx_xxxx Got Item
-RF_SV_VISIT     = $20 ; xx1x_xxxx Visited Room
+rWorldRoomENCount   ds 128
+rWorldRoomFlags     ds 128
+    ; rWorldRoomFlags all world types
+WRF_SV_ITEM_GET = $80 ; 1xxx_xxxx Got Item
+WRF_SV_VISIT    = $20 ; xx1x_xxxx Visited Room
+WRF_SV_ENKILL   = $08 ; xxxx_1xxx Enemy Cleared
     ; overworld only
-RF_SV_DESTROY   = $40 ; x1xx_xxxx
+WRF_SV_DESTROY  = $40 ; x1xx_xxxx
     ; dungeons only
-RF_SV_OPEN_N    = $01 ; xxxx_xxx1 N open
-RF_SV_OPEN_S    = $04 ; xxxx_x1xx S open
-RF_SV_OPEN_E    = $10 ; xxx1_xxxx E open
-RF_SV_OPEN_W    = $40 ; x1xx_xxxx W open
+WRF_SV_OPEN_N    = $01 ; xxxx_xxx1 N open
+WRF_SV_OPEN_S    = $04 ; xxxx_x1xx S open
+WRF_SV_OPEN_E    = $10 ; xxx1_xxxx E open
+WRF_SV_OPEN_W    = $40 ; x1xx_xxxx W open
 
 PAUSE_MAP_HEIGHT = 40
 
@@ -635,7 +641,7 @@ rKERNEL48   ds KERNEL48_LEN
 ; * Constants                            *
 ; ****************************************
 
-KERNEL_LEN  = $8F   ; World Kernel length
+KERNEL_LEN  = $A0   ; World Kernel length
 KERNEL48_LEN = $68  ; 48 pix kernel length
 
 ROOM_PX_HEIGHT      = 20 ; height of room in pixels

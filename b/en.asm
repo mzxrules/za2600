@@ -90,48 +90,32 @@ ClearDropSystem: SUBROUTINE
 EnSystem: SUBROUTINE
     lda roomId
     bmi .rts
-    ; precompute room clear flag helpers because it's annoying
-    lsr
-    lsr
-    lsr
-    sta EnSysClearOff
-    lda roomId
-    and #7
-    tax
-    lda Bit8,x
-    sta EnSysClearMask
-
     ; Set x to clear flag offset
-    ldx EnSysClearOff
+    tax
 
     ; If room load this frame, setup new encounter
     bit roomFlags
     bvs .roomLoad ; #RF_EV_LOADED
-
-    ; Else, if enemy clear event flag set, set enemy clear flag
-    lda roomFlags
-    and #RF_EV_ENCLEAR
-    beq .runEncounter ; flag not set, run encounter
-
-    lda rRoomClear,x
-    ora EnSysClearMask
-    sta wRoomClear,x
-    bne .runEncounter ; JMP
+    bvc .runEncounter
 
 .roomLoad
     ldy roomEN
+    lda EnSysEncounter,y
+    sta wRoomENFlags
     inc roomEN
 
-    ; Test if room wasn't cleared
-    lda #0
+    lda rWorldRoomENCount,x
+    bpl .resume_encounter
+    lda rRoomENFlags
+    and #$1F
+.resume_encounter
     sta roomENCount
-    ; check room clear state
-    lda rRoomClear,x ; get room clear byte
-    and EnSysClearMask
-    bne .runEncounter
 
-    ; start NEW encounter
-    lda EnSysEncounter,y
+    lda rWorldRoomFlags,x ; get room clear byte
+    and #WRF_SV_ENKILL
+    beq .runEncounter
+
+    lda #0
     sta roomENCount
 
 .runEncounter
@@ -162,15 +146,28 @@ EnSystem: SUBROUTINE
 
 .cont
     stx enNum
-    ; store next encounter
+    ; fetch next encounter
     ldy roomEN
-    inc roomEN
     lda EnSysEncounter,y
     sta enSysType,x
     lda #EN_APPEAR
     sta enType,x
     lda #0
     sta enState,x
+
+; Update encounter cursor if supported
+    lda rRoomENFlags
+    bmi .rts
+    inc roomEN
+    rts
+
+EnSysRoomKill: SUBROUTINE
+    lda roomId
+    and #$7F
+    tay
+    lda rWorldRoomFlags,y
+    ora #WRF_SV_ENKILL
+    sta wWorldRoomFlags,y
     rts
 
 ;==============================================================================

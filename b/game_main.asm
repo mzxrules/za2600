@@ -6,7 +6,7 @@ MAIN_ENTRY:
 ;TOP_FRAME ;3 37 192 30
 MAIN_VERTICAL_SYNC: ; 3 SCANLINES
     jsr Random ; 35 cycles
-    lda #$60
+    lda #$80
     sta m1Y
     jsr VERTICAL_SYNC
 
@@ -15,7 +15,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     sta BANK_SLOT
     jsr RoomUpdate
     bit roomFlags
-    bvc .roomSkipInit
+    bvc .roomSkipInit ; #RF_EV_LOADED
     lda #SLOT_F0_RS_INIT
     sta BANK_SLOT
     jsr RsInit_Del
@@ -91,13 +91,13 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     bne .plXRSkip
     ldx #BoardXL
     stx plX
-    inc roomId
+    inc roomIdNext
 .plXRSkip
     cmp #BoardXL-1
     bne .plXLSkip
     ldx #BoardXR
     stx plX
-    dec roomId
+    dec roomIdNext
 .plXLSkip
     lda plY
     cmp #BoardYU+1
@@ -105,9 +105,9 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     ldx #BoardYD
     stx plY
     clc
-    lda roomId
+    lda roomIdNext
     adc #$F0
-    sta roomId
+    sta roomIdNext
     lda plY
 .plYUSkip
     cmp #BoardYD-1
@@ -115,12 +115,12 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
     ldx #BoardYU
     stx plY
     clc
-    lda roomId
+    lda roomIdNext
     adc #$10
-    sta roomId
+    sta roomIdNext
 .plYDSkip
 
-    cpy roomId
+    cpy roomIdNext
     beq .endSwapRoom
     lda #RF_EV_LOAD
     ora roomFlags
@@ -258,6 +258,15 @@ endPFCollision
     ora #RF_EV_CLEAR
     sta roomFlags
 .endUpdateRoomFlags
+
+; Update Room Clear
+    bit roomFlags
+    bpl .end_roomclear_update
+    ldy roomId
+    bmi .end_roomclear_update
+    lda roomENCount
+    sta wWorldRoomENCount,y
+.end_roomclear_update
 
 ; Update Shutter Doors
 .RoomOpenShutterDoor
@@ -419,7 +428,7 @@ SPAWN_AT_DEFAULT: SUBROUTINE
 
     ldy worldId
     lda WORLD_ENT,y
-    sta roomId
+    sta roomIdNext
     lda #RF_EV_LOAD
     sta roomFlags
     rts
@@ -428,6 +437,9 @@ SPAWN_AT_DEFAULT: SUBROUTINE
 ENTER_CAVE:
     lda roomId
     sta worldSR
+    ora #$80
+    sta roomIdNext
+
     stx worldSX
     sty worldSY
 
@@ -439,9 +451,6 @@ ENTER_CAVE:
     lda roomFlags
     ora #RF_EV_LOAD
     sta roomFlags
-    lda roomId
-    ora #$80
-    sta roomId
     rts
 
 ; A = SeqFlags
@@ -452,7 +461,7 @@ RETURN_WORLD: SUBROUTINE
     lda worldSY
     sta plY
     lda worldSR
-    sta roomId
+    sta roomIdNext
     lda #0
     sta worldId
     lda roomFlags

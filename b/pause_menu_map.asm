@@ -21,8 +21,8 @@ Pause_Menu_Map: SUBROUTINE
     tay
     ldx #7
 .visit_room_loop
-    lda rRoomFlag,y
-    and #RF_SV_VISIT
+    lda rWorldRoomFlags,y
+    and #WRF_SV_VISIT
     clc
     beq .visit_room_false
     sec
@@ -32,8 +32,8 @@ Pause_Menu_Map: SUBROUTINE
 .room_link_loop
 ; NORTH
     clc
-    lda rRoomFlag,y
-    and #RF_SV_OPEN_N
+    lda rWorldRoomFlags,y
+    and #WRF_SV_OPEN_N
     bne .path_n_true
     lda WORLD_T_PF1L,y
     and #%00000110
@@ -44,8 +44,8 @@ Pause_Menu_Map: SUBROUTINE
     rol PMapRoomN
 ; SOUTH
     clc
-    lda rRoomFlag,y
-    and #RF_SV_OPEN_S
+    lda rWorldRoomFlags,y
+    and #WRF_SV_OPEN_S
     bne .path_s_true
     lda WORLD_T_PF1L,y
     and #%1000
@@ -59,8 +59,8 @@ Pause_Menu_Map: SUBROUTINE
     rol PMapRoomS
 ; EAST
     clc
-    lda rRoomFlag,y
-    and #RF_SV_OPEN_E
+    lda rWorldRoomFlags,y
+    and #WRF_SV_OPEN_E
     bne .path_e_true
     lda WORLD_T_PF2,y
     and #%1000
@@ -74,8 +74,8 @@ Pause_Menu_Map: SUBROUTINE
     rol PMapRoomE
 ; WEST
     clc
-    lda rRoomFlag,y
-    and #RF_SV_OPEN_W
+    lda rWorldRoomFlags,y
+    and #WRF_SV_OPEN_W
     bne .path_w_true
     lda WORLD_T_PF1R,y
     and #%1100

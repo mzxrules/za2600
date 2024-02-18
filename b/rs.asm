@@ -184,22 +184,21 @@ Rs_EntCaveMid:
     bne .rts
     ldy #$20
     jmp ENTER_CAVE
-    rts
 
-Rs_Cave: SUBROUTINE
+Rs_Cave:
     lda roomFlags
     ora #RF_NO_ENCLEAR
     sta roomFlags
     and #RF_EV_LOADED
-    beq .skipInit
+    beq .skip_initcave
     jmp Cv_Del
-.skipInit
+.skip_initcave
 
     lda #$30
     cmp plY
-    bpl .skipSetPos
+    bpl .skip_cave_SetPos
     sta plY
-.skipSetPos
+.skip_cave_SetPos
 
     lda plY
     cmp #$08
@@ -207,16 +206,15 @@ Rs_Cave: SUBROUTINE
     lda #MS_PLAY_THEME_L
     jmp RETURN_WORLD
 
-.rts
-    rts
-
 
 Rs_Item: SUBROUTINE
     lda enType
     cmp #EN_CLEAR_DROP
     bne .rts
-    ldx roomId
-    lda rRoomFlag,x
+    lda roomId
+    and #$7F
+    tax
+    lda rWorldRoomFlags,x
     bmi .NoLoad
 
     lda #$40
@@ -263,21 +261,19 @@ Rs_EntDungSpectacleRock:
 
     ldy roomEX
     sty worldId
-    jmp SPAWN_AT_DEFAULT
-.rts
-    rts
+    lda #SLOT_FC_HALT
+    sta BANK_SLOT
+    jmp HALT_DUNG_ENT_ENTRY ; SPAWN_AT_DEFAULT
 
-Rs_ExitDung: SUBROUTINE
+Rs_ExitDung: ; SUBROUTINE
     bit roomFlags
-    bmi .rts ; RF_EV_LOAD
+    bmi .rts ; #RF_EV_LOAD
     lda plY
     cmp #BoardYD
     bne .rts
 Rs_ExitDung2:
     lda #MS_PLAY_THEME_L
     jmp RETURN_WORLD
-.rts
-    rts
 
 STAIR_POS_CENTER = 0
 STAIR_POS_PATH = 1
@@ -285,27 +281,29 @@ STAIR_POS_TOP_RIGHT = 2
 STAIR_POS_MID_RIGHT = 3
 STAIR_POS_LEFT_CENTER = 4
 
-PositionStairs: SUBROUTINE
+PositionStairs: ; SUBROUTINE
     lda .stairsX,x
     sta cdAX
     lda .stairsY,x
     sta cdAY
     lda #EN_STAIRS
     sta cdAType
+.rts
     rts
+
 .stairsX:
     .byte #$40, #$18, #$74, #$74, #$28
 .stairsY
     .byte #$2C, #$34, #$48, #$2C, #$28
 
-Rs_BlockPathStairs: SUBROUTINE
+Rs_BlockPathStairs: ; SUBROUTINE
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts
     ldx #STAIR_POS_PATH
     jmp PositionStairs
 
-Rs_BlockDiamondStairs: ;SUBROUTINE
+Rs_BlockDiamondStairs: ; SUBROUTINE
 Rs_Stairs: ;SUBROUTINE
     ; position #$40, #$2C
     lda roomFlags
@@ -325,16 +323,14 @@ Rs_Stairs: ;SUBROUTINE
     ldx #STAIR_POS_CENTER
     jmp PositionStairs
 
-Rs_BlockLeftStairs: ;SUBROUTINE
+Rs_BlockLeftStairs: ; SUBROUTINE
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts
     ldx #STAIR_POS_TOP_RIGHT
     jmp PositionStairs
-.rts
-    rts
 
-Rs_BlockSpiralStairs: ;SUBROUTINE
+Rs_BlockSpiralStairs: ; SUBROUTINE
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts
@@ -368,9 +364,9 @@ Rs_EntDungSpectacleRockBlocked:
     lda #SFX_SOLVE
     sta SfxFlags
     ldy roomId
-    lda rRoomFlag,y
-    ora #RF_SV_DESTROY
-    sta wRoomFlag,y
+    lda rWorldRoomFlags,y
+    ora #WRF_SV_DESTROY
+    sta wWorldRoomFlags,y
     lda #$80
     sta blY
 
@@ -450,9 +446,9 @@ Rs_EntDungBushBlocked: SUBROUTINE ; $40, $1C
     lda #SFX_SOLVE
     sta SfxFlags
     ldy roomId
-    lda rRoomFlag,y
-    ora #RF_SV_DESTROY
-    sta wRoomFlag,y
+    lda rWorldRoomFlags,y
+    ora #WRF_SV_DESTROY
+    sta wWorldRoomFlags,y
     lda #$80
     sta blY
 
@@ -461,8 +457,8 @@ Rs_EntDungBushBlocked: SUBROUTINE ; $40, $1C
 
 Rs_EntDungFlute: SUBROUTINE
     ldy roomId
-    lda rRoomFlag,y
-    and #RF_SV_DESTROY
+    lda rWorldRoomFlags,y
+    and #WRF_SV_DESTROY
     bne .animate
 
 ; extra safety check
@@ -489,9 +485,9 @@ Rs_EntDungFlute: SUBROUTINE
     sta m0Y
 
     ldy roomId
-    lda rRoomFlag,y
-    ora #RF_SV_DESTROY
-    sta wRoomFlag,y
+    lda rWorldRoomFlags,y
+    ora #WRF_SV_DESTROY
+    sta wWorldRoomFlags,y
 
     lda plState3
     and #PS_ACTIVE_ITEM2

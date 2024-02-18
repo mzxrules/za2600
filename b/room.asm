@@ -4,7 +4,7 @@
 LoadCaveRoom: SUBROUTINE
     ; Don't overwrite room vars
     lda #1
-    sta wROOM_COLOR
+    sta wRoomColorFlags
     lda #RS_CAVE
     sta roomRS
     lda #$F3
@@ -76,7 +76,8 @@ LoadRoom: SUBROUTINE
     lda WorldRoomSprites,y
     sta TRoomSprB
 
-    ldy roomId
+    ldy roomIdNext
+    sty roomId
     bpl .skipCaveRoom
     jmp LoadCaveRoom
 .skipCaveRoom
@@ -91,7 +92,7 @@ LoadRoom: SUBROUTINE
 
     ; set fg/bg color
     lda WORLD_COLOR,y
-    sta wROOM_COLOR
+    sta wRoomColorFlags
 ; RF_PF_AXIS test
     bpl .skipSetPFAxis ; #RF_WC_ROOM_BOOT
     lda roomFlags
@@ -219,9 +220,9 @@ LoadRoom: SUBROUTINE
 
 ; Update Dungeon roomDoors
     ldy roomId
-    lda rRoomFlag,y
-    ora #RF_SV_VISIT
-    sta wRoomFlag,y
+    lda rWorldRoomFlags,y
+    ora #WRF_SV_VISIT
+    sta wWorldRoomFlags,y
     and #%01010101
     sta Temp0
     asl
@@ -517,15 +518,15 @@ DoorOpen:
 
     ldy roomId
     lda DungDoorFlagA,x
-    ora rRoomFlag,y
-    sta wRoomFlag,y
+    ora rWorldRoomFlags,y
+    sta wWorldRoomFlags,y
     tya
     clc
     adc DungDoorRoomOff,x
     tay
     lda DungDoorFlagB,x
-    ora rRoomFlag,y
-    sta wRoomFlag,y
+    ora rWorldRoomFlags,y
+    sta wWorldRoomFlags,y
 .rts
     rts
 

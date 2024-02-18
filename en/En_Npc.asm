@@ -45,12 +45,10 @@ En_NpcMonster: SUBROUTINE
     sta KernelId
     sta roomRS
 
-    lda roomId
-    and #$7F
-    tay
-    lda rRoomFlag,y
-    ora #RF_SV_ITEM_GET
-    sta wRoomFlag,y
+    ldy shopRoom
+    lda rWorldRoomFlags,y
+    ora #WRF_SV_ITEM_GET
+    sta wWorldRoomFlags,y
 
     lda ITEMV_MEAT
     and #~ITEMF_MEAT
@@ -61,8 +59,7 @@ En_NpcMonster: SUBROUTINE
 
 En_Npc: ; SUBROUTINE
     lda roomFlags
-    and #RF_EV_LOAD
-    bne .skipSetPos
+    bmi .skipSetPos ; #RF_EV_LOAD
     lda #$30
     cmp plY
     bpl .skipSetPos

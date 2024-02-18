@@ -178,15 +178,29 @@ def BuildRoomEncounterTables(encounterToRoom):
     curEN = 0
 
     for k, rooms in encounterToRoom.items():
+        encounterItems = []
+        encounterSet = set()
+        encounterFlag = "$00"
+        for v in k:
+            encounterSet.add(v)
+
         for worldId, room in rooms:
                 roomEN[worldId][room] = curEN
 
         enCount = 0 if "EN_NONE" in k else len(k)
 
-        encounterTableStr += f"    .byte {enCount}, "
-        encounterTableStr += ", ".join(list(k))
+        if len(k) > 1 and len(encounterSet) == 1:
+            # Compact encounter
+            curEN += 2
+            encounterFlag = "$80"
+            encounterItems = list(encounterSet)
+        else:
+            curEN += len(k) + 1
+            encounterItems = list(k)
+
+        encounterTableStr += f"    .byte {encounterFlag} | {enCount}, "
+        encounterTableStr += ", ".join(encounterItems)
         encounterTableStr += "\n"
-        curEN += len(k) + 1
 
     dispSize = f"WORLD ENCOUNTER SIZE = {curEN}"
     encounterTableStr = f'; {dispSize}\n{encounterTableStr}'

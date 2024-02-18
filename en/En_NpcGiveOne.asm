@@ -5,11 +5,9 @@ En_NpcGiveOne: SUBROUTINE
     lda #SEG_SH
     sta BANK_SLOT
     ldx roomEX
-    lda roomId
-    and #$7F
-    tay
-    lda rRoomFlag,y
-    bpl .skip_SetItemGet ; RF_SV_ITEM_GET
+    ldy shopRoom
+    lda rWorldRoomFlags,y
+    bpl .skip_SetItemGet ; WRF_SV_ITEM_GET
     lda #NPC_INIT | #NPC_ITEM_GOT
     sta enState
 .skip_SetItemGet
@@ -36,10 +34,9 @@ En_NpcGiveOne: SUBROUTINE
     cmp NpcGiveOneData-#CV_SWORD1,x
     bcc .rts
 .give_item
-; Set RF_SV_ITEM_GET Flag
-    lda rRoomFlag,y
-    ora #RF_SV_ITEM_GET
-    sta wRoomFlag,y
+    lda rWorldRoomFlags,y
+    ora #WRF_SV_ITEM_GET
+    sta wWorldRoomFlags,y
 ; Trigger ItemGet
     lda #[#NPC_INIT | #NPC_ITEM_GOT | #GI_EVENT_CAVE | #NPC_SPR_MAN]
     sta enState

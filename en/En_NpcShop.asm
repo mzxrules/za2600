@@ -26,10 +26,6 @@ En_NpcShop: SUBROUTINE
     sta mesgChar+5
 .skip_MinusDisp
 
-    lda roomId
-    and #$7F
-    sta shopRoom
-
 ; Pick Shop
     txa ; roomEX
     sta Temp0
@@ -79,9 +75,9 @@ En_NpcShopMain: SUBROUTINE
 
 .give_item
     ldy shopRoom
-    lda rRoomFlag,y
-    ora #RF_SV_ITEM_GET
-    sta wRoomFlag,y
+    lda rWorldRoomFlags,y
+    ora #WRF_SV_ITEM_GET
+    sta wWorldRoomFlags,y
     bne .getItem ;jmp
 
 .try_buy_item
@@ -121,9 +117,9 @@ En_NpcShopMain: SUBROUTINE
     ;sta npcDecRupee
 .take_item_clear
     ldy shopRoom
-    lda rRoomFlag,y
-    ora #RF_SV_ITEM_GET
-    sta wRoomFlag,y
+    lda rWorldRoomFlags,y
+    ora #WRF_SV_ITEM_GET
+    sta wWorldRoomFlags,y
     lda roomFlags
     ora #RF_EV_CLEAR
     sta roomFlags

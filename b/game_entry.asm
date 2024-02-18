@@ -4,7 +4,7 @@
     INCLUDE "kworld.asm"
     INCLUDE "c/kernel48.asm"
 
-    align 256
+    ;align 256
 
     INCLUDE "spr/spr_nocontroller.asm"
     INCLUDE "spr/spr_titledemo.asm"
@@ -54,6 +54,13 @@ ENTRY_INIT:  ; Address F000
 
     lda .ENTRY_SLOT_SPR,y
     sta wWorldSprBank
+
+    ldx #127
+    lda #$FF
+.init_RoomENC
+    sta wWorldRoomENCount,x
+    dex
+    bpl .init_RoomENC
 
     dey
     bpl .init_ram_loop
@@ -221,7 +228,7 @@ ENTRY_START_GAME:
     lda #0
     sta worldId
     lda #$0
-    sta roomId
+    sta roomIdNext
     ENDIF
 
     jmp MAIN_ENTRY

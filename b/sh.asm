@@ -323,10 +323,12 @@ EnClearDrop: SUBROUTINE
     bne .endCollisionCheck
 
     ; item collected
-    ldx roomId
-    lda rRoomFlag,x
-    ora #RF_SV_ITEM_GET
-    sta wRoomFlag,x
+    lda roomId
+    and #$7F
+    tax
+    lda rWorldRoomFlags,x
+    ora #WRF_SV_ITEM_GET
+    sta wWorldRoomFlags,x
     ldx roomEX
     cpx #GI_TRIFORCE
     bmi .EnItem_GiItem

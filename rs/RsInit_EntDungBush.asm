@@ -8,8 +8,8 @@ RsInit_EntDungBush: SUBROUTINE
     sta wPF2Room + 13 - 3 - 4
 
     ldy roomId
-    lda rRoomFlag,y
-    and #RF_SV_DESTROY
+    lda rWorldRoomFlags,y
+    and #WRF_SV_DESTROY
     bne .open
 
     lda #$40+1

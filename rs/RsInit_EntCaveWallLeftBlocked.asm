@@ -4,8 +4,8 @@
 
 RsInit_EntCaveWallLeftBlocked: SUBROUTINE
     ldy roomId
-    lda rRoomFlag,y
-    and #RF_SV_DESTROY
+    lda rWorldRoomFlags,y
+    and #WRF_SV_DESTROY
     bne RsInit_EntCaveWallLeft
 
     lda rPF1RoomL + 12

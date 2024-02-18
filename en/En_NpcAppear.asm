@@ -72,8 +72,8 @@ En_NpcAppear: SUBROUTINE
     bne .can_appear_no_cv ; jmp
 
 .test_choice_give_bomb
-    lda rRoomFlag,y
-    bmi .cannot_appear ; #RF_SV_ITEM_GET
+    lda rWorldRoomFlags,y
+    bmi .cannot_appear ; #WRF_SV_ITEM_GET
     lda #EN_NPC_SHOP1
     sta npcType
     bne .can_appear_no_cv ; jmp
@@ -90,8 +90,8 @@ En_NpcAppear: SUBROUTINE
     rts
 
 .test_hungry
-    lda rRoomFlag,y
-    bmi .cannot_appear ; #RF_SV_ITEM_GET
+    lda rWorldRoomFlags,y
+    bmi .cannot_appear ; #WRF_SV_ITEM_GET
     lda #EN_NPC_MONSTER
     sta npcType
     lda #NPC_SPR_MONSTER
@@ -107,16 +107,16 @@ En_NpcAppear: SUBROUTINE
     rts
 
 .test_onetime_appear
-    lda rRoomFlag,y
-    bpl .can_appear ; RF_SV_ITEM_GET
+    lda rWorldRoomFlags,y
+    bpl .can_appear ; #WRF_SV_ITEM_GET
 .cannot_appear
     lda #EN_NONE
     sta enType
     rts
 
 .test_take_heart_rupee
-    lda rRoomFlag,y
-    bmi .cannot_appear ; RF_SV_ITEM_GET
+    lda rWorldRoomFlags,y
+    bmi .cannot_appear ; #WRF_SV_ITEM_GET
     lda roomFlags
     ora #RF_NO_ENCLEAR
     sta roomFlags

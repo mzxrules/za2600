@@ -53,9 +53,9 @@ En_NpcShop1: SUBROUTINE
 .setNewBombs
     stx itemBombs
     ldy shopRoom
-    lda rRoomFlag,y
-    ora #RF_SV_ITEM_GET
-    sta wRoomFlag,y
+    lda rWorldRoomFlags,y
+    ora #WRF_SV_ITEM_GET
+    sta wWorldRoomFlags,y
     lda enState
     ora #NPC_ITEM_GOT
     sta enState

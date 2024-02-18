@@ -50,6 +50,7 @@ En_WallmasterInit: SUBROUTINE
 .setPos
     lda #EN_WALLMASTER_INIT
     sta enState,x
+.rts
     rts
 
 En_WallmasterCapture:
@@ -57,9 +58,7 @@ En_WallmasterCapture:
     ldx enWallPhase
     cpx #33
     bne .rts
-    jsr SPAWN_AT_DEFAULT
-.rts
-    rts
+    jmp SPAWN_AT_DEFAULT
 
 En_Wallmaster: SUBROUTINE
     lda enState,x

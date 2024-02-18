@@ -3,6 +3,7 @@
 ;==============================================================================
 
 MAIN_UNPAUSE: BHA_BANK_JMP #SLOT_FC_MAIN, PAUSE_RETURN
+MAIN_DUNG_ENT: BHA_BANK_JMP #SLOT_FC_MAIN, SPAWN_AT_DEFAULT
 
 ;==============================================================================
 ; PosWorldObjects
@@ -160,6 +161,12 @@ VERTICAL_SYNC: SUBROUTINE
     sta RESBL
     asl
     sta HMBL
+    ldx roomId
+    lda roomFlags
+    bpl .set_cur_room
+    ldx roomIdNext
+.set_cur_room
+    stx Temp0 ; position room
 
 ;==============================================================================
 ; PosHudObjects
@@ -186,7 +193,7 @@ PosHudObjects:
 .roomIdMask
     ; 7 cycle end
 
-    and roomId          ; 3
+    and Temp0           ; 3 ; roomId
     eor #7              ; 2
     asl                 ; 2
     asl                 ; 2

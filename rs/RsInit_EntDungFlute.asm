@@ -3,8 +3,8 @@
 ;==============================================================================
 RsInit_EntDungFlute: SUBROUTINE
     ldy roomId
-    lda rRoomFlag,y
-    and #RF_SV_DESTROY
+    lda rWorldRoomFlags,y
+    and #WRF_SV_DESTROY
     beq .rts
     ldy #7
 

@@ -155,8 +155,8 @@ PAUSE_OVERSCAN: SUBROUTINE ; 30 scanlines
     sta WSYNC
     lda #2
     sta VBLANK
-    lda #32
-    sta TIM64T ; 27 scanline timer
+    lda #36
+    sta TIM64T ; 30 scanline timer
 ; reset world kernel vars
     lda #7
     sta wENH
@@ -173,7 +173,7 @@ PAUSE_OVERSCAN_WAIT:
     sta WSYNC
     lda INTIM
     bne PAUSE_OVERSCAN_WAIT
-
+    sta WSYNC
     jmp PAUSE_VERTICAL_SYNC
 
 Pause_Menu_Input: SUBROUTINE

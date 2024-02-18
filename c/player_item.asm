@@ -125,9 +125,9 @@ PlayerUpdateFireFx: SUBROUTINE
     lda plItem2Time
     cmp #-60
     bne .rts
-    lda rROOM_COLOR
+    lda rRoomColorFlags
     and #~#RF_WC_ROOM_DARK
-    sta wROOM_COLOR
+    sta wRoomColorFlags
 .rts
     rts
 
@@ -329,9 +329,6 @@ PlayerDrawWand:
 ; plItemDir bmi causes the player to appear
 
 PlayerUseFlute: SUBROUTINE
-    ; roll back stack
-    pla
-    pla
     lda #SFX_WARP
     sta SfxFlags
     lda #SLOT_FC_HALT
@@ -388,7 +385,7 @@ PlayerUpdateFluteFx: SUBROUTINE
     and #7
     tax
     lda PlayerFluteDest,x
-    sta roomId
+    sta roomIdNext
 
     lda roomFlags
     ora #RF_EV_LOAD

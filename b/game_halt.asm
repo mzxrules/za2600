@@ -1,27 +1,95 @@
 ;==============================================================================
 ; mzxrules 2023
 ;==============================================================================
+
+HALT_VERTICAL_SYNC:
+    jsr VERTICAL_SYNC
+
+HALT_FROM_FLUTE:
+    lda PHaltType
+    cmp #HALT_TYPE_FLUTE
+    bne .next
+    jsr HaltFlute_OverscanTop
+.next
+
+    lda #SLOT_F4_AU1
+    sta BANK_SLOT
+    jsr UpdateAudio
+
+    lda #SLOT_F0_ENDRAW
+    sta BANK_SLOT
+    jsr EnDraw_Del
+
+    lda #SLOT_F4_PAUSE_DRAW_WORLD
+    sta BANK_SLOT
+
+    jsr DRAW_PAUSE_WORLD
+
+HALT_OVERSCAN: SUBROUTINE ; 30 scanlines
+    sta WSYNC
+    lda #2
+    sta VBLANK
+    lda #36
+    sta TIM64T ; 27 scanline timer
+; reset world kernel vars
+    lda #7
+    sta wENH
+    lda #0
+    sta wNUSIZ1_T
+    sta wREFP1_T
+
+HALT_FROM_DUNG_ENT:
+    lda PHaltType
+    cmp #HALT_TYPE_DUNG_ENTRY
+    bne .next
+    jsr HaltDungEnt_OverscanBottom
+.next
+
+
+HALT_OVERSCAN_WAIT:
+    sta WSYNC
+    lda INTIM
+    bne HALT_OVERSCAN_WAIT
+    sta WSYNC
+    jmp HALT_VERTICAL_SYNC
+
+
 HALT_FLUTE_ENTRY: SUBROUTINE
     ldx #$FF
     txs
     lda Frame
     sta PFrame
 
+    lda #HALT_TYPE_FLUTE
+    sta PHaltType
+
     lda #19
     sta PAnim
     jmp HALT_FROM_FLUTE
 
-HALT_VERTICAL_SYNC:
-    jsr VERTICAL_SYNC
+HALT_DUNG_ENT_ENTRY: SUBROUTINE
+    ldx #$FF
+    txs
+    lda Frame
+    sta PFrame
 
-HALT_FROM_FLUTE:
-    clc
+    lda #HALT_TYPE_DUNG_ENTRY
+    sta PHaltType
+
+    lda #19
+    sta PAnim
+    jmp HALT_FROM_DUNG_ENT
+
+
+HaltFlute_OverscanTop: SUBROUTINE
     lda PFrame
+    clc
     adc #$7F
     cmp Frame
-    bne .runHaltUpdate
+    beq .test_spawn_tornado
+    rts
 
-.spawnTornado
+.test_spawn_tornado
     lda #-4
     sta plItemTimer
     lda itemTri
@@ -74,39 +142,69 @@ HALT_FROM_FLUTE:
     stx plItem2Dir
 
 .noTornado
+
+    ldx #$FF
+    txs
     lda #SLOT_F0_PL
     sta BANK_SLOT
     jmp MAIN_UNPAUSE
 
-.runHaltUpdate
-    lda #SLOT_F4_AU1
-    sta BANK_SLOT
-    jsr UpdateAudio
 
-    lda #SLOT_F0_ENDRAW
-    sta BANK_SLOT
-    jsr EnDraw_Del
+HaltDungEnt_OverscanBottom: SUBROUTINE
+    lda PFrame
+    clc
+    adc #$0F
+    cmp Frame
+    bne .setup_mem
+.enter_dungeon
+    ldx #$FF
+    txs
+    lda #>OVERSCAN_WAIT
+    pha
+    lda #<OVERSCAN_WAIT-1
+    pha
+    ;lda #SLOT_FC_MAIN
+    jmp MAIN_DUNG_ENT
 
-    lda #SLOT_F4_PAUSE_DRAW_WORLD
-    sta BANK_SLOT
+.setup_mem
+    lda Frame
+    and #$07
+    asl
+    asl
+    asl
+    asl
+    tax
 
-    jsr DRAW_PAUSE_WORLD
+    ldy #15
 
-HALT_OVERSCAN: SUBROUTINE ; 30 scanlines
-    sta WSYNC
-    lda #2
-    sta VBLANK
-    lda #32
-    sta TIM64T ; 27 scanline timer
-; reset world kernel vars
-    lda #7
-    sta wENH
-    lda #0
-    sta wNUSIZ1_T
-    sta wREFP1_T
+.mem_init_loop
+.w0
+    lda #SLOT_RW_F8_W0
+    sta BANK_SLOT_RAM
 
-HALT_OVERSCAN_WAIT:
-    sta WSYNC
-    lda INTIM
-    bne HALT_OVERSCAN_WAIT
-    jmp HALT_VERTICAL_SYNC
+    lda rWorldRoomENCount,x
+    bne .w1
+    lda #$FF
+    sta wWorldRoomENCount,x
+
+.w1
+    lda #SLOT_RW_F8_W1
+    sta BANK_SLOT_RAM
+    lda #$FF
+    sta wWorldRoomENCount,x
+
+.w2
+    lda #SLOT_RW_F8_W2
+    sta BANK_SLOT_RAM
+    lda #$FF
+    sta wWorldRoomENCount,x
+    inx
+    dey
+    bpl .mem_init_loop
+
+
+    lda #SLOT_RW_F8_W0
+    sta BANK_SLOT_RAM
+    rts
+
+

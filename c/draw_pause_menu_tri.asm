@@ -121,7 +121,7 @@ DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_PAUSE_DRAW_MENU2
     lda #0
     sta COLUP0
     sta COLUP1
-    ldy #86
+    ldy #82
     jmp draw_pause_finish_frame
 
 ;==============================================================================
@@ -139,7 +139,7 @@ draw_pause_menu_map:
 ;==============================================================================
 ; Finish Frame
 ;==============================================================================
-    ldy #21
+    ldy #17
 .dummy_end
 draw_pause_finish_frame:
     sta WSYNC

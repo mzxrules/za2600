@@ -18,9 +18,9 @@ En_NpcDoorRepair: SUBROUTINE
     sta plState
 
     ldy shopRoom
-    lda rRoomFlag,y
-    ora #RF_SV_ITEM_GET
-    sta wRoomFlag,y
+    lda rWorldRoomFlags,y
+    ora #WRF_SV_ITEM_GET
+    sta wWorldRoomFlags,y
     rts
 .end
     lda npcDecRupee

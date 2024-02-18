@@ -7,8 +7,8 @@ RsInit_SpectacleRock: SUBROUTINE
     sta blY
 
     ldy roomId
-    lda rRoomFlag,y
-    and #RF_SV_DESTROY
+    lda rWorldRoomFlags,y
+    and #WRF_SV_DESTROY
     bne .open
 
 .closed

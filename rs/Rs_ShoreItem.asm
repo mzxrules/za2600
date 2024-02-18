@@ -15,8 +15,8 @@ Rs_ShoreItem: SUBROUTINE
     cmp #EN_CLEAR_DROP
     bne .rts
     ldx roomId
-    lda rRoomFlag,x
-    bmi .rts ; RF_SV_ITEM_GET ;.NoLoad
+    lda rWorldRoomFlags,x
+    bmi .rts ; #WRF_SV_ITEM_GET ;.NoLoad
 
     lda #$6C
     sta cdAX

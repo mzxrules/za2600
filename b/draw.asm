@@ -15,9 +15,9 @@ POSITION_SPRITES: SUBROUTINE
     INCLUDE "c/draw_world_init.asm"
 
     ldx #0
-    bit rROOM_COLOR
+    bit rRoomColorFlags
     bvs .dark
-    lda rROOM_COLOR
+    lda rRoomColorFlags
     and #$3F
     tax
 .dark
@@ -333,20 +333,8 @@ KERNEL_WORLD_RESUME:
     lda #1
     sta VDELP0
 
-    jsr rKERNEL ; JUMP WORLD KERNEL
+    jmp rKERNEL ; JUMP WORLD KERNEL
 
-; Post Kernel
-    lda rFgColor
-    sta COLUBK
-    lda #0
-    sta PF1
-    sta PF2
-    sta GRP1
-    sta GRP0
-    sta ENAM0
-    sta ENAM1
-    sta PF0
-    rts
     LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN
     align $20
     INCLUDE "c/draw_data.asm"

@@ -63,23 +63,4 @@ KERNEL_PAUSE_WORLD_RESUME:
     lda #1
     sta VDELP0
 
-    jsr rKERNEL ; JUMP WORLD KERNEL
-
-; Post Kernel
-    lda rFgColor
-    sta COLUBK
-    lda #0
-    sta PF1
-    sta PF2
-    sta GRP1
-    sta GRP0
-    sta ENAM0
-    sta ENAM1
-    sta PF0
-
-    sta WSYNC
-    sta COLUBK
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    rts
+    jmp rKERNEL ; JUMP WORLD KERNEL

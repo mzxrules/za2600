@@ -154,6 +154,7 @@ En_BossManhandla: SUBROUTINE
     lda enState
     and #$0F
     bne .endCheckDamaged
+    jsr EnSysRoomKill
     jmp EnSysEnDie
 
 .endCheckDamaged

@@ -111,6 +111,16 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     dey             ; 2
     sta WSYNC       ; 3
     bpl KERNEL_LOOP ; 3/2
+    lda rFgColor
+    sta COLUBK
+    lda #0
+    sta PF1
+    sta PF2
+    sta GRP1
+    sta GRP0
+    sta ENAM0
+    sta ENAM1
+    sta PF0
     rts
 
     LOG_SIZE "-KERNEL WORLD-", KERNEL_WORLD

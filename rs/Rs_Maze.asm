@@ -12,7 +12,7 @@ Rs_Maze: SUBROUTINE
 .skipInit
     bit roomFlags ; check RF_EV_LOAD
     bpl .rts
-    lda roomId
+    lda roomIdNext
     cmp .exit,y
     bne .checkPattern
 ; exit maze without finding hidden area
@@ -24,7 +24,7 @@ Rs_Maze: SUBROUTINE
     inc worldSY
     ldy worldSY
     lda .pattern-2,y
-    cmp roomId
+    cmp roomIdNext
     bne .failStep
     cpy #8
     bmi .roomLoop
@@ -37,7 +37,7 @@ Rs_Maze: SUBROUTINE
 .failStep
     sta worldSR
 .roomLoop
-    stx roomId
+    stx roomIdNext
     rts
 
 .type:
