@@ -43,7 +43,7 @@ En_BossGlockHead: SUBROUTINE
 
 .bounce
     ldy enGlockHeadDir
-    lda En_BossGlockHead_Bounce,y
+    lda EnMoveBounce,y
     sta enGlockHeadDir
     lda #$40
     sta enState+1
@@ -66,14 +66,3 @@ En_BossGlockHead: SUBROUTINE
     and #7
     tay
     jmp EnMoveDel
-
-En_BossGlockHead_Bounce:
-    .byte EN_DIR_R
-    .byte EN_DIR_L
-    .byte EN_DIR_D
-    .byte EN_DIR_U
-
-    .byte EN_DIR_RD
-    .byte EN_DIR_RU
-    .byte EN_DIR_LD
-    .byte EN_DIR_LU

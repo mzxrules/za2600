@@ -12,12 +12,12 @@ EnDraw_Octorok: SUBROUTINE
     tay
     jsr EnDraw_PosAndStunColor
 
-    lda #>SprE4
+    lda #>SprE8
     sta enSpr+1
     ldy enDir,x
     lda Mul8,y
     clc
-    adc #<SprE4
+    adc #<SprE8
     sta enSpr
     jmp EnDraw_SmallMissile
 

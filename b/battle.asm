@@ -77,6 +77,8 @@ HbPlWand: SUBROUTINE
     rts
 
 HbPlWandFx: SUBROUTINE
+    lda #HB_PL_WAVE
+    sta HbPlFlags
     lda #HITBOX_AA_SQ4
     sta Hb_aa_Box
     lda #HB_DMG_FIRE
@@ -88,6 +90,8 @@ HbPlWandFx: SUBROUTINE
     rts
 
 HbPlSwordFx: SUBROUTINE
+    lda #HB_PL_SWORDFX
+    sta HbPlFlags
     lda #HITBOX_AA_SQ4
     sta Hb_aa_Box
     ldy #0
@@ -210,13 +214,21 @@ HbPlAttCollide: SUBROUTINE
     sbc Hb_bb_y
     cmp hitbox_aa_h_plus_bb_h,y
     bcs .no_hit
+
 ; Kill the player arrow if it hit something
     lda #HB_PL_ARROW
     and HbPlFlags
+    beq .test_kill_swordfx
+    lda #$80
+    sta plm0Y
+.rts
+    rts
+.test_kill_swordfx
+    lda #HB_PL_SWORDFX
+    and HbPlFlags
     beq .rts
     lda #$80
-    sta m0Y
-.rts
+    sta plm1Y
     rts
 
 ;==============================================================================
@@ -252,7 +264,7 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
 
 ; Test if darknut takes damage
     lda HbPlFlags
-    and #HB_PL_SWORD | #HB_PL_BOMB
+    and #HB_PL_SWORD | #HB_PL_BOMB | #HB_PL_SWORDFX
     beq .immune ; block non-damaging attacks
 
 ; Test if item hit Darknut's shield
@@ -260,15 +272,6 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
     cpy plItemDir
     ; bne .gethit
     beq .immune
-
-/*
-    ; Test if sword hit shield
-    and #HB_PL_SWORD
-    bne .immune
-    ; Bomb hit shield
-    lda #-2
-    bmi .gethit_override_damage ;jmp
-*/
 
 .gethit
     ldy HbDamage

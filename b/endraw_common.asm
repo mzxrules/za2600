@@ -27,6 +27,7 @@ EnDraw_Pos: SUBROUTINE
     sta enY
     rts
 
+EnDraw_Arrow: SUBROUTINE
 EnDraw_SmallMissile: SUBROUTINE
     lda miType,x
     bpl .rts
@@ -52,7 +53,12 @@ EnDraw_SmallMissile: SUBROUTINE
 
 EnDraw_GoriyaColor:
 EnDraw_DarknutColor:
-EnDraw_OctorokColors
+EnDraw_OctorokColors:
+EnDraw_TektiteColors:
+EnDraw_LeeverColors:
+    .byte #CI_EN_RED, #CI_EN_BLUE
+
+EnDraw_MoblinColors:
     .byte #CI_EN_RED, #CI_EN_BLUE
 
 EnDrawColor_LUT:
@@ -61,3 +67,4 @@ EnDrawColor_LUT:
     .byte COLOR_EN_BLUE,    COLOR_EN_BLUE_L
     .byte COLOR_EN_YELLOW,  COLOR_EN_YELLOW_L
     .byte COLOR_EN_WHITE,   COLOR_EN_WHITE
+    .byte COLOR_EN_BLACK,   COLOR_EN_RED

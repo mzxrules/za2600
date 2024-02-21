@@ -599,13 +599,17 @@ BANK_42
     INCLUDE "en/EnDraw_Gibdo.asm"
     INCLUDE "en/EnDraw_Goriya.asm"
     INCLUDE "en/EnDraw_TestColor.asm"
+    INCLUDE "en/EnDraw_Tektite.asm"
+    INCLUDE "en/EnDraw_Leever.asm"
+    INCLUDE "en/EnDraw_Moblin.asm"
+    INCLUDE "en/EnDraw_Peehat.asm"
+    INCLUDE "en/EnDraw_Vire.asm"
 
     INCLUDE "gen/mesg_digits.asm"
     INCLUDE "en/EnDraw_Npc.asm"
     INCLUDE "en/EnDraw_NpcPath.asm"
     INCLUDE "en/EnDraw_NpcShop.asm"
     LOG_BANK_SIZE "-BANK 42-", BANK_42
-
 
 ; ****************************************
 ; *               BANK 43                *
@@ -640,7 +644,6 @@ BANK_44
     INCLUDE "en/En_BossGlockHead.asm"
     LOG_BANK_SIZE "-BANK 44-", BANK_44
 
-
 ; ****************************************
 ; *               BANK 45                *
 ; ****************************************
@@ -656,7 +659,6 @@ BANK_45
     INCLUDE "en/En_Keese.asm"
     INCLUDE "en/EnDraw_Keese.asm"
     LOG_BANK_SIZE "-BANK 45-", BANK_45
-
 
 ; ****************************************
 ; *               BANK 46                *
@@ -696,7 +698,7 @@ BANK_47
 ; ****************************************
 ; *               BANK 48                *
 ; ****************************************
-    SEG Bank47
+    SEG Bank48
     ORG $C000
     RORG $F400
 
@@ -710,6 +712,21 @@ BANK_48
     INCLUDE "en/En_NpcDoorRepair.asm"
     LOG_BANK_SIZE "-BANK 48-", BANK_48
 
+; ****************************************
+; *               BANK 49                *
+; ****************************************
+    SEG Bank49
+    ORG $C400
+    RORG $F400
+
+BANK_49
+    INCLUDE "en/En_Tektite.asm"
+    INCLUDE "en/En_Leever.asm"
+    INCLUDE "en/En_Moblin.asm"
+    INCLUDE "en/En_Gibdo.asm"
+    INCLUDE "en/En_Peehat.asm"
+    INCLUDE "en/En_Vire.asm"
+    LOG_BANK_SIZE "-BANK 49-", BANK_49
 
 ; End
 

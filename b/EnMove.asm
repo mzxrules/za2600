@@ -411,7 +411,8 @@ EnMove_Ord_SeekDir: SUBROUTINE
 ;==============================================================================
 EnMove_Recoil: SUBROUTINE
     lda enStun,x
-    bmi .doThings
+    cmp #EN_STUN_RT
+    bcc .doThings
 .end_recoil
     lda enState,x
     and #~EN_ENEMY_MOVE_RECOIL
@@ -419,8 +420,6 @@ EnMove_Recoil: SUBROUTINE
 .rts
     rts
 .doThings
-    cmp #EN_STUN_RT
-    bcs .end_recoil
     and #3
     sta Temp0 ; enRecoilDir
     and #2
@@ -471,3 +470,28 @@ EnMove_Recoil: SUBROUTINE
     adc Temp0
     tay
     jmp EnMoveDel
+
+;==============================================================================
+; Selects a diagonal direction headed towards room center
+; X = enNum
+; enDir,x is updated
+;==============================================================================
+EnMove_Ord_SetSeekCenter: SUBROUTINE
+    lda en0Y,x
+    sec
+    sbc #BoardYC
+    and #$80
+    sta Temp0
+
+    lda #BoardXC
+    sec
+    sbc en0X,x
+    clc
+    rol
+    lda Temp0
+    rol
+    rol
+    tay
+    lda EnMoveBounceDiagonal,y
+    sta enDir,x
+    rts

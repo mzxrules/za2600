@@ -19,10 +19,12 @@ En_BossManhandla: SUBROUTINE
     lda #4
     sta enDir
 
-    lda #$40 ; 40
+    lda #$40
     sta en0X
-    lda #$2C ; 2C
+    lda #$2C
     sta en0Y
+    lda #0
+    sta enManhandlaStun
     rts
 .main
 
@@ -176,7 +178,7 @@ En_BossManhandla: SUBROUTINE
     sta enManhandlaInvince
 .skipResetInvince
 
-; Movement
+; Movement Logic
     lda #SLOT_F0_EN_MOVE
     sta BANK_SLOT
 
@@ -202,7 +204,7 @@ En_BossManhandla: SUBROUTINE
     sta enManhandlaSpdFrac
     bcc .skipMove
 
-.movement
+; Move boss
     bit enState ;
     bvs .move ; EN_BOSS_MANHANDLA_END_BOUNCE
 

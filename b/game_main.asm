@@ -477,20 +477,8 @@ RETURN_WORLD: SUBROUTINE
     sta plDir
     rts
 
-En_Leever:
-En_LeeverBlue:
-En_LeeverMain:
-En_Moblin:
-En_MoblinBlue:
-En_MoblinMain:
-En_Peehat:
 En_Zora:
-En_Tektite:
-En_TektiteBlue:
-En_TektiteMain:
-En_Gibdo:
 En_Pols:
-En_Vire:
 En_VireSplit:
 En_Wizrobe:
 En_WizrobeBlue:

@@ -97,9 +97,8 @@ En_Keese: SUBROUTINE
 ; Movement
 
 .bounceTest
-    lda enState,x
-    ror
-    bcs .endBounce ; EN_KEESE_END_BOUNCE
+    lda #SLOT_F0_EN_MOVE
+    sta BANK_SLOT
 
     ldy enHp,x
     lda En_Keese_BounceXR-1,y
@@ -107,14 +106,14 @@ En_Keese: SUBROUTINE
 
     lda en0X,x
     cmp #EnBoardXL
-    beq .bounce
+    bcc .bounce
     cmp enKeeseTemp ; #EnBoardXR
-    beq .bounce
+    bcs .bounce
     lda en0Y,x
     cmp #EnBoardYD
-    beq .bounce
+    bcc .bounce
     cmp #EnBoardYU
-    beq .bounce
+    bcs .bounce
 
 .think
     lda enKeeseThink,x
@@ -125,23 +124,17 @@ En_Keese: SUBROUTINE
 
     jsr Random
     and #7
-    sta enKeeseDir,x
+    sta enDir,x
     lda Rand16
     and #$1F
     adc #$D8
     sta enKeeseThink,x
-    bmi .endThink
+    bmi .endThink ; jmp
 
 
 .bounce
-    ldy enKeeseDir,x
-    lda En_Keese_Bounce,y
-    sta enKeeseDir,x
-    lda #EN_KEESE_END_BOUNCE | #EN_KEESE_INIT
-    sta enState,x
-.endBounce
+    jsr EnMove_Ord_SetSeekCenter
 .endThink
-
 
 .move_logic
     lda Frame
@@ -150,27 +143,11 @@ En_Keese: SUBROUTINE
     rts
 
 .move
-    lda enState,x
-    and #~EN_KEESE_END_BOUNCE
-    sta enState,x
 
-    lda enKeeseDir,x
+    lda enDir,x
     and #7
     tay
     jmp EnMoveDel
-
-En_Keese_Bounce:
-    .byte EN_DIR_R
-    .byte EN_DIR_L
-    .byte EN_DIR_D
-    .byte EN_DIR_U
-
-    .byte EN_DIR_RD
-    .byte EN_DIR_RU
-    .byte EN_DIR_LD
-    .byte EN_DIR_LU
-
-
 
 En_Keese_BounceXR
 ; skip 0 value

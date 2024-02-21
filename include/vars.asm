@@ -330,13 +330,29 @@ enRopeTimer         ds 2
 enRopeThink         ds 2
     EN_SIZE ROPE
 
+; == Vire
+    ORG CLASS_EN_ENEMY_MOVE
+enVireStep          ds 2
+enVireShiftY        ds 2
+enVireBounceTimer   ds 2
+    EN_SIZE VIRE
+
 ; == Keese
     ORG CLASS_EN_ENEMY_MOVE
 ; enHp
-enKeeseDir      ds 2
 enKeeseThink    ds 2
-enKeeseDisp     ds 2
 enKeeseTemp     ds 1
+    EN_SIZE KEESE
+
+
+; == Peehat
+    ORG CLASS_EN_ENEMY_MOVE
+; enHp
+enPeehatVel         ds 2
+enPeehatSpeedFrac   ds 2
+enPeehatThink       ds 2
+enPeehatFlyThink    ds 2
+    EN_SIZE PEEHAT
 
 ; == Rolling Rocks
     ORG CLASS_EN_ENEMY_MOVE
@@ -521,6 +537,7 @@ HB_PL_FIRE      = $04
 HB_PL_BOMB      = $08
 HB_PL_WAVE      = $10
 HB_PL_WAND      = $20
+HB_PL_SWORDFX   = $40
 HbFlags2        ds 1
 HB_BOX_HIT      = $80
 Hb_aa_Box       ds 1
@@ -699,6 +716,7 @@ CI_EN_GREEN     = 2
 CI_EN_BLUE      = 4
 CI_EN_YELLOW    = 6
 CI_EN_WHITE     = 8
+CI_EN_BLACK     = 10
 
     COLOR UNDEF,        $00,$00
     COLOR BLACK,        $00,$00
@@ -843,6 +861,7 @@ SEG_45 = RAMSEG_F4 | 45
 SEG_46 = RAMSEG_F4 | 46
 SEG_47 = RAMSEG_F4 | 47
 SEG_48 = RAMSEG_F4 | 48
+SEG_49 = RAMSEG_F4 | 49
 
 
 SLOT_RW_F8_W0   = RAMSEG_F8 | 0

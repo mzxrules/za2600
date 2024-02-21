@@ -116,14 +116,14 @@ SprE12:
     .byte $A5 ; |X.X..X.X|
     .byte $42 ; |.X....X.|
 SprE13:
-    .byte $2A ; |..X.X.X.|
-    .byte $57 ; |.X.X.XXX|
-    .byte $FD ; |XXXXXX.X|
-    .byte $82 ; |X.....X.|
-    .byte $39 ; |..XXX..X|
-    .byte $6C ; |.XX.XX..|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
     .byte $18 ; |...XX...|
-    .byte $2C ; |..X.XX..|
+    .byte $18 ; |...XX...|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
 SprE14:
     .byte $66 ; |.XX..XX.|
     .byte $FF ; |XXXXXXXX|
@@ -251,32 +251,32 @@ SprE27:
     .byte $BD ; |X.XXXX.X|
     .byte $42 ; |.X....X.|
 SprE28:
-    .byte $66 ; |.XX..XX.|
-    .byte $24 ; |..X..X..|
+    .byte $FC ; |XXXXXX..|
+    .byte $38 ; |..XXX...|
     .byte $18 ; |...XX...|
     .byte $7E ; |.XXXXXX.|
     .byte $FF ; |XXXXXXXX|
-    .byte $D7 ; |XX.X.XXX|
-    .byte $FF ; |XXXXXXXX|
+    .byte $F7 ; |XXXX.XXX|
+    .byte $DB ; |XX.XX.XX|
     .byte $5A ; |.X.XX.X.|
 SprE29:
-    .byte $66 ; |.XX..XX.|
-    .byte $24 ; |..X..X..|
+    .byte $3F ; |..XXXXXX|
+    .byte $1C ; |...XXX..|
     .byte $18 ; |...XX...|
     .byte $7E ; |.XXXXXX.|
     .byte $FF ; |XXXXXXXX|
-    .byte $D7 ; |XX.X.XXX|
-    .byte $FF ; |XXXXXXXX|
+    .byte $EF ; |XXX.XXXX|
+    .byte $DB ; |XX.XX.XX|
     .byte $5A ; |.X.XX.X.|
 SprE30:
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $3C ; |..XXXX..|
+    .byte $18 ; |...XX...|
+    .byte $5A ; |.X.XX.X.|
+    .byte $E7 ; |XXX..XXX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $BD ; |X.XXXX.X|
+    .byte $DB ; |XX.XX.XX|
+    .byte $5A ; |.X.XX.X.|
 SprE31:
     .byte $FF ; |XXXXXXXX|
     .byte $83 ; |X.....XX|

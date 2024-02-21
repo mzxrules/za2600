@@ -15,17 +15,20 @@ SPAWN_PATTERN = [
     ["En_Octorok", "En_OctorokBlue", "En_Octorok"] * 1,
     ["En_OctorokBlue", "En_Octorok", "En_OctorokBlue"] * 1,
 
+    ["En_Tektite"] * 1,
     ["En_Tektite"] * 2,
     ["En_Tektite"] * 3,
 
     ["En_TektiteBlue"] * 2,
     ["En_TektiteBlue"] * 3,
 
+    ["En_Leever"] * 1,
     ["En_Leever"] * 2,
     ["En_LeeverBlue"] * 2,
     ["En_LeeverBlue"] * 3,
     ["En_LeeverBlue", "En_Leever"] * 2,
 
+    ["En_Peehat"] * 1,
     ["En_Peehat"] * 2,
     ["En_Peehat"] * 3,
     ["En_Peahat", "En_Octorok", "En_Peahat"],
@@ -42,6 +45,7 @@ SPAWN_PATTERN = [
     ["En_Lynel"] * 3,
     ["En_LynelBlue"] * 1,
     ["En_LynelBlue"] * 4,
+    ["En_LynelBlue"] * 5,
     ["En_LynelBlue", "En_Peehat", "En_Lynel"] * 1,
     ["En_Lynel", "En_Peehat", "En_LynelBlue"] * 1,
 
@@ -74,6 +78,7 @@ SPAWN_PATTERN = [
     ["En_Rope"] * 3,
     ["En_Rope"] * 4,
 
+    ["En_Vire"] * 1,
     ["En_Vire"] * 2,
     ["En_Vire"] * 3,
     ["En_Vire"] * 4,

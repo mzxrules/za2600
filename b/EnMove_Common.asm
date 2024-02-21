@@ -30,6 +30,7 @@ EnMoveBounce:
     .byte EN_DIR_D
     .byte EN_DIR_U
 
+EnMoveBounceDiagonal:
     .byte EN_DIR_RD
     .byte EN_DIR_RU
     .byte EN_DIR_LD
