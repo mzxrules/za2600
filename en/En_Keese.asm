@@ -5,6 +5,33 @@ DISPLACE = 16
 EN_KEESE_END_BOUNCE = $01
 EN_KEESE_INIT = $80
 
+En_VireKeese: SUBROUTINE
+    lda enKeeseThink,x
+    cmp #1
+    adc #0
+    sta enKeeseThink,x
+    bne .rts
+    lda #EN_KEESE
+    sta enType,x
+    lda #3
+    sta enHp,x
+    lda en0X,x
+    sec
+    sbc #8
+    bpl .set_x
+    lda #0
+.set_x
+    sta en0X,x
+
+    jsr Random
+    and #7
+    sta enDir,x
+
+    lda #EN_KEESE_INIT
+    sta enState,x
+.rts
+    rts
+
 
 En_Keese: SUBROUTINE
     lda enState,x
@@ -85,7 +112,7 @@ En_Keese: SUBROUTINE
     jmp EnSysEnDie
 .endCheckDamaged
 
-    ; Check player hit
+; Check player hit
     bit plState2
     bvc .endCheckHit ; EN_LAST_DRAWN
     bit CXPPMM

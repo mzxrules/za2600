@@ -604,6 +604,9 @@ BANK_42
     INCLUDE "en/EnDraw_Moblin.asm"
     INCLUDE "en/EnDraw_Peehat.asm"
     INCLUDE "en/EnDraw_Vire.asm"
+    INCLUDE "en/EnDraw_Wizrobe.asm"
+    INCLUDE "en/Endraw_Zol.asm"
+    INCLUDE "en/Endraw_Gel.asm"
 
     INCLUDE "gen/mesg_digits.asm"
     INCLUDE "en/EnDraw_Npc.asm"
@@ -726,7 +729,20 @@ BANK_49
     INCLUDE "en/En_Gibdo.asm"
     INCLUDE "en/En_Peehat.asm"
     INCLUDE "en/En_Vire.asm"
+    INCLUDE "en/En_Wizrobe.asm"
+    INCLUDE "en/En_Zol.asm"
     LOG_BANK_SIZE "-BANK 49-", BANK_49
+
+; ****************************************
+; *               BANK 50                *
+; ****************************************
+    SEG Bank50
+    ORG $C800
+    RORG $F400
+
+BANK_50
+    INCLUDE "en/En_Gel.asm"
+    LOG_BANK_SIZE "-BANK 50-", BANK_50
 
 ; End
 

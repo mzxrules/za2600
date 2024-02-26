@@ -178,65 +178,80 @@ SfxCur      ds 1
 
 ; System Reserve Vars
 enNum       ds 1
+EN_START:
 enType      ds 2
+miType      ds 2
 en0X        ds 1
 en1X        ds 1
+EN_NPC_FREE1:
+mi0X        ds 1
+mi1X        ds 1
 en0Y        ds 1
 en1Y        ds 1
-EN_VARS:    ds 26 ; Zero initialized entity vars
-EN_VARS_END:
-EN_VARS_COUNT = EN_VARS_END - EN_VARS
-    EN_SIZE MAX
-
-; Class NPC
-    ORG EN_VARS
+EN_NPC_FREE2:
+mi0Y        ds 1
+mi1Y        ds 1
+EN_ZERO:    ; Zero initialized memory
+EN_FREE:    ds 18
+    EN_SIZE FREE_MAX
 enState     ds 2
-miType      ds 2
+EN_END:
+
+EN_ZERO_SIZE    = EN_END - EN_ZERO
+EN_FREE_SIZE    = EN_END - EN_FREE
+EN_SIZE         = EN_END - EN_START
+
+; -----------------
+;  Class NPC
+; -----------------
+    ORG EN_NPC_FREE1
 mesgId      ds 1
-mesgChar    ds 6
+npcType     ds 1
+    ORG EN_NPC_FREE2
 mesgDY      ds 1
 mesgLength  ds 1
+
+    ORG EN_FREE
+mesgChar    ds 6
 MESG_MAX_LENGTH = 24
-npcType     ds 1
 npcIncRupee ds 1
 npcDecRupee ds 1
 CLASS_EN_NPC
 
+; -----------------
 ; Class ENEMY_SPAWN
-    ORG EN_VARS
-enState     ds 2
-miType      ds 2
+; -----------------
+    ORG EN_FREE
 enSysType   ds 2
 enSysTimer  ds 2
 
+; -----------------
 ; Class ENEMY
-    ORG EN_VARS
-enState     ds 2
+; -----------------
+    ORG EN_FREE
+; enState
 EN_ENEMY_MOVE_RECOIL = $20 ; triggers recoil movement
-miType      ds 2
+enDir       ds 2
+mi0Dir      ds 1
+mi1Dir      ds 1
 enHp        ds 2
-enStun      ds 2    ; 1111_1100 ; enemy stun timer
+enStun      ds 2    ; 1111_1100 ; enemy stun timer, manhandla HP
 EN_STUN_TIME = [-32*4] ; Frames of invunerability
 EN_STUN_TIME1 = EN_STUN_TIME + 4
 EN_STUN_RT   = [-24*4] ; End of recoil time
 ; enRecoilDir       ; 0000_0011 ; recoil direction
-CLASS_EN_ENEMY_BASE
-enDir       ds 2
 CLASS_EN_ENEMY_MOVE
-CLASS_EN_BOSS
 ; Missile Vars
-mi0Dir      ds 1
-mi1Dir      ds 1
-mi0X        ds 1
-mi1X        ds 1
-mi0Y        ds 1
-mi1Y        ds 1
 CLASS_EN_ENEMY_MOVE_SHOOT
 mi0Xf       ds 1
 mi1Xf       ds 1
 mi0Yf       ds 1
 mi1Yf       ds 1
 CLASS_EN_BOSS_SHOOT
+
+;==============================================================================
+; Entity Variables - NPC
+;==============================================================================
 
 ; == Gameover
     ORG CLASS_EN_NPC
@@ -253,7 +268,7 @@ GI_EVENT_CAVE   = $20 ; xx1x_xxxx
 GI_EVENT_CD     = $10 ; xxx1_xxxx
 GI_EVENT_TRI    = $08 ; xxxx_1xxx
 GI_EVENT_INIT   = $04 ; xxxx_x1xx
-NPC_SPR_MAN     = 0
+NPC_SPR_MAN     = 0   ; xxxx_xx11 Sprite
 NPC_SPR_WOMAN   = 1
 NPC_SPR_SHOP    = 2
 NPC_SPR_MONSTER = 3
@@ -294,6 +309,9 @@ cdBY        ds 1
 ;           ; x1xx_xxxx heal event
 enGFairyDie ds 1
 
+;==============================================================================
+; Entity Variables - ENEMY
+;==============================================================================
 
 ; == Darknut
     ORG CLASS_EN_ENEMY_MOVE
@@ -341,9 +359,24 @@ enVireBounceTimer   ds 2
     ORG CLASS_EN_ENEMY_MOVE
 ; enHp
 enKeeseThink    ds 2
-enKeeseTemp     ds 1
+enKeeseTemp = Temp0
     EN_SIZE KEESE
 
+; == Zol
+    ORG CLASS_EN_ENEMY_MOVE
+enZolStep       ds 2
+enZolStepTimer  ds 2
+    EN_SIZE ZOL
+
+; == Gel
+    ORG CLASS_EN_ENEMY_MOVE
+enGelAnim       ds 2
+enGelStep       ds 4
+enGelStepTimer  ds 4
+enGelNum        = Temp0
+enGelEnState    = Temp1
+enGelTemp       = Temp1
+    EN_SIZE GEL
 
 ; == Peehat
     ORG CLASS_EN_ENEMY_MOVE
@@ -359,6 +392,10 @@ enPeehatFlyThink    ds 2
 enRollingRockTimer  ds 2
 enRollingRockSize   ds 2
     EN_SIZE ROLLING_ROCK
+
+;==============================================================================
+; Entity Variables - BOSS
+;==============================================================================
 
 ; == Gohma
     ORG CLASS_EN_BOSS_SHOOT
@@ -397,7 +434,7 @@ enManhandlaInvince  ds 1
     EN_SIZE BOSS_MANHANDLA
 
 ; == Test
-    ORG EN_VARS + 2
+    ORG EN_FREE + 2
 enTestDir   ds 1
 enTestFX    ds 1
 enTestFY    ds 1
@@ -417,8 +454,7 @@ enTestColorEn       ds 1
 enTestColorEnColor  ds 1
 enTestColorPlColor  ds 1
 
-
-    ORG EN_VARS_END
+    ORG EN_END
 
 ;==============================================================================
 
@@ -514,14 +550,15 @@ EnMoveRandDirSeed   ds 1
 EnMoveRandDirCount  ds 1
     ORG EN_MOVE
 EnMoveSeekFlags     ds 1
-EnMoveUnreserved    ds 1
 EnMoveNX            ds 1
 EnMoveNY            ds 1
 EnMoveBlockedDir    ds 1
-enNextDir           ds 1
+EnMoveNextDir       ds 1
+EnMoveTemp0         ds 1
+EnMoveTemp1         ds 1
 
     SEG.U VARS_HB_SYS
-    ORG Temp0 + 1
+    ORG Temp0 + 2
 HbDamage        ds 1
 HB_DMG_SWORD1   = 0
 HB_DMG_SWORD2   = 1
@@ -539,6 +576,7 @@ HB_PL_WAVE      = $10
 HB_PL_WAND      = $20
 HB_PL_SWORDFX   = $40
 HbFlags2        ds 1
+HbDir           ds 1
 HB_BOX_HIT      = $80
 Hb_aa_Box       ds 1
 Hb_aa_x         ds 1
@@ -572,8 +610,6 @@ TextTemp    ds 1
 TextReg     ds 12
 
     echo "-RAM-",$80,(.)
-    ORG $FE
-PauseSp     ds 2
 
 ; ****************************************
 ; * Extended RAM                         *
@@ -862,6 +898,7 @@ SEG_46 = RAMSEG_F4 | 46
 SEG_47 = RAMSEG_F4 | 47
 SEG_48 = RAMSEG_F4 | 48
 SEG_49 = RAMSEG_F4 | 49
+SEG_50 = RAMSEG_F4 | 50
 
 
 SLOT_RW_F8_W0   = RAMSEG_F8 | 0

@@ -14,6 +14,9 @@ EnDraw_Appear: SUBROUTINE
     sta enSpr+1
     lda #<SprRock0
     sta enSpr
+    lda enType,x
+    cmp #EN_APPEAR
+    bne .rts
 
     lda enSysTimer,x
     and #%0010

@@ -2,22 +2,25 @@
 ; mzxrules 2024
 ;==============================================================================
 
-En_Vire: SUBROUTINE
+En_Zol: SUBROUTINE
     lda enState,x
-    rol
-    bcs .main
-    lda #$80
-    sta enState,x
-    lda #4-1
+    bmi .main
+
+.init
+    lda #2-1
     sta enHp,x
 
+    lda #$80
+    sta enState,x
     jsr Random
     and #3
     sta enDir,x
 
-    jsr Random
-    and #$F
-    sta enVireStep,x
+    lda #-2-1
+    sta enZolStep,x
+
+    lda #-32
+    sta enZolStepTimer,x
     rts
 
 .main
@@ -45,12 +48,6 @@ En_Vire: SUBROUTINE
     jsr UPDATE_PL_HEALTH
 .endCheckHit
 
-; Adjust en0Y for room collision routines
-    lda en0Y,x
-    sec
-    sbc enVireShiftY,x
-    sta en0Y,x
-
 ; Movement
     lda #SLOT_F0_EN_MOVE
     sta BANK_SLOT
@@ -70,19 +67,36 @@ En_Vire: SUBROUTINE
     and #EN_ENEMY_MOVE_RECOIL
     beq .normal_movement
     jsr EnMove_RecoilMove
-
     lda enState,x
     and #EN_ENEMY_MOVE_RECOIL
-    bne .skip_bounce
+    bne .rts
 
-.transform_into_keese
-    lda #EN_VIRE_KEESE
+.transform_into_gel
+    lda #EN_ZOL_GEL
     sta enType,x
+    lda #0
+    sta enState,x
     lda #-16
-    sta enKeeseThink,x
+    sta enGelStepTimer,x
+.rts
     rts
 
 .normal_movement
+; if off frame, end movement logic
+    txa ; enNum
+    eor Frame
+    and #1
+    beq .rts
+
+    lda enZolStepTimer,x
+    cmp #1
+    adc #0
+    sta enZolStepTimer,x
+    bne .rts
+
+; timer is zero, we should be moving
+
+; if positioned off grid, continue moving
     ldy en0X,x
     lda EnMove_OffgridLUT,y
     bne .move
@@ -90,56 +104,27 @@ En_Vire: SUBROUTINE
     lda EnMove_OffgridLUT,y
     bne .move
 
-    dec enVireStep,x
-    bpl .seek_next
-    jsr Random
-    and #$F
-    sta enVireStep,x
-
     jsr EnMove_Card_WallCheck
-    jsr EnMove_Card_RandDir
+
+    lda enZolStep,x
+    cmp #1
+    adc #0
+    sta enZolStep,x
+    bne .go_direction
+.reset_movement
+    lda #-2-1
+    sta enZolStep,x
+    lda #-32
+    sta enZolStepTimer,x
+
+    jsr EnMove_Card_NewDir
     sty enDir,x
-    bpl .move
+    bpl .rts ; jmp
 
-.seek_next
-    jsr EnMove_Card_WallCheck
+
+.go_direction
     jsr EnMove_Card_RandDirIfBlocked
     sty enDir,x
+
 .move
-    lda Frame
-    and #1
-    bne .handle_bouncey
-    jsr EnMoveDir
-
-
-.handle_bouncey
-    lda enDir,x
-    and #2 ; EN_DIR_U / EN_DIR_D
-    beq .do_bounce
-    lda enVireBounceTimer,x
-    beq .skip_bounce
-
-.do_bounce
-    ldy enVireBounceTimer,x
-    iny
-    tya
-    and #$0F
-    sta enVireBounceTimer,x
-.skip_bounce
-
-    ldy enVireBounceTimer,x
-    lda En_VireBouncey,y
-    sta enVireShiftY,x
-
-; Revert en0Y adjustment for display and hitbox purposes
-    lda en0Y,x
-    clc
-    adc enVireShiftY,x
-    sta en0Y,x
-    rts
-
-
-
-En_VireBouncey:
-    .byte 0, 2, 4, 6, 7, 7, 8, 8, 8
-    .byte 8, 8, 8, 7, 7, 6, 4, 2, 0
+    jmp EnMoveDir

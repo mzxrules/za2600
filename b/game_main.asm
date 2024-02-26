@@ -479,12 +479,6 @@ RETURN_WORLD: SUBROUTINE
 
 En_Zora:
 En_Pols:
-En_VireSplit:
-En_Wizrobe:
-En_WizrobeBlue:
-En_Zol:
-En_ZolSplit:
-En_Gel:
 En_BossGhini:
 En_BossDon:
 En_BossDig:

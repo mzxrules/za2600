@@ -194,6 +194,7 @@ EnSysEnDie: SUBROUTINE
     sta en0Y,x
     lda #EN_NONE
     sta enType,x
+    sta miType,x
     cpx #0
     beq EnSysCleanShift
 .rts
@@ -206,15 +207,16 @@ EnSysCleanShift: SUBROUTINE
     beq .rts
     stx enType
 
-    ldx #EN_VARS_COUNT + 6 -2
+    ldx #EN_SIZE -2
 .loop
-    lda EN_VARS-6+1,x
-    sta EN_VARS-6,x
+    lda EN_START+1,x
+    sta EN_START,x
     dex
     dex
     bpl .loop
     lda #EN_NONE
     sta enType+1
+    sta miType+1
 
 .rts
     rts

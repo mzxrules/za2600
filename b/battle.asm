@@ -43,6 +43,8 @@ HbGetPlAtt: SUBROUTINE
     pha
     lda HbPlAttL,y
     pha
+    lda plItemDir
+    sta HbDir
     ldy plItemTimer
 .rts
     rts
@@ -57,6 +59,8 @@ HbGetPlAtt: SUBROUTINE
     pha
     lda HbPlAttL+8,y
     pha
+    lda plItem2Dir
+    sta HbDir
 HbPlRangFx:
 HbPlNone:
     rts
@@ -163,12 +167,21 @@ HbPlFireFx:
     sta HbPlFlags
     rts
 
-; Sets 12x12 hitbox
+; Sets 12x12 enemy hitbox
 HbManhandla: SUBROUTINE
     lda Hb_aa_Box
     beq .rts
     clc
     adc #HITBOX_AA_COUNT
+    sta Hb_aa_Box
+.rts
+    rts
+
+HbEnSq4: SUBROUTINE
+    lda Hb_aa_Box
+    beq .rts
+    clc
+    adc #HITBOX_AA_COUNT*2
     sta Hb_aa_Box
 .rts
     rts
@@ -269,7 +282,7 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
 
 ; Test if item hit Darknut's shield
     ldy enDir,x
-    cpy plItemDir
+    cpy HbDir
     ; bne .gethit
     beq .immune
 
@@ -284,7 +297,7 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
     ldy #SFX_EN_DAMAGE
     sty SfxFlags
 
-    lda plItemDir
+    lda HbDir
     and #3
     eor #1
     clc

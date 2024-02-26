@@ -70,14 +70,14 @@ En_Appear: SUBROUTINE
     sta enType,x
 
     ; zero entity variable data
-    ldy #EN_VARS_COUNT-1
+    ldy #EN_FREE_SIZE-1
     ldx enNum
     bne .entity2
     dey
 .entity2
     lda #0
 .EnInitLoop:
-    sta EN_VARS,y
+    sta EN_FREE,y
     dey
     dey
     bpl .EnInitLoop

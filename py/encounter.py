@@ -40,7 +40,7 @@ SPAWN_PATTERN = [
     ["En_MoblinBlue"] * 2,
     ["En_MoblinBlue"] * 3,
 
-    ["En_Lynel"],
+    ["En_Lynel"] * 1,
     ["En_Lynel"] * 2,
     ["En_Lynel"] * 3,
     ["En_LynelBlue"] * 1,
@@ -59,21 +59,26 @@ SPAWN_PATTERN = [
     ["En_Keese"] * 2,
     ["En_Keese"] * 3,
 
+    ["En_Gel"] * 1,
     ["En_Gel"] * 2,
     ["En_Gel"] * 3,
 
+    ["En_Zol"] * 1,
     ["En_Zol"] * 2,
     ["En_Zol"] * 3,
     ["En_Zol"] * 4,
     ["En_Zol", "En_Keese", "En_Zol"],
 
+    ["En_Stalfos"] * 1,
     ["En_Stalfos"] * 2,
     ["En_Stalfos"] * 3,
     ["En_Stalfos"] * 4,
 
+    ["En_Goriya"] * 1,
     ["En_Goriya"] * 3,
     ["En_GoriyaBlue"] * 3,
 
+    ["En_Rope"] * 1,
     ["En_Rope"] * 2,
     ["En_Rope"] * 3,
     ["En_Rope"] * 4,
@@ -83,6 +88,7 @@ SPAWN_PATTERN = [
     ["En_Vire"] * 3,
     ["En_Vire"] * 4,
 
+    ["En_Pols"] * 1,
     ["En_Pols"] * 3,
     ["En_Pols"] * 4,
 

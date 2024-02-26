@@ -27,11 +27,12 @@ EnDraw_Pos: SUBROUTINE
     sta enY
     rts
 
+EnDraw_Wave: SUBROUTINE
 EnDraw_Arrow: SUBROUTINE
 EnDraw_SmallMissile: SUBROUTINE
     lda miType,x
     bpl .rts
-
+EnDraw_Gel2:
     clc
     lda mi0X,x
     adc #3+1

@@ -10,7 +10,7 @@ ITEMF_{1} = {3}
 
 ; Defines consts to calculate En class sizes
     MACRO EN_SIZE
-SIZE_EN_{1} = . - EN_VARS + $8000
+SIZE_EN_{1} = . - EN_FREE + $8000
     ENDM
 
 ; Outputs rom size of a code section

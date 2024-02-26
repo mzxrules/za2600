@@ -48,20 +48,20 @@ EnMove_Card_WallCheck: SUBROUTINE
 ; Check board boundaries
     ldx EnMoveNX
     cpx #[EnBoardXR/4]
-    bne .setBlockedL
+    bcc .setBlockedL
     ora #EN_BLOCKED_DIR_R
 .setBlockedL
-    cpx #[EnBoardXL/4]
-    bne .setBlockedD
+    cpx #[EnBoardXL/4] + 1
+    bcs .setBlockedD
     ora #EN_BLOCKED_DIR_L
 .setBlockedD
     ldy EnMoveNY
-    cpy #[EnBoardYD/4]
-    bne .setBlockedU
+    cpy #[EnBoardYD/4] + 1
+    bcs .setBlockedU
     ora #EN_BLOCKED_DIR_D
 .setBlockedU
     cpy #[EnBoardYU/4]
-    bne .checkPFHit
+    bcc .checkPFHit
     ora #EN_BLOCKED_DIR_U
 .checkPFHit
     sta EnMoveBlockedDir
@@ -202,9 +202,9 @@ EnMove_Card_WallCheck: SUBROUTINE
 
 ;==============================================================================
 ; Randomly selects a new cardinal direction
-; enNextDir returns new direction
+; EnMoveNextDir returns new direction
 ; X = enNum
-; Y = enNextDir
+; Y = EnMoveNextDir
 ;==============================================================================
 EnMove_Card_RandDir: SUBROUTINE
     lda #3
@@ -222,7 +222,7 @@ EnMove_Card_RandDir: SUBROUTINE
     ora Mul8,y
     sta EnMoveRandDirSeed
     and #3
-    tay ; enNextDir
+    tay ; EnMoveNextDir
 .loop
     lda Bit8,y
     and EnMoveBlockedDir
@@ -238,14 +238,14 @@ EnMove_Card_RandDir: SUBROUTINE
 .select
 .miss
     ldx enNum
-    sty enNextDir
+    sty EnMoveNextDir
     rts
 
 ;==============================================================================
 ; Attempts to select enDir, then if blocked randomly selects cardinal direction
-; enNextDir returns new direction
+; EnMoveNextDir returns new direction
 ; X = enNum
-; Y = enNextDir
+; Y = EnMoveNextDir
 ;==============================================================================
 EnMove_Card_RandDirIfBlocked:
     lda #3
@@ -271,7 +271,7 @@ EnMove_Card_RandDirIfBlocked:
 ; Selects a new direction based on the shortest path to the player, but only
 ; If the current path is blocked
 ; X = enNum
-; Y = enNextDir
+; Y = EnMoveNextDir
 ;==============================================================================
 EnMove_Card_SeekDirIfBlocked: SUBROUTINE
     ldy enDir,x
@@ -282,7 +282,7 @@ EnMove_Card_SeekDirIfBlocked: SUBROUTINE
 ;==============================================================================
 ; Selects a new direction based on the shortest path to the player
 ; X = enNum
-; Y = enNextDir
+; Y = EnMoveNextDir
 ;==============================================================================
 EnMove_Card_SeekDir:
     lda #0
@@ -291,36 +291,36 @@ EnMove_Card_SeekDir:
     lda en0X,x
     sec
     sbc plX
-    sta Temp0   ; enX - plX >= 0, left
-                ; enX - plX <  0, right
+    sta EnMoveTemp0 ; enX - plX >= 0, left
+                    ; enX - plX <  0, right
 
     rol EnMoveSeekFlags
-    bit Temp0
+    bit EnMoveTemp0
     bpl .checkY
     ; negate A
     eor #$FF
     adc #1
-    sta Temp0
+    sta EnMoveTemp0
 
 .checkY
     lda en0Y,x
     sec
     sbc plY
-    sta Temp1   ; enY - plY >= 0, down
-                ; enY - plY <  0, up
+    sta EnMoveTemp1 ; enY - plY >= 0, down
+                    ; enY - plY <  0, up
 
     rol EnMoveSeekFlags
-    bit Temp1
+    bit EnMoveTemp1
     bpl .checkAxis
     ; negate A
     eor #$FF
     adc #1
-    sta Temp1
+    sta EnMoveTemp1
 
 .checkAxis
-    lda Temp0
+    lda EnMoveTemp0
     sec
-    sbc Temp1 ; abs(xDelta) - abs(yDelta)
+    sbc EnMoveTemp1 ; abs(xDelta) - abs(yDelta)
     lda EnMoveSeekFlags
     rol
     asl
@@ -334,7 +334,7 @@ EnMove_Card_SeekDir:
     bne .loop
 .found_dir
     ldx enNum
-    sty enNextDir
+    sty EnMoveNextDir
     rts
 
 EnMove_Card_NewDir: SUBROUTINE
@@ -364,36 +364,36 @@ EnMove_Ord_SeekDir: SUBROUTINE
     lda en0X,x
     sec
     sbc plX
-    sta Temp0   ; enX - plX >= 0, left
-                ; enX - plX <  0, right
+    sta EnMoveTemp0 ; enX - plX >= 0, left
+                    ; enX - plX <  0, right
 
     rol EnMoveSeekFlags
-    bit Temp0
+    bit EnMoveTemp0
     bpl .checkY
     ; negate A
     eor #$FF
     adc #1
-    sta Temp0
+    sta EnMoveTemp0
 
 .checkY
     lda en0Y,x
     sec
     sbc plY
-    sta Temp1   ; enY - plY >= 0, down
-                ; enY - plY <  0, up
+    sta EnMoveTemp1 ; enY - plY >= 0, down
+                    ; enY - plY <  0, up
 
     rol EnMoveSeekFlags
-    bit Temp1
+    bit EnMoveTemp1
     bpl .checkAxis
     ; negate A
     eor #$FF
     adc #1
-    sta Temp1
+    sta EnMoveTemp1
 
 .checkAxis
-    lda Temp0
+    lda EnMoveTemp0
     sec
-    sbc Temp1 ; abs(xDelta) - abs(yDelta)
+    sbc EnMoveTemp1 ; abs(xDelta) - abs(yDelta)
     lda EnMoveSeekFlags
     rol
     asl
@@ -419,9 +419,11 @@ EnMove_Recoil: SUBROUTINE
     sta enState,x
 .rts
     rts
+EnMove_RecoilMove
+    lda enStun,x
 .doThings
     and #3
-    sta Temp0 ; enRecoilDir
+    sta EnMoveTemp0 ; enRecoilDir
     and #2
     bne .recoil_ud
 .recoil_lr
@@ -460,14 +462,14 @@ EnMove_Recoil: SUBROUTINE
 
 .tryMove
     jsr EnMove_Card_WallCheck
-    ldy Temp0
+    ldy EnMoveTemp0
     lda Bit8,y
     and EnMoveBlockedDir
-    bne .rts
+    bne .end_recoil
 .moveDel
     lda #8
     clc
-    adc Temp0
+    adc EnMoveTemp0
     tay
     jmp EnMoveDel
 
@@ -481,14 +483,14 @@ EnMove_Ord_SetSeekCenter: SUBROUTINE
     sec
     sbc #BoardYC
     and #$80
-    sta Temp0
+    sta EnMoveTemp0
 
     lda #BoardXC
     sec
     sbc en0X,x
     clc
     rol
-    lda Temp0
+    lda EnMoveTemp0
     rol
     rol
     tay

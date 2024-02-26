@@ -251,21 +251,21 @@ SprE27:
     .byte $BD ; |X.XXXX.X|
     .byte $42 ; |.X....X.|
 SprE28:
-    .byte $FC ; |XXXXXX..|
-    .byte $38 ; |..XXX...|
-    .byte $18 ; |...XX...|
-    .byte $7E ; |.XXXXXX.|
-    .byte $FF ; |XXXXXXXX|
-    .byte $F7 ; |XXXX.XXX|
-    .byte $DB ; |XX.XX.XX|
-    .byte $5A ; |.X.XX.X.|
-SprE29:
     .byte $3F ; |..XXXXXX|
     .byte $1C ; |...XXX..|
     .byte $18 ; |...XX...|
     .byte $7E ; |.XXXXXX.|
     .byte $FF ; |XXXXXXXX|
     .byte $EF ; |XXX.XXXX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $5A ; |.X.XX.X.|
+SprE29:
+    .byte $FC ; |XXXXXX..|
+    .byte $38 ; |..XXX...|
+    .byte $18 ; |...XX...|
+    .byte $7E ; |.XXXXXX.|
+    .byte $FF ; |XXXXXXXX|
+    .byte $F7 ; |XXXX.XXX|
     .byte $DB ; |XX.XX.XX|
     .byte $5A ; |.X.XX.X.|
 SprE30:

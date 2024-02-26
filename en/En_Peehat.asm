@@ -85,7 +85,7 @@ En_Peehat: SUBROUTINE
 .battle_logic
 ; check damaged
     lda enPeehatVel,x
-    bne .endCheckDamaged
+    bne .updateStunTimer
 
     lda #SLOT_F0_BATTLE
     sta BANK_SLOT
@@ -97,6 +97,14 @@ En_Peehat: SUBROUTINE
     lda enHp,x
     bpl .endCheckDamaged
     jmp EnSysEnDie
+.updateStunTimer
+    lda enStun,x
+    clc
+    adc #4
+    bmi .skip_zero_enStun
+    lda #0
+.skip_zero_enStun
+    sta enStun,x
 .endCheckDamaged
 
 ; Check player hit

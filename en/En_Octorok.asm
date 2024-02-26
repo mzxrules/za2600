@@ -104,7 +104,7 @@ En_OctorokMain:
 ; set spin direction
     lda Rand16
     and #4
-    ora enNextDir
+    ora EnMoveNextDir
     sta Temp0
     lda enState,x
     and #$80

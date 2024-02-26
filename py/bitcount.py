@@ -55,7 +55,7 @@ def get_hitbox_info():
     aa_oy = []
     aa_w_PLUS_bb_w = []
     aa_h_PLUS_bb_h = []
-    for bb_w, bb_h, bb_xshift, bb_yshift in [(8, 8, 0, 0), (12, 12, -2, -2)]:
+    for bb_w, bb_h, bb_xshift, bb_yshift in [(8, 8, 0, 0), (12, 12, -2, -2), (4, 4, 2, 2)]:
         for aa_w, aa_h, aa_xshift in HITBOX_INFO:
 
             aa_ox.append(aa_w-1+aa_xshift-bb_xshift-1)
