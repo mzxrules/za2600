@@ -41,13 +41,14 @@ En_NpcAppear: SUBROUTINE
     sta shopRoom
     tay
 
-    ldx npcType
-    cpx #EN_NPC
-    beq .en_npc
-    cpx #EN_NPC_MONSTER
+    lda #NPC_CAVE
+    bit enState
     beq .en_npc
 
     ldx roomEX
+    lda NpcCaveOpeningDialogs-#CV_SWORD1,x
+    sta mesgId
+
     cpx #CV_RUPEES10 + 1
     bcc .test_onetime_appear
     cpx #CV_POTION
@@ -69,14 +70,14 @@ En_NpcAppear: SUBROUTINE
     beq .test_hungry
     cmp #MESG_CHOICE_GIVE_BOMB
     beq .test_choice_give_bomb
-    bne .can_appear_no_cv ; jmp
+    bne .can_appear ; jmp
 
 .test_choice_give_bomb
     lda rWorldRoomFlags,y
     bmi .cannot_appear ; #WRF_SV_ITEM_GET
     lda #EN_NPC_SHOP1
     sta npcType
-    bne .can_appear_no_cv ; jmp
+    bne .can_appear ; jmp
 
 .test_need_triforce
     lda itemTri
@@ -86,7 +87,7 @@ En_NpcAppear: SUBROUTINE
     lda #RF_NO_ENCLEAR
     ora roomFlags
     sta roomFlags
-    bne .can_appear_no_cv
+    bne .can_appear
     rts
 
 .test_hungry
@@ -96,7 +97,7 @@ En_NpcAppear: SUBROUTINE
     sta npcType
     lda #NPC_SPR_MONSTER
     sta enState
-    bne .can_appear_no_cv ; jmp
+    bne .can_appear ; jmp
 
 .test_silent_lady
     lda ITEMV_NOTE
@@ -123,9 +124,6 @@ En_NpcAppear: SUBROUTINE
     bne .can_appear
 
 .can_appear
-    lda NpcCaveOpeningDialogs-#CV_SWORD1,x
-    sta mesgId
-.can_appear_no_cv
     lda plState
     ora #PS_LOCK_ALL
     sta plState

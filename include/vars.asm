@@ -264,7 +264,7 @@ enInputDelay ds 1
 ; enState
 NPC_INIT        = $80 ; 1xxx_xxxx Init
 NPC_ITEM_GOT    = $40 ; x1xx_xxxx Item Bought
-GI_EVENT_CAVE   = $20 ; xx1x_xxxx
+NPC_CAVE        = $20 ; xx1x_xxxx Determines roomEX and item fanfare
 GI_EVENT_CD     = $10 ; xxx1_xxxx
 GI_EVENT_TRI    = $08 ; xxxx_1xxx
 GI_EVENT_INIT   = $04 ; xxxx_x1xx

@@ -38,7 +38,7 @@ En_NpcGiveOne: SUBROUTINE
     ora #WRF_SV_ITEM_GET
     sta wWorldRoomFlags,y
 ; Trigger ItemGet
-    lda #[#NPC_INIT | #NPC_ITEM_GOT | #GI_EVENT_CAVE | #NPC_SPR_MAN]
+    lda #[#NPC_INIT | #NPC_ITEM_GOT | #NPC_CAVE | #NPC_SPR_MAN]
     sta enState
 
     lda #0

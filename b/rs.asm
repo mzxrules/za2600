@@ -18,7 +18,7 @@ Cv_Del:
 Cv_DoorRepair:
     lda #EN_NPC_DOOR_REPAIR
     sta npcType
-    lda #NPC_SPR_MAN
+    lda #NPC_SPR_MAN | #NPC_CAVE
     sta enState
     rts
 
@@ -28,7 +28,7 @@ Cv_Path3:
 Cv_Path4:
     lda #EN_NPC_PATH
     sta npcType
-    lda #NPC_SPR_MAN
+    lda #NPC_SPR_MAN | #NPC_CAVE
     sta enState
     rts
 
@@ -38,7 +38,7 @@ Cv_Sword3:
 Cv_Note:
     lda #EN_NPC_GIVE_ONE
     sta npcType
-    lda #NPC_SPR_MAN
+    lda #NPC_SPR_MAN | #NPC_CAVE
     sta enState
     rts
 
@@ -47,14 +47,14 @@ Cv_Rupees30:
 Cv_Rupees10:
     lda #EN_NPC_GIVE_ONE
     sta npcType
-    lda #NPC_SPR_MONSTER
+    lda #NPC_SPR_MONSTER | #NPC_CAVE
     sta enState
     rts
 
 Cv_MoneyGame:
     lda #EN_NPC_GAME
     sta npcType
-    lda #NPC_SPR_MAN
+    lda #NPC_SPR_MAN | #NPC_CAVE
     sta enState
     rts
 
@@ -64,14 +64,14 @@ Cv_Shop3:
 Cv_Shop4:
     lda #EN_NPC_SHOP
     sta npcType
-    lda #NPC_SPR_SHOP
+    lda #NPC_SPR_SHOP | #NPC_CAVE
     sta enState
     rts
 
 Cv_Potion:
     lda #EN_NPC_SHOP
     sta npcType
-    lda #NPC_SPR_WOMAN
+    lda #NPC_SPR_WOMAN | #NPC_CAVE
     sta enState
     rts
 
@@ -86,7 +86,7 @@ Cv_TakeHeartRupee:
 Cv_GiveHeartPotion:
     lda #EN_NPC_SHOP2
     sta npcType
-    lda #NPC_SPR_MAN
+    lda #NPC_SPR_MAN | #NPC_CAVE
     sta enState
     rts
 
@@ -96,7 +96,7 @@ Cv_MesgHintLostHills:
 Cv_MesgHintTreeAtDeadEnd:
     lda #EN_NPC
     sta npcType
-    lda #NPC_SPR_WOMAN
+    lda #NPC_SPR_WOMAN | #NPC_CAVE
     sta enState
     rts
 

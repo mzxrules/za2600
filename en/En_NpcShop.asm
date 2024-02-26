@@ -59,7 +59,7 @@ En_NpcShopMain: SUBROUTINE
     bne .no_rng
     jsr Rng2
 .no_rng
-    lda #GI_EVENT_CAVE
+    lda #NPC_ITEM_GOT
     bit enState
     bne .rts
 ; Shop logic
@@ -93,7 +93,7 @@ En_NpcShopMain: SUBROUTINE
     sta itemRupees
     cld
 .getItem
-    lda #[#NPC_INIT | #NPC_ITEM_GOT | #GI_EVENT_CAVE]
+    lda #[#NPC_INIT | #NPC_ITEM_GOT | #NPC_CAVE]
     ora enState
     sta enState
     lda #0
@@ -125,7 +125,7 @@ En_NpcShopMain: SUBROUTINE
     sta roomFlags
     lda #0
     sta KernelId
-    lda #[#NPC_INIT | #NPC_ITEM_GOT | #GI_EVENT_CAVE]
+    lda #[#NPC_INIT | #NPC_ITEM_GOT | #NPC_CAVE]
     ora enState
     sta enState
 .rts
