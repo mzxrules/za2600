@@ -146,7 +146,7 @@ En_OctorokMain:
     lda ENEMY_ROT,y
     sta enDir,x
     sta mi0Dir,x
-    lda #1
+    lda #MI_SPAWN_ROCK
     sta miType,x
     lda en0X,x
     sta mi0X,x

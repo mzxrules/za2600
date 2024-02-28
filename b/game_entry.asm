@@ -229,6 +229,9 @@ ENTRY_START_GAME:
     sta worldId
     lda #$0
     sta roomIdNext
+    lda ITEMV_SWORD1
+    ora #ITEMF_SWORD1
+    sta ITEMV_SWORD1
     ENDIF
 
     jmp MAIN_ENTRY

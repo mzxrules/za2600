@@ -11,14 +11,16 @@ En_BossAqua: SUBROUTINE
     bne .main
     ora #$80
     sta enState
-    lda #$3C
+    lda #$60
     sta en0X
-    lda #$3C
+    lda #$34
     sta en0Y
     lda #6-1
     sta enHp
     lda #-40
     sta enAquaThink
+    lda #EN_DIR_R
+    sta enDir
     rts
 
 .main
@@ -46,6 +48,46 @@ En_BossAqua: SUBROUTINE
     lda #-8
     jsr UPDATE_PL_HEALTH
 .endCheckHit
+
+; Movement
+    lda enAquaMoveTimer
+    cmp #1
+    adc #0
+    sta enAquaMoveTimer
+    bne .move
+
+    jsr Random
+    and #$70
+    sec
+    sbc #$40
+    sta enAquaMoveTimer
+    lda enDir
+    eor #1
+    sta enDir
+
+.move
+    lda enAquaMoveTimer
+    and #7
+    bne .skipMove
+    lda en0X
+    cmp #$54+1
+    bcs .test_x_max
+    lda #EN_DIR_R
+    sta enDir
+    bpl .do_move ; jmp
+.test_x_max
+    cmp #$6C
+    bcc .do_move
+    lda #EN_DIR_L
+    sta enDir
+
+.do_move
+    lda #SLOT_F0_EN_MOVE
+    sta BANK_SLOT
+    ldx #0
+    jsr EnMoveDir
+
+.skipMove
 
 ; behavior
     lda enAquaThink
@@ -90,7 +132,7 @@ En_BossAqua: SUBROUTINE
 .fire1
     inx
 .fire0
-    lda #2
+    lda #MI_SPAWN_BALL
     sta miType,x
     ldy en0X
     dey

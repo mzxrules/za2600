@@ -72,19 +72,21 @@ En_Stalfos: SUBROUTINE
     lda EnMove_OffgridLUT,y
     bne .move
 
+    jsr EnMove_Card_WallCheck
+
     dec enDarknutStep,x
     bpl .seek_next
     jsr Random
-    and #7
+    and #$F
+    clc
+    adc #2
     sta enDarknutStep,x
 
-    jsr EnMove_Card_WallCheck
     jsr EnMove_Card_RandDir
     sty enDir,x
     bpl .move
 
 .seek_next
-    jsr EnMove_Card_WallCheck
     jsr EnMove_Card_RandDirIfBlocked
     sty enDir,x
 .move

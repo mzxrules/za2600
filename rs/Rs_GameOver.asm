@@ -32,6 +32,11 @@ Rs_GameOver: SUBROUTINE
     bne .rts
     bit INPT4
     bmi .rts
+    lda roomId
+    and #$7F
+    tay
+    lda rWorldRoomENCount,y
+    sta roomENCount
     jmp RESPAWN
 .rts
     rts

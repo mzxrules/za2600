@@ -1,8 +1,8 @@
 ;==============================================================================
 ; mzxrules 2024
 ;==============================================================================
-EN_LYNEL_TYPE_RED = $1
-EN_LYNEL_TYPE_BLUE = $3
+EN_LYNEL_TYPE_RED = $0
+EN_LYNEL_TYPE_BLUE = $1
 
 
 En_LynelBlue: SUBROUTINE
@@ -107,7 +107,7 @@ En_LynelMain:
 .move
     lda Frame
     and #1
-    beq .rts
+    bne .rts
     jsr EnMoveDir
 .rts
     rts

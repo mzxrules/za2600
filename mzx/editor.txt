@@ -49,6 +49,25 @@ set "ui_rs_cavesprite" 6
 goto "#return"
 
 : "ui_rs_cavesprite_end"
+
+. "init itemkey x offsets"
+set "ui_positem_x_0"  "(0x0C)"
+set "ui_positem_x_1"  "(0x14)"
+set "ui_positem_x_2"  "(0x18)"
+set "ui_positem_x_3"  "(0x20)"
+set "ui_positem_x_4"  "(0x28)"
+set "ui_positem_x_5"  "(0x30)"
+set "ui_positem_x_6"  "(0x34)"
+set "ui_positem_x_7"  "(0x38)"
+set "ui_positem_x_8"  "(0x44)"
+set "ui_positem_x_9"  "(0x48)"
+set "ui_positem_x_10" "(0x4C)"
+set "ui_positem_x_11" "(0x54)"
+set "ui_positem_x_12" "(0x5C)"
+set "ui_positem_x_13" "(0x64)"
+set "ui_positem_x_14" "(0x6C)"
+set "ui_positem_x_15" "(0x74)"
+
 set "mzx_speed" to 8
 
 . "mzx sprite reference"
@@ -100,7 +119,8 @@ set "byte" 5
 set "char_byte" "c_b"
 loop 63
 
-. "initialize unbounded mzx_sprites. 0-127 are used for world rooms"
+. "initialize unbounded mzx_sprites."
+. "0-127 are used for world rooms"
 loop start
 set "spr&loopcount&_unbound" to 1
 set "spr&loopcount&_offset" to "('loopcount'/32*256+'SPR_WORK')"
@@ -110,13 +130,21 @@ set "spr&loopcount&_refx" to "('loopcount'%16*4)"
 set "spr&loopcount&_refy" to "('loopcount'/16%2*2)"
 set "spr&loopcount&_tcol" to -1
 loop for 127
-. "initialize unbounded mzx sprite for cursor"
+. "128 is unbounded mzx sprite for cursor"
 set "spr128_unbound" to 1
 set "spr128_offset" to "('SPR_UI'+8)"
 set "spr128_width" to 4
 set "spr128_height" to 2
 set "spr128_refx" to 0
 set "spr128_refy" to 0
+. "129 is unbounded mzx sprite for item position"
+set "spr129_unbound" to 1
+set "spr129_offset" to "('SS_UI_ITEM')"
+set "spr129_width" to 1
+set "spr129_height" to 1
+set "spr129_refx" to 0
+set "spr129_refy" to 0
+
 
 set "worldId" to 0
 goto "#load_data"
@@ -124,6 +152,8 @@ goto "#set_world"
 
 : "q"
 inc "frametimer" by 1
+goto "#draw_ui"
+
 wait for 1
 if leftpressed then "#left"
 if rightpressed then "#right"
@@ -131,7 +161,9 @@ if uppressed then "#up"
 if downpressed then "#down"
 if spacepressed then "#space"
 if "key_pressed" = 127 then "#delete"
+goto "q"
 
+: "#draw_ui"
 loop start
 set "tilecolor" to "('$lvlco.&loopcount&')"
 set "ui_roomvisible" "('ui_darkrooms'x1 o ('$lvldark.&loopcount&'x1))"
@@ -140,10 +172,34 @@ put "('tilecolor')" Sprite "('loopcount')" at "('loopcount'%'lmod'*33+'lvlx')" "
 if "loopcount" != "roomId" then "sprite_draw_next"
 set "curcolor" to "('tilecolor' a 0x0F = 0x0F * -7+15)"
 set "curcolor" to "('frametimer'a0x4>0*'curcolor')"
-put "('curcolor')" Sprite p80 at "('loopcount'%'lmod'*33+'lvlx')" "('loopcount'/'lmod'*21+56)"
+set "ui_cursor_x" to "('loopcount'%'lmod'*33+'lvlx')"
+set "ui_cursor_y" to "('loopcount'/'lmod'*21+56)"
+put "('curcolor')" Sprite p80 at "ui_cursor_x" "ui_cursor_y"
+. "Item Icon"
+set "ui_roomEX" to "('$lvlex.&loopcount&')"
+set "$" to "$Rs&$lvlrs.('roomId')&"
+if "$" === "Rs_Item" then "draw_ui_dot_item"
+if "$" === "Rs_ItemKey" then "draw_ui_dot_itemkey"
+. "don't draw"
+set "ui_positem_x" 999
+set "ui_positem_y" 999
+goto "draw_ui_position_dot"
+
+: "draw_ui_dot_itemkey"
+set "ui_positem_x" "('ui_positem_x_('ui_roomEX'%16)')"
+set "ui_positem_y" "(('ui_roomEX'>>2)+0x10)"
+goto "draw_ui_position_dot"
+
+: "draw_ui_dot_item"
+set "ui_positem_x" "(0x40)"
+set "ui_positem_y" "(0x2C)"
+goto "draw_ui_position_dot"
+
+: "draw_ui_position_dot"
+put c0E Sprite p81 at "('ui_cursor_x'+2+('ui_positem_x'-0x0C/4))" "('ui_cursor_y'+16-('ui_positem_y'-0x10/4))"
 : "sprite_draw_next"
 loop for "('lcell'-1)"
-goto "q"
+goto "#return"
 
 : "keyi"
 set "ui_darkrooms" to "('ui_darkrooms'+1%2)"

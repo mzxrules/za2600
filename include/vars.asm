@@ -422,6 +422,7 @@ enGlockHeadThink    ds 1
     ORG CLASS_EN_BOSS_SHOOT
 enAquaTimer         ds 1
 enAquaThink         ds 1
+enAquaMoveTimer     ds 1
     EN_SIZE BOSS_AQUA
 
 ; == Manhandla

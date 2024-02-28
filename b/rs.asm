@@ -207,6 +207,7 @@ Rs_Cave:
     jmp RETURN_WORLD
 
 
+Rs_ItemKey: SUBROUTINE
 Rs_Item: SUBROUTINE
     lda enType
     cmp #EN_CLEAR_DROP
@@ -217,17 +218,45 @@ Rs_Item: SUBROUTINE
     lda rWorldRoomFlags,x
     bmi .NoLoad
 
+    lda #EN_ITEM
+    sta cdAType
+    lda roomRS
+    cmp #RS_ITEM_KEY
+    beq .pos_key
     lda #$40
     sta cdAX
     lda #$2C
     sta cdAY
-    lda #EN_ITEM
-    sta cdAType
 .NoLoad
     lda #RS_NONE
     sta roomRS
 .rts
     rts
+
+.pos_key
+    ; x range $0C to $74
+    ; y range $10 to $48
+    lda roomEX
+    and #$F
+    tay
+    lda Rs_PosItem_X,y
+    sta cdAX
+    lda roomEX
+    and #$F0
+    lsr
+    lsr
+    adc #$10
+    sta cdAY
+    lda #GI_KEY
+    sta roomEX
+    bpl .NoLoad ;jmp
+
+Rs_PosItem_X:
+    .byte $0C, $14, $18, $20
+    .byte $28, $30, $34, $38
+    .byte $44, $48, $4C, $54
+    .byte $5C, $64, $6C, $74
+
 
 Rs_EntDungData_TestX:
     .byte #$40, #$40, #$58

@@ -574,8 +574,10 @@ BANK_40
     RORG $F000
 
 BANK_41
-    INCLUDE "c/mi_system.asm"
     INCLUDE "gen/atan2.asm"
+    INCLUDE "gen/hitbox2_info.asm"
+    INCLUDE "gen/MiType_DelLUT.asm"
+    INCLUDE "c/mi_system.asm"
     INCLUDE "c/atan2.asm"
     LOG_BANK_SIZE "-BANK 41- MiSystem", BANK_41
 

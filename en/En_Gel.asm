@@ -164,7 +164,7 @@ En_Gel: SUBROUTINE
     ora #$E0 ; -32 to -8
     sta enGelStepTimer,x
     lda enGelEnState
-    ora Bit8,x
+    ora GelBitAltern8,x
     sta enGelEnState
 
     jsr EnMove_Card_NewDir
@@ -178,7 +178,7 @@ En_Gel: SUBROUTINE
 .move
     jsr EnMoveDir
     lda enGelEnState
-    and Bit8,x
+    and GelBitAltern8,x
     bne .finally
     jsr EnMoveDir
 
@@ -188,3 +188,6 @@ En_Gel: SUBROUTINE
     lda enGelEnState
     sta enState,x
     rts
+
+GelBitAltern8:
+    .byte 0, 1, 0, 1

@@ -31,7 +31,8 @@ EnDraw_Wave: SUBROUTINE
 EnDraw_Arrow: SUBROUTINE
 EnDraw_SmallMissile: SUBROUTINE
     lda miType,x
-    bpl .rts
+    ror
+    bcc .rts
 EnDraw_Gel2:
     clc
     lda mi0X,x

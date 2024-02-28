@@ -1,10 +1,7 @@
 ;==============================================================================
 ; mzxrules 2022
 ;==============================================================================
-MI_SPAWN_CARD = $1
-MI_SPAWN_ATAN = $2
-MI_RUN_CARD = $1^$80
-MI_RUN_ATAN = $2^$80
+
 ;==============================================================================
 ; MiSysUpdateCardPos
 ;----------
@@ -12,6 +9,7 @@ MI_RUN_ATAN = $2^$80
 ; X = Missile Index
 ;==============================================================================
 MiSysUpdateCardPos: SUBROUTINE
+MiRunRock:
     lda mi0Dir,x
     sta MiSysDir
     and #2
@@ -48,6 +46,7 @@ MiSysUpdateCardPos: SUBROUTINE
 ; X = Missile Index
 ;==============================================================================
 MiSysUpdateAtanPos: SUBROUTINE
+MiRunBall:
     lda mi0Dir,x
     sta MiSysDir
     and #$3F
@@ -105,7 +104,7 @@ MiSysUpdateAtanPos: SUBROUTINE
 MiSystem: SUBROUTINE
     ldx #1
 .loop
-    lda miType,x
+    ldy miType,x
     beq .continue
 
     jsr MiProcess
@@ -130,31 +129,32 @@ MiSystem: SUBROUTINE
     bpl .loop
     rts
 
+MiNone:
+MiInvalid:
+MiSpawnSword:
+MiRunSword:
+MiSpawnArrow:
+MiRunArrow:
+MiSpawnWave:
+MiRunWave:
+MiSpawnRang:
+MiRunRang:
+    lda #0
+    sta miType,x
+    rts
+
 MiProcess: SUBROUTINE
-.cont1
-    cmp #MI_SPAWN_CARD
-    bne .cont2
-    jmp MiSpawnRock
-
-.cont2
-    cmp #MI_SPAWN_ATAN
-    bne .cont3
-    jmp MiSpawnAtan
-
-.cont3
-    cmp #MI_RUN_ATAN
-    bne .cont4
-    jmp MiSysUpdateAtanPos
-.cont4
-    cmp #MI_RUN_CARD
-    bne .no_update
-.cardPos
-    jmp MiSysUpdateCardPos
-.no_update
+    lda MiTypeH,y
+    pha
+    lda MiTypeL,y
+    pha
+.rts
     rts
 
 
+
 MiSpawnAtan: SUBROUTINE
+MiSpawnBall:
     stx MiSysEnNum
 
     jsr Random
@@ -186,8 +186,7 @@ MiSpawnAtan: SUBROUTINE
     jsr Atan2
     ldx MiSysEnNum
     sta mi0Dir,x
-    lda #MI_RUN_ATAN
-    sta miType,x
+    inc miType,x ; #MI_RUN_BALL
     lda #$80
     sta mi0Xf,x
     sta mi0Yf,x
@@ -195,13 +194,7 @@ MiSpawnAtan: SUBROUTINE
 
 ; X is missile slot
 MiSpawnRock: SUBROUTINE
-    lda #MI_RUN_CARD
-    sta miType,x
-    rts
-
-MiSpawnRang: SUBROUTINE
-    lda #0 ;#MI_RUN_RANG
-    sta miType,x
+    inc miType,x ; #MI_RUN_ROCK
     rts
 
 ; X is missile slot
@@ -219,6 +212,13 @@ MiPlCol: SUBROUTINE
     sta Hb_bb_x
     lda mi0Y,x
     sta Hb_bb_y
+
+    lda ITEMV_SHIELD
+    and #ITEMF_SHIELD
+    bne .valid_box
+    lda miType,x
+    cmp #MI_RUN_BALL
+    beq .no_shield_hit
 
 HbEnAttCollide:
 .valid_box
@@ -368,5 +368,3 @@ HbEnAttCollide:
     lda #PL_DIR_D | #PL_STUN_TIME
     sta plStun
     rts
-
-    INCLUDE "gen/hitbox_info2.asm"

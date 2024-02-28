@@ -31,8 +31,8 @@ SPAWN_PATTERN = [
     ["En_Peehat"] * 1,
     ["En_Peehat"] * 2,
     ["En_Peehat"] * 3,
-    ["En_Peahat", "En_Octorok", "En_Peahat"],
-    ["En_Peahat", "En_OctorokBlue", "En_Peahat"],
+    ["En_Peehat", "En_Octorok", "En_Peehat"],
+    ["En_Peehat", "En_OctorokBlue", "En_Peehat"],
     ["En_Moblin"] * 1,
     ["En_Moblin"] * 2,
     ["En_Moblin"] * 3,
@@ -63,6 +63,10 @@ SPAWN_PATTERN = [
     ["En_Gel"] * 2,
     ["En_Gel"] * 3,
 
+    ["En_ZolGel"] * 2,
+    ["En_ZolGel"] * 3,
+
+
     ["En_Zol"] * 1,
     ["En_Zol"] * 2,
     ["En_Zol"] * 3,
@@ -82,6 +86,7 @@ SPAWN_PATTERN = [
     ["En_Rope"] * 2,
     ["En_Rope"] * 3,
     ["En_Rope"] * 4,
+    ["En_Rope"] * 6,
 
     ["En_Vire"] * 1,
     ["En_Vire"] * 2,

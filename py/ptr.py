@@ -147,6 +147,7 @@ RoomScript_Table = [
     "Rs_ExitDung2",                 "RsInit_None",
     "Rs_FairyFountain",             "RsInit_FairyFountain",
     "Rs_Item",                      "RsInit_None",
+    "Rs_ItemKey",                   "RsInit_None",
     "Rs_Maze",                      "RsInit_None",
     "Rs_Npc",                       "RsInit_None",
     "Rs_NpcMonster",                "RsInit_None",
@@ -507,7 +508,6 @@ tbl = [
         "PickRang",
     ],
     bankLut=None),
-
     GameEnum("HbPlAtt", "HbPlAtt",
     genEditorBindings=False,
     genPtrTable=True,
@@ -529,6 +529,20 @@ tbl = [
         "HbPlWandFx",   # WandFx
         "HbPlNone",     # MeatFx
         "HbPlRangFx",   # RangFx
+    ],
+    bankLut=None),
+    GameEnum("MiType", "MiType",
+    genEditorBindings=False,
+    genPtrTable=True,
+    genConstants=True,
+    vals=[
+        "MiNone",       "MiInvalid",
+        "MiSpawnRock",  "MiRunRock",
+        "MiSpawnBall",  "MiRunBall",
+        "MiSpawnSword", "MiRunSword",
+        "MiSpawnArrow", "MiRunArrow",
+        "MiSpawnWave",  "MiRunWave",
+        "MiSpawnRang",  "MiRunRang",
     ],
     bankLut=None),
 ]

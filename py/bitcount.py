@@ -36,7 +36,7 @@ HITBOX_INFO_CONST = [
     ("HITBOX_AA_COUNT", len(HITBOX_INFO)),
 ]
 
-HITBOX_INFO2 = [
+HITBOX2_INFO = [
 # player shield hb
     (3, 8,  6,  0),
     (3, 8, -1,  0),
@@ -78,21 +78,21 @@ def get_hitbox_info():
         file.write("hitbox_aa_h_plus_bb_h:\n")
         file.write(ToAsm(aa_h_PLUS_bb_h, len(HITBOX_INFO)))
 
-def get_hitbox_info2():
+def get_hitbox2_info():
     aa_ox = []
     aa_oy = []
     aa_w_PLUS_bb_w = []
     aa_h_PLUS_bb_h = []
 
     for bb_w, bb_h, bb_xshift, bb_yshift in HITBOX_INFO_MISSILE:
-        for aa_w, aa_h, aa_xshift, aa_yshift in HITBOX_INFO2:
+        for aa_w, aa_h, aa_xshift, aa_yshift in HITBOX2_INFO:
 
             aa_ox.append(aa_w-1+aa_xshift-bb_xshift)
             aa_oy.append(aa_h-1+aa_yshift-bb_yshift)
             aa_w_PLUS_bb_w.append(aa_w + bb_w -1)
             aa_h_PLUS_bb_h.append(aa_h + bb_h -1)
 
-    with open(f'gen/hitbox_info2.asm', "w") as file:
+    with open(f'gen/hitbox2_info.asm', "w") as file:
         file.write("hitbox2_aa_ox:\n")
         file.write(ToAsm(aa_ox))
         file.write("hitbox2_aa_oy:\n")
@@ -513,7 +513,7 @@ roomHeight, roomHeight8 = get_roomheight()
 
 get_seek_lut()
 get_hitbox_info()
-get_hitbox_info2()
+get_hitbox2_info()
 get_room_px_check()
 get_randdir_lut()
 get_pause_map_codegen()

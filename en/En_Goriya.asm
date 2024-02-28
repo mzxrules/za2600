@@ -82,10 +82,12 @@ En_GoriyaMain:
     bpl .seek_next
     jsr Random
     and #$F
+    clc
+    adc #2
     sta enGoriyaStep,x
 
     jsr EnMove_Card_WallCheck
-    jsr EnMove_Card_RandDir
+    jsr EnMove_Card_NewDir
     sty enDir,x
     bpl .move ; jmp
 

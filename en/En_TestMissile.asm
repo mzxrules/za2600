@@ -23,7 +23,7 @@ En_TestMissile: SUBROUTINE
     lda #0
     sta enTestMissileResult,x
     sta enTestMissileTimer,x
-    lda #2
+    lda #MI_SPAWN_BALL
     sta miType,x
     lda en0X,x
     sta mi0X,x

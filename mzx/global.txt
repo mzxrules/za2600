@@ -14,6 +14,7 @@ set "ss_EN1" (256*13+32+64)
 set "SS_ROOM" (256)
 set "SS_ITEM" (224)
 set "SS_UI" (256*3)
+set "SS_UI_ITEM" (256*14+255)
 
 set "SPR_PF1" (256*2)
 set "SPR_PF2" (256*2+128)
