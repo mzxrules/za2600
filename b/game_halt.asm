@@ -38,11 +38,14 @@ HALT_OVERSCAN: SUBROUTINE ; 30 scanlines
     sta wNUSIZ1_T
     sta wREFP1_T
 
-HALT_FROM_DUNG_ENT:
+HALT_FROM_ENTER_LOC:
     lda PHaltType
-    cmp #HALT_TYPE_DUNG_ENTRY
+    cmp #HALT_TYPE_ENTER_DUNG
+    beq .do_ent
+    cmp #HALT_TYPE_ENTER_CAVE
     bne .next
-    jsr HaltDungEnt_OverscanBottom
+.do_ent
+    jsr HaltEnterLoc_OverscanBottom
 .next
 
 
@@ -67,18 +70,29 @@ HALT_FLUTE_ENTRY: SUBROUTINE
     sta PAnim
     jmp HALT_FROM_FLUTE
 
-HALT_DUNG_ENT_ENTRY: SUBROUTINE
+HALT_ENTER_CAVE_ENTRY: SUBROUTINE
+    lda #HALT_TYPE_ENTER_CAVE
+    sta PHaltType
+    bpl .entry_common
+
+HALT_ENTER_DUNG_ENTRY:
+    lda #HALT_TYPE_ENTER_DUNG
+    sta PHaltType
+
+.entry_common
     ldx #$FF
     txs
     lda Frame
     sta PFrame
 
-    lda #HALT_TYPE_DUNG_ENTRY
-    sta PHaltType
+    lda #MS_PLAY_NONE
+    sta SeqFlags
+    lda #SFX_ENTER
+    sta SfxFlags
 
     lda #19
     sta PAnim
-    jmp HALT_FROM_DUNG_ENT
+    jmp HALT_FROM_ENTER_LOC
 
 
 HaltFlute_OverscanTop: SUBROUTINE
@@ -150,21 +164,49 @@ HaltFlute_OverscanTop: SUBROUTINE
     jmp MAIN_UNPAUSE
 
 
-HaltDungEnt_OverscanBottom: SUBROUTINE
-    lda PFrame
-    clc
-    adc #$0F
-    cmp Frame
-    bne .setup_mem
-.enter_dungeon
+HaltEnterLoc_OverscanBottom: SUBROUTINE
+    lda Frame
+    sec
+    sbc PFrame
+    cmp #32
+    bne .walk_in_anim
+.enter_loc
+    lda #$40
+    sta plX
+    lda #$10
+    sta plY
+
+    lda #7
+    sta wPLH
     ldx #$FF
     txs
     lda #>OVERSCAN_WAIT
     pha
     lda #<OVERSCAN_WAIT-1
     pha
+    lda PHaltType
+    cmp #HALT_TYPE_ENTER_CAVE
+    beq .MAIN_CAVE_ENT
     ;lda #SLOT_FC_MAIN
     jmp MAIN_DUNG_ENT
+.MAIN_CAVE_ENT
+    jmp MAIN_CAVE_ENT
+
+.walk_in_anim
+    cmp #0
+    beq .skipAnim
+    and #3
+    bne .skipAnim
+    ldy rPLH
+    dey
+    sty wPLH
+    ldy plY
+    iny
+    sty plY
+.skipAnim
+    lda PHaltType
+    cmp #HALT_TYPE_ENTER_CAVE
+    beq .rts
 
 .setup_mem
     lda Frame
@@ -205,6 +247,7 @@ HaltDungEnt_OverscanBottom: SUBROUTINE
 
     lda #SLOT_RW_F8_W0
     sta BANK_SLOT_RAM
+.rts
     rts
 
 

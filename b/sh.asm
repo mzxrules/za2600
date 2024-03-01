@@ -392,7 +392,12 @@ EnStairs:
     lda worldId
     bne .dungeonStairs
 .worldStairs
-    jmp ENTER_CAVE
+    jsr ENTER_CAVE
+    ldx #$40
+    ldy #$10
+    stx plX
+    sty plY
+    bpl .rts ; jmp
 .dungeonStairs
     lda #$40
     sta plX

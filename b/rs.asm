@@ -126,7 +126,7 @@ Rs_EntCaveWallLeft: SUBROUTINE
     cpy plY
     bne .rts
     ldy #$38
-    jmp ENTER_CAVE
+    jmp RS_ENTER_CAVE
 
 Rs_EntCaveWallRight:
     ldx #$6C
@@ -136,7 +136,7 @@ Rs_EntCaveWallRight:
     cpy plY
     bne .rts
     ldy #$38
-    jmp ENTER_CAVE
+    jmp RS_ENTER_CAVE
 
 Rs_EntCaveWallCenter:
     ldx #$40
@@ -146,7 +146,7 @@ Rs_EntCaveWallCenter:
     cpy plY
     bne .rts
     ldy #$38
-    jmp ENTER_CAVE
+    jmp RS_ENTER_CAVE
 
 Rs_EntCaveMidSecretNorth:
     lda plState
@@ -183,7 +183,11 @@ Rs_EntCaveMid:
     cpy plY
     bne .rts
     ldy #$20
-    jmp ENTER_CAVE
+RS_ENTER_CAVE:
+    jsr ENTER_CAVE
+    lda #SLOT_FC_HALT
+    sta BANK_SLOT
+    jmp HALT_ENTER_CAVE_ENTRY
 
 Rs_Cave:
     lda roomFlags
@@ -292,7 +296,7 @@ Rs_EntDungSpectacleRock:
     sty worldId
     lda #SLOT_FC_HALT
     sta BANK_SLOT
-    jmp HALT_DUNG_ENT_ENTRY ; SPAWN_AT_DEFAULT
+    jmp HALT_ENTER_DUNG_ENTRY ; SPAWN_AT_DEFAULT
 
 Rs_ExitDung: ; SUBROUTINE
     bit roomFlags

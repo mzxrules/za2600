@@ -498,7 +498,8 @@ PFrame          ds 1
 PAnim           ds 1
 PHaltType       ds 1
 HALT_TYPE_FLUTE         = 1
-HALT_TYPE_DUNG_ENTRY    = 2
+HALT_TYPE_ENTER_DUNG    = 2
+HALT_TYPE_ENTER_CAVE    = 3
 
     ORG plSpr
 PItemSpr0       ds 2

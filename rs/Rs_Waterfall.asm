@@ -11,6 +11,6 @@ Rs_Waterfall: SUBROUTINE
     cpy plY
     bne .rts
     ldy #$30
-    jmp ENTER_CAVE
+    jmp RS_ENTER_CAVE
 .rts
     rts

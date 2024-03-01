@@ -521,14 +521,12 @@ BANK_36
     INCLUDE "gen/ms_tri0_dur.asm"
     INCLUDE "gen/ms_tri1_note.asm"
     INCLUDE "gen/ms_tri1_dur.asm"
-    INCLUDE "gen/ms_warp0_note.asm"
 
     align 16
     INCLUDE "gen/ms_header.asm"
     INCLUDE "gen/MusicSeq_DelLUT.asm"
-    INCLUDE "gen/Sfx_DelLUT.asm"
     INCLUDE "b/au.asm"
-    LOG_BANK_SIZE "-BANK 36/38- Audio", BANK_36
+    LOG_BANK_SIZE "-BANK 36/37- Audio", BANK_36
 
 ; ****************************************
 ; *               BANK 38                *
@@ -538,6 +536,10 @@ BANK_36
     RORG $F000
 
 BANK_38
+    INCLUDE "gen/Sfx_DelLUT.asm"
+    INCLUDE "gen/ms_warp0_note.asm"
+    INCLUDE "b/au_sfx.asm"
+    LOG_BANK_SIZE "-BANK 38- AudioSfx", BANK_38
 
 ; ****************************************
 ; *               BANK 39                *

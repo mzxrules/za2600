@@ -443,11 +443,6 @@ ENTER_CAVE:
     stx worldSX
     sty worldSY
 
-    ldx #$40
-    ldy #$10
-    stx plX
-    sty plY
-
     lda roomFlags
     ora #RF_EV_LOAD
     sta roomFlags

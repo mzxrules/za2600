@@ -45,6 +45,7 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     sta PF2         ; 3
 
 ; Player            ;    CYCLE 15
+    VKERNEL1 PLH
     lda #7          ; 2 player height
     dcp plDY        ; 5
     bcs .DrawP0     ; 2/3

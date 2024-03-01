@@ -4,6 +4,7 @@
 
 MAIN_UNPAUSE: BHA_BANK_JMP #SLOT_FC_MAIN, PAUSE_RETURN
 MAIN_DUNG_ENT: BHA_BANK_JMP #SLOT_FC_MAIN, SPAWN_AT_DEFAULT
+MAIN_CAVE_ENT: BHA_BANK_JMP #SLOT_FC_MAIN, ALWAYS_RTS
 
 ;==============================================================================
 ; PosWorldObjects

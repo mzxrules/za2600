@@ -39,6 +39,9 @@ UpdateAudio: SUBROUTINE
     ldx #1
     jsr AudioChannel
 
+.sfxStart
+    lda #SLOT_F0_AU2
+    sta BANK_SLOT
     lda SfxFlags
     and #$3F
     beq .sfxEnd

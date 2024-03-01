@@ -331,6 +331,7 @@ tbl = [
         "SfxShutterDoor",
         "SfxTalk",
         "SfxItemRupee",
+        "SfxEnter",
     ],
     bankLut=None),
     GameEnum("PlMoveDir", "PlDir",
