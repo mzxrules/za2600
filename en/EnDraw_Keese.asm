@@ -2,30 +2,20 @@
 ; mzxrules 2023
 ;==============================================================================
 EnDraw_Keese: SUBROUTINE
-    lda en0X,x
-    sta enX
-    lda en0Y,x
-    sta enY
+    ldy #CI_EN_BLACK
+    jsr EnDraw_PosAndStunColor
 
     ldy enHp,x
     lda EnKeese_Disp-1,y
     sta wNUSIZ1_T
 
-    lda Frame
-    and #8
-    lsr
-    lsr
-    lsr
-    tay
-
     lda #>SprE24
     sta enSpr+1
-    lda #<SprE24
-    adc Mul8,y
-
+    lda Frame
+    and #8
+    clc
+    adc #<SprE24
     sta enSpr
-    lda #COLOR_EN_BLACK
-    sta wEnColor
     rts
 
 EnKeese_Disp:

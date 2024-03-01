@@ -76,7 +76,7 @@ Rs_EntCaveWallCenter
 Cv_Shop2
 Rs_EntCaveWallLeftBlocked
 Cv_Shop3
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveWallRightBlocked
 Cv_Potion
 Rs_BAD_HIDDEN_CAVE
 Cv_Rupees30

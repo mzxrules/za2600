@@ -300,7 +300,6 @@ KERNEL_PAUSE_MENU_MAIN: SUBROUTINE ; 192 scanlines
 .displayPotionRed
     lda #GI_POTION_RED
     bpl .setPotionItem
-
 .displayPotionBlue
     lda #GI_POTION_BLUE
 .setPotionItem

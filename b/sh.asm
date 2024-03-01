@@ -223,11 +223,22 @@ GiArrowSilver:
 GiCandleBlue:
 GiCandleRed:
 GiNote:
-GiPotionBlue:
-GiPotionRed:
     lda Bit8-GI_BOW,x
     ora itemFlags+2
     sta itemFlags+2
+    rts
+
+GiPotionBlue:
+    lda #ITEMF_POTION_BLUE
+    bit ITEMV_POTION_BLUE
+    bne GiPotionRed
+    ora ITEMV_POTION_BLUE
+    sta ITEMV_POTION_BLUE
+    rts
+GiPotionRed:
+    lda #ITEMF_POTION_BLUE | #ITEMF_POTION_RED
+    ora ITEMV_POTION_RED
+    sta ITEMV_POTION_RED
     rts
 
 GiTriforce:
@@ -404,7 +415,7 @@ EnStairs:
     lda #$2C
     sta plY
     lda roomEX
-    sta roomId
+    sta roomIdNext
     lda roomFlags
     ora #RF_EV_LOAD
     sta roomFlags

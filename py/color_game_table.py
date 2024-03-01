@@ -6,7 +6,7 @@ GAME_COLOR_TABLE = {
     "COLOR_PLAYER_01":      (0xAE,0x9A), # 0xAE, 0x9A
     "COLOR_PLAYER_02":      (0x46,0x66),
 
-    "COLOR_EN_RED":         (0x42,0x64),
+    "COLOR_EN_RED":         (0x44,0x64),
     "COLOR_EN_RED_L":       (0x4A,0x6A),
     "COLOR_EN_GREEN":       (0xDA,0x5C),
     "COLOR_EN_BLUE":        (0x74,0xB4),
@@ -32,7 +32,7 @@ GAME_COLOR_TABLE = {
     "COLOR_PF_PATH":        (0x3C,0x4C),
     "COLOR_PF_CHOCOLATE":   (0xF0,0x22),
     "COLOR_PF_GREEN":       (0xD0,0x52),
-    "COLOR_PF_RED":         (0x42,0x64),
+    "COLOR_PF_RED":         (0x40,0x60),
     "COLOR_PF_WATER":       (0x7C,0xBA), #(0xAE,0x9E), # ??, BA
 
     "COLOR_PF_BLUE_D":      (0x90,0xC0),

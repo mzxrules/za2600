@@ -764,7 +764,7 @@ CI_EN_BLACK     = 10
     COLOR PLAYER_01,    $AE,$9A
     COLOR PLAYER_02,    $46,$66
 
-    COLOR EN_RED,       $42,$64
+    COLOR EN_RED,       $44,$64
     COLOR EN_RED_L,     $4A,$6A
     COLOR EN_GREEN,     $DA,$5C
     COLOR EN_BLUE,      $74,$B4
@@ -789,7 +789,7 @@ CI_EN_BLACK     = 10
 
     COLOR PF_PATH,      $3C,$4C
     COLOR PF_GREEN,     $D0,$52
-    COLOR PF_RED,       $42,$64
+    COLOR PF_RED,       $40,$60
     COLOR PF_CHOCOLATE, $F0,$22
     COLOR PF_WATER,     $7C,$BA
 

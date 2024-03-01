@@ -217,6 +217,6 @@ output = ""
 output += gen_color_lookups()
 output += color_to_mzx("ntsc")
 output += color_to_mzx("pal")
-# output += gen_mzx_atari_color_ids()
+output += gen_mzx_atari_color_ids()
 with open(f'gen/editor_color.txt', "w") as file:
     file.write(output)
