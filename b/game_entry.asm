@@ -178,7 +178,7 @@ ENTRY_POST_DRAW:
 
     lda #$80
     sta roomFlags
-    lda #$1 ; $90
+    lda #$1 ; Display Delay $90
     sta roomTimer
     lda #13
     sta roomDY

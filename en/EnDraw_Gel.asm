@@ -3,6 +3,10 @@
 ;==============================================================================
 
 EnDraw_Gel: SUBROUTINE
+    lda #0
+    sta m1X
+    sta enX
+
     ldy #CI_EN_BLACK
     jsr EnDraw_PosAndStunColor
     lda Frame

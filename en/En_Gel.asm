@@ -61,17 +61,24 @@ En_Gel: SUBROUTINE
     lda #SLOT_F0_BATTLE
     sta BANK_SLOT
 
+    lda enHp,x
+    sta enGelHpTemp
+
     lda #%11
     sta enGelTemp
     jsr HbGetPlAtt
     jsr HbEnSq4
 .test_01
+    ror enGelHpTemp
+    bcc .test_10
     jsr HbPlAttCollide_EnBB
     lda HbFlags2
     bpl .test_10
     lda #%10
     sta enGelTemp
 .test_10
+    ror enGelHpTemp
+    bcc .end_checkhit
     lda mi0X,x
     sta Hb_bb_x
     lda mi0Y,x
@@ -190,4 +197,4 @@ En_Gel: SUBROUTINE
     rts
 
 GelBitAltern8:
-    .byte 0, 1, 0, 1
+    .byte 1, 1, 2, 2

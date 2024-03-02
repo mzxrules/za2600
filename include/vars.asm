@@ -359,7 +359,8 @@ enVireBounceTimer   ds 2
     ORG CLASS_EN_ENEMY_MOVE
 ; enHp
 enKeeseThink    ds 2
-enKeeseTemp = Temp0
+enKeeseTemp     = Temp0
+enKeeseHpTemp   = Temp1
     EN_SIZE KEESE
 
 ; == Zol
@@ -375,6 +376,7 @@ enGelStep       ds 4
 enGelStepTimer  ds 4
 enGelNum        = Temp0
 enGelEnState    = Temp1
+enGelHpTemp     = Temp0
 enGelTemp       = Temp1
     EN_SIZE GEL
 

@@ -50,11 +50,16 @@ En_Keese: SUBROUTINE
 .main
 
 .checkDamaged
-    lda #%111
-    sta enKeeseTemp
     lda #SLOT_F0_BATTLE
     sta BANK_SLOT
+
+    lda enHp,x
+    ror
+    sta enKeeseHpTemp
+    lda #%111
+    sta enKeeseTemp
     jsr HbGetPlAtt
+
 .test_001
     jsr HbPlAttCollide_EnBB
     lda HbFlags2
@@ -65,6 +70,8 @@ En_Keese: SUBROUTINE
     lda Hb_bb_x
     adc #DISPLACE
     sta Hb_bb_x
+    ror enKeeseHpTemp
+    bcc .test_100
     jsr HbPlAttCollide
     lda HbFlags2
     bpl .test_100
@@ -75,6 +82,8 @@ En_Keese: SUBROUTINE
     lda Hb_bb_x
     adc #DISPLACE
     sta Hb_bb_x
+    ror enKeeseHpTemp
+    bcc .end_checkhit
     jsr HbPlAttCollide
     lda HbFlags2
     bpl .end_checkhit

@@ -165,7 +165,7 @@ GiRupee: SUBROUTINE
     bne AddRupees
 
 GiRupee5: SUBROUTINE
-    lda #5
+    lda #3
     bne AddRupees
 
 ; Assume returns not zero
