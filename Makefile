@@ -16,6 +16,7 @@ zelda_dep := main.asm \
   gen/mesg_data_0A.asm \
   gen/ms_header.asm \
   gen/bitcount.asm \
+  gen/pf_destroy.asm \
   gen/spr_tri.asm \
   gen/EnDraw_BossManhandlaGen.asm \
   gen/editor_color.txt \
@@ -68,6 +69,9 @@ gen/editor_en_bindings.txt: py/encounter.py
 
 gen/bitcount.asm: py/bitcount.py
 	python3 py/bitcount.py
+
+gen/pf_destroy.asm: py/pf_destroy.py
+	python3 py/pf_destroy.py
 
 gen/spr_tri.asm: py/spr_tri.py
 	python3 py/spr_tri.py

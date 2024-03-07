@@ -67,3 +67,10 @@
     sec
     sbc blY
     sta blDY
+.ball_sprite_initial_enabl
+    lda rBLH
+    dcp blDY
+    lda #1
+    adc #0
+    sta wblInitENABL
+    inc blDY

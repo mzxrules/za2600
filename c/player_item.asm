@@ -242,6 +242,9 @@ PlayerUseSword: SUBROUTINE
 
     lda #<-9
     sta plItemTimer
+    lda plState
+    ora #PS_LOCK_MOVE_IT
+    sta plState
 ; Sfx
     lda #SFX_STAB
     sta SfxFlags
@@ -486,6 +489,9 @@ PlayerUseWand: SUBROUTINE
 ; Enable Wand
     lda #<-9
     sta plItemTimer
+    lda plState
+    ora #PS_LOCK_MOVE_IT
+    sta plState
     lda #SFX_STAB
     sta SfxFlags
 .rts

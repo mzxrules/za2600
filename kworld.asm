@@ -29,6 +29,10 @@ KERNEL_WORLD: SUBROUTINE ; rKERNEL
     lda #0
     sta REFP1
 
+    VKERNEL1 blInitENABL
+    lda #0
+    sta ENABL
+
     lda #0
     tax
 

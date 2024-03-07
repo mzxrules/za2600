@@ -265,7 +265,7 @@ Rs_PosItem_X:
 Rs_EntDungData_TestX:
     .byte #$40, #$40, #$58
 Rs_EntDungData_TestY:
-    .byte #$28, #$1C, #$20
+    .byte #$28, #$1C, #$24
 Rs_EntDungData_RetX:
     .byte #$40, #$48, #$58
 Rs_EntDungData_RetY:
@@ -308,185 +308,173 @@ Rs_ExitDung2:
     lda #MS_PLAY_THEME_L
     jmp RETURN_WORLD
 
-STAIR_POS_CENTER = 0
-STAIR_POS_PATH = 1
-STAIR_POS_TOP_RIGHT = 2
-STAIR_POS_MID_RIGHT = 3
-STAIR_POS_LEFT_CENTER = 4
+STAIR_POS_P402C = 0
+STAIR_POS_P1834 = 1
+STAIR_POS_P7448 = 2
+STAIR_POS_P742C = 3
+STAIR_POS_P2828 = 4
 
 PositionStairs: ; SUBROUTINE
-    lda .stairsX,x
+    lda plX
+    clc
+    adc #$8
+    sec
+    sbc StairPosX,x
+    cmp #$10+1
+    bcs .place_stairs
+
+    lda plY
+    adc #$8
+    sec
+    sbc StairPosY,x
+    cmp #$10+1
+    bcc .rts
+
+.place_stairs
+    lda StairPosX,x
     sta cdAX
-    lda .stairsY,x
+    lda StairPosY,x
     sta cdAY
     lda #EN_STAIRS
     sta cdAType
 .rts
     rts
 
-.stairsX:
+StairPosX:
     .byte #$40, #$18, #$74, #$74, #$28
-.stairsY
+StairBushPosX:
+    .byte #$40, #$34, #$40, #$58, #$64, #$64
+StairPosY:
     .byte #$2C, #$34, #$48, #$2C, #$28
+StairBushPosY:
+    .byte #$1C, #$28, #$2C, #$20, #$20, #$38
 
 Rs_BlockPathStairs: ; SUBROUTINE
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts
-    ldx #STAIR_POS_PATH
+    ldx #STAIR_POS_P1834
     jmp PositionStairs
 
 Rs_BlockDiamondStairs: ; SUBROUTINE
 Rs_Stairs: ;SUBROUTINE
-    ; position #$40, #$2C
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts
-    lda plX
-    sec
-    sbc #$3C
-    cmp #$8+1
-    bcs .place_stairs
-    lda plY
-    sec
-    sbc #$28
-    cmp #$8+1
-    bcc .rts
-.place_stairs
-    ldx #STAIR_POS_CENTER
+    ldx #STAIR_POS_P402C
     jmp PositionStairs
 
 Rs_BlockLeftStairs: ; SUBROUTINE
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts
-    ldx #STAIR_POS_TOP_RIGHT
+    ldx #STAIR_POS_P7448
     jmp PositionStairs
 
 Rs_BlockSpiralStairs: ; SUBROUTINE
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts
-    ldx #STAIR_POS_LEFT_CENTER
+    ldx #STAIR_POS_P2828
     jmp PositionStairs
 
 
 Rs_EntCaveWallCenterBlocked: SUBROUTINE
-    ldx #RS_ENT_CAVE_WALL_CENTER
+    SET_WALL_DESTROY_XY 40, 38
     bne .main
 Rs_EntCaveWallLeftBlocked:
-    ldx #RS_ENT_CAVE_WALL_LEFT
+    SET_WALL_DESTROY_XY 14, 38
     bne .main
 Rs_EntCaveWallRightBlocked:
-    ldx #RS_ENT_CAVE_WALL_RIGHT
+    SET_WALL_DESTROY_XY 6C, 38
     bne .main
 Rs_EntDungSpectacleRockBlocked:
-    ldx #RS_ENT_DUNG_SPECTACLE_ROCK
+    SET_WALL_DESTROY_XY 58, 20
 .main
     bit CXM0FB
-    bvc .rts
+    bvc .skip_rts
     lda plState2
     and #PS_ACTIVE_ITEM
     cmp #PLAYER_BOMB
-    bne .rts
+    bne .skip_rts
     ldy plItemTimer
     cpy #ITEM_ANIM_BOMB_BREAKWALL
-    bmi .rts
+    bmi .skip_rts
 ; opening destroyed
-    stx roomRS
     lda #SFX_SOLVE
     sta SfxFlags
     ldy roomId
     lda rWorldRoomFlags,y
     ora #WRF_SV_DESTROY
     sta wWorldRoomFlags,y
-    lda #$80
-    sta blY
 
-    cpx #RS_ENT_CAVE_WALL_LEFT
-    beq .left
-    cpx #RS_ENT_CAVE_WALL_RIGHT
-    beq .right
-    cpx #RS_ENT_CAVE_WALL_CENTER
-    beq .center
-    cpx #RS_ENT_DUNG_SPECTACLE_ROCK
-    bne .rts
-
-.spectacle_rock
-    lda #$19
-    sta wPF2Room + 6
-    lda #$39
-    sta wPF2Room + 7
-    lda #$28+1
-    sta blX
-    lda #$20
-    sta blY
+    rts ; jmp RsInit_Wall
+.skip_rts
+    pla
+    pla
 .rts
-    rts
-
-.center
-    lda rPF2Room + 12
-    and #$7F
-    sta wPF2Room + 12
-    lda rPF2Room + 13
-    and #$7F
-    sta wPF2Room + 13
-    lda rPF2Room + 14
-    and #$7F
-    sta wPF2Room + 14
-    rts
-
-.left
-    lda rPF1RoomL + 12
-    and #$F3
-    sta wPF1RoomL + 12
-    lda rPF1RoomL + 13
-    and #$F3
-    sta wPF1RoomL + 13
-    lda rPF1RoomL + 14
-    and #$F3
-    sta wPF1RoomL + 14
-    rts
-.right
-
-    lda rPF1RoomR + 12
-    and #$F3
-    sta wPF1RoomR + 12
-    lda rPF1RoomR + 13
-    and #$F3
-    sta wPF1RoomR + 13
-    lda rPF1RoomR + 14
-    and #$F3
-    sta wPF1RoomR + 14
     rts
 
 Rs_EntDungBushBlocked: SUBROUTINE ; $40, $1C
-    ldx #RS_ENT_DUNG_BUSH
-    bne .main ; jmp
+    SET_BUSH_DESTROY_XY 40, 1C
+    bne .main
+Rs_EntCaveBushBlocked_P3428:
+    SET_BUSH_DESTROY_XY 34, 28
+    bne .main
+Rs_EntCaveBushBlocked_P402C:
+    SET_BUSH_DESTROY_XY 40, 2C
+    bne .main
+Rs_EntCaveBushBlocked_P5820:
+    SET_BUSH_DESTROY_XY 58, 20
+    bne .main
+Rs_EntCaveBushBlocked_P6420:
+    SET_BUSH_DESTROY_XY 64, 20
+    bne .main
+Rs_EntCaveBushBlocked_P6438:
+    SET_BUSH_DESTROY_XY 64, 38
+    ;bne .main
+
 .main
+    ldy roomId
+    lda rWorldRoomFlags,y
+    and #WRF_SV_DESTROY
+    bne Rs_EntCaveBushStairs
+
     bit CXM0FB
-    bvc .rts
+    bvc .skip_rts
     lda plState3
     and #PS_ACTIVE_ITEM2
     cmp #PLAYER_FIRE_FX
-    bne .rts
-    ldy plItem2Time
-    cpy #ITEM_ANIM_FIRE_BURNBUSH
-    bmi .rts
+    bne .skip_rts
+    lda plItem2Time
+    cmp #ITEM_ANIM_FIRE_BURNBUSH
+    bmi .skip_rts
 
 ; opening destroyed
-    stx roomRS
     lda #SFX_SOLVE
     sta SfxFlags
     ldy roomId
     lda rWorldRoomFlags,y
     ora #WRF_SV_DESTROY
     sta wWorldRoomFlags,y
-    lda #$80
-    sta blY
 
+    rts ; jmp RsInit_Bush
+.skip_rts
+    pla
+    pla
 .rts
     rts
+
+Rs_EntCaveBushStairs:
+    lda roomFlags
+    and #RF_EV_CLEAR
+    beq .rts
+    lda roomRS
+    sec
+    sbc #RS_ENT_DUNG_BUSH_BLOCKED - (StairBushPosX - StairPosX)
+    tax
+    jmp PositionStairs
+
 
 Rs_EntDungFlute: SUBROUTINE
     ldy roomId

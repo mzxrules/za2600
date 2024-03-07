@@ -22,7 +22,7 @@ En_LikeLikeMain: SUBROUTINE
     lda enHp,x
     bpl .endCheckDamaged
     lda plState
-    and #~PS_LOCK_MOVE
+    and #~PS_LOCK_MOVE_EN
     sta plState
     jmp EnSysEnDie
 .endCheckDamaged
@@ -34,7 +34,7 @@ En_LikeLikeMain: SUBROUTINE
 
 .lockInPlace
     lda plState
-    ora #PS_LOCK_MOVE
+    ora #PS_LOCK_MOVE_EN
     sta plState
 
     lda Frame
@@ -61,7 +61,7 @@ En_LikeLikeMain: SUBROUTINE
     lda #-8
     jsr UPDATE_PL_HEALTH
     lda plState
-    and #PS_LOCK_MOVE
+    and #PS_LOCK_MOVE_EN
     bne .endCheckHit
 
     lda enState,x

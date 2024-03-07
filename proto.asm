@@ -94,7 +94,7 @@ plState     ds 1
 INPT_FIRE_PREV  = $80 ; 1000_0000 Fire Pressed Last Frame
 PS_USE_ITEM     = $40 ; 0100_0000 Use Current Item Event
 PS_GLIDE        = $20 ; 0010_0000 Move Until Unblocked
-PS_LOCK_MOVE    = $10 ; 0001_0000 Lock Player Movement
+PS_LOCK_MOVE_EN = $10 ; 0001_0000 Lock Player Movement
 PS_P1_WALL      = $08 ; 0000_1000 P1 Is Wall
 PS_PF_IGNORE    = $04 ; 0000_0100 Playfield Ignore
 PS_LOCK_ALL     = $02 ; 0000_0010 Lock Player

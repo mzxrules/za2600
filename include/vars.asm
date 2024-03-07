@@ -83,8 +83,8 @@ plState     ds 1 ; ---------------
 INPT_FIRE_PREV  = $80 ; 1000_0000 Fire Pressed Last Frame
 PS_USE_ITEM     = $40 ; 0100_0000 Use Current Item Event
 PS_GLIDE        = $20 ; 0010_0000 Move Until Unblocked
-PS_LOCK_MOVE    = $10 ; 0001_0000 Lock Player Movement
-PS_P1_WALL      = $08 ; 0000_1000 P1 Is Wall
+PS_LOCK_MOVE_EN = $10 ; 0001_0000 Lock Player Movement (Enemies)
+PS_LOCK_MOVE_IT = $08 ; 0000_1000 Lock Player Movement (Items)
 PS_PF_IGNORE    = $04 ; 0000_0100 Playfield Ignore
 PS_LOCK_ALL     = $02 ; 0000_0010 Lock Player
 PS_LOCK_AXIS    = $01 ; 0000_0001 Lock Player Axis - Hover Boots
@@ -698,7 +698,7 @@ rKERNEL48   ds KERNEL48_LEN
 ; * Constants                            *
 ; ****************************************
 
-KERNEL_LEN  = $A0   ; World Kernel length
+KERNEL_LEN  = $A4   ; World Kernel length
 KERNEL48_LEN = $68  ; 48 pix kernel length
 
 ROOM_PX_HEIGHT      = 20 ; height of room in pixels
@@ -882,6 +882,7 @@ SLOT_F0_PU      = RAMSEG_F0 | 32
 SLOT_F0_RS_INIT = RAMSEG_F0 | 33
 SLOT_F0_RS0     = RAMSEG_F0 | 34
 SLOT_F4_RS1     = RAMSEG_F4 | 35
+SLOT_F4_RS_DEST = RAMSEG_F4 | 35
 
 SLOT_F0_AU0     = RAMSEG_F0 | 36
 SLOT_F4_AU1     = RAMSEG_F4 | 37

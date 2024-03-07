@@ -24,7 +24,7 @@ Rs_EntDungMid
 zz5
 Rs_EntCaveWallLeft
 Cv_Shop1
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveWallRightBlocked
 Cv_Potion
 Rs_EntCaveMid
 Cv_Note
@@ -42,7 +42,7 @@ Rs_EntCaveWallRightBlocked
 Cv_DoorRepair
 Rs_None
 zz0
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveWallCenterBlocked
 Cv_MoneyGame
 Rs_None
 zz0
@@ -138,9 +138,9 @@ Rs_EntCaveMid
 Cv_Shop2
 Rs_EntDungMid
 zz4
-Rs_None
-zz0
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveBushBlocked_P6420
+Cv_Shop3
+Rs_EntCaveBushBlocked_P5820
 Cv_GiveHeartPotion
 Rs_BAD_HIDDEN_CAVE
 Cv_Rupees30
@@ -170,7 +170,7 @@ Rs_None
 zz0
 Rs_RaftSpot
 zz0
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveBushBlocked_P3428
 Cv_Rupees10
 Rs_None
 zz0

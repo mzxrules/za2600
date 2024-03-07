@@ -67,6 +67,32 @@ COLOR_{1} = {2}
     ENDIF
     ENDM
 
+; PF Destroy Macros
+; A1 = X coordinate $
+; A2 = Y coordinate $
+; A3 = Y depth
+    MACRO SET_WALL_DESTROY_XY
+    lda #>[RsInit_Wall_P{1}{2}-1]
+    pha
+    lda #<[RsInit_Wall_P{1}{2}-1]
+    pha
+    IF #<[RsInit_Wall_P{1}{2}-1] = 0
+        echo "Bad SET_WALL",RsInit_Wall_P{1}{2}
+        ERR
+    ENDIF
+    ENDM
+
+    MACRO SET_BUSH_DESTROY_XY
+    lda #>[RsInit_Bush_P{1}{2}-1]
+    pha
+    lda #<[RsInit_Bush_P{1}{2}-1]
+    pha
+    IF #<[RsInit_Bush_P{1}{2}-1] = 0
+        echo "Bad SET_BUSH_",RsInit_Bush_P{1}{2}
+        ERR
+    ENDIF
+    ENDM
+
 ; Bank Hook macros
 ; For hot swapping the bank the cpu is currently executing
 

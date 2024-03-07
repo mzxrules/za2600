@@ -458,13 +458,8 @@ BANK_33
     INCLUDE "rs/RsInit_BlockDiamondStairs.asm"
     INCLUDE "rs/RsInit_BlockSpiral.asm"
     INCLUDE "rs/RsInit_BlockPathStairs.asm"
-    INCLUDE "rs/RsInit_EntCaveWallLeftBlocked.asm"
-    INCLUDE "rs/RsInit_EntCaveWallCenterBlocked.asm"
-    INCLUDE "rs/RsInit_EntCaveWallRightBlocked.asm"
     INCLUDE "rs/RsInit_FairyFountain.asm"
     INCLUDE "rs/RsInit_EntDungFlute.asm"
-    INCLUDE "rs/RsInit_EntDungBush.asm"
-    INCLUDE "rs/RsInit_SpectacleRock.asm"
     INCLUDE "rs/RsInit_Waterfall.asm"
 
     LOG_BANK_SIZE "-BANK 33- RoomScriptInit", BANK_33
@@ -485,6 +480,7 @@ BANK_34
     INCLUDE "rs/Rs_RaftSpot.asm"
     INCLUDE "rs/Rs_ShoreItem.asm"
     INCLUDE "rs/Rs_Waterfall.asm"
+    INCLUDE "gen/pf_destroy.asm"
     LOG_BANK_SIZE "-BANK 34/35- Engine", BANK_34
 
 ; ****************************************

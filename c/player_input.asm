@@ -109,7 +109,7 @@ PlayerInput: SUBROUTINE
 .setPlColor
     stx wPlColor
 
-    and #PS_LOCK_MOVE
+    and #PS_LOCK_MOVE_EN | #PS_LOCK_MOVE_IT
     bne .rts
 
     lda SWCHA
@@ -224,6 +224,11 @@ PlayerItem: SUBROUTINE
     cmp #1
     adc #0
     sta plItemTimer
+    bne .skipUnlock
+    lda plState
+    and #~PS_LOCK_MOVE_IT
+    sta plState
+.skipUnlock
 
     lda plItem2Time
     cmp #1
