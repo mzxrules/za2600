@@ -33,22 +33,22 @@ PF2Room1:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
 PF2Room2:
-    .byte $20 ; |.....X..| mirrored
-    .byte $20 ; |.....X..| mirrored
-    .byte $20 ; |.....X..| mirrored
-    .byte $20 ; |.....X..| mirrored
-    .byte $20 ; |.....X..| mirrored
-    .byte $3F ; |XXXXXX..| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
-    .byte $3F ; |XXXXXX..| mirrored
-    .byte $20 ; |.....X..| mirrored
-    .byte $20 ; |.....X..| mirrored
-    .byte $20 ; |.....X..| mirrored
-    .byte $20 ; |.....X..| mirrored
-    .byte $20 ; |.....X..| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
 PF2Room3:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored

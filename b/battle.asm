@@ -290,11 +290,13 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
     ldy HbDamage
     lda EnDam_Common,y
 .gethit_override_damage
+    ldy #SFX_EN_DAMAGE
     clc
     adc enHp,x
     sta enHp,x
-
-    ldy #SFX_EN_DAMAGE
+    bpl .set_hitsfx
+    ldy #SFX_EN_KILL
+.set_hitsfx
     sty SfxFlags
 
     lda HbDir

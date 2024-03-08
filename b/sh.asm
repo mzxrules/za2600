@@ -435,7 +435,7 @@ EnClearDropTypeB: SUBROUTINE
     cmp #255 ; drop rate odds, N out of 256
     bcs .skipRollItem
     jsr Random
-    and #3
+    and #$7
     tay
     lda EnRandomDrops,y
     sta cdBType
@@ -444,6 +444,7 @@ EnClearDropTypeB: SUBROUTINE
 
 EnRandomDrops:
     .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
+    .byte #GI_RUPEE, #GI_RUPEE, #GI_RUPEE5, #GI_RUPEE
 
 NpcShop_UpdateRupees: SUBROUTINE
     lda Frame

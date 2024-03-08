@@ -123,12 +123,21 @@ PlayerUseCandle: SUBROUTINE
 
 PlayerUpdateFireFx: SUBROUTINE
     lda plItem2Time
+    cmp #-1
+    beq .lastFrame
     cmp #-60
     bne .rts
     lda rRoomColorFlags
     and #~#RF_WC_ROOM_DARK
     sta wRoomColorFlags
 .rts
+    rts
+.lastFrame
+    lda #0
+    sta plItem2Time
+    lda plState3
+    and #~PS_ACTIVE_ITEM2
+    sta plState3
     rts
 
 PlayerDrawFireFx: SUBROUTINE

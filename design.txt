@@ -810,3 +810,14 @@ ItemKey positions:
 13: $66 102.13333333333334
 14: $6D 109.06666666666666
 15: $74 116.0
+
+HIDDEN_CAVE TODO:
+1C - Armos entry
+21 - Grave magic sword
+34 - Armos entry
+3D - Armos entry
+4B - Bush
+4E - Armos Entry
+51 - Bush (more variance)
+63 - Bush
+78 - Bush

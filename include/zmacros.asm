@@ -77,8 +77,9 @@ COLOR_{1} = {2}
     lda #<[RsInit_Wall_P{1}{2}-1]
     pha
     IF #<[RsInit_Wall_P{1}{2}-1] = 0
-        echo "Bad SET_WALL",RsInit_Wall_P{1}{2}
-        ERR
+        beq Rs_EntCaveWallBlocked
+    ELSE
+        bne Rs_EntCaveWallBlocked
     ENDIF
     ENDM
 
@@ -88,8 +89,9 @@ COLOR_{1} = {2}
     lda #<[RsInit_Bush_P{1}{2}-1]
     pha
     IF #<[RsInit_Bush_P{1}{2}-1] = 0
-        echo "Bad SET_BUSH_",RsInit_Bush_P{1}{2}
-        ERR
+        beq Rs_EntCaveBushBlocked
+    ELSE
+        bne Rs_EntCaveBushBlocked
     ENDIF
     ENDM
 

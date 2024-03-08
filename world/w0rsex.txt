@@ -78,7 +78,7 @@ Rs_EntCaveWallLeftBlocked
 Cv_Shop3
 Rs_EntCaveWallRightBlocked
 Cv_Potion
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveBushBlocked_P6438
 Cv_Rupees30
 Rs_None
 zz0
@@ -86,8 +86,8 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_EntDungSpectacleRock
-zz17
+Rs_EntCaveWallBlocked_P4820
+Cv_GiveHeartPotion
 Rs_EntCaveWallRightBlocked
 Cv_Rupees30
 Rs_None
@@ -142,7 +142,7 @@ Rs_EntCaveBushBlocked_P6420
 Cv_Shop3
 Rs_EntCaveBushBlocked_P5820
 Cv_GiveHeartPotion
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveBushBlocked_P6438
 Cv_Rupees30
 Rs_BlockPathStairs
 Cv_Path3
@@ -152,7 +152,7 @@ Rs_BAD_HIDDEN_CAVE
 Cv_Potion
 Rs_None
 zz0
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveBushBlocked_P6C18
 Cv_Shop3
 Rs_BAD_HIDDEN_CAVE
 Cv_Rupees10
@@ -160,7 +160,7 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveBushBlocked_P3428
 Cv_Rupees10
 Rs_None
 zz0
@@ -180,7 +180,7 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveBushBlocked_P3428
 Cv_Rupees10
 Rs_None
 zz0
@@ -194,7 +194,7 @@ Rs_None
 zz0
 Rs_Maze
 zz1
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveBushBlocked_P402C
 Cv_Rupees100
 Rs_BAD_HIDDEN_CAVE
 Cv_DoorRepair
@@ -206,13 +206,13 @@ Rs_EntCaveWallCenter
 Cv_Shop1
 Rs_EntCaveWallCenterBlocked
 Cv_Rupees30
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveBushBlocked_P3428
 Cv_DoorRepair
 Rs_None
 zz0
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveBushBlocked_P5820
 Cv_DoorRepair
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveBushBlocked_P5820
 Cv_Rupees100
 Rs_None
 zz0

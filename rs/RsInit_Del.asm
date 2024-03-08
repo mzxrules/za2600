@@ -3,6 +3,8 @@
 ;==============================================================================
 
 RsInit_Del: SUBROUTINE
+    lda #7
+    sta wBLH
     ldx roomRS
     lda RsInitH,x
     pha

@@ -105,6 +105,7 @@ PS_ACTIVE_ITEM2 = $07 ; 0000_0111 Mask to fetch current secondary item
 
 plStun      ds 1    ; 1111_1100 ; player stun timer
 PL_STUN_TIME = [-30*4] ; Frames of invunerability
+PL_STUN_TIME1 = PL_STUN_TIME + 4
 PL_STUN_RT   = [-24*4] ; End of recoil time
 ; plRecoilDir       ; 0000_0011 ; recoil direction
 plHealthMax ds 1

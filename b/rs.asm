@@ -148,6 +148,16 @@ Rs_EntCaveWallCenter:
     ldy #$38
     jmp RS_ENTER_CAVE
 
+Rs_EntCaveWall_P4820:
+    ldx #$48
+    cpx plX
+    bne .rts
+    ldy #$24
+    cpy plY
+    bne .rts
+    ldy #$20
+    jmp RS_ENTER_CAVE
+
 Rs_EntCaveMidSecretNorth:
     lda plState
     and #PS_GLIDE
@@ -343,11 +353,11 @@ PositionStairs: ; SUBROUTINE
 StairPosX:
     .byte #$40, #$18, #$74, #$74, #$28
 StairBushPosX:
-    .byte #$40, #$34, #$40, #$58, #$64, #$64
+    .byte #$40, #$34, #$40, #$58, #$64, #$64, #$6C
 StairPosY:
     .byte #$2C, #$34, #$48, #$2C, #$28
 StairBushPosY:
-    .byte #$1C, #$28, #$2C, #$20, #$20, #$38
+    .byte #$1C, #$28, #$2C, #$20, #$20, #$38, #$18
 
 Rs_BlockPathStairs: ; SUBROUTINE
     lda roomFlags
@@ -381,16 +391,15 @@ Rs_BlockSpiralStairs: ; SUBROUTINE
 
 Rs_EntCaveWallCenterBlocked: SUBROUTINE
     SET_WALL_DESTROY_XY 40, 38
-    bne .main
 Rs_EntCaveWallLeftBlocked:
     SET_WALL_DESTROY_XY 14, 38
-    bne .main
 Rs_EntCaveWallRightBlocked:
     SET_WALL_DESTROY_XY 6C, 38
-    bne .main
+Rs_EntCaveWallBlocked_P4820:
+    SET_WALL_DESTROY_XY 48, 20
 Rs_EntDungSpectacleRockBlocked:
     SET_WALL_DESTROY_XY 58, 20
-.main
+Rs_EntCaveWallBlocked
     bit CXM0FB
     bvc .skip_rts
     lda plState2
@@ -407,7 +416,6 @@ Rs_EntDungSpectacleRockBlocked:
     lda rWorldRoomFlags,y
     ora #WRF_SV_DESTROY
     sta wWorldRoomFlags,y
-
     rts ; jmp RsInit_Wall
 .skip_rts
     pla
@@ -417,24 +425,20 @@ Rs_EntDungSpectacleRockBlocked:
 
 Rs_EntDungBushBlocked: SUBROUTINE ; $40, $1C
     SET_BUSH_DESTROY_XY 40, 1C
-    bne .main
 Rs_EntCaveBushBlocked_P3428:
     SET_BUSH_DESTROY_XY 34, 28
-    bne .main
 Rs_EntCaveBushBlocked_P402C:
     SET_BUSH_DESTROY_XY 40, 2C
-    bne .main
 Rs_EntCaveBushBlocked_P5820:
     SET_BUSH_DESTROY_XY 58, 20
-    bne .main
 Rs_EntCaveBushBlocked_P6420:
     SET_BUSH_DESTROY_XY 64, 20
-    bne .main
 Rs_EntCaveBushBlocked_P6438:
     SET_BUSH_DESTROY_XY 64, 38
-    ;bne .main
+Rs_EntCaveBushBlocked_P6C18:
+    SET_BUSH_DESTROY_XY 6C, 18
 
-.main
+Rs_EntCaveBushBlocked
     ldy roomId
     lda rWorldRoomFlags,y
     and #WRF_SV_DESTROY
@@ -448,7 +452,7 @@ Rs_EntCaveBushBlocked_P6438:
     bne .skip_rts
     lda plItem2Time
     cmp #ITEM_ANIM_FIRE_BURNBUSH
-    bmi .skip_rts
+    bcc .skip_rts
 
 ; opening destroyed
     lda #SFX_SOLVE
@@ -457,7 +461,6 @@ Rs_EntCaveBushBlocked_P6438:
     lda rWorldRoomFlags,y
     ora #WRF_SV_DESTROY
     sta wWorldRoomFlags,y
-
     rts ; jmp RsInit_Bush
 .skip_rts
     pla

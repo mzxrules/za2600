@@ -225,7 +225,6 @@ SfxTalk: SUBROUTINE
 SfxArrowFreq:
     .byte 2, 6, 11
 
-SfxEnDamage:
 SfxArrow: SUBROUTINE
     ldx SfxCur
     cpx #3

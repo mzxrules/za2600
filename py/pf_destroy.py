@@ -23,12 +23,14 @@ bush_locations = [
     (0x58,0x20, None, None),
     (0x64,0x20, None, None),
     (0x64,0x38, None, None),
+    (0x6C,0x18, None, None),
     ]
 
 wall_locations = [
     (0x14,0x38, "Rs_EntCaveWallLeftBlocked",        "Rs_EntCaveWallLeft"),
     (0x40,0x38, "Rs_EntCaveWallCenterBlocked",      "Rs_EntCaveWallCenter"),
     (0x6C,0x38, "Rs_EntCaveWallRightBlocked",       "Rs_EntCaveWallRight"),
+    (0x48,0x20, "Rs_EntCaveWallBlocked_P4820",      "Rs_EntCaveWall_P4820"),
     (0x58,0x20, "Rs_EntDungSpectacleRockBlocked",   "Rs_EntDungSpectacleRock"),
 ]
 
@@ -163,9 +165,13 @@ def generate_opening(x, y, depth, preDestroy, blockedRS, openedRS, label):
     bne {label}_Opened_{plabel}
 '''.lstrip('\n')
 
-    output += f'''
+    if (depth*4-1) != 7:
+        output += f'''
     lda #{depth*4-1}
     sta wBLH
+'''.lstrip('\n')
+
+    output += f'''
 {label}Test_{plabel}
 '''.lstrip('\n')
 

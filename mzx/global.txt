@@ -21,7 +21,7 @@ set "SPR_PF2" (256*2+128)
 set "SPR_UI" (256*3)
 set "SPR_WORK" (256*6)
 
-. "build $x2 and $x1 string look-up tables"
+. "build $x2, $x1 and $hx2 string look-up tables"
 loop start
 set "local2" "('loopcount'/16)"
 goto "#hex"
@@ -29,6 +29,7 @@ set "$x2_&loopcount&.0" to "('local2')"
 set "local2" "('loopcount'%16)"
 goto "#hex"
 set "$x2_&loopcount&.1" to "('local2')"
+set "hx2_&$x2_('loopcount')" to "loopcount"
 if "loopcount" >= 16 then "cont_hex_precompute"
 set "$x1_&loopcount&.0" to "('local2')"
 : "cont_hex_precompute"

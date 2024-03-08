@@ -11,6 +11,7 @@ En_VireKeese: SUBROUTINE
     adc #0
     sta enKeeseThink,x
     bne .rts
+    sta enStun,x
     lda #EN_KEESE
     sta enType,x
     lda #3
@@ -99,6 +100,10 @@ En_Keese: SUBROUTINE
 .update_health
     lda enHp,x
     and enKeeseTemp
+    cmp enHp,x
+    beq .endCheckDamaged
+    ldy #SFX_EN_DAMAGE
+    sty SfxFlags
     tay ; 3 bits
     clc
     ror
