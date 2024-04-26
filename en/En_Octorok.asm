@@ -1,8 +1,8 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-EN_OCTOROK_SPIN = $08
-EN_OCTOROK_RARE = $80
+EN_OCTOROK_RARE = $2
+EN_OCTOROK_FIRING = $1
 
 En_OctorokBlue: SUBROUTINE
     lda enState,x
@@ -19,12 +19,12 @@ En_Octorok: SUBROUTINE
 
     and #3
     sta enDir,x
-    ora enState,x
-    sta enState,x
 
+    jsr En_Octorok_ShootT
     jmp En_Octorok_Think
 
-En_OctorokMain:
+
+En_OctorokMain: SUBROUTINE
 ; check damaged
     lda #SLOT_F0_BATTLE
     sta BANK_SLOT
@@ -71,10 +71,59 @@ En_OctorokMain:
 .normal_movement
 
 ; What's the plan, octo dad?
+
+
+; update shoot timer
+    lda enOctorokShootT,x
+    cmp #1
+    adc #0
+    sta enOctorokShootT,x
+
+    bne .skip_
+    jsr En_Octorok_ShootT
+; Toggle Walking/Firing Rock state, update shoot timer
     lda enState,x
-    and #3
-    cmp enDir,x
-    bne .spinInPlace
+    eor #EN_OCTOROK_FIRING
+    sta enState,x
+    and #1
+    beq .rts
+
+    lda #$D0
+    sta enOctorokShootT,x
+    rts
+
+.skip_
+
+.test_fire_rock
+    lda enState,x
+    ror
+    bcc .walk
+
+; Waiting to fire the rock
+    lda enOctorokShootT,x
+    cmp #$F0
+    bne .end_test_fire_rock
+
+.fire_rock
+    lda enDir,x
+    sta mi0Dir,x
+    lda #MI_SPAWN_ROCK
+    sta miType,x
+    lda en0X,x
+    sta mi0X,x
+    lda en0Y,x
+    sta mi0Y,x
+.end_test_fire_rock
+    rts
+
+
+.walk
+; update think timer
+    lda enOctorokThink,x
+    cmp #1
+    adc #0
+    sta enOctorokThink,x
+
 
     ldy en0X,x
     lda EnMove_OffgridLUT,y
@@ -87,71 +136,32 @@ En_OctorokMain:
     jsr EnMove_Card_WallCheck
 
     lda enOctorokThink,x
-    beq .newDir
+    bne .contdir
 
+.newdir
+    jsr EnMove_Card_RandDir
+    bpl .setNewDir
+
+.contdir
     jsr EnMove_Card_RandDirIfBlocked
     tya
     cmp enDir,x
     beq .move
-    bne .setNewDir ; jmp
-
-.newDir
-    jsr EnMove_Card_NewDir
 
 .setNewDir
+    sty enDir,x
     jsr En_Octorok_Think
-
-; set spin direction
-    lda Rand16
-    and #4
-    ora EnMoveNextDir
-    sta Temp0
-    lda enState,x
-    and #$80
-    ora Temp0
-    sta enState,x
     rts
 
 .move
     ldx enNum
     lda enState,x
-    rol
-    rol
-    rol
+    and #EN_OCTOROK_RARE
     ora #1
     and Frame
     and #3
     beq .rts
-    jsr EnMoveDir
-
-; update think timer
-    lda enOctorokThink,x
-    cmp #1
-    adc #0
-    sta enOctorokThink,x
-    rts
-
-
-.spinInPlace
-    lda Frame
-    and #3
-    bne .rts
-    lda enState,x
-    and #4
-    sta Temp0
-    lda enDir,x
-    clc
-    adc Temp0
-    tay
-    lda ENEMY_ROT,y
-    sta enDir,x
-    sta mi0Dir,x
-    lda #MI_SPAWN_ROCK
-    sta miType,x
-    lda en0X,x
-    sta mi0X,x
-    lda en0Y,x
-    sta mi0Y,x
+    jmp EnMoveDir
 .rts
     rts
 
@@ -162,11 +172,18 @@ En_Octorok_Think: SUBROUTINE
     sta enOctorokThink,x
     rts
 
-ENEMY_ROT:
-   ;.byte 0, 2, 1, 3 ; enemy direction sprite indices
-    .byte 2, 3, 1, 0 ; clockwise
-    .byte 3, 2, 0, 1 ; counterclock
+En_Octorok_ShootT: SUBROUTINE
+    jsr Random
+    and #$F8
+    bne .skip
+    lda #$80
+.skip
+    sta enOctorokShootT,x
+    rts
 
-;EN_ATAN2_CARDINAL:
-;    .byte DEG_180, DEG_000, DEG_090, DEG_270
+/*
+ENEMY_ROT:
+    .byte #EN_DIR_U, #EN_DIR_D, #EN_DIR_R, #EN_DIR_L ; clockwise spin
+    .byte #EN_DIR_D, #EN_DIR_U, #EN_DIR_L, #EN_DIR_R ; counterclock
+*/
     LOG_SIZE "En_Octorok", En_Octorok

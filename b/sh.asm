@@ -446,50 +446,82 @@ EnRandomDrops:
     .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
     .byte #GI_RUPEE, #GI_RUPEE, #GI_RUPEE5, #GI_RUPEE
 
+;==============================================================================
+; NpcShop_UpdateRupees
+; Increments/Decrements rupee count for shops
+; X,Y is clobbered
+;==============================================================================
+
 NpcShop_UpdateRupees: SUBROUTINE
     lda Frame
     ror
     bcc .rts
-    sed
-    lda npcIncRupee
-    beq .try_dec_rupees
-.inc_rupees
-    clc
-    sbc #0
-    sta npcIncRupee
-    lda itemRupees
-    cmp #$99
-    bcs .zero_inc
-    clc
-    adc #1
-    sta itemRupees
-    lda #SFX_ITEM_RUPEE
-    sta SfxFlags
-    bne .rts ;jmp
-.zero_inc
-    lda #0
-    sta npcIncRupee
-    beq .rts ;jmp
 
-.try_dec_rupees
-    lda npcDecRupee
-    beq .rts
-    clc
-    sbc #0
-    sta npcDecRupee
+; clamp npcIncRupee
+    lda #$99
+    sec
+    sbc itemRupees
+    cmp npcIncRupee
+    bcs .end_clamp_inc
+    sta npcIncRupee
+.end_clamp_inc
+
+; clamp npcDecRupee
     lda itemRupees
-    beq .zero_dec
-    clc
-    sbc #0
-    sta itemRupees
-    lda #SFX_ITEM_RUPEE
-    sta SfxFlags
-    bne .rts ;jmp
-.zero_dec
-    lda #0
+    cmp npcDecRupee
+    bcs .end_clamp_dec
     sta npcDecRupee
+.end_clamp_dec
+
+    sed
+    jsr NpcShop_IncRupees
+    jsr NpcShop_DecRupees
 .rts
     cld
+    rts
+
+NpcShop_IncDecCommon: SUBROUTINE
+    ldy #SFX_ITEM_RUPEE
+    sty SfxFlags
+
+    ldy #$10
+    cmp #$30
+    bcs .inc_set_delta
+    ldy #$01
+.inc_set_delta
+    sty NpcRupeeDelta
+
+    sec
+    sbc NpcRupeeDelta
+    rts
+
+
+NpcShop_IncRupees: SUBROUTINE
+    lda npcIncRupee
+    beq .rts
+
+    jsr NpcShop_IncDecCommon
+    sta npcIncRupee
+
+    lda itemRupees
+    clc
+    adc NpcRupeeDelta
+    sta itemRupees
+.rts
+    rts
+
+NpcShop_DecRupees: SUBROUTINE
+    lda npcDecRupee
+    beq .rts
+
+    jsr NpcShop_IncDecCommon
+    sta npcDecRupee
+
+    lda itemRupees
+    sec
+    sbc NpcRupeeDelta
+    sta itemRupees
+.rts
     rts
 
 En_NpcShopGetSelction: SUBROUTINE

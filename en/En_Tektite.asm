@@ -4,6 +4,7 @@
 EN_TEKTITE_TYPE_RED = $0
 EN_TEKTITE_TYPE_BLUE = $1
 EN_TEKTITE_TYPE_MASK = $1
+EN_TEKTITE_BOUNCETIME = #<-$10
 
 
 En_Tektite:
@@ -17,18 +18,91 @@ En_TektiteBlue:
 .commmon_init
     lda #EN_TEKTITE_MAIN
     sta enType,x
-    rts
+    jmp En_TektiteReset
 
 En_TektiteMain:
-    lda enState,x
-    and #~2
-    sta enState,x
 
+
+.movement
+; Adjust en0Y for room collision routines
+    lda en0Y,x
+    sec
+    sbc enTektiteShiftY,x
+    sta en0Y,x
+
+    lda enTektiteThink,x
+    cmp #1
+    adc #0
+    sta enTektiteThink,x
+    bne .stationary
+
+.bounce
+    lda enTektiteBounceTime,x
+    cmp #1
+    adc #0
+    sta enTektiteBounceTime,x
+    bmi .do_bounce
+    dec enTektiteBounce,x
+    bmi En_TektiteReset
+    jsr Random
+    ora #%100
+    and #%111
+    sta enDir,x
+    lda #EN_TEKTITE_BOUNCETIME
+    sta enTektiteBounceTime,x
+
+.do_bounce
     lda Frame
-    lsr
-    lsr
-    lsr
-    and #2
-    ora enState,x
-    sta enState,x
+    and #3
+    beq .cont_bounce
+    lda #SLOT_F0_EN_MOVE
+    sta BANK_SLOT
+    jsr EnMoveDir
+.cont_bounce
+    ldy enTektiteBounceTime,x
+    lda En_TektiteBouncey-EN_TEKTITE_BOUNCETIME,y
+    sta enTektiteShiftY,x
+
+.stationary
+
+
+; Revert en0Y adjustment for display and hitbox purposes
+    lda en0Y,x
+    clc
+    adc enTektiteShiftY,x
+    sta en0Y,x
     rts
+
+En_TektiteReset:
+    lda #EN_TEKTITE_BOUNCETIME
+    sta enTektiteBounceTime,x
+    jsr Random
+    and #$3F
+    adc #$A0
+    sta enTektiteThink,x
+    jsr Random
+    and #7
+    clc
+    ror
+    ora #4
+    sta enDir,x
+
+    lda enState,x
+    and #1
+    beq .set_bounce
+    adc #0
+.set_bounce
+    sta enTektiteBounce,x
+    rts
+
+En_TektiteBounce:
+    .byte 1, 0
+
+
+En_TektiteBouncey:
+/*
+    .byte 0, 0, 0, 0, 0, 0, 0, 0
+    .byte 0, 0, 0, 0, 0, 0, 0, 0
+*/
+    .byte 0, 2, 4, 6, 7, 7, 8, 8
+    .byte 8, 8, 7, 7, 6, 4, 2, 0

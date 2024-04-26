@@ -4,8 +4,7 @@
 
 EnDraw_Octorok: SUBROUTINE
     lda enState,x
-    rol
-    rol
+    lsr
     and #1
     tay
     lda EnDraw_OctorokColors,y

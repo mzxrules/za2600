@@ -360,7 +360,7 @@ MsIntro1: SUBROUTINE
     clc
     adc Frame
     sta SeqTFrame + 1
-    cpx #24
+    cpx #23
     bne .skipSwitchSeq
     lda #MS_PLAY_THEME_L
     sta SeqFlags

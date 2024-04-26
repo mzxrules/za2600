@@ -12,13 +12,22 @@ EnDraw_Tektite: SUBROUTINE
 
     lda #>SprE12
     sta enSpr+1
-    lda enState,x
-    lsr
-    and #1
-    tay
-    lda Mul8,y
-    clc
-    adc #<SprE12
+
+
+    lda enTektiteThink,x
+    bpl .up
+    cmp #$E0
+    bcs .down
+    and #$8
+    bne .up
+
+
+.down
+    lda #<SprE13
+    sta enSpr
+    rts
+
+.up lda #<SprE12
     sta enSpr
     rts
 

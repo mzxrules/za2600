@@ -450,9 +450,9 @@ PF1Room26:
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
-    .byte $03 ; |......XX|
-    .byte $BA ; |X.XXX.X.|
-    .byte $BD ; |X.XXXX.X|
+    .byte $00 ; |........|
+    .byte $BF ; |X.XXXXXX|
+    .byte $BF ; |X.XXXXXX|
     .byte $BF ; |X.XXXXXX|
     .byte $BF ; |X.XXXXXX|
     .byte $BF ; |X.XXXXXX|

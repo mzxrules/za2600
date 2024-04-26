@@ -267,7 +267,7 @@ def DumpSongChannel(name, channelNotes, beat):
                 if keyStr in dic:
                     tone = toneVal
                     note = dic[keyStr]
-                    break;
+                    break
         if tone == 0 and note == 32:
             print("Error {} {}".format(keyStr, dur))
             tone = 1
@@ -346,6 +346,6 @@ def NoteSpectrumTest():
                 if note in dic:
                     foundNote = True
                     print(note + " GOOD")
-                    break;
+                    break
         if not foundNote:
             print(note + " BAD")

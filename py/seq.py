@@ -408,9 +408,6 @@ overworld_baseline = [
 
 overworld_intro_highline = [
     [
-        "_", 2
-    ],
-    [
         "A#5", 2,
 
         "_", (2/3),
@@ -463,9 +460,6 @@ overworld_intro_highline = [
 ]
 
 overworld_intro_baseline = [
-    [
-        "_", 2
-    ],
     [
         "A#4", 1,
 

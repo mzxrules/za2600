@@ -9,7 +9,7 @@ En_BossGlock: SUBROUTINE
     bmi .skipInit
     lda #$80
     sta enState
-    lda #24-1
+    lda #-1 ;#24-1
     sta enHp
     lda #EN_GLOCK_HOMEX
     sta en0X
@@ -17,6 +17,16 @@ En_BossGlock: SUBROUTINE
     sta en0Y
     jsr Random
     sta enGlockThink
+
+    lda #0
+    sta wPF2Room + 11
+    sta wPF2Room + 12
+    sta wPF2Room + 13
+    sta wPF2Room + 14
+    sta wPF2Room + 15
+    sta wPF2Room + 16
+
+    jmp EnSysEnDie
 
 
 

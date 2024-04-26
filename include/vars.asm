@@ -283,6 +283,7 @@ shopItem    ds 3
     ORG CLASS_NPC_SHOP_COMMON
 Rng2State   ds 5
 NpcGamePrizeTable = Temp2
+NpcRupeeDelta     = Temp3
     EN_SIZE NPC_GAME
 
 ; == En_ClearDrop
@@ -329,6 +330,7 @@ enWallPhase         ds 2 ; anim timer for phasing through wall
     ORG CLASS_EN_ENEMY_MOVE_SHOOT
 enOctorokThink      ds 2
 enOctorokShootT     ds 2
+enOctorokTemp       = Temp0
     EN_SIZE OCTOROK
 
 ; == Goriya
@@ -389,6 +391,13 @@ enPeehatSpeedFrac   ds 2
 enPeehatThink       ds 2
 enPeehatFlyThink    ds 2
     EN_SIZE PEEHAT
+
+; == Tektite
+    ORG CLASS_EN_ENEMY_MOVE
+enTektiteThink      ds 2
+enTektiteBounceTime ds 2
+enTektiteBounce     ds 2
+enTektiteShiftY     ds 2
 
 ; == Rolling Rocks
     ORG CLASS_EN_ENEMY_MOVE
