@@ -20,8 +20,30 @@ En_TektiteBlue:
     sta enType,x
     jmp En_TektiteReset
 
-En_TektiteMain:
+En_TektiteMain: SUBROUTINE
 
+; check damaged
+    lda #SLOT_F0_BATTLE
+    sta BANK_SLOT
+    jsr HbCheckDamaged_CommonRecoil
+
+    lda #SLOT_F0_EN
+    sta BANK_SLOT
+    lda enHp,x
+    bpl .endCheckDamaged
+    jmp EnSysEnDie
+.endCheckDamaged
+
+; Check player hit
+    lda enStun,x
+    bmi .endCheckHit
+    bit plState2
+    bvc .endCheckHit ; EN_LAST_DRAWN
+    bit CXPPMM
+    bpl .endCheckHit
+    lda #-4
+    jsr UPDATE_PL_HEALTH
+.endCheckHit
 
 .movement
 ; Adjust en0Y for room collision routines
@@ -55,8 +77,10 @@ En_TektiteMain:
     lda Frame
     and #3
     beq .cont_bounce
-    lda #SLOT_F0_EN_MOVE
+    lda #SLOT_F0_EN_MOVE2
     sta BANK_SLOT
+    jsr EnMove_Ord_WallCheck
+    sty enDir,x
     jsr EnMoveDir
 .cont_bounce
     ldy enTektiteBounceTime,x
@@ -89,6 +113,7 @@ En_TektiteReset:
 
     lda enState,x
     and #1
+    eor #1
     beq .set_bounce
     adc #0
 .set_bounce
@@ -100,9 +125,5 @@ En_TektiteBounce:
 
 
 En_TektiteBouncey:
-/*
-    .byte 0, 0, 0, 0, 0, 0, 0, 0
-    .byte 0, 0, 0, 0, 0, 0, 0, 0
-*/
     .byte 0, 2, 4, 6, 7, 7, 8, 8
     .byte 8, 8, 7, 7, 6, 4, 2, 0

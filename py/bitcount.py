@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from asmgen import ToAsm, ToAsmD
+from asmgen import ToAsm, ToAsmD, ToAsmLabel
 from dataclasses import dataclass, field
 from typing import List, Tuple
 
@@ -7,6 +7,37 @@ EN_DIR_L = 0
 EN_DIR_R = 1
 EN_DIR_U = 2
 EN_DIR_D = 3
+EN_DIR_LU = 4
+EN_DIR_LD = 5
+EN_DIR_RU = 6
+EN_DIR_RD = 7
+
+EN_BLOCKED_DIR_L = 1
+EN_BLOCKED_DIR_R = 2
+EN_BLOCKED_DIR_U = 4
+EN_BLOCKED_DIR_D = 8
+
+EN_DIR_SEQ = [
+    "L",
+    "R",
+    "U",
+    "D",
+    "LU",
+    "LD",
+    "RU",
+    "RD",
+]
+
+EN_DIR_DICT = {
+    "L" : EN_DIR_L,
+    "R" : EN_DIR_R,
+    "U" : EN_DIR_U,
+    "D" : EN_DIR_D,
+    "LU" : EN_DIR_LU,
+    "LD" : EN_DIR_LD,
+    "RU" : EN_DIR_RU,
+    "RD" : EN_DIR_RD,
+}
 
 ROOM_PX_HEIGHT = 20
 
@@ -421,6 +452,27 @@ def get_seek_lut():
         file.write("EnMove_SeekDirLUT:\n")
         file.write(ToAsm(seek,4))
 
+def get_ord_bounds_lut():
+    blockedDirs = [ "L", "R", "U", "D" ]
+    replaceDirs = [ "R", "L", "D", "U" ]
+
+    output = ""
+    resultList = []
+
+    for i in range(len(blockedDirs)):
+        bDir = blockedDirs[i]
+        rDir = replaceDirs[i]
+        for dir in EN_DIR_SEQ:
+            key = f'#EN_DIR_{dir.replace(bDir, rDir)}'
+            # resultList.append(EN_DIR_DICT[key])
+            resultList.append(key)
+    output += ToAsmLabel(resultList,8)
+
+    with open(f'gen/EnMoveOrd_WallCheckLUT.asm', "w") as file:
+        file.write("EnMoveOrd_WallCheckLUT:\n")
+        file.write(output)
+
+
 def get_bitcount():
     table = []
     for i in range(128):
@@ -460,10 +512,6 @@ def get_bl_col_test_lut():
     # DBLOCKED If deltaY = -8 to -1, deltaX = -7 to 7
     # UBLOCKED If deltaY =  1 to  8, deltaX = -7 to 7
 
-    EN_BLOCKED_DIR_L = 1
-    EN_BLOCKED_DIR_R = 2
-    EN_BLOCKED_DIR_U = 4
-    EN_BLOCKED_DIR_D = 8
 
     xLut = []
     for x in range(-8, 8+1):
@@ -519,6 +567,7 @@ get_randdir_lut()
 get_pause_map_codegen()
 get_en_offgrid_lut()
 get_bl_col_test_lut()
+get_ord_bounds_lut()
 
 with open(f'gen/bitcount.asm', "w") as file:
     file.write(bitcountOut)

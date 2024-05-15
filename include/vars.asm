@@ -567,6 +567,7 @@ EnMoveSeekFlags     ds 1
 EnMoveNX            ds 1
 EnMoveNY            ds 1
 EnMoveBlockedDir    ds 1
+EnMoveOrdBoardXR = EnMoveBlockedDir
 EnMoveNextDir       ds 1
 EnMoveTemp0         ds 1
 EnMoveTemp1         ds 1
@@ -901,6 +902,7 @@ SLOT_F0_AU2     = RAMSEG_F0 | 38
 SLOT_F0_BATTLE  = RAMSEG_F0 | 39
 SLOT_F0_EN_MOVE = RAMSEG_F0 | 40
 SLOT_F0_MISSILE = RAMSEG_F0 | 41
+SLOT_F0_EN_MOVE2 = RAMSEG_F0 | 51
 
 ; En Segments
 SEG_NA = SLOT_FC_MAIN

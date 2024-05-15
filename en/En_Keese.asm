@@ -138,23 +138,13 @@ En_Keese: SUBROUTINE
 ; Movement
 
 .bounceTest
-    lda #SLOT_F0_EN_MOVE
+    lda #SLOT_F0_EN_MOVE2
     sta BANK_SLOT
 
     ldy enHp,x
     lda En_Keese_BounceXR-1,y
-    sta enKeeseTemp ; #EnBoardXR
-
-    lda en0X,x
-    cmp #EnBoardXL
-    bcc .bounce
-    cmp enKeeseTemp ; #EnBoardXR
-    bcs .bounce
-    lda en0Y,x
-    cmp #EnBoardYD
-    bcc .bounce
-    cmp #EnBoardYU
-    bcs .bounce
+    jsr EnMove_Ord_WallCheck_BoardXR
+    sty enDir,x
 
 .think
     lda enKeeseThink,x

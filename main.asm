@@ -723,7 +723,6 @@ BANK_48
     RORG $F400
 
 BANK_49
-    INCLUDE "en/En_Tektite.asm"
     INCLUDE "en/En_Leever.asm"
     INCLUDE "en/En_Moblin.asm"
     INCLUDE "en/En_Gibdo.asm"
@@ -741,8 +740,18 @@ BANK_49
     RORG $F400
 
 BANK_50
+    INCLUDE "en/En_Tektite.asm"
     INCLUDE "en/En_Gel.asm"
     LOG_BANK_SIZE "-BANK 50-", BANK_50
+
+    SEG Bank50
+    ORG $CC00
+    RORG $F000
+
+BANK_51
+    INCLUDE "b/EnMove_Common.asm"
+    INCLUDE "b/EnMove2.asm"
+    LOG_BANK_SIZE "-BANK 51- Entity Movement (Ordinal)", BANK_40
 
 ; End
 

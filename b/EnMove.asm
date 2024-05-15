@@ -472,28 +472,3 @@ EnMove_RecoilMove
     adc EnMoveTemp0
     tay
     jmp EnMoveDel
-
-;==============================================================================
-; Selects a diagonal direction headed towards room center
-; X = enNum
-; enDir,x is updated
-;==============================================================================
-EnMove_Ord_SetSeekCenter: SUBROUTINE
-    lda en0Y,x
-    sec
-    sbc #BoardYC
-    and #$80
-    sta EnMoveTemp0
-
-    lda #BoardXC
-    sec
-    sbc en0X,x
-    clc
-    rol
-    lda EnMoveTemp0
-    rol
-    rol
-    tay
-    lda EnMoveBounceDiagonal,y
-    sta enDir,x
-    rts

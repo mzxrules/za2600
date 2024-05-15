@@ -119,7 +119,7 @@ En_Peehat: SUBROUTINE
 .endCheckHit
 
 .movement
-    lda #SLOT_F0_EN_MOVE
+    lda #SLOT_F0_EN_MOVE2
     sta BANK_SLOT
 
     lda enPeehatThink,x

@@ -70,9 +70,9 @@ Entity_Table = [
     "En_MoblinMain",   "SEG_49", "SEG_42", "EnDraw_Moblin",
     "En_Peehat",       "SEG_49", "SEG_42", "EnDraw_Peehat",
     "En_Zora",         "SEG_NA", "SEG_42", "EnDraw_None",
-    "En_Tektite",      "SEG_49", "SEG_42", "EnDraw_None",
-    "En_TektiteBlue",  "SEG_49", "SEG_42", "EnDraw_None",
-    "En_TektiteMain",  "SEG_49", "SEG_42", "EnDraw_Tektite",
+    "En_Tektite",      "SEG_50", "SEG_42", "EnDraw_None",
+    "En_TektiteBlue",  "SEG_50", "SEG_42", "EnDraw_None",
+    "En_TektiteMain",  "SEG_50", "SEG_42", "EnDraw_Tektite",
 
     "En_Darknut",      "SEG_43", "SEG_42", "EnDraw_Darknut",
     "En_DarknutBlue",  "SEG_43", "SEG_42", "EnDraw_Darknut",
