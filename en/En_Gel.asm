@@ -73,7 +73,7 @@ En_Gel: SUBROUTINE
     bcc .test_10
     jsr HbPlAttCollide_EnBB
     lda HbFlags2
-    bpl .test_10
+    bpl .test_10 ; not HB_BOX_HIT
     lda #%10
     sta enGelTemp
 .test_10
@@ -85,7 +85,7 @@ En_Gel: SUBROUTINE
     sta Hb_bb_y
     jsr HbPlAttCollide
     lda HbFlags2
-    bpl .end_checkhit
+    bpl .end_checkhit ; not HB_BOX_HIT
     lda #%01
     and enGelTemp
     sta enGelTemp

@@ -70,7 +70,7 @@ PlayerInput: SUBROUTINE
     lda plStun
     and #3
     tay ; plRecoilDir
-    ldx ObjXYAddr,y      ; 4
+    ldx ObjXYAddr,y         ; 4
     lda OBJ_PL,x            ; 4
     clc
     adc PlayerRecoilDist,y  ; 4*

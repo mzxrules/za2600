@@ -43,12 +43,12 @@ PF2Room2:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
+    .byte $01 ; |X.......| mirrored
+    .byte $03 ; |XX......| mirrored
+    .byte $07 ; |XXX.....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $1F ; |XXXXX...| mirrored
 PF2Room3:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored

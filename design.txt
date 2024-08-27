@@ -735,7 +735,7 @@ To test if two boxes AA and BB overlap:
 Another way to compute it:
     (u8)(AA.x + AA.w-1 - BB.x) < (AA.w + BB.w-1)
 
-Hb_Get_Pl_Att: Fetches current player attack and it's hitbox
+HbGetPlAtt: Fetches current player attack and it's hitbox
 
 Battle Weapons:
 
@@ -746,7 +746,7 @@ fire
 wave
 bomb
 wand
-Boomerang ?
+Boomerang
 
 
 Enemy Missile system

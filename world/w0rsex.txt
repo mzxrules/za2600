@@ -102,7 +102,7 @@ Rs_None
 zz0
 Rs_EntCaveWallCenterBlocked
 Cv_Potion
-Rs_BAD_HIDDEN_CAVE
+Rs_EntCaveBushBlocked_P3428
 Cv_Shop4
 Rs_None
 zz0
@@ -186,7 +186,7 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_EntCaveWallCenter
+Rs_EntCaveWallRight
 Cv_Shop1
 Rs_ShoreItem
 GiHeart

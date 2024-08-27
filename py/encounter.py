@@ -132,6 +132,7 @@ SPAWN_PATTERN = [
     ["En_BossAqua"],
     ["En_BossManhandla"],
     ["En_BossDon"],
+    ["En_BossDon"]*2,
     ["En_BossDig"],
     ["En_BossPatra"],
     ["En_BossGanon"],

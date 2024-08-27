@@ -53,7 +53,7 @@ ENTRY_INIT:  ; Address F000
     bne .initWorldKernMem
 
     lda .ENTRY_SLOT_SPR,y
-    sta wWorldSprBank
+    sta wWorldSprBank_DEFAULT
 
     ldx #127
     lda #$FF

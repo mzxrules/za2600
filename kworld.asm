@@ -126,6 +126,9 @@ KERNEL_LOOP: SUBROUTINE ; 76 cycles per scanline
     sta ENAM0
     sta ENAM1
     sta PF0
+    VKERNEL1 WorldSprBank_DEFAULT
+    lda #SLOT_F0_SPR0
+    sta wWorldSprBank
     rts
 
     LOG_SIZE "-KERNEL WORLD-", KERNEL_WORLD

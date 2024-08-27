@@ -8,7 +8,7 @@
 ; HbDamage tables
 
 EnDam_Darknut:
-    .byte -1, -2, -4,  0,  0, -4
+    ; .byte -1, -2, -4,  0,  0, -4
 EnDam_Lynel:
 EnDam_Rope:
 EnDam_Octorok:
@@ -18,6 +18,12 @@ EnDam_Manhandla:
 EnDam_Common:
     .byte -1, -2, -4, -1, -1, -4
 
+;==============================================================================
+; HbGetPlAtt
+;----------
+; Configures the hitbox and vars for the current player attack
+; X = enNum; x is preserved
+;==============================================================================
 HbGetPlAtt: SUBROUTINE
     lda #0
     sta HbPlFlags
@@ -61,7 +67,6 @@ HbGetPlAtt: SUBROUTINE
     pha
     lda plItem2Dir
     sta HbDir
-HbPlRangFx:
 HbPlNone:
     rts
 
@@ -91,6 +96,10 @@ HbPlWandFx: SUBROUTINE
     sta Hb_aa_x
     lda plm1Y
     sta Hb_aa_y
+    rts
+
+HbPlRangFx: SUBROUTINE
+    ; TODO - Implement
     rts
 
 HbPlSwordFx: SUBROUTINE
@@ -137,10 +146,21 @@ SetHbSwordDamage:
 
 HbPlBomb: SUBROUTINE
     cpy #ITEM_ANIM_BOMB_DETONATE
-    bcc .rts
+    bcc .lit_bomb
     lda #HITBOX_AA_SQ8 ; 8x8 hitbox
     sta Hb_aa_Box
     lda #HB_DMG_BOMB
+    sta HbDamage
+    lda #HB_PL_BOMB
+    sta HbPlFlags
+    rts
+.lit_bomb
+    lda enType,x
+    cmp #EN_BOSS_DON
+    bne .rts
+    lda #HITBOX_AA_SQ4 ; 4x4 hitbox
+    sta Hb_aa_Box
+    lda #HB_DMG_BOMB_LIT
     sta HbDamage
     lda #HB_PL_BOMB
     sta HbPlFlags
@@ -177,6 +197,7 @@ HbManhandla: SUBROUTINE
 .rts
     rts
 
+; Sets 4x4 enemy hitbox
 HbEnSq4: SUBROUTINE
     lda Hb_aa_Box
     beq .rts
@@ -187,10 +208,11 @@ HbEnSq4: SUBROUTINE
     rts
 
 ;==============================================================================
-; HbPlAttCollide
-; HbPlAttCollide_EnBB
+; HbPlAttCollide (Callee manually sets hb_bb_x, hb_bb_y)
+; HbPlAttCollide_EnBB (hb_bb_x, hb_bb_y is assigned to en0X, en0Y)
 ;----------
-; Calculates whether player attack has collided with EnBB
+; Tests if the player attack has collided with EnBB
+; - Kills player arrow/swordfx attacks when collided
 ; X = enNum
 ;==============================================================================
 HbPlAttCollide_EnBB:
@@ -245,9 +267,52 @@ HbPlAttCollide: SUBROUTINE
     rts
 
 ;==============================================================================
+; HbPlAttCollide (Callee manually sets hb_bb_x, hb_bb_y)
+; HbPlAttCollide_EnBB (hb_bb_x, hb_bb_y is assigned to en0X, en0Y)
+;----------
+; Tests if the player attack has collided with EnBB
+; - Preserves player arrow/swordfx attacks when collided
+; X = enNum
+;==============================================================================
+HbPlAttCollide_Invisible: SUBROUTINE
+    lda #HB_BOX_HIT
+    sta HbFlags2
+    ldy Hb_aa_Box
+    beq .no_hit ; null box
+
+.valid_box
+    lda Hb_aa_x
+    clc
+    adc hitbox_aa_ox,y
+
+    sec
+    sbc Hb_bb_x
+    cmp hitbox_aa_w_plus_bb_w,y
+    bcc .pass_x
+.no_hit
+    lda #0
+    sta HbFlags2 ; clear HB_BOX_HIT
+    rts
+
+.pass_x
+    lda Hb_aa_y
+    clc
+    adc hitbox_aa_oy,y
+
+    sec
+    sbc Hb_bb_y
+    cmp hitbox_aa_h_plus_bb_h,y
+    bcs .no_hit
+    rts
+
+;==============================================================================
 ; HbCheckDamaged_CommonRecoil
 ;----------
-; Performs enemy damage check and effective state changes
+; Performs these common enemy combat operations:
+; - Updates enStun
+; - Fetches active player attack hitbox
+; - Compares it to an 8x8 hitbox at en0X,en0Y
+; - Computes battle damage and applies stun/recoil
 ; X = enNum
 ;==============================================================================
 HbCheckDamaged_CommonRecoil: SUBROUTINE
@@ -269,18 +334,19 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
 
 ; If no hit
     lda HbFlags2
-    bpl .rts ; HB_BOX_HIT
+    bpl .rts ; not HB_BOX_HIT
 
+; Handle Darknuts specially
     lda #enType,x
     cmp #EN_DARKNUT_MAIN
     bne .gethit
 
-; Test if darknut takes damage
+; Test if player attack is capable of damaging the Darknut
     lda HbPlFlags
     and #HB_PL_SWORD | #HB_PL_BOMB | #HB_PL_SWORDFX
     beq .immune ; block non-damaging attacks
 
-; Test if item hit Darknut's shield
+; Test if player attack hit is blocked by Darknut's shield
     ldy enDir,x
     cpy HbDir
     ; bne .gethit
@@ -289,7 +355,7 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
 .gethit
     ldy HbDamage
     lda EnDam_Common,y
-.gethit_override_damage
+
     ldy #SFX_EN_DAMAGE
     clc
     adc enHp,x

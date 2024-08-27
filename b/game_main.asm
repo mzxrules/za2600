@@ -477,7 +477,6 @@ RETURN_WORLD: SUBROUTINE
 En_Zora:
 En_Pols:
 En_BossGhini:
-En_BossDon:
 En_BossDig:
 En_BossPatra:
 En_BossGanon:

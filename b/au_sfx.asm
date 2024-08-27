@@ -45,3 +45,22 @@ SfxEnKill: SUBROUTINE
     inx
     stx AUDFT1
     rts
+
+SfxBossRoar: SUBROUTINE
+    lda SfxCur
+    cmp #32
+    bpl SfxStop_l
+    lsr
+    lsr
+    tax
+
+    lda #3
+    sta AUDCT1
+    lda #8
+    sta AUDVT1
+    lda SfxBossRoarFPattern,x
+    sta AUDFT1
+    rts
+
+SfxBossRoarFPattern:
+    .byte #27-#18, #25-#18, #22-#18, #22-#18, #22-#18, #24-#18, #26-#18, #30-#18

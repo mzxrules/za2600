@@ -1,0 +1,92 @@
+SprDon0:
+    .byte $07 ; |.....XXX|
+    .byte $C7 ; |XX...XXX|
+    .byte $C3 ; |XX....XX|
+    .byte $BD ; |X.XXXX.X|
+    .byte $A5 ; |X.X..X.X|
+    .byte $7E ; |.XXXXXX.|
+    .byte $FF ; |XXXXXXXX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $BD ; |X.XXXX.X|
+    .byte $5A ; |.X.XX.X.|
+    .byte $99 ; |X..XX..X|
+SprDon1:
+    .byte $00 ; |........|
+    .byte $C3 ; |XX....XX|
+    .byte $99 ; |X..XX..X|
+    .byte $A5 ; |X.X..X.X|
+    .byte $A5 ; |X.X..X.X|
+    .byte $7E ; |.XXXXXX.|
+    .byte $FF ; |XXXXXXXX|
+    .byte $81 ; |X......X|
+    .byte $24 ; |..X..X..|
+    .byte $81 ; |X......X|
+    .byte $5A ; |.X.XX.X.|
+    .byte $99 ; |X..XX..X|
+SprDon2:
+    .byte $D0 ; |XX.X....|
+    .byte $DB ; |XX.XX.XX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $BD ; |X.XXXX.X|
+    .byte $BD ; |X.XXXX.X|
+    .byte $7E ; |.XXXXXX.|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $BD ; |X.XXXX.X|
+    .byte $C3 ; |XX....XX|
+    .byte $7E ; |.XXXXXX.|
+    .byte $99 ; |X..XX..X|
+SprDon3:
+    .byte $C3 ; |XX....XX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $BD ; |X.XXXX.X|
+    .byte $7E ; |.XXXXXX.|
+    .byte $DB ; |XX.XX.XX|
+    .byte $DB ; |XX.XX.XX|
+    .byte $E7 ; |XXX..XXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $BD ; |X.XXXX.X|
+    .byte $42 ; |.X....X.|
+    .byte $99 ; |X..XX..X|
+SprDon4:
+    .byte $0D ; |....XX.X|
+    .byte $65 ; |.XX..X.X|
+    .byte $3F ; |..XXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $3F ; |..XXXXXX|
+    .byte $9F ; |X..XXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $DE ; |XX.XXXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $7C ; |.XXXXX..|
+    .byte $70 ; |.XXX....|
+    .byte $A8 ; |X.X.X...|
+SprDon5:
+    .byte $61 ; |.XX....X|
+    .byte $2D ; |..X.XX.X|
+    .byte $37 ; |..XX.XXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $3F ; |..XXXXXX|
+    .byte $9F ; |X..XXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $DE ; |XX.XXXX.|
+    .byte $CE ; |XX..XXX.|
+    .byte $7C ; |.XXXXX..|
+    .byte $70 ; |.XXX....|
+    .byte $A8 ; |X.X.X...|
+SprDon6:
+    .byte $1C ; |...XXX..|
+    .byte $63 ; |.XX...XX|
+    .byte $2E ; |..X.XXX.|
+    .byte $7E ; |.XXXXXX.|
+    .byte $FE ; |XXXXXXX.|
+    .byte $9F ; |X..XXXXX|
+    .byte $7F ; |.XXXXXXX|
+    .byte $DF ; |XX.XXXXX|
+    .byte $CF ; |XX..XXXX|
+    .byte $5D ; |.X.XXX.X|
+    .byte $71 ; |.XXX...X|
+    .byte $A8 ; |X.X.X...|
+

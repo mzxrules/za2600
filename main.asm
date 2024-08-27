@@ -225,7 +225,18 @@ BANK_15
     RORG $F000
 
 BANK_16
-    LOG_BANK_SIZE "-BANK 16- Sprites Boss", BANK_16
+    INCLUDE "spr/spr_item.asm"
+    align $100
+    INCLUDE "spr/spr_en1.asm"
+    align $100
+
+    align $20
+    INCLUDE "spr/spr_pl.asm"
+    INCLUDE "spr/spr_rock.asm"
+    INCLUDE "spr/spr_sh.asm"
+    INCLUDE "spr/spr_don.asm"
+
+    LOG_BANK_SIZE "-BANK 16- Sprites Dung 2", BANK_16
 
 
 ; ****************************************
@@ -742,6 +753,8 @@ BANK_49
 BANK_50
     INCLUDE "en/En_Tektite.asm"
     INCLUDE "en/En_Gel.asm"
+    INCLUDE "en/En_BossDon.asm"
+    INCLUDE "en/EnDraw_BossDon.asm"
     LOG_BANK_SIZE "-BANK 50-", BANK_50
 
     SEG Bank50

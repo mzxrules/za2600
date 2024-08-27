@@ -405,6 +405,13 @@ enRollingRockTimer  ds 2
 enRollingRockSize   ds 2
     EN_SIZE ROLLING_ROCK
 
+; == Boss Don
+    ORG CLASS_EN_ENEMY_MOVE
+enDonStep           ds 2
+enDonSpdFrac        ds 2
+enDonTimer          ds 2
+enDonTemp           = Temp0
+
 ;==============================================================================
 ; Entity Variables - BOSS
 ;==============================================================================
@@ -581,6 +588,7 @@ HB_DMG_SWORD3   = 2
 HB_DMG_ARROW    = 3
 HB_DMG_FIRE     = 4
 HB_DMG_BOMB     = 5
+HB_DMG_BOMB_LIT = 7 ; EN_BOSS_DON specific
 
 HbPlFlags       ds 1
 HB_PL_SWORD     = $01
@@ -590,9 +598,10 @@ HB_PL_BOMB      = $08
 HB_PL_WAVE      = $10
 HB_PL_WAND      = $20
 HB_PL_SWORDFX   = $40
+HB_PL_RANG      = $80
 HbFlags2        ds 1
-HbDir           ds 1
 HB_BOX_HIT      = $80
+HbDir           ds 1
 Hb_aa_Box       ds 1
 Hb_aa_x         ds 1
 Hb_aa_y         ds 1
@@ -630,7 +639,7 @@ TextReg     ds 12
 ; * Extended RAM                         *
 ; ****************************************
 
-; Level Data Banks 1 and 2
+; Level Data ROM Banks
 
     ORG $F400
 WORLD_T_PF1L    ds 128
@@ -709,7 +718,7 @@ rKERNEL48   ds KERNEL48_LEN
 ; * Constants                            *
 ; ****************************************
 
-KERNEL_LEN  = $A4   ; World Kernel length
+KERNEL_LEN  = $A9   ; World Kernel length
 KERNEL48_LEN = $68  ; 48 pix kernel length
 
 ROOM_PX_HEIGHT      = 20 ; height of room in pixels
@@ -864,7 +873,7 @@ SLOT_F4_PF_DUNG = RAMSEG_F4 | 13
 SLOT_F0_SPR0    = RAMSEG_F0 | 14
 SLOT_F4_SPR0    = RAMSEG_F4 | 14
 SLOT_F0_SPR1    = RAMSEG_F0 | 15
-SLOT_F0_SPR2    = 0 ; 16
+SLOT_F0_SPR2    = RAMSEG_F0 | 16
 SLOT_F0_SPR_HUD = RAMSEG_F0 | 17
 SLOT_F4_SPR_HUD = RAMSEG_F4 | 17
 

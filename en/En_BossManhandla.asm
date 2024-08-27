@@ -47,7 +47,7 @@ En_BossManhandla: SUBROUTINE
     sta Hb_bb_x
     jsr HbPlAttCollide
     lda HbFlags2
-    bpl .checkHitRight
+    bpl .checkHitRight ; not HB_BOX_HIT
     lda #EN_BLOCKED_DIR_L
     sta enManhandlaHitFlags
 
@@ -58,7 +58,7 @@ En_BossManhandla: SUBROUTINE
     sta Hb_bb_x
     jsr HbPlAttCollide
     lda HbFlags2
-    bpl .checkHitUp
+    bpl .checkHitUp ; not HB_BOX_HIT
     lda #EN_BLOCKED_DIR_R
     ora enManhandlaHitFlags
     sta enManhandlaHitFlags
@@ -73,7 +73,7 @@ En_BossManhandla: SUBROUTINE
     sta Hb_bb_y
     jsr HbPlAttCollide
     lda HbFlags2
-    bpl .checkHitDown
+    bpl .checkHitDown ; not HB_BOX_HIT
     lda #EN_BLOCKED_DIR_U
     ora enManhandlaHitFlags
     sta enManhandlaHitFlags
@@ -85,7 +85,7 @@ En_BossManhandla: SUBROUTINE
     sta Hb_bb_y
     jsr HbPlAttCollide
     lda HbFlags2
-    bpl .checkHitComplete
+    bpl .checkHitComplete ; not HB_BOX_HIT
     lda #EN_BLOCKED_DIR_D
     ora enManhandlaHitFlags
     sta enManhandlaHitFlags

@@ -155,6 +155,23 @@ set "$sht" to "spr/spr_aqua.asm"
 goto "#dumpsht"
 
 
+. "Don Boss"
+set "CHAR" to "(12*256 + 8)"
+
+. "12 byte chars
+loop start
+inc "$" by "SprDon&loopcount&:\n"
+set "sp&sp&" to 12
+set "yrepeat" to 0
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop 6
+
+set "$sht" to "spr/spr_don.asm"
+goto "#dumpsht"
+
+
 . "Manhandla Boss"
 set "CHAR" to "(12*256 + 64+64)"
 

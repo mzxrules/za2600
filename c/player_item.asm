@@ -160,7 +160,7 @@ PlayerUseBomb: SUBROUTINE
     jmp PlayerEquipSword
 .useBomb
     dec itemBombs
-    lda #-32
+    lda #-40
     sta plItemTimer
 
     ldx #OBJ_PLM0
@@ -169,6 +169,8 @@ PlayerUseBomb: SUBROUTINE
     rts
 
 PlayerDrawBomb: SUBROUTINE
+    lda plm0Y
+    bmi .draw_initial
     cpy #ITEM_ANIM_BOMB_DETONATE
     bmi .draw_initial
 
