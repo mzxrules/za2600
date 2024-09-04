@@ -66,17 +66,18 @@ PAUSE_RETURN:
     jsr POSITION_SPRITES
 
 OVERSCAN: SUBROUTINE ; 30 scanlines
-    sta WSYNC
-    lda #2
-    sta VBLANK
-    lda #36
-    sta TIM64T ; 30 scanline timer
 ; reset world kernel vars
     lda #7
     sta wENH
     lda #0
     sta wNUSIZ1_T
     sta wREFP1_T
+
+    sta WSYNC
+    lda #2
+    sta VBLANK
+    lda #36
+    sta TIM64T ; 30 scanline timer
 
 ; update player stun timer
     lda plStun

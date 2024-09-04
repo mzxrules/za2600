@@ -3,6 +3,27 @@
 ;==============================================================================
 
 En_ZolGel: SUBROUTINE
+; Setup initial position if offgrid
+    lda #SLOT_F0_EN_MOVE
+    sta BANK_SLOT
+
+.init_fixgrid
+    ldy en0X,x
+    lda EnMove_OffgridLUT,y
+    bne .init_move
+    ldy en0Y,x
+    lda EnMove_OffgridLUT,y
+    beq .init_cont
+
+.init_move
+    lda enStun,x
+    and #$FC
+    ora enDir,x
+    sta enStun,x
+    jsr EnMoveDir
+    jmp .init_fixgrid
+
+.init_cont
     lda enGelStepTimer,x
     cmp #1
     adc #0
@@ -14,8 +35,10 @@ En_ZolGel: SUBROUTINE
 
     lda #EN_GEL
     sta enType,x
+
     lda enStun,x
     and #3
+    ; move perpendicular to last direction
     eor #2
     sta enDir,x
     eor #1
