@@ -192,7 +192,7 @@ HbManhandla: SUBROUTINE
     lda Hb_aa_Box
     beq .rts
     clc
-    adc #HITBOX_AA_COUNT
+    adc #HITBOX_BB_MANHANDLA
     sta Hb_aa_Box
 .rts
     rts
@@ -202,7 +202,7 @@ HbEnSq4: SUBROUTINE
     lda Hb_aa_Box
     beq .rts
     clc
-    adc #HITBOX_AA_COUNT*2
+    adc #HITBOX_BB_4x4
     sta Hb_aa_Box
 .rts
     rts
@@ -347,8 +347,9 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
     beq .immune ; block non-damaging attacks
 
 ; Test if player attack hit is blocked by Darknut's shield
-    ldy enDir,x
-    cpy HbDir
+    lda enDir,x
+    eor #1
+    cmp HbDir
     ; bne .gethit
     beq .immune
 
@@ -367,7 +368,6 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
 
     lda HbDir
     and #3
-    eor #1
     clc
     adc #(-32*4)
     sta enStun,x

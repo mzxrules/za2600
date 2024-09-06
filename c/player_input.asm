@@ -133,7 +133,7 @@ MovePlayerRight:
     bit plDir
     bne .rts
 .MovePlayerRightFr
-    lda #$00
+    lda #PL_DIR_R
     sta plDir
     inc plX
 .rts
@@ -157,7 +157,7 @@ MovePlayerLeft:
     bit plDir
     bne .rts
 .MovePlayerLeftFr
-    lda #$01
+    lda #PL_DIR_L
     sta plDir
     dec plX
     rts ;jmp ContFin
@@ -180,7 +180,7 @@ MovePlayerDown:
     bit plDir
     beq .rts
 .MovePlayerDownFr
-    lda #$2
+    lda #PL_DIR_D
     sta plDir
     dec plY
     rts ;jmp ContFin
@@ -203,7 +203,7 @@ MovePlayerUp:
     bit plDir
     beq .rts
 .MovePlayerUpFr
-    lda #$3
+    lda #PL_DIR_U
     sta plDir
     inc plY
 
@@ -211,7 +211,7 @@ ContFin:
     rts
 
 PlayerRecoilDist:
-    .byte -2, 2, 2, -2
+    .byte 2, -2, -2, 2
 
 PlayerStunColors:
     .byte #COLOR_PLAYER_00, #COLOR_PLAYER_02, #COLOR_PLAYER_01, #COLOR_EN_BLACK

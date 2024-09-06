@@ -339,7 +339,7 @@ ObjXYAddr:
     .byte plX, plX, plY, plY
 
 PlayerXYDist1:
-    .byte 1, -1, -1, 1
+    .byte -1, 1, 1, -1
 
     ;align 16
 

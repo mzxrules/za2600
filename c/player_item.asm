@@ -5,11 +5,11 @@
 FireOffX:
 BombOffX:
 MagicOffX:
-    .byte 10, -4, 3, 3
+    .byte -4, 10, 3, 3
 FireOffY:
 BombOffY:
 MagicOffY:
-    .byte 2, 2, -5, 9
+    .byte 2, 2, 9, -5
 
     .byte -2,  4, -8, 8, -8, 4,  4, -8, 8, -8, 4
 BombAnimDeltaX:
@@ -53,9 +53,9 @@ PlayerUpdateArrow: SUBROUTINE
     adc PlayerXYDist2,y
     sta OBJ_PLM0,x
 
-    cmp PlayerXYBoardLimitL,y
+    cmp PlayerXYBoardLimitMin,y
     bmi .offScreen
-    cmp PlayerXYBoardLimitH,y
+    cmp PlayerXYBoardLimitMax,y
     bpl .offScreen
     rts
 
@@ -230,15 +230,15 @@ WeaponHeight_8px_thin:
 
 WeaponOffX:
 WeaponOffX_4px:
-    .byte 8, -2, 4, 4
+    .byte -2, 8, 4, 4
 WeaponOffX_8px:
-    .byte 8, -6, 4, 4
+    .byte -6, 8, 4, 4
 
 WeaponOffY:
 WeaponOffY_4px:
-    .byte 3, 3, -3, 7
+    .byte 3, 3, 7, -3
 WeaponOffY_8px:
-    .byte 3, 3, -7, 7
+    .byte 3, 3, 7, -7
 
 
 
@@ -574,9 +574,9 @@ PlayerUpdateWandFx: SUBROUTINE
     clc
     adc PlayerXYDist2,y
     sta OBJ_PLM1,x
-    cmp PlayerXYBoardLimitL,y
+    cmp PlayerXYBoardLimitMin,y
     bmi .offScreen
-    cmp PlayerXYBoardLimitH,y
+    cmp PlayerXYBoardLimitMax,y
     bmi .onScreen
 .offScreen
     lda #0
@@ -597,11 +597,11 @@ PlayerDrawWandFx: SUBROUTINE
     rts
 
 PlayerXYDist2:
-    .byte 2, -2, -2, 2
+    .byte -2, 2, 2, -2
 
-PlayerXYBoardLimitL:
+PlayerXYBoardLimitMin:
     .byte #BoardXL, #BoardXL, #BoardYD, #BoardYD
-PlayerXYBoardLimitH:
+PlayerXYBoardLimitMax:
     .byte #BoardXR, #BoardXR, #BoardYU, #BoardYU
 
 PlayerUpdateMeatFx: SUBROUTINE

@@ -250,10 +250,10 @@ tbl = [
     vals=[
         "BlNone",
         # Ball movement ids must be 1-4
-        "BlR",
         "BlL",
-        "BlD",
+        "BlR",
         "BlU",
+        "BlD",
         "BlPushBlock",
         "BlPushBlockDiamondTop",
         "BlPushBlockLeft",
@@ -349,10 +349,10 @@ tbl = [
     genPtrTable=False,
     genConstants=True,
     vals=[
-        "PlDirR",
         "PlDirL",
+        "PlDirR",
+        "PlDirU",
         "PlDirD",
-        "PlDirU"
     ],
     bankLut=None),
     GameEnum("EnMoveDir", "EnDir",

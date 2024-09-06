@@ -41,22 +41,28 @@ EN_DIR_DICT = {
 
 ROOM_PX_HEIGHT = 20
 
-HITBOX_INFO = [
+HITBOX_WEAP_INFO = [
 # width, height, x shift displacement
-    (0, 0, 0),
+    (0, 0, 0, 0),
 # sword/arrow
-    (8, 2, 0),
-    (8, 2, 0),
-    (2, 8, 0),
-    (2, 8, 0),
+    (8, 2, 0, 0),
+    (8, 2, 0, 0),
+    (2, 8, 0, 0),
+    (2, 8, 0, 0),
 # sword retract
-    #(4, 2, 0),
-    #(4, 2, 0),
-    #(2, 4, 0),
-    #(2, 4, 0),
+    #(4, 2, 0, 0),
+    #(4, 2, 0, 0),
+    #(2, 4, 0, 0),
+    #(2, 4, 0, 0),
 
-    (4, 4, 0),
-    (8, 8, 0),
+    (4, 4, 0, 0), # HITBOX_AA_SQ4
+    (8, 8, 0, 0), # HITBOX_AA_SQ8
+]
+
+HITBOX_BODY_INFO = [
+    (8, 8, 0, 0),       # HITBOX_BB_8x8
+    (4, 4, 2, 2),       # HITBOX_BB_4x4
+    (12, 12, -2, -2),   # HITBOX_BB_MANHANDLA
 ]
 
 HITBOX_INFO_CONST = [
@@ -64,15 +70,16 @@ HITBOX_INFO_CONST = [
     ("HITBOX_AA_SWORD", 1),
     ("HITBOX_AA_SQ4", 5),
     ("HITBOX_AA_SQ8", 6),
-    ("HITBOX_AA_COUNT", len(HITBOX_INFO)),
+    ("HITBOX_BB_4x4", len(HITBOX_WEAP_INFO) * 1),
+    ("HITBOX_BB_MANHANDLA", len(HITBOX_WEAP_INFO) * 2),
 ]
 
 HITBOX2_INFO = [
 # player shield hb
-    (3, 8,  6,  0),
-    (3, 8, -1,  0),
-    (8, 3,  0, -1),
-    (8, 3,  0,  6),
+    (3, 8, -1,  0), # Left
+    (3, 8,  6,  0), # Right
+    (8, 3,  0,  6), # Up
+    (8, 3,  0, -1), # Down
 # player hitbox (missiles)
     (6, 6, 1, 1),
 ]
@@ -86,11 +93,11 @@ def get_hitbox_info():
     aa_oy = []
     aa_w_PLUS_bb_w = []
     aa_h_PLUS_bb_h = []
-    for bb_w, bb_h, bb_xshift, bb_yshift in [(8, 8, 0, 0), (12, 12, -2, -2), (4, 4, 2, 2)]:
-        for aa_w, aa_h, aa_xshift in HITBOX_INFO:
+    for bb_w, bb_h, bb_xshift, bb_yshift in HITBOX_BODY_INFO:
+        for aa_w, aa_h, aa_xshift, aa_yshift in HITBOX_WEAP_INFO:
 
             aa_ox.append(aa_w-1+aa_xshift-bb_xshift-1)
-            aa_oy.append(aa_h-1+0-bb_yshift)
+            aa_oy.append(aa_h-1+aa_yshift-bb_yshift)
             aa_w_PLUS_bb_w.append(aa_w + bb_w -1)
             aa_h_PLUS_bb_h.append(aa_h + bb_h -1)
 
@@ -101,13 +108,13 @@ def get_hitbox_info():
     with open(f'gen/hitbox_info.asm', "w") as file:
         file.write(hitbox_aa_const)
         file.write("hitbox_aa_ox:\n")
-        file.write(ToAsm(aa_ox, len(HITBOX_INFO)))
+        file.write(ToAsm(aa_ox, len(HITBOX_WEAP_INFO)))
         file.write("hitbox_aa_oy:\n")
-        file.write(ToAsm(aa_oy, len(HITBOX_INFO)))
+        file.write(ToAsm(aa_oy, len(HITBOX_WEAP_INFO)))
         file.write("hitbox_aa_w_plus_bb_w:\n")
-        file.write(ToAsm(aa_w_PLUS_bb_w, len(HITBOX_INFO)))
+        file.write(ToAsm(aa_w_PLUS_bb_w, len(HITBOX_WEAP_INFO)))
         file.write("hitbox_aa_h_plus_bb_h:\n")
-        file.write(ToAsm(aa_h_PLUS_bb_h, len(HITBOX_INFO)))
+        file.write(ToAsm(aa_h_PLUS_bb_h, len(HITBOX_WEAP_INFO)))
 
 def get_hitbox2_info():
     aa_ox = []
