@@ -34,6 +34,11 @@ SIZE_EN_{1} = . - EN_FREE + $8000
         ENDIF
     ENDM
 
+; Bitpack miType data, storing in register A
+    MACRO SET_A_miType
+    lda #<[{2}/4*$10] + {1}
+    ENDM
+
 ; Rewriteable Kernel Variable
     MACRO VKERNEL1
 r{1} = . - KERNEL_WORLD + rKERNEL + 1

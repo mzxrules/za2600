@@ -107,7 +107,7 @@ En_OctorokMain: SUBROUTINE
 .fire_rock
     lda enDir,x
     sta mi0Dir,x
-    lda #MI_SPAWN_ROCK
+    SET_A_miType #MI_SPAWN_ROCK, -4
     sta miType,x
     lda en0X,x
     sta mi0X,x

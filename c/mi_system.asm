@@ -3,41 +3,106 @@
 ;==============================================================================
 
 ;==============================================================================
-; MiSysUpdateCardPos
+; MiSystem
+;----------
+; Updates enemy missiles
+;==============================================================================
+MiSystem: SUBROUTINE
+    ldx #1 ; Loop for 2
+.loop
+    lda miType,x
+    beq .continue ; #MI_NONE
+    jsr MiProcess
+    jsr MiPlCol
+
+    lda mi0X,x
+    cmp #EnBoardXL
+    bmi .kill
+    cmp #EnBoardXR+7
+    bpl .kill
+
+    lda mi0Y,x
+    cmp #EnBoardYU+7
+    bpl .kill
+    cmp #EnBoardYD
+    bpl .continue
+.kill
+    lda #MI_NONE
+    sta miType,x
+.continue
+    dex
+    bpl .loop
+    rts
+
+;==============================================================================
+; MiProcess
+;----------
+; Processes an enemy missile
+; A = miType
+;==============================================================================
+MiProcess: SUBROUTINE
+    and #$0F
+    tay
+    lda #0
+    sta HbDir
+    lda MiTypeH,y
+    pha
+    lda MiTypeL,y
+    pha
+.rts
+    rts
+
+
+MiMoveDeltaX:
+    .byte -2,  2,  0,  0 ; cardinals 2x
+
+MiMoveDeltaY:
+    .byte  0,  0,  2, -2 ; cardinals 2x
+
+hitbox2_bb_type:
+    .byte #HITBOX2_BB_MISSILE
+hitbox2_bb_arrow:
+    .byte #HITBOX2_BB_ARROW_L, #HITBOX2_BB_ARROW_R, #HITBOX2_BB_ARROW_U, #HITBOX2_BB_ARROW_D
+    .byte #HITBOX2_BB_SQ4
+
+MiRunRock:
+    ldy mi0Dir,x
+    lda #HITBOX2_BB_MISSILE
+    sta HbDir
+    bpl MiMoveCardDel ; jmp
+
+MiRunArrow:
+    ldy mi0Dir,x
+    lda hitbox2_bb_arrow,y
+    sta HbDir
+    bpl MiMoveCardDel ; jmp
+
+MiRunSword:
+MiRunWave:
+    ldy mi0Dir,x
+    lda #HITBOX2_BB_SQ4
+    sta HbDir
+    bpl MiMoveCardDel ; jmp
+
+;==============================================================================
+; MiMoveCardDel
 ;----------
 ; Updates Missile Position via Cardinal Dir
 ; X = Missile Index
+; Y = Missile Direction (cardinal)
 ;==============================================================================
-MiSysUpdateCardPos: SUBROUTINE
-MiRunRock:
-    lda mi0Dir,x
-    sta MiSysDir
-    and #2
-    bne .updateY
-.updateX
-    lda MiSysDir
-    and #1
-    beq .left
-.right
-    inc mi0X,x
-    inc mi0X,x
-    rts
-.left
-    dec mi0X,x
-    dec mi0X,x
-    rts
-.updateY
-    lda MiSysDir
-    and #1
-    beq .up
-.down
-    dec mi0Y,x
-    dec mi0Y,x
-    rts
-.up
-    inc mi0Y,x
-    inc mi0Y,x
-    rts
+MiMoveCardDel: SUBROUTINE
+    lda mi0X,x      ; 4
+    clc             ; 2
+    adc MiMoveDeltaX,y   ; 4
+    sta mi0X,x      ; 4 (14)
+
+    lda mi0Y,x      ; 4
+    clc             ; 2
+    adc MiMoveDeltaY,y   ; 4
+    sta mi0Y,x      ; 4 (28)
+
+    rts             ; 6 (34)
 
 ;==============================================================================
 ; MiSysUpdateAtanPos
@@ -45,8 +110,8 @@ MiRunRock:
 ; Updates Missile Position via Atan2 Dir
 ; X = Missile Index
 ;==============================================================================
-MiSysUpdateAtanPos: SUBROUTINE
 MiRunBall:
+MiSysUpdateAtanPos: SUBROUTINE
     lda mi0Dir,x
     sta MiSysDir
     and #$3F
@@ -101,56 +166,13 @@ MiRunBall:
     bpl .addDouble
     rts
 
-MiSystem: SUBROUTINE
-    ldx #1
-.loop
-    ldy miType,x
-    beq .continue
-
-    jsr MiProcess
-    jsr MiPlCol
-
-    lda mi0X,x
-    cmp #EnBoardXL
-    bmi .kill
-    cmp #EnBoardXR+7
-    bpl .kill
-
-    lda mi0Y,x
-    cmp #EnBoardYU+7
-    bpl .kill
-    cmp #EnBoardYD
-    bpl .continue
-.kill
-    lda #0
-    sta miType,x
-.continue
-    dex
-    bpl .loop
-    rts
-
 MiNone:
-MiInvalid:
-MiSpawnSword:
-MiRunSword:
-MiSpawnArrow:
-MiRunArrow:
-MiSpawnWave:
-MiRunWave:
+MiHit:
 MiSpawnRang:
 MiRunRang:
-    lda #0
+    lda #MI_NONE
     sta miType,x
     rts
-
-MiProcess: SUBROUTINE
-    lda MiTypeH,y
-    pha
-    lda MiTypeL,y
-    pha
-.rts
-    rts
-
 
 
 MiSpawnAtan: SUBROUTINE
@@ -193,17 +215,15 @@ MiSpawnBall:
     rts
 
 ; X is missile slot
+MiSpawnSword:
+MiSpawnArrow:
+MiSpawnWave:
 MiSpawnRock: SUBROUTINE
     inc miType,x ; #MI_RUN_ROCK
     rts
 
 ; X is missile slot
 MiPlCol: SUBROUTINE
-
-; Shield HB test
-    lda plDir
-    and #3
-    tay
     lda plX
     sta Hb_aa_x
     lda plY
@@ -213,15 +233,27 @@ MiPlCol: SUBROUTINE
     lda mi0Y,x
     sta Hb_bb_y
 
+    lda miType,x
+    and #$8
+    beq .test_shield_hit
+
     lda ITEMV_SHIELD
     and #ITEMF_SHIELD
-    bne .valid_box
-    lda miType,x
-    cmp #MI_RUN_BALL
     beq .no_shield_hit
 
-HbEnAttCollide:
-.valid_box
+.test_shield_hit
+; Player can't shield if attacking
+    lda plState
+    and #PS_LOCK_MOVE_IT
+    bne .no_shield_hit
+
+    lda plDir
+    and #3
+    clc
+    adc HbDir
+    tay
+    iny
+
     lda Hb_aa_x
     clc
     adc hitbox2_aa_ox,y
@@ -250,47 +282,49 @@ HbEnAttCollide:
 .skipTestMissileGreen
 */
 
-    lda #0
+    lda #MI_NONE
     sta miType,x
     lda #SFX_DEF
     sta SfxFlags
     rts
 
 .no_shield_hit
+    ldy HbDir
     lda Hb_aa_x
     clc
-    adc hitbox2_aa_ox+4
+    adc hitbox2_aa_ox,y
 
     sec
     sbc Hb_bb_x
-    cmp hitbox2_aa_w_plus_bb_w+4
+    cmp hitbox2_aa_w_plus_bb_w,y
     bcs .no_player_hit
 
 .pass_player_x
     lda Hb_aa_y
     clc
-    adc hitbox2_aa_oy+4
+    adc hitbox2_aa_oy,y
 
     sec
     sbc Hb_bb_y
-    cmp hitbox2_aa_h_plus_bb_h+4
+    cmp hitbox2_aa_h_plus_bb_h,y
     bcc .player_hit
 .no_player_hit
     rts
 
 .player_hit
-/*
-    lda enType,x
-    cmp #EN_TEST_MISSILE
-    bne .skipTestMissileRed
-    lda #COLOR_EN_RED
-    sta enTestMissileResult,x
-.skipTestMissileRed
-*/
 
-    lda #0
-    sta miType,x
-    lda #-4
+; MISSILE_HIT!
+
+; Test if recoil should be computed
+    bit plStun
+    bmi .player_hit_final ; avoid recoil check
+
+    lda miType,x
+    bpl .player_hit_final ; prevent dealing bonkers damage
+    lsr
+    lsr
+    ora #$C0
+    and #$FC
     jsr UPDATE_PL_HEALTH
 
 ; compute player recoil position (we are already recoiling opposite plDir)
@@ -367,4 +401,8 @@ HbEnAttCollide:
 .player_recoil_up
     lda #PL_DIR_D | #PL_STUN_TIME
     sta plStun
+
+.player_hit_final
+    lda #0
+    sta miType,x
     rts

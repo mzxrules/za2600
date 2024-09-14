@@ -2,6 +2,38 @@
 ; mzxrules 2024
 ;==============================================================================
 
+; EnWeaponWidth
+EnWeaponWidth_4px_thick:
+    .byte $20, $20, $10, $10
+EnWeaponWidth_8px_thick:
+    .byte $30, $30, $10, $10
+EnWeaponWidth_4px_thin:
+    .byte $20, $20, $00, $00
+EnWeaponWidth_8px_thin:
+    .byte $30, $30, $00, $00
+
+; EnWeaponHeight
+EnWeaponHeight_4px_thick:
+    .byte 1, 1, 3, 3
+EnWeaponHeight_8px_thick:
+    .byte 1, 1, 7, 7
+EnWeaponHeight_4px_thin:
+    .byte 0, 0, 3, 3
+EnWeaponHeight_8px_thin:
+    .byte 0, 0, 7, 7
+
+; EnWeaponOffX  ; Drawn displacement from mi0X
+EnWeaponOffX_4px_thick:
+    .byte 2+1, 2+1, 3+1, 3+1
+EnWeaponOffX_8px_thin:
+    .byte 0+1, 0+1, 4+1, 4+1
+
+; EnWeaponOffY  ; Drawn displacement from mi0Y
+EnWeaponOffY_4px_thick:
+    .byte 3, 3, 2, 2
+EnWeaponOffY_8px_thin:
+    .byte 4, 4, 0, 0
+
 ;==============================================================================
 ; Sets position and color variables, overriding with stun colors
 ; Y = Color Index
@@ -40,7 +72,53 @@ EnDraw_Pos: SUBROUTINE
     rts
 
 EnDraw_Wave: SUBROUTINE
+EnDraw_Sword: SUBROUTINE
+    lda miType,x
+    ror
+    bcc .rts
+    ldy mi0Dir,x
+
+    lda rNUSIZ1_T
+    ora EnWeaponWidth_4px_thick,y
+    sta wNUSIZ1_T
+
+    lda EnWeaponHeight_4px_thick,y
+    sta wM1H
+    clc
+    lda mi0X,x
+    adc EnWeaponOffX_4px_thick,y
+    sta m1X
+    clc
+    lda mi0Y,x
+    adc EnWeaponOffY_4px_thick,y
+    sta m1Y
+
+.rts
+    rts
+
 EnDraw_Arrow: SUBROUTINE
+    lda miType,x
+    ror
+    bcc .rts
+    ldy mi0Dir,x
+
+    lda rNUSIZ1_T
+    ora EnWeaponWidth_8px_thin,y
+    sta wNUSIZ1_T
+
+    lda EnWeaponHeight_8px_thin,y
+    sta wM1H
+    clc
+    lda mi0X,x
+    adc EnWeaponOffX_8px_thin,y
+    sta m1X
+    clc
+    lda mi0Y,x
+    adc EnWeaponOffY_8px_thin,y
+    sta m1Y
+.rts
+    rts
+
 EnDraw_SmallMissile: SUBROUTINE
     lda miType,x
     ror

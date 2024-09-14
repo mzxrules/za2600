@@ -40,7 +40,7 @@ En_Gibdo: SUBROUTINE
     bvc .endCheckHit ; EN_LAST_DRAWN
     bit CXPPMM
     bpl .endCheckHit
-    lda #-4
+    lda #-16
     jsr UPDATE_PL_HEALTH
 .endCheckHit
 

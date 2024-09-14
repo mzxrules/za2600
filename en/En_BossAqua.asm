@@ -107,6 +107,8 @@ En_BossAqua: SUBROUTINE
     lda enState
     ora #EN_BOSS_AQUA_FIRE_STATE
     sta enState
+    lda #SFX_BOSS_ROAR
+    sta SfxFlags
     rts
 .end_firing
     lda #-100
@@ -132,7 +134,7 @@ En_BossAqua: SUBROUTINE
 .fire1
     inx
 .fire0
-    lda #MI_SPAWN_BALL
+    SET_A_miType #MI_SPAWN_BALL, -8
     sta miType,x
     ldy en0X
     dey

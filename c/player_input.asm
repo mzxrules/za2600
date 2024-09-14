@@ -9,7 +9,7 @@ PlayerPause: SUBROUTINE
     bmi .skipCheckForPause
 ; Check Flute Warp in
     lda plState3
-    and #[PS_ACTIVE_ITEM2 & $FE]
+    and #[#PS_ACTIVE_ITEM2 & $FE]
     cmp #PLAYER_FLUTE_FX
     bne .noWarpIn
     bit plItem2Dir ; PS_CATCH_WIND

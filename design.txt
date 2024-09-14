@@ -677,7 +677,6 @@ Rs_Maze
 ==+ TRI +==
 /|\ 1, 2 (top)
 
-
 /| |\ 3, 4 (second row)
 
 square left
@@ -750,6 +749,12 @@ Boomerang
 
 
 Enemy Missile system
+
+miType stores missile type and damage
+ & 0F is missile type
+    types 0-7 are blocked by small shield
+    types 8-F are only blocked by magic shield
+ & F0 is 4-bit signed damage in quarter hp increments (only negative values are valid)
 
 mi0X,mi0Y is the lower left position of an 8x8 missile sprite. This is done so
 that displacement calculations can be simplified regardless of the true size

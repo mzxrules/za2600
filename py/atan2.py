@@ -60,7 +60,7 @@ def GenAtan2Table(name, data):
             d = 255
             trunc = " TRUNC"
         dStr = f'#{d:.0f}'
-        output += f'    .byte {dStr:>4};    {i:2x} y/x {y:2d}, {x:2d} {deg:>6.3f}{trunc}\n'
+        output += f'    .byte {dStr:>4} ; ${i:02X}: y/x = {y:1d}/{x:1d}  {deg:>6.3f}{trunc}\n'
     return output
 
 output = ""

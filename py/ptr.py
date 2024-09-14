@@ -547,13 +547,15 @@ tbl = [
     genPtrTable=True,
     genConstants=True,
     vals=[
-        "MiNone",       "MiInvalid",
+        "MiNone",       "MiHit",
+        # Small Shieldable
         "MiSpawnRock",  "MiRunRock",
+        "MiSpawnRang",  "MiRunRang",
+        "MiSpawnArrow", "MiRunArrow",
+        # Magic Shieldable
         "MiSpawnBall",  "MiRunBall",
         "MiSpawnSword", "MiRunSword",
-        "MiSpawnArrow", "MiRunArrow",
         "MiSpawnWave",  "MiRunWave",
-        "MiSpawnRang",  "MiRunRang",
     ],
     bankLut=None),
 ]

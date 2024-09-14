@@ -99,32 +99,19 @@ BlPushBlock: ; SUBROUTINE
     inx
     jmp BallDel
 
-.pushCheck
-    ; set direction
-    lda plDir
-    sta blDir
-
-    ldy #0
-    bit CXP0FB
-    bvs .rts
-    sty roomPush
-    rts
-
-.pushDone
-    lda roomFlags
-    ora #RF_EV_CLEAR
-    sta roomFlags
-.rts
-    rts
-
-BlPushBlockWaterfall: SUBROUTINE
+BlPushBlockWaterfall:
     ldx roomPush
     inx
-    cpx #8+2 ; full move
+    cpx #32+8 ; full move
     bpl .pushDone
     stx roomPush
-    cpx #2
+    cpx #8
     bmi .pushCheck
+    lda #SFX_BOMB
+    sta SfxFlags
+    lda Frame
+    and #3
+    bne .rts
     ldx #BL_U
     jmp BallDel
 
@@ -140,5 +127,12 @@ BlPushBlockWaterfall: SUBROUTINE
     rts
 
 .pushDone
+    lda roomFlags
+    and #RF_EV_CLEAR
+    bne .rts
+    ora #RF_EV_CLEAR
+    sta roomFlags
+    lda #SFX_SOLVE
+    sta SfxFlags
 .rts
     rts
