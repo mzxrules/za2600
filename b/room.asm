@@ -137,7 +137,8 @@ LoadRoom: SUBROUTINE
     tax
 ; Set RF_PF_IGNORE if triforce floor
     and #$F3
-    cmp #$32
+    sta wRoomPF2Type
+    cmp #ROOM_PF2_TRIFORCE
     bne .skipPFIgnore
     lda roomFlags
     ora #RF_PF_IGNORE

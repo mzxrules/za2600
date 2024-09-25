@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from collections import Counter
+import random
 from asmgen import ToAsm, ToAsmD, ToAsmLabel
 from dataclasses import dataclass, field
 from typing import List, Tuple
@@ -399,6 +401,48 @@ def get_room_px_check():
         file.write("room_col8_off:\n")
         file.write(ToAsm(offset_pattern))
 
+
+def get_rand_8x8_spawn():
+    xSpawn = []
+    ySpawn = []
+
+    for x in range(0x10, 0x70+1, 4):
+        if x == 0x40:
+            continue
+        xSpawn.append(x//4)
+
+    for y in range(0x14, 0x44+1, 4):
+        if y == 0x2C:
+            continue
+        ySpawn.append(y//4)
+
+    xSpawn = xSpawn[:4] + xSpawn + xSpawn[-4:]
+    ySpawn = ySpawn[:2] + ySpawn + ySpawn[-2:]
+
+    countX = Counter(xSpawn)
+    countY = Counter(ySpawn)
+    countS = countX & countY
+    countX.subtract(countS)
+    countY.subtract(countS)
+
+    listX = list(countX.elements())
+    listS = list(countS.elements())
+    listY = list(countY.elements())
+
+    random.seed("Dr. Ohio")
+    random.shuffle(listX)
+    random.shuffle(listS)
+    random.shuffle(listY)
+
+    with open(f'gen/roomspawn.asm', "w") as file:
+        file.write("room_spawn_x:\n")
+        file.write(ToAsm(listX,4))
+        file.write("room_spawn_y:\n")
+        file.write(ToAsm(listS,4))
+        file.write("; final elements\n")
+        file.write(ToAsm(listY,4))
+
+
 def get_randdir_lut():
     # Generates a 24 byte LUT that functions as such:
     # xxx11 = First pick of 4 EN_DIR direction
@@ -590,6 +634,7 @@ get_pause_map_codegen()
 get_en_offgrid_lut()
 get_bl_col_test_lut()
 get_ord_bounds_lut()
+get_rand_8x8_spawn()
 
 with open(f'gen/bitcount.asm', "w") as file:
     file.write(bitcountOut)

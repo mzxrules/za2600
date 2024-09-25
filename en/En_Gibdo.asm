@@ -17,7 +17,7 @@ En_Gibdo: SUBROUTINE
 
     jsr Random
     and #7
-    sta enDarknutStep,x
+    sta enEnemyStep,x
     rts
 
 .main
@@ -66,13 +66,13 @@ En_Gibdo: SUBROUTINE
     lda EnMove_OffgridLUT,y
     bne .move
 
-    dec enDarknutStep,x
+    dec enEnemyStep,x
     bpl .seek_next
     jsr Random
     clc
     adc #4
     and #$1C
-    sta enDarknutStep,x
+    sta enEnemyStep,x
 
     jsr EnMove_Card_WallCheck
     jsr EnMove_Card_RandDir

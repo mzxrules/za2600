@@ -39,6 +39,16 @@ SIZE_EN_{1} = . - EN_FREE + $8000
     lda #<[{2}/4*$10] + {1}
     ENDM
 
+; Bitpack miType data, storing in data
+    MACRO BYTE_miType
+    .byte #<[{2}/4*$10] + {1}
+    ENDM
+
+; Room PF2 Type
+    MACRO ROOM_PF2
+ROOM_PF2_{1} = [[[{2} & 0xF] << 4] | [[{2} & $F0] >> 4 ]]
+    ENDM
+
 ; Rewriteable Kernel Variable
     MACRO VKERNEL1
 r{1} = . - KERNEL_WORLD + rKERNEL + 1

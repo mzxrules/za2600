@@ -17,7 +17,7 @@ En_Stalfos: SUBROUTINE
 
     jsr Random
     and #7
-    sta enDarknutStep,x
+    sta enEnemyStep,x
     rts
 
 .main
@@ -74,13 +74,13 @@ En_Stalfos: SUBROUTINE
 
     jsr EnMove_Card_WallCheck
 
-    dec enDarknutStep,x
+    dec enEnemyStep,x
     bpl .seek_next
     jsr Random
     and #$F
     clc
     adc #2
-    sta enDarknutStep,x
+    sta enEnemyStep,x
 
     jsr EnMove_Card_RandDir
     sty enDir,x

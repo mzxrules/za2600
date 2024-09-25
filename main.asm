@@ -618,6 +618,7 @@ BANK_42
     INCLUDE "en/EnDraw_Wizrobe.asm"
     INCLUDE "en/Endraw_Zol.asm"
     INCLUDE "en/Endraw_Gel.asm"
+    INCLUDE "en/EnDraw_Lynel.asm"
 
     INCLUDE "gen/mesg_digits.asm"
     INCLUDE "en/EnDraw_Npc.asm"
@@ -702,7 +703,6 @@ BANK_46
     RORG $F400
 
 BANK_47
-    INCLUDE "en/En_Lynel.asm"
     INCLUDE "en/En_Goriya.asm"
     ; INCLUDE "en/En_TestColor.asm"
     INCLUDE "en/En_BossAqua.asm"
@@ -735,7 +735,6 @@ BANK_48
 
 BANK_49
     INCLUDE "en/En_Leever.asm"
-    INCLUDE "en/En_Moblin.asm"
     INCLUDE "en/En_Gibdo.asm"
     INCLUDE "en/En_Peehat.asm"
     INCLUDE "en/En_Vire.asm"
@@ -757,14 +756,29 @@ BANK_50
     INCLUDE "en/EnDraw_BossDon.asm"
     LOG_BANK_SIZE "-BANK 50-", BANK_50
 
-    SEG Bank50
+; ****************************************
+; *               BANK 51                *
+; ****************************************
+    SEG Bank51
     ORG $CC00
     RORG $F000
 
 BANK_51
     INCLUDE "b/EnMove_Common.asm"
     INCLUDE "b/EnMove2.asm"
-    LOG_BANK_SIZE "-BANK 51- Entity Movement (Ordinal)", BANK_40
+    LOG_BANK_SIZE "-BANK 51- Entity Movement (Ordinal)", BANK_51
+
+; ****************************************
+; *               BANK 52                *
+; ****************************************
+    SEG Bank52
+    ORG $D000
+    RORG $F400
+
+BANK_52
+    INCLUDE "en/En_Lynel.asm"
+    INCLUDE "en/En_Moblin.asm"
+    LOG_BANK_SIZE "-BANK 52-", BANK_52
 
 ; End
 

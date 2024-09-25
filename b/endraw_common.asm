@@ -143,8 +143,8 @@ EnDraw_Gel2:
     rts
 
 
-EnDraw_GoriyaColor:
-EnDraw_DarknutColor:
+EnDraw_GoriyaColors:
+EnDraw_DarknutColors:
 EnDraw_OctorokColors:
 EnDraw_TektiteColors:
 EnDraw_LeeverColors:

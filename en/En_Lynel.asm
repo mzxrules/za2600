@@ -3,34 +3,31 @@
 ;==============================================================================
 EN_LYNEL_TYPE_RED = $0
 EN_LYNEL_TYPE_BLUE = $1
-
+EN_LYNEL_FIRING = #2
 
 En_LynelBlue: SUBROUTINE
-    lda #EN_LYNEL_TYPE_BLUE
+    lda #EN_LYNEL_TYPE_BLUE | #EN_LYNEL_FIRING
     sta enState,x
     lda #6-1
     sta enHp,x
+    ldy #EN_ENEMY_LYNEL_BLUE
     bpl .commmon_init
 
 En_Lynel:
-    lda #EN_LYNEL_TYPE_RED
+    lda #EN_LYNEL_TYPE_RED | #EN_LYNEL_FIRING
     sta enState,x
     lda #3-1
     sta enHp,x
+    ldy #EN_ENEMY_LYNEL_RED
 
 .commmon_init
+    sty enEnemyType,x
     lda #EN_LYNEL_MAIN
     sta enType,x
-    jsr Random
-    and #3
-    sta enDir,x
-
-    jsr Random
-    and #7
-    sta enDarknutStep,x
     rts
 
 En_LynelMain:
+En_MoblinMain:
 ; check damaged
     lda #SLOT_F0_BATTLE
     sta BANK_SLOT
@@ -50,14 +47,8 @@ En_LynelMain:
     bvc .endCheckHit ; EN_LAST_DRAWN
     bit CXPPMM
     bpl .endCheckHit
-    lda enType
-    and #EN_LYNEL_TYPE_RED
-    beq .blue_damage
-    lda #-8
-    bmi .update_player_health ; jmp
-.blue_damage
-    lda #-16
-.update_player_health
+    ldy enEnemyType,x
+    lda En_Enemy_Damage,y
     jsr UPDATE_PL_HEALTH
 .endCheckHit
 
@@ -82,6 +73,57 @@ En_LynelMain:
     jmp EnMove_Recoil
 
 .normal_movement
+    lda enEnemyShootT,x
+    cmp #1
+    adc #0
+    sta enEnemyShootT,x
+
+    bne .skip_toggle_fire_state
+
+    jsr Random
+    and #$F8
+    bne .set_shootT
+    lda #$80
+.set_shootT
+    sta enEnemyShootT,x
+
+; Toggle Walking/Firing state, update shoot timer
+    lda enState,x
+    eor #EN_LYNEL_FIRING
+    sta enState,x
+    and #EN_LYNEL_FIRING
+    beq .rts
+
+    lda #$D0
+    sta enEnemyShootT,x
+    rts
+
+.skip_toggle_fire_state
+
+    lda enState,x
+    and #EN_LYNEL_FIRING
+    beq .walk
+
+; Waiting to fire the sword
+    lda enEnemyShootT,x
+    cmp #$F0
+    bne .end_test_fire_sword
+
+.fire_sword
+    lda enDir,x
+    sta mi0Dir,x
+    ldy enEnemyType,x
+    lda En_Enemy_MiType,y
+    sta miType,x
+    lda en0X,x
+    sta mi0X,x
+    lda en0Y,x
+    sta mi0Y,x
+.end_test_fire_sword
+    rts
+
+.walk
+
     ldy en0X,x
     lda EnMove_OffgridLUT,y
     bne .move
@@ -89,11 +131,13 @@ En_LynelMain:
     lda EnMove_OffgridLUT,y
     bne .move
 
-    dec enDarknutStep,x
+    dec enEnemyStep,x
     bpl .seek_next
     jsr Random
-    and #7
-    sta enDarknutStep,x
+    clc
+    adc #4
+    and #$1C
+    sta enEnemyStep,x
 
     jsr EnMove_Card_WallCheck
     jsr EnMove_Card_RandDir

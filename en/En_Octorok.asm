@@ -1,28 +1,33 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-EN_OCTOROK_RARE = $2
+EN_OCTOROK_TYPE_RED = $0
+EN_OCTOROK_TYPE_BLUE = $2
 EN_OCTOROK_FIRING = $1
 
+En_OctorokInitState:
+    .byte #EN_OCTOROK_TYPE_RED | #EN_OCTOROK_FIRING
+    .byte #EN_OCTOROK_TYPE_BLUE | #EN_OCTOROK_FIRING
+En_OctorokInitHp:
+    .byte 1-1, 2-1
+
 En_OctorokBlue: SUBROUTINE
+    ldy #1
+    bpl .cont_octo_init
+
+En_Octorok:
+    ldy #0
+.cont_octo_init
     lda enState,x
-    ora #EN_OCTOROK_RARE
+    ora En_OctorokInitState,y
     sta enState,x
 
-    lda #2 -1
+    lda En_OctorokInitHp,y
     sta enHp,x
 
-En_Octorok: SUBROUTINE
     lda #EN_OCTOROK_MAIN
     sta enType,x
-    jsr Random
-
-    and #3
-    sta enDir,x
-
-    jsr En_Octorok_ShootT
-    jmp En_Octorok_Think
-
+    rts
 
 En_OctorokMain: SUBROUTINE
 ; check damaged
@@ -74,33 +79,38 @@ En_OctorokMain: SUBROUTINE
 
 
 ; update shoot timer
-    lda enOctorokShootT,x
+    lda enEnemyShootT,x
     cmp #1
     adc #0
-    sta enOctorokShootT,x
+    sta enEnemyShootT,x
 
     bne .skip_
-    jsr En_Octorok_ShootT
+    jsr Random
+    and #$F8
+    bne .skip_shoot
+    lda #$80
+.skip_shoot
+    sta enEnemyShootT,x
 ; Toggle Walking/Firing Rock state, update shoot timer
     lda enState,x
     eor #EN_OCTOROK_FIRING
     sta enState,x
-    and #1
-    beq .rts
+    ror ; #EN_OCTOROK_FIRING
+    bcc .rts
 
     lda #$D0
-    sta enOctorokShootT,x
+    sta enEnemyShootT,x
     rts
 
 .skip_
 
 .test_fire_rock
     lda enState,x
-    ror
+    ror ; # EN_OCTOROK_FIRING
     bcc .walk
 
 ; Waiting to fire the rock
-    lda enOctorokShootT,x
+    lda enEnemyShootT,x
     cmp #$F0
     bne .end_test_fire_rock
 
@@ -118,12 +128,6 @@ En_OctorokMain: SUBROUTINE
 
 
 .walk
-; update think timer
-    lda enOctorokThink,x
-    cmp #1
-    adc #0
-    sta enOctorokThink,x
-
 
     ldy en0X,x
     lda EnMove_OffgridLUT,y
@@ -132,31 +136,27 @@ En_OctorokMain: SUBROUTINE
     lda EnMove_OffgridLUT,y
     bne .move
 
-.solveNextDirection
+    dec enEnemyStep,x
+    bpl .seek_next
+    jsr Random
+    clc
+    adc #4
+    and #$1C
+    sta enEnemyStep,x
+
     jsr EnMove_Card_WallCheck
-
-    lda enOctorokThink,x
-    bne .contdir
-
-.newdir
     jsr EnMove_Card_RandDir
-    bpl .setNewDir
-
-.contdir
-    jsr EnMove_Card_RandDirIfBlocked
-    tya
-    cmp enDir,x
-    beq .move
-
-.setNewDir
     sty enDir,x
-    jsr En_Octorok_Think
-    rts
+    bpl .move ; jmp
+
+.seek_next
+    jsr EnMove_Card_WallCheck
+    jsr EnMove_Card_RandDirIfBlocked
+    sty enDir,x
 
 .move
-    ldx enNum
     lda enState,x
-    and #EN_OCTOROK_RARE
+    and #EN_OCTOROK_TYPE_BLUE
     ora #1
     and Frame
     and #3
@@ -165,25 +165,4 @@ En_OctorokMain: SUBROUTINE
 .rts
     rts
 
-En_Octorok_Think: SUBROUTINE
-    lda Rand16
-    and #$1F
-    adc #$D8
-    sta enOctorokThink,x
-    rts
-
-En_Octorok_ShootT: SUBROUTINE
-    jsr Random
-    and #$F8
-    bne .skip
-    lda #$80
-.skip
-    sta enOctorokShootT,x
-    rts
-
-/*
-ENEMY_ROT:
-    .byte #EN_DIR_U, #EN_DIR_D, #EN_DIR_R, #EN_DIR_L ; clockwise spin
-    .byte #EN_DIR_D, #EN_DIR_U, #EN_DIR_L, #EN_DIR_R ; counterclock
-*/
     LOG_SIZE "En_Octorok", En_Octorok

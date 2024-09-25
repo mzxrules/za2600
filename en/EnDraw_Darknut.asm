@@ -15,7 +15,7 @@ EnDraw_Darknut: SUBROUTINE
     lda enState,x
     and #1
     tay
-    lda EnDraw_DarknutColor,y
+    lda EnDraw_DarknutColors,y
     tay
     jmp EnDraw_PosAndStunColor
     LOG_SIZE "EnDraw_Darknut", EnDraw_Darknut

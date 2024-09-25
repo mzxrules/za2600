@@ -2,22 +2,22 @@
 ; mzxrules 2024
 ;==============================================================================
 
-EnDraw_Goriya: SUBROUTINE
+EnDraw_Lynel: SUBROUTINE
+    lda #>SprE0
+    sta enSpr+1
+    lda enDir,x
+    and #3
+    asl
+    asl
+    asl
+    sta enSpr
+
     lda enState,x
     and #1
     tay
-    lda EnDraw_GoriyaColors,y
+    lda EnDraw_DarknutColors,y
     tay
     jsr EnDraw_PosAndStunColor
+    jmp EnDraw_Sword
 
-    lda #>SprE4
-    sta enSpr+1
-    ldy enDir,x
-    lda Mul8,y
-    clc
-    adc #<SprE4
-    sta enSpr
-
-    jmp EnDraw_SmallMissile
-
-    LOG_SIZE "EnDraw_Goriya", EnDraw_Goriya
+    LOG_SIZE "EnDraw_Darknut", EnDraw_Darknut

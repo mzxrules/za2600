@@ -28,7 +28,7 @@ En_Darknut:
 
     jsr Random
     and #7
-    sta enDarknutStep,x
+    sta enEnemyStep,x
     rts
 
 En_DarknutMain:
@@ -83,13 +83,13 @@ En_DarknutMain:
     lda EnMove_OffgridLUT,y
     bne .move
 
-    dec enDarknutStep,x
+    dec enEnemyStep,x
     bpl .seek_next
     jsr Random
     clc
     adc #4
     and #$1C
-    sta enDarknutStep,x
+    sta enEnemyStep,x
 
     jsr EnMove_Card_WallCheck
     jsr EnMove_Card_RandDir
@@ -101,13 +101,13 @@ En_DarknutMain:
     jsr EnMove_Card_RandDirIfBlocked
     sty enDir,x
 .move
-    lda enState
+    lda enState,x
     and #EN_DARKNUT_TYPE_MASK
     tay
-    lda enDarknutSpdFrac,x
+    lda enEnemySpdFrac,x
     clc
     adc En_DarknutSpeed,y
-    sta enDarknutSpdFrac,x
+    sta enEnemySpdFrac,x
     bcc .rts
     jsr EnMoveDir
 .rts

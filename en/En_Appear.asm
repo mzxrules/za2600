@@ -89,44 +89,31 @@ EnRandSpawnRetry: SUBROUTINE
     beq .rts
 EnRandSpawn:
     jsr Random
-    and #$7 ; y pos mask
-    cmp #7
-    bne .skipYShift
-    lsr
-.skipYShift
-    asl
-    tay      ; y pos * 2
-    lda #$18 ; x pos mask
-    and Rand16
-    lsr
-    lsr
-    lsr
+    and #$1F
+    tay
+    lda room_spawn_x,y
+    sta EnSysSpawnX
     tax
-    lda rPF2Room+2+1,y
-    ora rPF2Room+2+2,y
-    and EnSpawnPF2Mask,x
+    jsr Random
+    and #$F
+    tay
+    lda room_spawn_y,y
+    sta EnSysSpawnY
+
+    jsr CheckRoomCol_Unsafe_XA
     bne EnRandSpawnRetry
-    tya
+    ldx enNum
+    lda EnSysSpawnX
     asl
-    asl ; y * 4 (* 8 total)
-    clc
-    adc #$14
-    ldy enNum
-    sta en0Y,y
-    lda Mul8,x
-    bit Rand16
-    bmi .skipInvert
-    eor #$FF
-    sec
-    adc #0
-.skipInvert
-    clc
-    adc #$40
-    sta en0X,y
+    asl
+    sta en0X,x
+    lda EnSysSpawnY
+    asl
+    asl
+    sta en0Y,x
 .rts
     rts
+    INCLUDE "gen/roomspawn.asm"
 
-EnSpawnPF2Mask:
-    .byte $80, $60, $18, $06
 
     LOG_SIZE "EnRandSpawn", EnRandSpawnRetry

@@ -241,9 +241,8 @@ EN_STUN_TIME = [-32*4] ; Frames of invunerability
 EN_STUN_TIME1 = EN_STUN_TIME + 4
 EN_STUN_RT   = [-24*4] ; End of recoil time
 ; enRecoilDir       ; 0000_0011 ; recoil direction
-CLASS_EN_ENEMY_MOVE
+CLASS_EN_ENEMY
 ; Missile Vars
-CLASS_EN_ENEMY_MOVE_SHOOT
 mi0Xf       ds 1
 mi1Xf       ds 1
 mi0Yf       ds 1
@@ -315,51 +314,48 @@ enGFairyDie ds 1
 ; Entity Variables - ENEMY
 ;==============================================================================
 
-; == Darknut
-    ORG CLASS_EN_ENEMY_MOVE
-enDarknutStep       ds 2
-enDarknutSpdFrac    ds 2
+; == Base Enemy
+; Darknut, Gibdo, Lynel, Octorok, Stalfos
+    ORG CLASS_EN_ENEMY
+enEnemyStep         ds 2
+enEnemySpdFrac      ds 2
+enEnemyShootT       ds 2
+enEnemyType         ds 2
     EN_SIZE DARKNUT
 
 ; == Wallmaster
-    ORG CLASS_EN_ENEMY_MOVE
+    ORG CLASS_EN_ENEMY
 enWallPhase         ds 2 ; anim timer for phasing through wall
     EN_SIZE WALLMASTER
 
-; == Octorok
-    ORG CLASS_EN_ENEMY_MOVE_SHOOT
-enOctorokThink      ds 2
-enOctorokShootT     ds 2
-enOctorokTemp       = Temp0
-    EN_SIZE OCTOROK
 
 ; == Goriya
-    ORG CLASS_EN_ENEMY_MOVE_SHOOT
+    ORG CLASS_EN_ENEMY
 enGoriyaThink       ds 2
 enGoriyaStep        ds 2
     EN_SIZE GORIYA
 
 ; == LikeLike
-    ORG CLASS_EN_ENEMY_MOVE
+    ORG CLASS_EN_ENEMY
 enLLTimer           ds 2
 enLLThink           ds 2
     EN_SIZE LIKE_LIKE
 
 ; == Rope
-    ORG CLASS_EN_ENEMY_MOVE
+    ORG CLASS_EN_ENEMY
 enRopeTimer         ds 2
 enRopeThink         ds 2
     EN_SIZE ROPE
 
 ; == Vire
-    ORG CLASS_EN_ENEMY_MOVE
+    ORG CLASS_EN_ENEMY
 enVireStep          ds 2
 enVireShiftY        ds 2
 enVireBounceTimer   ds 2
     EN_SIZE VIRE
 
 ; == Keese
-    ORG CLASS_EN_ENEMY_MOVE
+    ORG CLASS_EN_ENEMY
 ; enHp
 enKeeseThink    ds 2
 enKeeseTemp     = Temp0
@@ -367,13 +363,13 @@ enKeeseHpTemp   = Temp1
     EN_SIZE KEESE
 
 ; == Zol
-    ORG CLASS_EN_ENEMY_MOVE
+    ORG CLASS_EN_ENEMY
 enZolStep       ds 2
 enZolStepTimer  ds 2
     EN_SIZE ZOL
 
 ; == Gel
-    ORG CLASS_EN_ENEMY_MOVE
+    ORG CLASS_EN_ENEMY
 enGelAnim       ds 2
 enGelStep       ds 4
 enGelStepTimer  ds 4
@@ -384,7 +380,7 @@ enGelTemp       = Temp1
     EN_SIZE GEL
 
 ; == Peehat
-    ORG CLASS_EN_ENEMY_MOVE
+    ORG CLASS_EN_ENEMY
 ; enHp
 enPeehatVel         ds 2
 enPeehatSpeedFrac   ds 2
@@ -393,20 +389,20 @@ enPeehatFlyThink    ds 2
     EN_SIZE PEEHAT
 
 ; == Tektite
-    ORG CLASS_EN_ENEMY_MOVE
+    ORG CLASS_EN_ENEMY
 enTektiteThink      ds 2
 enTektiteBounceTime ds 2
 enTektiteBounce     ds 2
 enTektiteShiftY     ds 2
 
 ; == Rolling Rocks
-    ORG CLASS_EN_ENEMY_MOVE
+    ORG CLASS_EN_ENEMY
 enRollingRockTimer  ds 2
 enRollingRockSize   ds 2
     EN_SIZE ROLLING_ROCK
 
 ; == Boss Don
-    ORG CLASS_EN_ENEMY_MOVE
+    ORG CLASS_EN_ENEMY
 enDonStep           ds 2
 enDonSpdFrac        ds 2
 enDonTimer          ds 2
@@ -461,7 +457,7 @@ enTestFY    ds 1
 enTestTimer ds 1
 
 ; == TestMissile
-    ORG CLASS_EN_ENEMY_MOVE_SHOOT
+    ORG CLASS_EN_ENEMY
 enTestMissileType   ds 2
 enTestMissileResult ds 2
 enTestMissileTimer  ds 1
@@ -563,6 +559,8 @@ THudHealthDisp  ds 1
     SEG.U VARS_EN_SYS
     ORG Temp0 + 1
 EnSysSpawnTry       ds 1
+EnSysSpawnX         ds 1
+EnSysSpawnY         ds 1
 
     SEG.U VARS_EN_MOV
     ORG Temp0 + 2
@@ -660,9 +658,8 @@ wPF1RoomL           ds ROOM_PX_HEIGHT
 wPF2Room            ds ROOM_PX_HEIGHT
 wPF1RoomR           ds ROOM_PX_HEIGHT
 wRoomColorFlags     ds 1
-RF_WC_ROOM_BOOT = $80
-RF_WC_ROOM_DARK = $40
 wRoomENFlags        ds 1
+wRoomPF2Type        ds 1
     ORG $FB00
 wWorldRoomENCount   ds 128
 wWorldRoomFlags     ds 128
@@ -674,7 +671,11 @@ rPF1RoomL           ds ROOM_PX_HEIGHT
 rPF2Room            ds ROOM_PX_HEIGHT
 rPF1RoomR           ds ROOM_PX_HEIGHT
 rRoomColorFlags     ds 1
+RF_WC_ROOM_BOOT = $80
+RF_WC_ROOM_DARK = $40
 rRoomENFlags        ds 1
+rRoomPF2Type        ds 1
+    ROOM_PF2 TRIFORCE, 35
     ORG $F900
 rWorldRoomENCount   ds 128
 rWorldRoomFlags     ds 128
@@ -925,6 +926,7 @@ SEG_47 = RAMSEG_F4 | 47
 SEG_48 = RAMSEG_F4 | 48
 SEG_49 = RAMSEG_F4 | 49
 SEG_50 = RAMSEG_F4 | 50
+SEG_52 = RAMSEG_F4 | 52
 
 
 SLOT_RW_F8_W0   = RAMSEG_F8 | 0

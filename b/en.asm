@@ -20,17 +20,15 @@ CheckRoomCol: SUBROUTINE
     tya
     lsr
     lsr
-    tay
 ; A stores adjusted y coord
 
 CheckRoomCol_XA:
-    tya
 
     cpx #[$04/4] ; 2
     bmi .rts     ; 2
     cmp #[$10/4] ; 2
     bmi .rts     ; 2
-
+CheckRoomCol_Unsafe_XA:
     cpx #[$60/4]
     beq .special_right
     cpx #[$20/4]
