@@ -37,8 +37,8 @@ En_Test: SUBROUTINE
     beq .continue
 
 .sword_hit
-    lda #SFX_SOLVE
-    sta SfxFlags
+    lda #SEQ_SOLVE_DUR
+    sta SeqSolveCur
     bmi .continue
 
 .bomb_hit
@@ -47,7 +47,7 @@ En_Test: SUBROUTINE
     bmi .continue
 
 .arrow_hit
-    lda #SFX_DEF
+    lda #SFX_EN_DEF
     sta SfxFlags
     bmi .continue
 

@@ -380,7 +380,7 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
     lda HbPlFlags
     and #HB_PL_FIRE
     bne .rts
-    lda #SFX_DEF
+    lda #SFX_EN_DEF
     sta SfxFlags
 .rts
     rts

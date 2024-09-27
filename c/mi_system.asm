@@ -284,7 +284,7 @@ MiPlCol: SUBROUTINE
 
     lda #MI_NONE
     sta miType,x
-    lda #SFX_DEF
+    lda #SFX_PL_DEF
     sta SfxFlags
     rts
 

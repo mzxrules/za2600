@@ -30,8 +30,8 @@ Rs_Maze: SUBROUTINE
     bmi .roomLoop
 ; maze complete
     dec worldSR ; force reset
-    lda #SFX_SOLVE
-    sta SfxFlags
+    lda #SEQ_SOLVE_DUR
+    sta SeqSolveCur
     rts
 
 .failStep

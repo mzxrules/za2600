@@ -342,28 +342,32 @@ ToneLookup
 
 SeqH_note
     .byte #>ms_none_note, #>ms_dung0_note, #>ms_gi0_note, #>ms_over0_note, #>ms_intro0_note, #>ms_world0_note, #>ms_none_note, #>ms_tri0_note
-    .byte 0, 0, 0, 0, 0, 0, 0, 0
+    .byte #>ms_warp0_note, #>ms_secret0_note, 0, 0, 0, 0, 0, 0
+
     .byte #>ms_none_note, #>ms_dung1_note, #>ms_gi1_note, #>ms_over1_note, #>ms_intro1_note, #>ms_world1_note, #>ms_none_note, #>ms_tri1_note
-    .byte 0, 0, 0, 0, 0, 0, 0, 0
+    .byte #>ms_none_note, #>ms_none_note, 0, 0, 0, 0, 0, 0
 
 SeqL_note
     .byte #<ms_none_note, #<ms_dung0_note, #<ms_gi0_note, #<ms_over0_note, #<ms_intro0_note, #<ms_world0_note, #<ms_none_note, #<ms_tri0_note
-    .byte 0, 0, 0, 0, 0, 0, 0, 0
+    .byte #<ms_warp0_note, #<ms_secret0_note, 0, 0, 0, 0, 0, 0
+
     .byte #<ms_none_note, #<ms_dung1_note, #<ms_gi1_note, #<ms_over1_note, #<ms_intro1_note, #<ms_world1_note, #<ms_none_note, #<ms_tri1_note
-    .byte 0, 0, 0, 0, 0, 0, 0, 0
+    .byte #<ms_none_note, #<ms_none_note, 0, 0, 0, 0, 0, 0
 
 
 SeqH_dur
     .byte #>ms_none_dur, #>ms_dung0_dur, #>ms_gi0_dur, #>ms_over0_dur, #>ms_intro0_dur, #>ms_world0_dur, #>ms_none_dur, #>ms_tri0_dur
-    .byte 0, 0, 0, 0, 0, 0, 0, 0
+    .byte #>ms_warp0_dur, #>ms_secret0_dur, 0, 0, 0, 0, 0, 0
+
     .byte #>ms_none_dur, #>ms_dung1_dur, #>ms_gi1_dur, #>ms_over1_dur, #>ms_intro1_dur, #>ms_world1_dur, #>ms_none_dur, #>ms_tri1_dur
-    .byte 0, 0, 0, 0, 0, 0, 0, 0
+    .byte #>ms_none_dur, #>ms_none_dur, 0, 0, 0, 0, 0, 0
 
 SeqL_dur
     .byte #<ms_none_dur, #<ms_dung0_dur, #<ms_gi0_dur, #<ms_over0_dur, #<ms_intro0_dur, #<ms_world0_dur, #<ms_none_dur, #<ms_tri0_dur
-    .byte 0, 0, 0, 0, 0, 0, 0, 0
+    .byte #<ms_warp0_dur, #<ms_secret0_dur, 0, 0, 0, 0, 0, 0
+
     .byte #<ms_none_dur, #<ms_dung1_dur, #<ms_gi1_dur, #<ms_over1_dur, #<ms_intro1_dur, #<ms_world1_dur, #<ms_none_dur, #<ms_tri1_dur
-    .byte 0, 0, 0, 0, 0, 0, 0, 0
+    .byte #<ms_none_dur, #<ms_none_dur, 0, 0, 0, 0, 0, 0
 
 ms_none_note:
 ms_none_dur:
@@ -393,6 +397,10 @@ ms_none_dur:
     include "gen/ms_tri0_dur.asm"
     include "gen/ms_tri1_note.asm"
     include "gen/ms_tri1_dur.asm"
+    include "gen/ms_warp0_note.asm"
+    include "gen/ms_warp0_dur.asm"
+    include "gen/ms_secret0_note.asm"
+    include "gen/ms_secret0_dur.asm"
     include "gen/ms_header.asm"
     echo "-CODE-",$F000,(.)
 

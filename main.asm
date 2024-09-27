@@ -528,6 +528,7 @@ BANK_36
     INCLUDE "gen/ms_tri0_dur.asm"
     INCLUDE "gen/ms_tri1_note.asm"
     INCLUDE "gen/ms_tri1_dur.asm"
+    INCLUDE "gen/ms_secret0_note.asm"
 
     align 16
     INCLUDE "gen/ms_header.asm"

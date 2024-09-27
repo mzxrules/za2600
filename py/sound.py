@@ -40,14 +40,14 @@ seqs = {
     #"lost" : Seq("ms_tri", 75, 1, lost_highline, lost_baseline)
     #"myst" : Seq("ms_myst", 150, 1/4, empty_channel, myst_baseline),
     "warp" : Seq("ms_warp", 60, 1, warp_highline, empty_channel),
+    "secr" : Seq("ms_secret", 54, 1, secret_highline, empty_channel),
 }
 
 for k, seq in seqs.items():
     seq.Flatten()
 
-FindBestSeq(seqs["warp"].ch0)
+#FindBestSeq(seqs["warp"].ch0)
 #FindBestSeq(seqs["tri"].ch1)
-#quit()
 
 seqs["final"].ch0 = seqs["final"].GetShiftChannel(0,9) + seqs["final"].GetShiftChannel(0,15)
 seqs["final"].ch1 = seqs["final"].GetShiftChannel(1,21) + seqs["final"].GetShiftChannel(1,15)

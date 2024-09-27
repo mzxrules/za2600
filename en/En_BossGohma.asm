@@ -54,7 +54,7 @@ En_BossGohma: SUBROUTINE
     bmi .endWeaponCollision ; always branch
 
 .defSfx
-    lda #SFX_DEF
+    lda #SFX_EN_DEF
     sta SfxFlags
     bmi .endWeaponCollision ; always branch
 

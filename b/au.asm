@@ -17,7 +17,7 @@ UpdateAudio: SUBROUTINE
     bpl .continueSeqSwitch
 .playNone
     lda #MS_PLAY_NONE
-    bne .continueSeqSwitch
+    bne .continueSeqSwitch ; jmp
 .playDungeonTheme
     lda #MS_PLAY_DUNG
     cpy #9
@@ -28,9 +28,9 @@ UpdateAudio: SUBROUTINE
     and #$3F
     sta SeqFlags
     lda #$FF
-    ldx Frame
     sta SeqCur
     sta SeqCur + 1
+    ldx Frame
     stx SeqTFrame
     stx SeqTFrame + 1
 .continueSequence
@@ -38,6 +38,11 @@ UpdateAudio: SUBROUTINE
     jsr AudioChannel
     ldx #1
     jsr AudioChannel
+
+    lda SeqSolveCur
+    cmp #1
+    adc #0
+    sta SeqSolveCur
 
 .sfxStart
     lda #SLOT_F0_AU2
@@ -64,13 +69,6 @@ UpdateAudio: SUBROUTINE
 
 SfxStabPattern:
     .byte $01, $02, $03, $02, $01
-
-SfxSurfVPattern:
-    .byte 1, 1, 2, 3, 4, 5, 5, 5, 5, 4, 4, 3, 2, 1, 1, 1
-
-SfxSurfFPattern:
-    .byte 2, 2, 3, 3, 5, 5, 7, 7, 1, 1, 1, 1, 1, 1, 1, 1
-    /* .byte 02, 03, 05, 07, 05, 10, 10, 10 */
 
 SfxDelay: SUBROUTINE
     clc
@@ -126,19 +124,6 @@ SfxStab: SUBROUTINE
     bpl SfxStop
     rts
 
-SfxSolve:
-SfxSurf: SUBROUTINE
-    ldx #8
-    stx AUDCT1
-    ldy SfxCur
-
-    lda SfxSurfVPattern,y
-    sta AUDVT1
-    lda SfxSurfFPattern,y
-    sta AUDFT1
-    cpy #(SfxSurfFPattern-SfxSurfVPattern)
-    bpl SfxStop
-    rts
 
 SfxShutterDoor: SUBROUTINE
 SfxBomb: SUBROUTINE
@@ -200,16 +185,24 @@ SfxStop:
     sta SfxFlags
     rts
 
-SfxDef: SUBROUTINE
+SfxPlDef: SUBROUTINE
+    lda SfxCur
+    cmp #5
+    bpl SfxStop
+    ldx #1
+    bpl .sfxEnDef
+
+SfxEnDef:
     lda SfxCur
     cmp #6
     bpl SfxStop
+    ldx #4
+.sfxEnDef
+    stx AUDFT1
     lda #6
     sta AUDCT1
     ldx #8
     stx AUDVT1
-    ldx #4
-    stx AUDFT1
     rts
 
 SfxTalk: SUBROUTINE
@@ -237,19 +230,6 @@ SfxArrow: SUBROUTINE
     sta AUDFT1
     rts
 
-SfxPlDamage: SUBROUTINE
-    ldx SfxCur
-    cpx #7
-    bpl SfxStop
-    lda SfxDamageFreq,x
-    sta AUDFT1
-    lda #1
-    sta AUDCT1
-    lda #8
-    sta AUDVT1
-    rts
-SfxDamageFreq:
-    .byte  14, 11, 8, 12, 15, 18, 19
 SfxDel:
     stx SfxFlags
     inc SfxCur
@@ -307,9 +287,28 @@ MsDung0: SUBROUTINE
 
 ; A = Packed Note
 SeqChan0:
+    ldx SeqSolveCur
+    beq .set_chan0
+    txa
+    lsr
+    lsr
+    lsr
+    ora #$E0
+    tax
+    lda ms_secret0_note+9-$100,x
+
+.set_chan0
     ldy #0
     beq SeqChan
 SeqChan1:
+    ldx SeqSolveCur
+    beq .set_chan1
+    lda #0
+    sta AUDFT1
+    sta AUDCT1
+    sta AUDVT1
+    rts
+.set_chan1
     ldy #1
 SeqChan:
     pha
@@ -346,6 +345,8 @@ MsIntro0: SUBROUTINE
     adc Frame
     sta SeqTFrame
 SeqMuteChan0:
+    lda SeqSolveCur
+    bmi .skipSetDur
     lda #0
     sta AUDVT0
     rts

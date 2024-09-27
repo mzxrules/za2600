@@ -54,8 +54,8 @@ En_NpcMonster: SUBROUTINE
     and #~ITEMF_MEAT
     sta ITEMV_MEAT
 
-    lda #SFX_SOLVE
-    sta SfxFlags
+    lda #SEQ_SOLVE_DUR
+    sta SeqSolveCur
 
 En_Npc: ; SUBROUTINE
     lda roomFlags

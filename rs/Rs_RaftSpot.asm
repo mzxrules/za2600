@@ -25,8 +25,8 @@ Rs_RaftSpot: SUBROUTINE
     lda plState
     ora #[#PS_GLIDE | #PS_LOCK_ALL]
     sta plState
-    lda #SFX_SURF
-    sta SfxFlags
+    lda #SEQ_SOLVE_DUR
+    sta SeqSolveCur
 .fixPos
     lda #$40
     sta plX

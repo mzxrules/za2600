@@ -483,15 +483,18 @@ DoorCheck: SUBROUTINE
     eor #$FF
     and DungDoorMask,x
     bne .keydoorCheck
-    ; TODO: push check
     lda plState
     and #PS_GLIDE
     bne .rts
+    lda roomPush
+    bmi .rts
+    cmp #[16<<2]
+    bcc .rts
     lda #[PS_GLIDE | PS_LOCK_ALL]
     ora plState
     sta plState
-    lda #SFX_SOLVE
-    sta SfxFlags
+    lda #SEQ_SOLVE_DUR
+    sta SeqSolveCur
     rts
 
 .keydoorCheck
@@ -541,8 +544,8 @@ DoorOpen:
     bne .rts
 
 CheckBreakwall: SUBROUTINE
-    lda m0X
-    ldy m0Y
+    lda plm0X
+    ldy plm0Y
 
 ; Up/Down check
     cmp #BoardBreakwallNSX1

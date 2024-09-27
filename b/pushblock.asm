@@ -8,11 +8,42 @@ BallDel:
     pha
     lda BallL,x
     pha
-    rts
-
-
 BlNone:
     rts
+
+UpdateRoomPush: SUBROUTINE ; CRITICAL, execute in 1 scanline
+    lda roomPush        ; 3
+    bmi .move_action
+    eor plDir
+    and #3
+    bne .dont_push
+
+    bit CXP0FB
+    bmi .push
+    bvs .push
+
+.dont_push
+    lda plDir
+    and #3
+    sta roomPush
+    bpl .end_updateRoomPush ; jmp
+
+.push
+    lda roomPush
+    cmp #$78
+    bpl .end_updateRoomPush
+    clc
+    adc #4
+    sta roomPush
+    bpl .end_updateRoomPush ; jmp
+
+.move_action
+    inc roomPush
+.end_updateRoomPush
+
+    sta WSYNC
+    jmp MAIN_VERTICAL_SYNC
+
 
 BlR: SUBROUTINE
     inc blX
@@ -84,55 +115,66 @@ BlPushBlockDiamondTop: SUBROUTINE
 BlPushBlock: ; SUBROUTINE
     ldx roomENCount
     bne .rts
-.skipENCount
-    ldx roomPush
-    inx
-    cpx #16+12 ; full move
-    bpl .pushDone
-    stx roomPush
-    cpx #12
-    bmi .pushCheck
-    lda Frame
+
+    lda roomPush
+    bmi .sliding
+
+    bit CXP0FB
+    bvc .rts ; is not pushing block
+
+    cmp #[12 << 2]
+    bcc .rts ; has not pushed long enough
+
+    and #3
+    sta blDir
+    lda #-16 -1 ; Will decrement 1
+    sta roomPush
+.rts
+    rts
+.sliding
+    lda roomPush
+    cmp #$FF
+    beq BlPushEnd
     and #1
-    beq .rts
+    bne .rts
     ldx blDir
     inx
     jmp BallDel
 
-BlPushBlockWaterfall:
-    ldx roomPush
-    inx
-    cpx #32+8 ; full move
-    bpl .pushDone
-    stx roomPush
-    cpx #8
-    bmi .pushCheck
+BlPushBlockWaterfall: SUBROUTINE
+    lda roomPush
+    bmi .sliding
+
+    bit CXP0FB
+    bvc .rts ; is not pushing block
+
+    cmp #[8 << 2]
+    bcc .rts ; has not pushed long enough
+
+    lda #-32 -1 ; Will decrement 1
+    sta roomPush
+.rts
+    rts
+
+.sliding
     lda #SFX_BOMB
     sta SfxFlags
-    lda Frame
+    lda roomPush
+    cmp #$FF
+    beq BlPushEnd
     and #3
     bne .rts
     ldx #BL_U
     jmp BallDel
 
-.pushCheck
-    ; set direction
-    lda plDir
-    sta blDir
-
-    ldy #0
-    bit CXP0FB
-    bvs .rts
-    sty roomPush
-    rts
-
-.pushDone
+BlPushEnd:
     lda roomFlags
     and #RF_EV_CLEAR
     bne .rts
     ora #RF_EV_CLEAR
     sta roomFlags
-    lda #SFX_SOLVE
-    sta SfxFlags
-.rts
+    lda #SEQ_SOLVE_DUR
+    sta SeqSolveCur
+    lda #BL_NONE
+    sta blType
     rts

@@ -117,7 +117,7 @@ En_BossDon: SUBROUTINE
     lda HbPlFlags
     and En_BossDon_ImmuneSfxFlags,y
     beq .checkDamaged_PlaySfx
-    lda #SFX_DEF
+    lda #SFX_EN_DEF
     bmi .checkDamaged_PlaySfx ; jmp
     lda #SFX_EN_DAMAGE
 .checkDamaged_PlaySfx

@@ -22,7 +22,6 @@ m1Y         ds 1
 blY         ds 1
 plm0Y       ds 1
 plm1Y       ds 1
-FREE_RAM    ds 1
 ; ObjectId
 OBJ_PL      = 0
 OBJ_EN      = 1
@@ -172,6 +171,8 @@ SeqCur      ds 2
 SfxFlags    ds 1
     ; 1xxx_xxxx New Sfx
 SfxCur      ds 1
+SeqSolveCur ds 1 ; Plays secret seq when negative
+SEQ_SOLVE_DUR = $B8
 
 ;==============================================================================
 ; Entity Variables

@@ -313,9 +313,12 @@ OVERSCAN_WAIT:
     sta WSYNC
     lda INTIM
     bne OVERSCAN_WAIT
-    sta WSYNC
 
-    jmp MAIN_VERTICAL_SYNC
+    lda #SLOT_F0_PU
+    sta BANK_SLOT
+    jmp UpdateRoomPush
+;   sta WSYNC
+;   jmp MAIN_VERTICAL_SYNC
 
 ;==============================================================================
 ; Generate Random Number

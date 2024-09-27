@@ -180,8 +180,8 @@ Rs_EntCaveMidSecretNorth:
     lda plState
     ora #[#PS_GLIDE | #PS_LOCK_ALL]
     sta plState
-    lda #SFX_SOLVE
-    sta SfxFlags
+    lda #SEQ_SOLVE_DUR
+    sta SeqSolveCur
 .rts
     rts
 
@@ -410,8 +410,8 @@ Rs_EntCaveWallBlocked
     cpy #ITEM_ANIM_BOMB_BREAKWALL
     bmi .skip_rts
 ; opening destroyed
-    lda #SFX_SOLVE
-    sta SfxFlags
+    lda #SEQ_SOLVE_DUR
+    sta SeqSolveCur
     ldy roomId
     lda rWorldRoomFlags,y
     ora #WRF_SV_DESTROY
@@ -455,8 +455,8 @@ Rs_EntCaveBushBlocked
     bcc .skip_rts
 
 ; opening destroyed
-    lda #SFX_SOLVE
-    sta SfxFlags
+    lda #SEQ_SOLVE_DUR
+    sta SeqSolveCur
     ldy roomId
     lda rWorldRoomFlags,y
     ora #WRF_SV_DESTROY
@@ -561,8 +561,8 @@ Rs_EntDungFlute: SUBROUTINE
     and #~PS_LOCK_ALL
     sta plState
 
-    lda #SFX_SOLVE
-    sta SfxFlags
+    lda #SEQ_SOLVE_DUR
+    sta SeqSolveCur
 
     lda #RS_ENT_DUNG_MID
     sta roomRS
