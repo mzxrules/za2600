@@ -329,6 +329,15 @@ enEnemyType         ds 2
 enWallPhase         ds 2 ; anim timer for phasing through wall
     EN_SIZE WALLMASTER
 
+; == Leever
+    ORG CLASS_EN_ENEMY
+enLeeverTimer       ds 2
+enLeeverSpdFrac     ds 2
+enLeeverPlX = Temp0
+enLeeverPly = Temp1
+enLeeverTryX = Temp2
+enLeeverTryY = Temp3
+    EN_SIZE LEEVER
 
 ; == Goriya
     ORG CLASS_EN_ENEMY

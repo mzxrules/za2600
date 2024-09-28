@@ -23,7 +23,6 @@ CheckRoomCol: SUBROUTINE
 ; A stores adjusted y coord
 
 CheckRoomCol_XA:
-
     cpx #[$04/4] ; 2
     bmi .rts     ; 2
     cmp #[$10/4] ; 2

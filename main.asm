@@ -735,7 +735,6 @@ BANK_48
     RORG $F400
 
 BANK_49
-    INCLUDE "en/En_Leever.asm"
     INCLUDE "en/En_Gibdo.asm"
     INCLUDE "en/En_Peehat.asm"
     INCLUDE "en/En_Vire.asm"
@@ -779,6 +778,7 @@ BANK_51
 BANK_52
     INCLUDE "en/En_Lynel.asm"
     INCLUDE "en/En_Moblin.asm"
+    INCLUDE "en/En_Leever.asm"
     LOG_BANK_SIZE "-BANK 52-", BANK_52
 
 ; End

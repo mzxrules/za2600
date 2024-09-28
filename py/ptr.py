@@ -59,9 +59,8 @@ Entity_Table = [
     "En_OctorokBlue",  "SEG_43", "SEG_42", "EnDraw_Octorok",
     "En_OctorokMain",  "SEG_43", "SEG_42", "EnDraw_Octorok",
 
-    "En_Leever",       "SEG_49", "SEG_42", "EnDraw_None",
-    "En_LeeverBlue",   "SEG_49", "SEG_42", "EnDraw_None",
-    "En_LeeverMain",   "SEG_49", "SEG_42", "EnDraw_Leever",
+    "En_Leever",       "SEG_52", "SEG_42", "EnDraw_Leever",
+    "En_LeeverBlue",   "SEG_52", "SEG_42", "EnDraw_Leever",
     "En_Lynel",        "SEG_52", "SEG_42", "EnDraw_Lynel",
     "En_LynelBlue",    "SEG_52", "SEG_42", "EnDraw_Lynel",
     "En_LynelMain",    "SEG_52", "SEG_42", "EnDraw_Lynel",

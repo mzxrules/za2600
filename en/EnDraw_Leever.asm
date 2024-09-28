@@ -4,18 +4,14 @@
 
 EnDraw_Leever: SUBROUTINE
     lda enState,x
-    rol
-    rol
-    rol
-    and #1
+    and #EN_LEEVER_TYPE_MASK
     tay
     lda EnDraw_LeeverColors,y
     tay
     jsr EnDraw_PosAndStunColor
 
     lda enState,x
-    and #3
-    asl
+    and #6
     tay
     lda Frame
     and #4
@@ -30,11 +26,13 @@ EnDraw_Leever: SUBROUTINE
     rts
 
 EnLeever_SprH:
+    .byte #>SprItem0, #>SprItem0
     .byte #>SprE18, #>SprE19
     .byte #>SprE17, #>SprE17
     .byte #>SprE20, #>SprE21
 
 EnLeever_SprL:
+    .byte #<SprItem0, #<SprItem0
     .byte #<SprE18, #<SprE19
     .byte #<SprE17, #<SprE17
     .byte #<SprE20, #<SprE21

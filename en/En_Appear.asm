@@ -14,6 +14,8 @@ En_Appear: SUBROUTINE
     lda enSysType,x
     cmp #EN_KEESE
     beq .spawn_keese
+    cmp #EN_LEEVER
+    beq .fast_spawn
     cmp #EN_WALLMASTER
     beq .fast_spawn
     cmp #EN_TEST

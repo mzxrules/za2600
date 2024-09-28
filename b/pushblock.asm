@@ -129,6 +129,8 @@ BlPushBlock: ; SUBROUTINE
     sta blDir
     lda #-16 -1 ; Will decrement 1
     sta roomPush
+    lda #SEQ_SOLVE_DUR
+    sta SeqSolveCur
 .rts
     rts
 .sliding
@@ -173,8 +175,6 @@ BlPushEnd:
     bne .rts
     ora #RF_EV_CLEAR
     sta roomFlags
-    lda #SEQ_SOLVE_DUR
-    sta SeqSolveCur
     lda #BL_NONE
     sta blType
     rts
