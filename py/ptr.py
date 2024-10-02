@@ -58,7 +58,6 @@ Entity_Table = [
     "En_Octorok",      "SEG_43", "SEG_42", "EnDraw_Octorok",
     "En_OctorokBlue",  "SEG_43", "SEG_42", "EnDraw_Octorok",
     "En_OctorokMain",  "SEG_43", "SEG_42", "EnDraw_Octorok",
-
     "En_Leever",       "SEG_52", "SEG_42", "EnDraw_Leever",
     "En_LeeverBlue",   "SEG_52", "SEG_42", "EnDraw_Leever",
     "En_Lynel",        "SEG_52", "SEG_42", "EnDraw_Lynel",
@@ -81,7 +80,6 @@ Entity_Table = [
     "En_Rope",         "SEG_43", "SEG_42", "EnDraw_Rope",
     "En_RopeMain",     "SEG_43", "SEG_42", "EnDraw_Rope",
     "En_Wallmaster",   "SEG_44", "SEG_42", "EnDraw_Wallmaster",
-
     "En_Gibdo",        "SEG_49", "SEG_42", "EnDraw_Gibdo",
     "En_Goriya",       "SEG_47", "SEG_42", "EnDraw_None",
     "En_GoriyaBlue",   "SEG_47", "SEG_42", "EnDraw_None",
@@ -101,6 +99,7 @@ Entity_Table = [
     #"En_TestMissile",  "SEG_44", "SEG_46", "EnDraw_TestMissile",
     #"En_TestColor",    "SEG_47", "SEG_42", "EnDraw_TestColor",
 
+    "En_Armos",        "SEG_53", "SEG_53", "EnDraw_Armos",
     "En_BossGhini",    "SEG_NA", "SEG_42", "EnDraw_None",
 
     "En_BossGohma",    "SEG_44", "SEG_46", "EnDraw_BossGohma",

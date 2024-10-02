@@ -23,6 +23,13 @@ EnDam_Common:
 ;----------
 ; Configures the hitbox and vars for the current player attack
 ; X = enNum; x is preserved
+;
+; Updates the following state:
+; Hb_aa_Box = Hitbox shape; 0 is NULL box
+; Hb_aa_x/y = Hitbox position
+; HbPlFlags = Attack Type
+; HbDamage  = Attack Damage Id
+; HbDir     = Attack direction
 ;==============================================================================
 HbGetPlAtt: SUBROUTINE
     lda #0

@@ -11,6 +11,8 @@ En_NpcDoorRepair: SUBROUTINE
     ora enState
     sta enState
 
+    lda #$0
+    sta npcIncRupee
     lda #$10
     sta npcDecRupee
     lda plState

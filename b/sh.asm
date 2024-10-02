@@ -524,7 +524,7 @@ NpcShop_DecRupees: SUBROUTINE
 .rts
     rts
 
-En_NpcShopGetSelction: SUBROUTINE
+En_NpcShopGetSelection: SUBROUTINE
     ldx #-1
     bit CXPPMM
     bpl .rts

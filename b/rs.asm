@@ -325,20 +325,21 @@ STAIR_POS_P742C = 3
 STAIR_POS_P2828 = 4
 
 PositionStairs: ; SUBROUTINE
-    lda plX
-    clc
-    adc #$8
-    sec
-    sbc StairPosX,x
-    cmp #$10+1
-    bcs .place_stairs
 
+    clc
+    lda plX
+    sbc StairPosX,x
+    sbc #8-1
+    adc #8+8-1
+
+    bcc .place_stairs
+
+    clc
     lda plY
-    adc #$8
-    sec
     sbc StairPosY,x
-    cmp #$10+1
-    bcc .rts
+    sbc #8-1
+    adc #8+8-1
+    bcs .rts
 
 .place_stairs
     lda StairPosX,x

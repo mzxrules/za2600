@@ -33,8 +33,10 @@ En_NpcGame: SUBROUTINE
 
 En_NpcGameMain: SUBROUTINE
     jsr Rng2
-; TODO Implement rupee check
-    jsr En_NpcShopGetSelction
+    lda itemRupees
+    cmp #MONEY_PRIZE_LOS_S
+    bcc .rts
+    jsr En_NpcShopGetSelection
     cpx #-1
     beq .rts
     jmp En_NpcGame_PlayGame

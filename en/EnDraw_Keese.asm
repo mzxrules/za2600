@@ -21,8 +21,8 @@ EnDraw_Keese: SUBROUTINE
 EnKeese_Disp:
 
 ; 001
-; 010
     .byte #%10000 ; 1
+; 010
     .byte #%10000 ; 1
 ; 011
     .byte #%10001 ; 2 close

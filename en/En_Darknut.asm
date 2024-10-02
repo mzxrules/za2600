@@ -112,7 +112,8 @@ En_DarknutMain:
     jsr EnMoveDir
 .rts
     rts
-    LOG_SIZE "En_Darknut", En_Darknut
 
 En_DarknutSpeed:
     .byte #$80, #$A0
+
+    LOG_SIZE "En_Darknut", En_DarknutBlue

@@ -781,6 +781,18 @@ BANK_52
     INCLUDE "en/En_Leever.asm"
     LOG_BANK_SIZE "-BANK 52-", BANK_52
 
+; ****************************************
+; *               BANK 53                *
+; ****************************************
+    SEG Bank53
+    ORG $D400
+    RORG $F400
+
+BANK_53
+    INCLUDE "en/En_Armos.asm"
+    INCLUDE "en/EnDraw_Armos.asm"
+    LOG_BANK_SIZE "-BANK 53-", BANK_53
+
 ; End
 
     ORG $FFFF

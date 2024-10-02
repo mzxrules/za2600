@@ -84,26 +84,7 @@ En_LeeverRedMain: SUBROUTINE
     beq En_LeeverRedSpawn
 
 ; update state
-    lda enLeeverTimer,x
-    cmp #1
-    adc #0
-    sta enLeeverTimer,x
-    bne .endUpdateState
-
-    lda enState,x
-    and #EN_LEEVER_STATE_MASK
-    lsr
-    tay
-    lda enState,x
-    and #~#EN_LEEVER_STATE_MASK
-    ora En_LeeverStateNext,y
-    sta enState,x
-    ldy #-8
-    and #EN_LEEVER_STATE_MASK
-    eor #EN_LEEVER_STATE_RISEFUL | #EN_LEEVER_STATE_EMERGED
-    beq .endUpdateState
-    sty enLeeverTimer,x
-.endUpdateState
+    jsr En_LeeverUpdateState
 
     lda enState,x
     and #EN_LEEVER_STATE_RISE50
@@ -187,6 +168,29 @@ En_LeeverRedMain: SUBROUTINE
 .rts
     rts
 
+En_LeeverUpdateState: SUBROUTINE
+    lda enLeeverTimer,x
+    cmp #1
+    adc #0
+    sta enLeeverTimer,x
+    bne .endUpdateState
+
+    lda enState,x
+    and #EN_LEEVER_STATE_MASK
+    lsr
+    tay
+    lda enState,x
+    and #~#EN_LEEVER_STATE_MASK
+    ora En_LeeverStateNext,y
+    sta enState,x
+    and #EN_LEEVER_STATE_MASK
+    eor #EN_LEEVER_STATE_RISEFUL | #EN_LEEVER_STATE_EMERGED
+    beq .endUpdateState
+    ldy #-8
+    sty enLeeverTimer,x
+.endUpdateState
+    rts
+
 ; A = direction
 ; returns N = 0 if success, N = 1 if failed
 En_LeeverGetSpawnTryXY: SUBROUTINE
@@ -225,9 +229,60 @@ En_LeeverGetSpawnTryXY: SUBROUTINE
     lda #$FF
     rts
 
-En_LeeverBlue:
-    lda #EN_LEEVER_TYPE_BLUE
+En_LeeverBlue: SUBROUTINE
+    lda enState,x
+    bmi En_LeeverBlueMain
+    lda #EN_LEEVER_TYPE_BLUE | #$80 | #EN_LEEVER_STATE_RISEFUL
     sta enState,x
+    lda #4-1
+    sta enHp,x
+
+    jsr Random
+    and #$38
+    bne .setTimer
+    lda #$38
+.setTimer
+    ora #$C0
+    sta enLeeverTimer,x
+    rts
+
+En_LeeverBlueFastMove: SUBROUTINE
+    lda #SLOT_F0_EN_MOVE
+    sta BANK_SLOT
+
+    lda en0X,x
+    lsr
+    lsr
+    sta EnMoveNX
+    lda en0Y,x
+    lsr
+    lsr
+    sta EnMoveNY
+
+    ldy en0X,x
+    lda EnMove_OffgridLUT,y
+    bne .move1
+    ldy en0Y,x
+    lda EnMove_OffgridLUT,y
+    bne .move1
+
+    jsr EnMove_Card_WallCheck
+    jsr EnMove_Card_RandDir
+    sty enDir,x
+    tya
+    ora #$8 ; move at 4x speed
+    tay
+    jmp EnMoveDel
+.move1
+    jmp EnMoveDir
+
+En_LeeverBlueMain: SUBROUTINE
+; update state
+    jsr En_LeeverUpdateState
+    lda enState,x
+    ;and #EN_LEEVER_STATE_MASK
+    bne En_LeeverBlueFastMove
+
     rts
 
 En_LeeverStateNext:

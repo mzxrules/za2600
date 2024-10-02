@@ -57,6 +57,7 @@ EnDraw_PosAndStunColor: SUBROUTINE
     iny
 .fetchColor
     lda EnDrawColor_LUT,y
+EnDraw_PosAndStunColor_NoDynamicColor
     sta EnDrawColor
     lda enStun,x
     asl

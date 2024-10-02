@@ -55,6 +55,7 @@ SPAWN_PATTERN = [
     ["En_LynelBlue", "En_Peehat", "En_Lynel"] * 1,
     ["En_LynelBlue", "En_Peehat", "En_Lynel"] * 2,
     ["En_Lynel", "En_Peehat", "En_LynelBlue"] * 1,
+    ["En_Armos"],
 
     ["En_RollingRock"] * 2,
 

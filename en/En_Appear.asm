@@ -27,6 +27,10 @@ En_Appear: SUBROUTINE
     lda EnSysSpawnTry
     beq .rts
     ldx enNum
+; special case for leevers
+    lda enSysType,x
+    cmp #EN_LEEVER_BLUE
+    beq .fast_spawn
 .set_fuzz
     lda #3
     sta enState,x

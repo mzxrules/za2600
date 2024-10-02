@@ -36,7 +36,7 @@ En_NpcShop1: SUBROUTINE
     sta plY
 .skipSetPos
 
-    jsr En_NpcShopGetSelction
+    jsr En_NpcShopGetSelection
     cpx #-1
     beq .rts
     lda itemRupees

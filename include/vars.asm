@@ -324,6 +324,13 @@ enEnemyShootT       ds 2
 enEnemyType         ds 2
     EN_SIZE DARKNUT
 
+; == Armos
+    ORG CLASS_EN_ENEMY
+enEnemyStep         ds 2
+enArmosType         ds 2
+enArmosHpTemp   = Temp0
+    EN_SIZE ARMOS
+
 ; == Wallmaster
     ORG CLASS_EN_ENEMY
 enWallPhase         ds 2 ; anim timer for phasing through wall
@@ -333,10 +340,10 @@ enWallPhase         ds 2 ; anim timer for phasing through wall
     ORG CLASS_EN_ENEMY
 enLeeverTimer       ds 2
 enLeeverSpdFrac     ds 2
-enLeeverPlX = Temp0
-enLeeverPly = Temp1
-enLeeverTryX = Temp2
-enLeeverTryY = Temp3
+enLeeverPlX     = Temp0
+enLeeverPly     = Temp1
+enLeeverTryX    = Temp2
+enLeeverTryY    = Temp3
     EN_SIZE LEEVER
 
 ; == Goriya
@@ -937,6 +944,7 @@ SEG_48 = RAMSEG_F4 | 48
 SEG_49 = RAMSEG_F4 | 49
 SEG_50 = RAMSEG_F4 | 50
 SEG_52 = RAMSEG_F4 | 52
+SEG_53 = RAMSEG_F4 | 53
 
 
 SLOT_RW_F8_W0   = RAMSEG_F8 | 0

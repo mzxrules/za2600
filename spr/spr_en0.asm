@@ -234,32 +234,23 @@ SprE25:
     .byte $00 ; |........|
 SprE26:
     .byte $00 ; |........|
-    .byte $24 ; |..X..X..|
-    .byte $42 ; |.X....X.|
-    .byte $18 ; |...XX...|
-    .byte $18 ; |...XX...|
-    .byte $42 ; |.X....X.|
-    .byte $24 ; |..X..X..|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
     .byte $00 ; |........|
 SprE27:
-    .byte $66 ; |.XX..XX.|
-    .byte $C3 ; |XX....XX|
-    .byte $99 ; |X..XX..X|
-    .byte $24 ; |..X..X..|
-    .byte $24 ; |..X..X..|
-    .byte $99 ; |X..XX..X|
-    .byte $C3 ; |XX....XX|
-    .byte $66 ; |.XX..XX.|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
 SprE28:
-    .byte $00 ; |........|
-    .byte $18 ; |...XX...|
-    .byte $3C ; |..XXXX..|
-    .byte $66 ; |.XX..XX.|
-    .byte $66 ; |.XX..XX.|
-    .byte $3C ; |..XXXX..|
-    .byte $18 ; |...XX...|
-    .byte $00 ; |........|
-SprE29:
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $2C ; |..X.XX..|
@@ -268,15 +259,24 @@ SprE29:
     .byte $34 ; |..XX.X..|
     .byte $00 ; |........|
     .byte $00 ; |........|
+SprE29:
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $66 ; |.XX..XX.|
 SprE30:
+    .byte $1C ; |...XXX..|
+    .byte $ED ; |XXX.XX.X|
+    .byte $ED ; |XXX.XX.X|
+    .byte $ED ; |XXX.XX.X|
     .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $7D ; |.XXXXX.X|
+    .byte $6C ; |.XX.XX..|
+    .byte $BA ; |X.XXX.X.|
 SprE31:
     .byte $FF ; |XXXXXXXX|
     .byte $83 ; |X.....XX|

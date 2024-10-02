@@ -63,7 +63,7 @@ En_NpcShopMain: SUBROUTINE
     bit enState
     bne .rts
 ; Shop logic
-    jsr En_NpcShopGetSelction
+    jsr En_NpcShopGetSelection
     cpx #-1
     beq .rts
     lda roomEX
