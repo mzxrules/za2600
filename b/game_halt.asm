@@ -73,15 +73,17 @@ HALT_FLUTE_ENTRY: SUBROUTINE
 HALT_ENTER_CAVE_ENTRY: SUBROUTINE
     lda #HALT_TYPE_ENTER_CAVE
     sta PHaltType
-    bpl .entry_common
+    bpl .entry_common ; jmp
 
 HALT_ENTER_DUNG_ENTRY:
     lda #HALT_TYPE_ENTER_DUNG
     sta PHaltType
 
 .entry_common
+; Reset the stack
     ldx #$FF
     txs
+
     lda Frame
     sta PFrame
 
@@ -178,8 +180,10 @@ HaltEnterLoc_OverscanBottom: SUBROUTINE
 
     lda #7
     sta wPLH
+; Reset the stack
     ldx #$FF
     txs
+; Push return address of OVERSCAN_WAIT
     lda #>OVERSCAN_WAIT
     pha
     lda #<OVERSCAN_WAIT-1
@@ -187,7 +191,6 @@ HaltEnterLoc_OverscanBottom: SUBROUTINE
     lda PHaltType
     cmp #HALT_TYPE_ENTER_CAVE
     beq .MAIN_CAVE_ENT
-    ;lda #SLOT_FC_MAIN
     jmp MAIN_DUNG_ENT
 .MAIN_CAVE_ENT
     jmp MAIN_CAVE_ENT

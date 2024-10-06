@@ -4,10 +4,12 @@
 En_NpcGiveOne: SUBROUTINE
     lda #SEG_SH
     sta BANK_SLOT
+
     ldx roomEX
     ldy shopRoom
     lda rWorldRoomFlags,y
     bpl .skip_SetItemGet ; WRF_SV_ITEM_GET
+; player already has item
     lda #NPC_INIT | #NPC_ITEM_GOT
     sta enState
 .skip_SetItemGet

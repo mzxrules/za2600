@@ -232,7 +232,6 @@ endPFCollision
     stx enNum
 
 .EntityLoop
-
     ldx enNum
     jsr En_Del
     lda plState2

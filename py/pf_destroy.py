@@ -103,7 +103,7 @@ def generate_ball_pos(x, y):
     output = ""
     if x is not None:
         output+= f'''
-    lda #${x:02X}+1
+    lda #${x:02X}
     sta blX
 '''.lstrip('\n')
     if y is not None:

@@ -32,7 +32,7 @@ EnMove_Card_WallCheck: SUBROUTINE
     bcs .ballNotBlocking
     tay
     lda blX
-    clc ; subtract an extra 1 from blX
+    sec
     sbc en0X,x
     clc
     adc #8
@@ -48,18 +48,18 @@ EnMove_Card_WallCheck: SUBROUTINE
 ; Check board boundaries
     ldx EnMoveNX
     cpx #[EnBoardXR/4]
-    bcc .setBlockedL
+    bcc .testBlockedL
     ora #EN_BLOCKED_DIR_R
-.setBlockedL
+.testBlockedL
     cpx #[EnBoardXL/4] + 1
-    bcs .setBlockedD
+    bcs .testBlockedD
     ora #EN_BLOCKED_DIR_L
-.setBlockedD
+.testBlockedD
     ldy EnMoveNY
     cpy #[EnBoardYD/4] + 1
-    bcs .setBlockedU
+    bcs .testBlockedU
     ora #EN_BLOCKED_DIR_D
-.setBlockedU
+.testBlockedU
     cpy #[EnBoardYU/4]
     bcc .checkPFHit
     ora #EN_BLOCKED_DIR_U

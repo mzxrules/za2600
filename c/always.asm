@@ -18,6 +18,7 @@ PosWorldObjects: SUBROUTINE
     ldx #4
 PosWorldObjects_X: SUBROUTINE
     sec            ; 2
+    inc blX
 .Loop
     sta WSYNC      ; 3
     lda plX,x      ; 4  4 - Offsets by 12 pixels
@@ -37,12 +38,12 @@ DivideLoop
 
     sta WSYNC
     sta HMOVE
+    dec blX
     rts
 
 Mul8:
     .byte 0x00, 0x08, 0x10, 0x18, 0x20, 0x28, 0x30, 0x38, 0x40, 0x48, 0x50, 0x58
-Lazy8:
-    .byte 0x01, 0x02, 0x04, 0x08
+
 Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
 

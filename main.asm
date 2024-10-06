@@ -434,7 +434,7 @@ BANK_31
     INCLUDE "gen/En_DelLUT.asm"
     INCLUDE "gen/En_DelBankLUT.asm"
     INCLUDE "b/en.asm"
-    INCLUDE "gen/EnSysEncounter.asm"
+    INCLUDE "gen/EnSysEncounterTable.asm"
     LOG_BANK_SIZE "-BANK 31- Entity Common", BANK_31
 
 ; ****************************************

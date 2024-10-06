@@ -85,19 +85,16 @@ ClearDropSystem: SUBROUTINE
 .ClearDropSystem_rts
 
 EnSystem: SUBROUTINE
-    lda roomId
+    ldx roomId
     bmi .rts
-    ; Set x to clear flag offset
-    tax
 
     ; If room load this frame, setup new encounter
     bit roomFlags
-    bvs .roomLoad ; #RF_EV_LOADED
-    bvc .runEncounter
+    bvc .runEncounter ; not #RF_EV_LOADED
 
 .roomLoad
     ldy roomEN
-    lda EnSysEncounter,y
+    lda EnSysEncounterTable,y
     sta wRoomENFlags
     inc roomEN
 
@@ -117,7 +114,7 @@ EnSystem: SUBROUTINE
 
 .runEncounter
     ; toggle off enemy clear event
-    lda #~RF_EV_ENCLEAR
+    lda #~#RF_EV_ENCLEAR
     and roomFlags
     sta roomFlags
 
@@ -134,18 +131,18 @@ EnSystem: SUBROUTINE
     cpx roomENCount
     beq .rts
     lda enType,x
-    beq .cont
+    beq .spawn_enemy
     inx
     cpx #2
     bne .loop
 .rts
     rts
 
-.cont
+.spawn_enemy
     stx enNum
     ; fetch next encounter
     ldy roomEN
-    lda EnSysEncounter,y
+    lda EnSysEncounterTable,y
     sta enSysType,x
     lda #EN_APPEAR
     sta enType,x

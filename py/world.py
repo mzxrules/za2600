@@ -174,7 +174,7 @@ def BuildRoomEncounterTables(encounterToRoom):
         [0] * 128,
         [0] * 128,
     ]
-    encounterTableStr = "EnSysEncounter:\n"
+    encounterTableStr = "EnSysEncounterTable:\n"
     curEN = 0
 
     for k, rooms in encounterToRoom.items():
@@ -211,7 +211,7 @@ def BuildRoomEncounterTables(encounterToRoom):
         with open(f"gen/world/b{worldId}en.bin", "wb") as file:
             file.write(bytes(roomEN[worldId]))
 
-    with open(f"gen/EnSysEncounter.asm", "w") as file:
+    with open(f"gen/EnSysEncounterTable.asm", "w") as file:
         file.write(encounterTableStr)
 
 

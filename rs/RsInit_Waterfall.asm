@@ -6,7 +6,7 @@ RsInit_Waterfall: SUBROUTINE
     lda #$7F
     sta wPF2Room + 12
     sta wPF2Room + 13
-    lda #$40+1
+    lda #$40
     sta blX
     lda #$38
     sta blY

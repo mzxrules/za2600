@@ -6,7 +6,7 @@ RsInit_BlockCenter: SUBROUTINE
     lda roomFlags
     ora #RF_NO_ENCLEAR
     sta roomFlags
-    ldx #$40+1
+    ldx #$40
     stx blX
     ldx #$2C
     stx blY

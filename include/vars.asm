@@ -71,8 +71,8 @@ roomDoors   ds 1
     ; xx11_xxxx E
     ; 11xx_xxxx W
 roomRS      ds 1
-roomEN      ds 1 ; encounter type
-roomENCount ds 1 ; num encounters
+roomEN      ds 1 ; encounter table index
+roomENCount ds 1 ; num enemies left in encounter
 roomEX      ds 1
 roomWA      ds 1
 blType      ds 1 ;
@@ -89,7 +89,7 @@ PS_LOCK_ALL     = $02 ; 0000_0010 Lock Player
 PS_LOCK_AXIS    = $01 ; 0000_0001 Lock Player Axis - Hover Boots
 plState2    ds 1 ; ---------------
 PS_HOLD_ITEM    = $80 ; 1000_0000
-EN_LAST_DRAWN   = $40 ; 0100_0000
+EN_LAST_DRAWN   = $40 ; 0100_0000 Current Entity was drawn last frame
                       ; xxxx_1xxx RESERVED
 PS_ACTIVE_ITEM  = $07 ; 0000_0111 Mask to fetch current active item
                       ;       000 Sword
@@ -294,9 +294,10 @@ CD_UPDATE_B     = $80 ; 1xxx_xxxx
 CD_UPDATE_A     = $40 ; x1xx_xxxx
                       ; xx11_11xx GI_EVENT reserved
 CD_LAST_UPDATE  = $01 ; Stores last update's active entity
+cdATimer    ds 1 ; Timer for ItemGet Tri
 cdBTimer    ds 1
 cdAType     ds 1 ; EnType value for ClearDrop, GiItem for ItemGet
-cdBType     ds 1 ; GiItem value for ClearDrop, Timer for ItemGet Tri
+cdBType     ds 1 ; GiItem value for ClearDrop
 CD_ITEM_RAND = $FF
 cdAX        ds 1
 cdBX        ds 1

@@ -6,7 +6,7 @@ RsInit_BlockSpiral: SUBROUTINE
     lda roomFlags
     ora #RF_NO_ENCLEAR
     sta roomFlags
-    ldx #$28+1
+    ldx #$28
     stx blX
     ldx #$40
     stx blY

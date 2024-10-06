@@ -67,7 +67,7 @@ BlPathPushBlock: SUBROUTINE
     sta wPF1RoomL + 6
     sta wPF1RoomL + 7
 
-    ldx #$14+1
+    ldx #$14
     stx blX
     ldx #$20
     stx blY
@@ -88,7 +88,7 @@ BlPushBlockLeft: SUBROUTINE
     dey
     bpl .loop
 
-    ldx #$1C+1
+    ldx #$1C
     stx blX
     ldx #$2C
     stx blY
@@ -104,7 +104,7 @@ BlPushBlockDiamondTop: SUBROUTINE
     sta wPF2Room + 13
     sta wPF2Room + 14
 
-    ldx #$40+1
+    ldx #$40
     stx blX
     lda #$3C
     sta blY

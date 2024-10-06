@@ -6,17 +6,17 @@ Door Unlock System - Complete
 Ganon Fight Kernel
 Exits - Complete
 Raft System - Complete
-Enemy Spawns - First Implementation
+Enemy Spawns - Second Implementation
 Wizrobes
 Stalfos
 Bubbles
 Keese
 Bosses
 
-Game Loop:
+Main Game Loop:
 
     Random
-    VerticalSync
+    VerticalSync - HUD Element Positioning Kernel
     RoomLoad
     if not RoomLoad:
         Missile System
@@ -41,6 +41,8 @@ Game Loop:
     Update Room Clear
     Update Shutter Door
     Test Game Over
+    Overscan Wait
+    Update RoomPush
 
 Room Events:
     RF_EV_LOAD      ; Triggers Room Load event
@@ -49,14 +51,52 @@ Room Events:
     RF_NO_ENCLEAR   ; Blocks Enemy Cleared from setting Room Cleared
     RF_EV_CLEAR     ; Room Cleared
 
-RsInit configures room for first frame. Remember to position ball
+RsInit configures room for first frame. Remember to always position ball
+
+EnSystem (Enemy System):
+    EnSystem (SUBROUTINE) manages the generation of enemies within a room.
+    These are known as encounters. EnSystem proactively spawns one enemy a
+    frame until either all entity slots are filled, or the roomENCount limit
+    is reached.
+
+    roomEN is an index into a mixed data table of encounters, defined in
+    EnSysEncounterTable.
+        Byte 0 (rRoomENFlags)
+            1000_0000 ; EnType array is length 1
+            0001_1111 ; Number of spawns in encounter
+        Byte 1+ is the EnType array of enemies.
+    In room data/on RF_EV_LOADED, roomEn will point to Byte 0
+    EnSystem will transfer that byte to wRoomENFlags and increment roomEN to
+    Byte 1. Then with each spawn, roomEn will increment (if applicable).
+
+    Enemies at the start of the array always spawn, while enemies at the end
+    may not depending on roomENCount
+
+    roomENCount tracks the number of living enemies. When it reaches 0,
+    RF_EV_ENCLEAR will be set. This enables the ClearDrop system
+
 
 EnSystem LastDraw:
-    EN_LAST_DRAWN   ; Stores entity being given draw priority
+    EN_LAST_DRAWN   ; Stores 1 if current entity is was given draw priority
+                    ; last frame
 
-    In the draw routine, flag is 0 or 1 to denote if entity 0 or 1 was drawn
-    and can check built-in collision.
-    When read within an entity, 1 denotes that the entity was drawn last frame
+    In EnDraw_Del, EN_LAST_DRAWN is clear if entity 0 is to be drawn, and set
+    if entity 1 is to be drawn.
+
+    Once the frame is rendered, an entity can test against EN_LAST_DRAWN to
+    determine if it was drawn that previous frame, and in turn use the prior
+    built-in collision result.
+
+    Entity 1 is executed first, which is why EnDraw_Del sets the flag to on
+    for Entity 1 being drawn. When swapping to Entity 0, the flag is toggled.
+
+    Entity deletions do not have to be factored into flag state:
+        If Entity 1 is deleted that frame, execution simply moves to Entity 0
+        If Entity 0 is deleted, the flag becomes desynced, there are no more
+            entities to process anyway.
+
+    The following is a logic table to show how EN_LAST_DRAWN (Pri) should
+    ideally be set when an entity removes itself.
 
     Pri = 0, Slot0 = Thing, Slot1 = NONE, DELSLOT0 -> Pri = 1 (Phony State)
 
@@ -69,8 +109,65 @@ EnSystem LastDraw:
     Pri = 0, Slot0 = Thing, Slot1 = Glob           -> Pri = 0
     Pri = 1, Slot0 = Thing, Slot1 = Glob           -> Pri = 1
 
-    If Slot0 is deleted, toggle last drawn (not needed, slot0 executes last)
-    Toggle last drawn when swapping from entity 1 to 0
+ClearDrop System:
+
+The ClearDrop system enables the spawning of Stairs and Items after EnSystem
+completes. Because it was written prior to the two entity system, it implements
+it's own type system, process scheduling, and draw scheduling systems.
+
+We want to re-work this system to achieve these goals:
+    * Stairs can appear during EnSystem and function correctly
+    * Random Item drops can be spawned during EnSystem
+    * Key Items and Stairs are not a shared entity
+
+ClearDropSystem (SUBROUTINE):
+    ClearDropSystem implements two slots, cdAType and cdBType
+    cdAType = Stairs / Key Items
+    cdBType = Random Item Drops
+
+    System waits for (enType = EN_NONE) and (#RF_EV_ENCLEAR | #RF_EV_CLEAR)
+    Then, it sets enType to EN_CLEAR_DROP and initializes
+        enState, cdBTimer, cdAType, cdBType to 0
+        On #RF_EV_ENCLEAR, cdBType is set to CD_ITEM_RAND instead
+    After, ClearDropSystem is complete and allows other systems to take over
+    entity EN_CLEAR_DROP.
+
+    RoomScript configures cdAType, waiting for enType to be EN_CLEAR_DROP
+    EnSysEnDie assigns cdBX,cdBY to enX,enY when EnSystem completes.
+        But it also sets enType to EN_NONE, letting ClearDropSystem initialize
+        the other data
+
+EnClearDrop (Entity EN_CLEAR_DROP, CLASS_EN_NPC):
+    Process previous frame's collision
+         if #CD_LAST_UPDATE indexes an inactive actor, skip
+
+    Set CD_UPDATE_A, CD_UPDATE_B based on cdA/BType being non-zero
+
+    if CD_UPDATE_A, CD_UPDATE_B == 0 rts
+
+    if CD_UPDATE_A, not CD_UPDATE_B, run CD_UPDATE_A x == 1
+
+    if not CD_UPDATE_A, CD_UPDATE_B, run CD_UPDATE_B x == 1
+
+    if CD_UPDATE_A and CD_UPDATE_B
+        a = Frame & 1
+        if a == 0, run CD_UPDATE_A, x == 2
+        else run CD_UPDATE_B, x == 2
+
+ItemGet (SUBROUTINE):
+    Sets up Get Item pose
+    Sets up Get Item or Get Triforce music sequence
+    Gives player an item immediately
+    Transforms Entity 0 into EN_ITEM_GET
+
+    EN_CLEAR_DROP, EN_NPC_GIVE_ONE, EN_NPC_SHOP are the only dependenants
+
+
+Additionally, the ItemGet system allows for Link to hold items above his head.
+Affects EnClearDrop and EnShopkeeper var allocation
+enState stores ItemGet trigger, for restoring EnClearDrop and playing MS
+cdAType stores GiItem to hold overhead
+
 
 Darknut Logic:
 
@@ -354,47 +451,6 @@ KeydoorCheck -> Kernel Main loop
      1.63
     14.06
 
-ClearDrop System:
-
-Two slots: A, B
-Stairs / Key Items, Random Item Drops
-
-RoomScript configures A, EnemySystem configures B
-RoomScript will wait for enType to be #EnClearDrop
-
-On EnSysEnDie, set enType to #EN_NONE
-Set cdBX/cdBY to enX/enY
-
-
-The ClearDrop system will init the rest of the system on #RF_EV_ENCLEAR
-
-If enType == #EN_NONE and (roomFlags & (#RF_EV_ENCLEAR or #RF_EV_CLEAR))
-    set enType to #EnClearDrop
-    zero enState, cdBTimer, cdAType, cdBType
-    if #RF_EV_ENCLEAR
-        set cdBType #CD_ITEM_RAND
-
-EnClearDrop:
-    Process previous frame's collision
-         if #CD_LAST_UPDATE indexes an inactive actor, skip
-
-    Set CD_UPDATE_A, CD_UPDATE_B based on cdA/BType being non-zero
-
-    if CD_UPDATE_A, CD_UPDATE_B == 0 rts
-
-    if CD_UPDATE_A, not CD_UPDATE_B, run CD_UPDATE_A x == 1
-
-    if not CD_UPDATE_A, CD_UPDATE_B, run CD_UPDATE_B x == 1
-
-    if CD_UPDATE_A and CD_UPDATE_B
-        a = Frame & 1
-        if a == 0, run CD_UPDATE_A, x == 2
-        else run CD_UPDATE_B, x == 2
-
-Additionally, the ItemGet system allows for Link to hold items above his head.
-Affects EnClearDrop and EnShopkeeper var allocation
-enState stores ItemGet trigger, for restoring EnClearDrop and playing MS
-cdAType stores GiItem to hold overhead
 
 Enemy Spawn Routine:
 

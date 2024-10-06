@@ -103,12 +103,6 @@ ItemGet:
     lda #PS_HOLD_ITEM
     ora plState2
     sta plState2
-    lda plX
-    sta enX
-    lda plY
-    clc
-    adc #9
-    sta enY
     lda #EN_ITEM_GET
     sta enType
     ldy #MS_PLAY_GI

@@ -196,12 +196,16 @@ En_ArmosMain: SUBROUTINE
     dec enEnemyStep,x
     bpl .seek_next
     jsr Random
+    and #$7
     clc
-    adc #4
-    and #$1C
+    adc #2
     sta enEnemyStep,x
 
     jsr En_Armos_Card_WallCheck
+    ldy enDir,x
+    lda EnMoveBlockedDir
+    ora Bit8,y
+    sta EnMoveBlockedDir
     jsr EnMove_Card_RandDir
     sty enDir,x
     bpl .move ; jmp
