@@ -25,7 +25,7 @@ EnBoss_Cucco: SUBROUTINE
 
     lda Frame
     bne .rts
-    jsr EnSysEnDie
+    jsr EnSys_KillEnemyB
     lda #0
     sta wNUSIZ1_T
 .rts

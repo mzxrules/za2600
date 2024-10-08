@@ -8,6 +8,9 @@
 ; Updates enemy missiles
 ;==============================================================================
 MiSystem: SUBROUTINE
+; special case for RS_SHORE_ITEM
+    lda plState2
+    bmi .rts ; # PS_HOLD_ITEM
     ldx #1 ; Loop for 2
 .loop
     lda miType,x
@@ -32,6 +35,7 @@ MiSystem: SUBROUTINE
 .continue
     dex
     bpl .loop
+.rts
     rts
 
 ;==============================================================================

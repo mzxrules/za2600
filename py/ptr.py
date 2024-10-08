@@ -39,9 +39,8 @@ class GameEnum:
 
 Entity_Table = [
     "EnNone",          "SEG_NA", "SEG_42", "EnDraw_None",
-    "EnClearDrop",     "SEG_SH", "SEG_42", "EnDraw_ClearDrop",
-    "EnItem",          "SEG_NA", "SEG_42", "EnDraw_None",
-    "EnStairs",        "SEG_SH", "SEG_42", "EnDraw_None",
+    "EnItem",          "SEG_53", "SEG_42", "EnDraw_Item",
+    "EnStairs",        "SEG_53", "SEG_42", "EnDraw_Stairs",
     "En_ItemGet",      "SEG_44", "SEG_42", "EnDraw_ItemGet",
     "En_NpcAppear",    "SEG_48", "SEG_42", "EnDraw_Npc",
     "En_Npc",          "SEG_45", "SEG_42", "EnDraw_Npc",
@@ -136,11 +135,14 @@ RoomScript_Table = [
     "Rs_EntCaveWall_P4820",         "RsInit_EntCaveWall_P4820",
     "Rs_EntCaveMid",                "RsInit_None",
     "Rs_EntCaveMidSecretNorth",     "RsInit_None",
-    "Rs_EntDungMid",                "RsInit_None",
-    "Rs_EntDungBush",               "RsInit_None",
-    "Rs_EntDungSpectacleRock",      "RsInit_None",
+    # Group
+    "Rs_EntDungMid",                "RsInit_None", #0,
+    "Rs_EntDungStairs",             "RsInit_None", #1
+    "Rs_EntDungSpectacleRock",      "RsInit_None", #2
+    # End Group
     "Rs_EntDungFlute",              "RsInit_EntDungFlute",
     "Rs_EntDungSpectacleRockBlocked","RsInit_EntDungSpectacleRockBlocked",
+    "Rs_EntDungBush",               "RsInit_None",
     # RsBush must be grouped
     "Rs_EntDungBushBlocked",        "RsInit_EntDungBushBlocked",
     "Rs_EntCaveBushBlocked_P3428",  "RsInit_Bush_P3428",
@@ -160,6 +162,7 @@ RoomScript_Table = [
     "Rs_TakeHeartRupee",            "RsInit_None",
     "Rs_RaftSpot",                  "RsInit_None",
     "Rs_ShoreItem",                 "RsInit_None",
+    "Rs_Shore",                     "RsInit_None",
     "Rs_Stairs",                    "RsInit_None",
     "Rs_Cave",                      "RsInit_None",
     "Rs_Waterfall",                 "RsInit_Waterfall",

@@ -2,42 +2,19 @@
 ; mzxrules 2022
 ;==============================================================================
 
-EnDraw_ClearDrop: SUBROUTINE
-    lda enState
-    bne .execute
-.noDraw
-    lda #$F0
-    sta enSpr+1
-    lda #$00
-    sta enSpr
-    rts
-
-.execute
-    and #1
-    beq .DrawTypeA
-.DrawTypeB
-    lda cdBX
+EnDraw_Item: SUBROUTINE
+    lda en0X,x
     sta enX
-    lda cdBY
+    lda en0Y,x
     sta enY
-
-    ldy cdBType
-    jmp EnItemDraw
-.DrawTypeA
-    lda cdAX
-    sta enX
-    lda cdAY
-    sta enY
-
-    lda cdAType
-    cmp #EN_STAIRS
-    beq .EnStairs
-    cmp #EN_ITEM
-    bne .noDraw
-    ldy roomEX
+    ldy cdItemType,x
     jmp EnItemDraw
 
-.EnStairs:
+EnDraw_Stairs: SUBROUTINE
+    lda en0X,x
+    sta enX
+    lda en0Y,x
+    sta enY
     lda rFgColor
     sta wEnColor
     lda #<SprItem31

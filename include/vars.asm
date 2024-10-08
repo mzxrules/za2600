@@ -269,6 +269,7 @@ NPC_CAVE        = $20 ; xx1x_xxxx Determines roomEX and item fanfare
 GI_EVENT_CD     = $10 ; xxx1_xxxx
 GI_EVENT_TRI    = $08 ; xxxx_1xxx
 GI_EVENT_INIT   = $04 ; xxxx_x1xx
+GI_EVENT_RESERVED = $3C
 NPC_SPR_MAN     = 0   ; xxxx_xx11 Sprite
 NPC_SPR_WOMAN   = 1
 NPC_SPR_SHOP    = 2
@@ -286,24 +287,22 @@ NpcGamePrizeTable = Temp2
 NpcRupeeDelta     = Temp3
     EN_SIZE NPC_GAME
 
-; == En_ClearDrop
 ; == En_ItemGet
+; == En_Item
     ORG CLASS_EN_NPC
 ; enState
 CD_UPDATE_B     = $80 ; 1xxx_xxxx
 CD_UPDATE_A     = $40 ; x1xx_xxxx
                       ; xx11_11xx GI_EVENT reserved
 CD_LAST_UPDATE  = $01 ; Stores last update's active entity
-cdATimer    ds 1 ; Timer for ItemGet Tri
-cdBTimer    ds 1
-cdAType     ds 1 ; EnType value for ClearDrop, GiItem for ItemGet
-cdBType     ds 1 ; GiItem value for ClearDrop
-CD_ITEM_RAND = $FF
-cdAX        ds 1
-cdBX        ds 1
-cdAY        ds 1
-cdBY        ds 1
-    EN_SIZE CLEAR_DROP
+cdItemType  ds 2
+cdItemTimer ds 2
+    EN_SIZE ITEM
+
+; == En_Stairs
+cdStairType ds 2
+cdStairPos  ds 2
+    EN_SIZE STAIRS
 
 ; == Great Fairy
     ORG CLASS_EN_NPC

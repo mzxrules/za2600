@@ -99,8 +99,8 @@ En_NpcShopMain: SUBROUTINE
     lda #0
     sta KernelId
     lda shopItem,x
-    sta cdAType
-
+    ldx enNum
+    sta cdItemType,x
     jmp ItemGet
 
 .take_item

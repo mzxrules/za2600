@@ -221,8 +221,8 @@ endPFCollision
 
     lda #SLOT_F0_EN
     sta BANK_SLOT
-.ClearDrop_EnSystem:
-    jsr ClearDropSystem
+.EnSystem:
+    jsr EnSystem
 
 .RoomScript:
     jsr Rs_Del
@@ -468,10 +468,10 @@ RETURN_WORLD: SUBROUTINE
     ora #RF_EV_LOAD
     sta roomFlags
     lda plState
-    and #~PS_LOCK_ALL
+    and #~#PS_LOCK_ALL
     sta plState
     lda plState2
-    and #~PS_HOLD_ITEM
+    and #~#PS_HOLD_ITEM
     sta plState2
     lda #PL_DIR_D
     sta plDir
@@ -483,7 +483,7 @@ En_BossGhini:
 En_BossDig:
 En_BossPatra:
 En_BossGanon:
-    jmp EnSysEnDie
+    jmp EnSys_KillEnemyA
 
 En_Del:
     lda #SLOT_F0_EN

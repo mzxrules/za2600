@@ -26,7 +26,7 @@ En_BossGlock: SUBROUTINE
     sta wPF2Room + 15
     sta wPF2Room + 16
 
-    jmp EnSysEnDie
+    jmp EnSys_KillEnemyB
 
 
 

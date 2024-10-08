@@ -46,7 +46,8 @@ En_NpcGiveOne: SUBROUTINE
     lda #0
     sta KernelId
     lda NpcGiveOneItems-#CV_SWORD1,x
-    sta cdAType
+    ldx enNum
+    sta cdItemType,x
     jmp ItemGet
 
 .rts

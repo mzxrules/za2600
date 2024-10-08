@@ -121,7 +121,7 @@ En_Gel: SUBROUTINE
     and enGelTemp
     sta enHp,x
     bne .endCheckDamaged
-    jmp EnSysEnDie ; TODO: disable rng itemdrop
+    jmp EnSys_KillEnemyA
 .endCheckDamaged
 
 ; Check player hit

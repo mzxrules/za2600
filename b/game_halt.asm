@@ -171,7 +171,7 @@ HaltEnterLoc_OverscanBottom: SUBROUTINE
     sec
     sbc PFrame
     cmp #32
-    bne .walk_in_anim
+    bne .enter_anim
 .enter_loc
     lda #$40
     sta plX
@@ -195,17 +195,25 @@ HaltEnterLoc_OverscanBottom: SUBROUTINE
 .MAIN_CAVE_ENT
     jmp MAIN_CAVE_ENT
 
-.walk_in_anim
+.enter_anim
     cmp #0
     beq .skipAnim
     and #3
     bne .skipAnim
+
     ldy rPLH
     dey
     sty wPLH
+
+    ldx roomRS
+    cpx #RS_ENT_DUNG_STAIRS
+    beq .walk_down_anim
+
+.walk_up_anim
     ldy plY
     iny
     sty plY
+.walk_down_anim
 .skipAnim
     lda PHaltType
     cmp #HALT_TYPE_ENTER_CAVE

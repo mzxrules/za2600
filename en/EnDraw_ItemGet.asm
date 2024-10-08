@@ -10,5 +10,5 @@ EnDraw_ItemGet:
     adc #9
     sta enY
 
-    ldy cdAType
+    ldy cdItemType,x
     jmp EnItemDraw

@@ -30,6 +30,10 @@ En_Octorok:
     rts
 
 En_OctorokMain: SUBROUTINE
+; Special case for RS_SHORE_ITEM
+    lda plState2
+    bmi .rts ; #PS_HOLD_ITEM
+
 ; check damaged
     lda #SLOT_F0_BATTLE
     sta BANK_SLOT
@@ -39,7 +43,7 @@ En_OctorokMain: SUBROUTINE
     sta BANK_SLOT
     lda enHp,x
     bpl .endCheckDamaged
-    jmp EnSysEnDie
+    jmp EnSys_KillEnemyB
 .endCheckDamaged
 
 ; Check player hit
@@ -124,6 +128,7 @@ En_OctorokMain: SUBROUTINE
     lda en0Y,x
     sta mi0Y,x
 .end_test_fire_rock
+.rts
     rts
 
 
@@ -162,7 +167,6 @@ En_OctorokMain: SUBROUTINE
     and #3
     beq .rts
     jmp EnMoveDir
-.rts
     rts
 
     LOG_SIZE "En_Octorok", En_Octorok

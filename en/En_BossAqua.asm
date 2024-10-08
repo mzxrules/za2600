@@ -35,7 +35,7 @@ En_BossAqua: SUBROUTINE
     lda enHp,x
     bpl .endCheckDamaged
     jsr EnSysRoomKill
-    jmp EnSysEnDie
+    jmp EnSys_KillEnemyB
 .endCheckDamaged
 
 ; Check player hit

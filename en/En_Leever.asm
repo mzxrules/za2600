@@ -99,7 +99,7 @@ En_LeeverRedMain: SUBROUTINE
     sta BANK_SLOT
     lda enHp,x
     bpl .endCheckDamaged
-    jmp EnSysEnDie
+    jmp EnSys_KillEnemyB
 .endCheckDamaged
 
 ; Check player hit

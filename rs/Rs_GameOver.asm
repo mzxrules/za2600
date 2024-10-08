@@ -26,6 +26,9 @@ Rs_GameOver: SUBROUTINE
 
     ldx #MS_PLAY_OVER
     stx SeqFlags
+    lda plState2
+    and #~#PS_HOLD_ITEM
+    sta plState2
     lda #-$20 ; input delay timer
 .skipInit
     cmp #1

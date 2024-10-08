@@ -96,7 +96,7 @@ En_Peehat: SUBROUTINE
 
     lda enHp,x
     bpl .endCheckDamaged
-    jmp EnSysEnDie
+    jmp EnSys_KillEnemyB
 .updateStunTimer
     lda enStun,x
     clc

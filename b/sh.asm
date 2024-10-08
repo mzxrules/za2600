@@ -98,16 +98,17 @@ KERNEL_SHOP: SUBROUTINE
 ; GET ITEM
 ;==============================================================================
 
-; Special entity for making Link hold up items.
+; Routine for making Link hold up items.
+; x = enNum
 ItemGet:
     lda #PS_HOLD_ITEM
     ora plState2
     sta plState2
     lda #EN_ITEM_GET
-    sta enType
+    sta enType,x
     ldy #MS_PLAY_GI
-    ldx cdAType
-    cpx #GI_TRIFORCE
+    lda cdItemType,x
+    cmp #GI_TRIFORCE
     bne .defaultGi
     ldy #MS_PLAY_TRI
 .defaultGi
@@ -117,6 +118,8 @@ ItemGet:
     sta plState
 
 GiItemDel: SUBROUTINE
+    lda cdItemType,x
+    tax
     lda ItemIdH,x
     pha
     lda ItemIdL,x
@@ -294,151 +297,6 @@ GiCompass: SUBROUTINE
 
 GiNone:
     rts
-
-;==============================================================================
-; En Clear Item Drop System
-;==============================================================================
-
-EnClearDrop: SUBROUTINE
-; process last drawn entity
-    lda enState
-    and #1 ; CD_LAST_UPDATE
-    tay
-    lda Bit8+6,y
-    and enState ; CD_UPDATE_B / CD_UPDATE_A
-    beq .endCollisionCheck ; Entity not active
-
-    lda CXPPMM
-    bpl .endCollisionCheck ; Player hasn't collided with Entity
-
-    cpy #0 ; Check if CD_UPDATE_A
-    beq .EnItemCollision ; Potentially collided with permanent item
-
-    ; Collided with random drop
-    ldx cdBType
-    beq .endCollisionCheck ; Safety check
-    jsr GiItemDel
-    lda #EN_NONE
-    sta cdBType
-    jmp .endCollisionCheck
-
-.EnItemCollision
-    lda cdAType
-    cmp #EN_ITEM
-    bne .endCollisionCheck
-
-    ; item collected
-    lda roomId
-    and #$7F
-    tax
-    lda rWorldRoomFlags,x
-    ora #WRF_SV_ITEM_GET
-    sta wWorldRoomFlags,x
-    ldx roomEX
-    cpx #GI_TRIFORCE
-    bmi .EnItem_GiItem
-    cpx #GI_KEY
-    beq .EnItem_GiItem
-    stx cdAType
-    jmp ItemGet
-.EnItem_GiItem
-    lda #EN_NONE
-    sta cdAType
-    jsr GiItemDel
-
-.endCollisionCheck
-    ; Update enState flags
-    lda #0 ; EN_NONE / GI_NONE
-    ldx cdAType
-    beq .ATypeNotLoaded
-    ora #CD_UPDATE_A
-.ATypeNotLoaded
-    ldy cdBType
-    beq .BTypeNotLoaded
-    ora #CD_UPDATE_B
-.BTypeNotLoaded
-    sta enState
-    ; Execute routine
-    lda enState
-    bne .execute
-
-    ; Nothing to execute
-    rts
-
-.execute
-    tax ; x = enState
-    lda Frame
-    and #4
-    bne .TryTypeB
-.TryTypeA
-    txa
-    and #CD_UPDATE_A
-    bne .TypeA
-.TypeB
-    jmp EnClearDropTypeB
-.TryTypeB
-    txa
-    and #CD_UPDATE_B
-    bne .TypeB
-.TypeA
-
-EnClearDropTypeA: SUBROUTINE
-    lda cdAType
-    cmp #EN_STAIRS
-    bne .rts
-
-EnStairs:
-    ldx cdAX
-    ldy cdAY
-    cpx plX
-    bne .rts
-    cpy plY
-    bne .rts
-    lda worldId
-    bne .dungeonStairs
-.worldStairs
-    jsr ENTER_CAVE
-    ldx #$40
-    ldy #$10
-    stx plX
-    sty plY
-    bpl .rts ; jmp
-.dungeonStairs
-    lda #$40
-    sta plX
-    lda #$2C
-    sta plY
-    lda roomEX
-    sta roomIdNext
-    lda roomFlags
-    ora #RF_EV_LOAD
-    sta roomFlags
-.rts
-    rts
-
-; Random Item Drops
-EnClearDropTypeB: SUBROUTINE
-    inc enState
-
-    lda cdBType
-    cmp #CD_ITEM_RAND
-    bne .skipRollItem
-
-    inc cdBType ; set GI_NONE
-    jsr Random
-    cmp #255 ; drop rate odds, N out of 256
-    bcs .skipRollItem
-    jsr Random
-    and #$7
-    tay
-    lda EnRandomDrops,y
-    sta cdBType
-.skipRollItem
-    rts
-
-EnRandomDrops:
-    .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
-    .byte #GI_RUPEE, #GI_RUPEE, #GI_RUPEE5, #GI_RUPEE
 
 ;==============================================================================
 ; NpcShop_UpdateRupees

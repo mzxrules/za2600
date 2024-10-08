@@ -87,7 +87,7 @@ En_Wallmaster: SUBROUTINE
     sta BANK_SLOT
     lda enHp,x
     bpl .endCheckDamaged
-    jmp EnSysEnDie
+    jmp EnSys_KillEnemyB
 .endCheckDamaged
 
 

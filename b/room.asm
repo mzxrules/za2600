@@ -42,7 +42,7 @@ RoomUpdate:  ; SUBROUTINE
     lda roomFlags
     and #~RF_EV_LOADED
     sta roomFlags
-    bpl .rts ; #RF_EV_LOAD
+    bpl .rts ; not #RF_EV_LOAD
     ora #RF_EV_LOADED
     and #~[RF_EV_LOAD + RF_NO_ENCLEAR + RF_EV_CLEAR + RF_PF_IGNORE + RF_PF_AXIS + RF_USED_CANDLE]
     sta roomFlags

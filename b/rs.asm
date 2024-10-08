@@ -223,24 +223,49 @@ Rs_Cave:
 
 Rs_ItemKey: SUBROUTINE
 Rs_Item: SUBROUTINE
-    lda enType
-    cmp #EN_CLEAR_DROP
-    bne .rts
+    lda roomENCount
+    bne .rts ; more enemies to kill
     lda roomId
     and #$7F
     tax
     lda rWorldRoomFlags,x
     bmi .NoLoad
 
+    lda roomFlags
+    and #RF_EV_ENCLEAR | #RF_EV_CLEAR
+    beq .rts
+
+; select entity slot for our permanent item
+; if enType = EN_NONE, slot 0
+; if enType = EN_ITEM, slot 1 if enType + 1 is > EN_ITEM, else slot 0
+; if enType > EN_ITEM, slot 1 always as a failsafe
+    ldx #0
+    lda enType
+    beq .set_item_slot ; slot 0 is free
+    inx ; #1
+    cmp #EN_ITEM+1
+    bcs .set_item_slot ; force select slot 1
+    lda enType+1
+    cmp #EN_ITEM+1
+    bcc .set_item_slot
+    dex ; #0
+
+.set_item_slot
     lda #EN_ITEM
-    sta cdAType
+    sta enType,x
+    lda #EN_ITEM_PERMANENT
+    sta enState,x
+
     lda roomRS
     cmp #RS_ITEM_KEY
     beq .pos_key
+
+    lda roomEX
+    sta cdItemType,x
     lda #$40
-    sta cdAX
+    sta en0X,x
     lda #$2C
-    sta cdAY
+    sta en0Y,x
 .NoLoad
     lda #RS_NONE
     sta roomRS
@@ -254,15 +279,16 @@ Rs_Item: SUBROUTINE
     and #$F
     tay
     lda Rs_PosItem_X,y
-    sta cdAX
+    sta en0X,x
     lda roomEX
     and #$F0
     lsr
     lsr
     adc #$10
-    sta cdAY
+    sta en0Y,x
     lda #GI_KEY
     sta roomEX
+    sta cdItemType,x
     bpl .NoLoad ;jmp
 
 Rs_PosItem_X:
@@ -281,8 +307,26 @@ Rs_EntDungData_RetX:
 Rs_EntDungData_RetY:
     .byte #$20, #$1C, #$1C
 
+Rs_EntDungBush: SUBROUTINE
+    ldx #0
+    lda enType
+    beq .select_slot ; #EN_NONE
+    inx
+.select_slot
+    lda #$40
+    sta en0X,x
+    lda #$1C
+    sta en0Y,x
+    lda #EN_STAIRS
+    sta enType,x
+    lda #EN_STAIRS_DISPLAY_ONLY
+    sta cdStairType,x
+    lda #RS_ENT_DUNG_STAIRS
+    sta roomRS
+    rts
+
 Rs_EntDungMid: SUBROUTINE
-Rs_EntDungBush:
+Rs_EntDungStairs: SUBROUTINE
 Rs_EntDungSpectacleRock:
     lda roomRS
     sec
@@ -324,70 +368,54 @@ STAIR_POS_P7448 = 2
 STAIR_POS_P742C = 3
 STAIR_POS_P2828 = 4
 
-PositionStairs: ; SUBROUTINE
-
-    clc
-    lda plX
-    sbc StairPosX,x
-    sbc #8-1
-    adc #8+8-1
-
-    bcc .place_stairs
-
-    clc
-    lda plY
-    sbc StairPosY,x
-    sbc #8-1
-    adc #8+8-1
-    bcs .rts
-
-.place_stairs
-    lda StairPosX,x
-    sta cdAX
-    lda StairPosY,x
-    sta cdAY
+; Y = Stair Position LUT index
+PlaceStairs: ; SUBROUTINE
+    ldx #0
+    lda enType
+    cmp #EN_NONE
+    beq .entity_index_set
+    inx
+.entity_index_set
     lda #EN_STAIRS
-    sta cdAType
+    cmp enType,x
+    beq .rts
+    sta enType,x
+    lda #$80
+    sta en0Y,x
+    lda #EN_STAIRS_HIDE_IF_OBSCURED
+    sta cdStairType,x
+    sty cdStairPos,x
 .rts
     rts
-
-StairPosX:
-    .byte #$40, #$18, #$74, #$74, #$28
-StairBushPosX:
-    .byte #$40, #$34, #$40, #$58, #$64, #$64, #$6C
-StairPosY:
-    .byte #$2C, #$34, #$48, #$2C, #$28
-StairBushPosY:
-    .byte #$1C, #$28, #$2C, #$20, #$20, #$38, #$18
 
 Rs_BlockPathStairs: ; SUBROUTINE
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts
-    ldx #STAIR_POS_P1834
-    jmp PositionStairs
+    ldy #STAIR_POS_P1834
+    bpl PlaceStairs ; jmp
 
 Rs_BlockDiamondStairs: ; SUBROUTINE
 Rs_Stairs: ;SUBROUTINE
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts
-    ldx #STAIR_POS_P402C
-    jmp PositionStairs
+    ldy #STAIR_POS_P402C
+    bpl PlaceStairs ; jmp
 
 Rs_BlockLeftStairs: ; SUBROUTINE
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts
-    ldx #STAIR_POS_P7448
-    jmp PositionStairs
+    ldy #STAIR_POS_P7448
+    bpl PlaceStairs ; jmp
 
 Rs_BlockSpiralStairs: ; SUBROUTINE
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts
-    ldx #STAIR_POS_P2828
-    jmp PositionStairs
+    ldy #STAIR_POS_P2828
+    bpl PlaceStairs ; jmp
 
 
 Rs_EntCaveWallCenterBlocked: SUBROUTINE
@@ -476,8 +504,8 @@ Rs_EntCaveBushStairs:
     lda roomRS
     sec
     sbc #RS_ENT_DUNG_BUSH_BLOCKED - (StairBushPosX - StairPosX)
-    tax
-    jmp PositionStairs
+    tay
+    jmp PlaceStairs
 
 
 Rs_EntDungFlute: SUBROUTINE

@@ -63,27 +63,6 @@ EnNone:
 ; ENTITY
 ;==============================================================================
 
-ClearDropSystem: SUBROUTINE
-    lda enType
-    bne .ClearDropSystem_rts
-    lda roomFlags
-    and #RF_EV_ENCLEAR | #RF_EV_CLEAR
-    beq .ClearDropSystem_rts
-
-    ldy #EN_CLEAR_DROP
-    sty enType
-    ldx #0
-    stx enState
-    stx cdBTimer
-    stx cdAType
-    stx cdBType
-
-    and #RF_EV_ENCLEAR
-    beq .ClearDropSystem_rts
-    dec cdBType ; CD_ITEM_RAND
-
-.ClearDropSystem_rts
-
 EnSystem: SUBROUTINE
     ldx roomId
     bmi .rts
@@ -165,25 +144,53 @@ EnSysRoomKill: SUBROUTINE
     rts
 
 ;==============================================================================
-; EnSysEnDie
+; EnSys_KillEnemyA
 ;----------
-; Kills an Enemy
+; Kills an Enemy without dropping an item
 ; X = enNum of Enemy to kill
 ;==============================================================================
-EnSysEnDie: SUBROUTINE
+EnSys_KillEnemyA: SUBROUTINE
     dec roomENCount
-    bne .continueEncounter
+    bne EnSysDelete
     ; Set room clear flag
     lda #RF_EV_ENCLEAR
     ora roomFlags
     sta roomFlags
-    ; set random item drop position
-    lda enX
-    sta cdBX
-    lda enY
-    sta cdBY
+    jmp EnSysDelete
 
-.continueEncounter
+;==============================================================================
+; EnSys_KillEnemyB
+;----------
+; Kills an Enemy, potentially dropping an item
+; X = enNum of Enemy to kill
+;==============================================================================
+EnSys_KillEnemyB: SUBROUTINE
+    dec roomENCount
+    bne .tryDropItem
+    ; Set room clear flag
+    lda #RF_EV_ENCLEAR
+    ora roomFlags
+    sta roomFlags
+.tryDropItem
+
+    jsr Random
+    cmp #99 ; drop rate odds, N out of 256
+    bcs EnSysDelete
+    jsr Random
+    and #$7
+    tay
+    lda EnRandomDrops,y
+; Spawn RNG Item Drop
+    sta cdItemType,x
+    lda #EN_ITEM
+    sta enType,x
+    lda #EN_ITEM_RNG
+    sta enState,x
+    lda #EN_ITEM_APPEAR_TIME
+    sta cdItemTimer,x
+    rts
+
+EnSysDelete:
     lda #$80
     sta en0Y,x
     lda #EN_NONE
@@ -214,3 +221,8 @@ EnSysCleanShift: SUBROUTINE
 
 .rts
     rts
+
+
+EnRandomDrops:
+    .byte #GI_RECOVER_HEART, #GI_FAIRY, #GI_BOMB, #GI_RUPEE5
+    .byte #GI_RUPEE, #GI_RUPEE, #GI_RUPEE5, #GI_RUPEE

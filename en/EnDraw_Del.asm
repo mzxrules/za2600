@@ -2,15 +2,15 @@
 ; mzxrules 2022
 ;==============================================================================
 
-EnDraw_Del:
+EnDraw_Del: SUBROUTINE
     ldx #0
     stx REFP1
     lda enType+1
-    beq .skip
+    beq .draw_entity
     lda Frame
     and #1
     tax
-.skip
+.draw_entity
     ldy enType,x
     lda EnDrawH,y
     pha

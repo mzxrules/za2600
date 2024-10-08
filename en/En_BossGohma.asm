@@ -50,7 +50,7 @@ En_BossGohma: SUBROUTINE
     sta m0Y
     ldx enNum
     jsr EnSysRoomKill
-    jmp EnSysEnDie
+    jmp EnSys_KillEnemyB
     bmi .endWeaponCollision ; always branch
 
 .defSfx

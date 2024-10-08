@@ -256,7 +256,6 @@ EnItemDraw: SUBROUTINE ; y == itemDraw
     clc
     adc #<SprItem0
     sta enSpr
-EnItem:
 ALWAYS_RTS:
     rts
 

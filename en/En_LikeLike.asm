@@ -24,7 +24,7 @@ En_LikeLikeMain: SUBROUTINE
     lda plState
     and #~PS_LOCK_MOVE_EN
     sta plState
-    jmp EnSysEnDie
+    jmp EnSys_KillEnemyB
 .endCheckDamaged
 
     ; Check if player was sucked in

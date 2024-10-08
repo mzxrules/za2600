@@ -141,7 +141,7 @@ En_ArmosMain: SUBROUTINE
     and #EN_ARMOS_STATE_DOUBLE | #EN_ARMOS_STATE_SINGLE
     bne .checkDamaged_live
 ; TODO: Death logic
-    jmp EnSysEnDie
+    jmp EnSys_KillEnemyB
 .checkDamaged_live
     eor #$02 ; is exactly 2
     bne .endCheckDamaged

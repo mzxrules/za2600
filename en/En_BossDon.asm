@@ -170,7 +170,7 @@ En_BossDon: SUBROUTINE
 
     jsr EnSysRoomKill
 .no_bosskill
-    jmp EnSysEnDie
+    jmp EnSys_KillEnemyB
 
 .end_testHp
 

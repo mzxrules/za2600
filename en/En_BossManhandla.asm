@@ -157,7 +157,7 @@ En_BossManhandla: SUBROUTINE
     and #$0F
     bne .endCheckDamaged
     jsr EnSysRoomKill
-    jmp EnSysEnDie
+    jmp EnSys_KillEnemyB
 
 .endCheckDamaged
 

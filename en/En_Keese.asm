@@ -123,7 +123,7 @@ En_Keese: SUBROUTINE
     sty enHp,x
     lda enHp,x
     bne .endCheckDamaged
-    jmp EnSysEnDie
+    jmp EnSys_KillEnemyA
 .endCheckDamaged
 
 ; Check player hit

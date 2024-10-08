@@ -3,7 +3,7 @@
 ;==============================================================================
 
 En_ItemGet: SUBROUTINE
-    lda cdAType
+    lda cdItemType,x
     cmp #GI_TRIFORCE
     beq .triforce
 ; Wait for sequence to complete
@@ -19,27 +19,29 @@ En_ItemGet: SUBROUTINE
     lda plState
     and #~#PS_LOCK_ALL
     sta plState
-    ldx #EN_NONE
-    stx cdAType
+    lda #EN_NONE
+    sta cdItemType,x
 
-    ldx #EN_CLEAR_DROP
-    lda enState
+    ldy #EN_NONE
+    lda enState,x
     and #NPC_CAVE
     beq .set_non_npc
-    ldx npcType
+    ldy npcType
 .set_non_npc
-    stx enType
+    sty enType,x
 .rts
     rts
 
 .triforce
-    lda #GI_EVENT_TRI
-    bit enState
+    lda enState,x
+    tay
+    and #GI_EVENT_TRI
     bne .skipTriInit
-    ora enState
-    sta enState
+    tya
+    ora #GI_EVENT_TRI
+    sta enState,x
     ldy #-40
-    sty cdATimer
+    sty cdItemTimer,x
 .skipTriInit
     lda plHealth
     cmp plHealthMax
@@ -57,10 +59,10 @@ En_ItemGet: SUBROUTINE
 .skipHeal
     lda SeqFlags
     bne .rts ; MS_PLAY_NONE
-    lda cdATimer
+    lda cdItemTimer,x
     cmp #1
     adc #0
-    sta cdATimer
+    sta cdItemTimer,x
     bmi .rts
 
     lda #RS_EXIT_DUNG2

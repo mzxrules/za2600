@@ -791,6 +791,8 @@ BANK_52
 BANK_53
     INCLUDE "en/En_Armos.asm"
     INCLUDE "en/EnDraw_Armos.asm"
+    INCLUDE "en/En_Stairs.asm"
+    INCLUDE "en/En_Item.asm"
     LOG_BANK_SIZE "-BANK 53-", BANK_53
 
 ; End
