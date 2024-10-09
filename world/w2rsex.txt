@@ -30,8 +30,8 @@ Rs_Npc
 MesgGoNextRoom
 Rs_Item
 GiRingRed
-Rs_None
-zz0
+Rs_Item
+GiMap
 Rs_None
 zz0
 Rs_Item

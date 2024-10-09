@@ -1,12 +1,12 @@
 ;==============================================================================
 ; mzxrules 2023
 ;==============================================================================
+EN_APPEAR_TRANSFORM = $01
+
 En_Appear: SUBROUTINE
     lda enState,x
     ror
     bcs .transform
-    lda #2
-    sta enState,x
     lda #$80
     sta en0Y,x
 .skipInit
@@ -15,13 +15,13 @@ En_Appear: SUBROUTINE
     cmp #EN_KEESE
     beq .spawn_keese
     cmp #EN_LEEVER
-    beq .fast_spawn
+    beq .instant_spawn
     cmp #EN_WALLMASTER
-    beq .fast_spawn
+    beq .instant_spawn
     cmp #EN_TEST
-    bcs .fast_spawn
+    bcs .instant_spawn
 
-    lda #4
+    lda #3
     sta EnSysSpawnTry
     jsr EnRandSpawn
     lda EnSysSpawnTry
@@ -30,37 +30,47 @@ En_Appear: SUBROUTINE
 ; special case for leevers
     lda enSysType,x
     cmp #EN_LEEVER_BLUE
-    beq .fast_spawn
+    beq .instant_spawn
+.begin_appear_spawn
+; quick-spawn if room just loaded
+    ldy roomTimer
+    bmi .instant_spawn
 .set_fuzz
-    lda #3
+    lda #EN_APPEAR_TRANSFORM
     sta enState,x
 
     jsr Random
-    and #$1F
-    adc #$D1
+    and #$18
+    ora #$C7
+.quick_spawn
     sta enSysTimer,x
-
 .rts
     rts
-.spawn_keese
-    ; Enemy Board Width = $40 (0-$3F)
-    ; Enemy Board Height = $38 (0-$37)
+.spawn_keese ; keese are $28 units wide
 
     jsr Random
-    and #$3C
-    clc
-    adc #EnBoardXL + 8
-    cmp #$4C + 1
-    bcc .setX
-    lda #EnBoardXL + 8 + $1E
-.setX
+    and #3
+    tay
+    lda En_AppearKeeseSpawnX,y
     sta en0X,x
-    jsr Random
-    and #$1C
-    clc
-    adc #$0C + EnBoardYD
+    lda Frame
+    and #3
+    tay
+    lda En_AppearKeeseSpawnY,y
     sta en0Y,x
-    jmp .set_fuzz
+; safety check player overlap
+    clc
+    sbc plY
+    sbc #8-1
+    adc #8+8-1
+    bcc .begin_appear_spawn
+    clc
+    lda en0X,x
+    sbc plX
+    sbc #8-1
+    adc #$28+8-1
+    bcs .set_fuzz
+    bcc .begin_appear_spawn
 
 
 .transform
@@ -71,16 +81,13 @@ En_Appear: SUBROUTINE
     sta enSysTimer,x
     bmi .rts
 
+.instant_spawn
     lda enSysType,x
-.fast_spawn
     sta enType,x
 
     ; zero entity variable data
-    ldy #EN_FREE_SIZE-1
     ldx enNum
-    bne .entity2
-    dey
-.entity2
+    ldy .freeloop_index_start,x
     lda #0
 .EnInitLoop:
     sta EN_FREE,y
@@ -89,6 +96,8 @@ En_Appear: SUBROUTINE
     bpl .EnInitLoop
     jmp En_Del
 
+.freeloop_index_start
+    .byte #EN_FREE_SIZE-2, #EN_FREE_SIZE-1
 
 EnRandSpawnRetry: SUBROUTINE
     dec EnSysSpawnTry
@@ -108,18 +117,68 @@ EnRandSpawn:
 
     jsr CheckRoomCol_Unsafe_XA
     bne EnRandSpawnRetry
-    ldx enNum
-    lda EnSysSpawnX
-    asl
-    asl
-    sta en0X,x
+
     lda EnSysSpawnY
     asl
     asl
+    sta EnSysSpawnY
+
+    lda EnSysSpawnX
+    asl
+    asl
+    sta EnSysSpawnX
+
+; Ball bounds check
+; assume 8x8 ball; room collision will catch 8x12 ball checks
+    clc
+;   lda EnSysSpawnX
+    sbc blX
+    sbc #8-1
+    adc #8+8+1
+    bcc .no_ball_overlap
+    clc
+    lda EnSysSpawnY
+    sbc blY
+    sbc #8-1
+    adc #8+8+1
+    bcs EnRandSpawnRetry
+.no_ball_overlap
+
+; Player bounds check
+; Add a buffer around the player blocking spawns
+PL_SAFE = 12
+PL_SAFE_W = #PL_SAFE * 2 + 8
+    lda plX
+    adc #-#PL_SAFE
+    clc
+    sbc EnSysSpawnX
+    sbc #8-1
+    adc #PL_SAFE_W+8-1
+    bcc .no_player_safebounds_overlap
+    clc
+    lda plY
+    adc #-#PL_SAFE
+    clc
+    sbc EnSysSpawnY
+    sbc #8-1
+    adc #PL_SAFE_W+8-1
+    bcs EnRandSpawnRetry
+
+.no_player_safebounds_overlap
+    ldx enNum
+    lda EnSysSpawnX
+    sta en0X,x
+    lda EnSysSpawnY
     sta en0Y,x
 .rts
     rts
     INCLUDE "gen/roomspawn.asm"
+
+En_AppearKeeseSpawnX:
+    .byte #$1C, #$40, #$2C, #$34
+
+En_AppearKeeseSpawnY:
+    .byte #$1C, #$3C, #$24, #$34
 
 
     LOG_SIZE "EnRandSpawn", EnRandSpawnRetry

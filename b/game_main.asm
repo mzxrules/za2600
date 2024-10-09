@@ -275,9 +275,6 @@ endPFCollision
     lda worldId
     beq .endOpenShutterDoor
     lda roomTimer
-    cmp #1
-    adc #0
-    sta roomTimer
     bmi .endOpenShutterDoor
     lda roomFlags
     and #RF_EV_CLEAR

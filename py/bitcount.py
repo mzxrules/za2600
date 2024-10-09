@@ -416,8 +416,9 @@ def get_rand_8x8_spawn():
             continue
         ySpawn.append(y//4)
 
-    xSpawn = xSpawn[:4] + xSpawn + xSpawn[-4:]
-    ySpawn = ySpawn[:2] + ySpawn + ySpawn[-2:]
+    # make center spawns more likely
+    xSpawn = xSpawn + xSpawn[8:16]
+    ySpawn = ySpawn + ySpawn[4:8]
 
     countX = Counter(xSpawn)
     countY = Counter(ySpawn)

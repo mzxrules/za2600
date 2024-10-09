@@ -556,9 +556,6 @@ Rs_EntDungFlute: SUBROUTINE
     sta plItemTimer
 
     lda roomTimer
-    cmp #1
-    adc #0
-    sta roomTimer
     beq .endAnimate
 
     ; negate

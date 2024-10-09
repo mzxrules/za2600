@@ -12,34 +12,42 @@ BlNone:
     rts
 
 UpdateRoomPush: SUBROUTINE ; CRITICAL, execute in 1 scanline
-    lda roomPush        ; 3
-    bmi .move_action
-    eor plDir
-    and #3
-    bne .dont_push
+                        ;       14
+    lda roomPush        ; 3     17
+    bmi .move_action    ; 2/4   19 21
+    eor plDir           ; 3     22
+    and #3              ; 2     24
+    bne .dont_push      ; 2/4   26 28
 
-    bit CXP0FB
-    bmi .push
-    bvs .push
+    bit CXP0FB          ; 3     29
+    bmi .push           ; 2/4   31 33
+    bvs .push           ; 2/3   33 34
 
-.dont_push
-    lda plDir
-    and #3
-    sta roomPush
-    bpl .end_updateRoomPush ; jmp
+.dont_push              ;       33 28
+    lda plDir           ; 3     36
+    and #3              ; 2     38
+    sta roomPush        ; 3     41
+    bpl .end_push ; jmp ; 3     44
 
-.push
-    lda roomPush
-    cmp #$78
-    bpl .end_updateRoomPush
-    clc
-    adc #4
-    sta roomPush
-    bpl .end_updateRoomPush ; jmp
+.push                   ;       34 33
+    lda roomPush        ; 3     37 36
+    cmp #$78            ; 2     39 38
+    bpl .end_push       ; 2/3   41 40 / 42 41
+    clc                 ; 2     43
+    adc #4              ; 2     45
+    sta roomPush        ; 3     48
+    bpl .end_push ; jmp ; 3     51
 
-.move_action
+.move_action            ;       ** 21
     inc roomPush
-.end_updateRoomPush
+.end_push
+    ; Worst Case 51 cycles
+
+; Update RoomTimer
+    lda roomTimer
+    cmp #1
+    adc #0
+    sta roomTimer
 
     sta WSYNC
     jmp MAIN_VERTICAL_SYNC
