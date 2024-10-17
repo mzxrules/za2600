@@ -179,7 +179,7 @@ En_BossManhandla: SUBROUTINE
 .skipResetInvince
 
 ; Movement Logic
-    lda #SLOT_F0_EN_MOVE
+    lda #SLOT_F0_EN_MOVE2
     sta BANK_SLOT
 
     lda #1

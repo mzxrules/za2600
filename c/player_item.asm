@@ -156,10 +156,20 @@ PlayerUpdateFireFx: SUBROUTINE
     cmp #-1
     beq .lastFrame
     cmp #-60
-    bne .rts
+    bne .skip_flag_set
     lda rRoomColorFlags
     and #~#RF_WC_ROOM_DARK
     sta wRoomColorFlags
+.skip_flag_set
+    lda SfxFlags
+    beq .set_fire_sfx
+    cmp #[#SFX_FIRE & ~#SFX_NEW]
+    bne .rts
+
+.set_fire_sfx
+    lda #SFX_FIRE
+    sta SfxFlags
+
 .rts
     rts
 .lastFrame
@@ -540,6 +550,8 @@ PlayerUpdateSword:
     sta plState3
     lda #-80
     sta plItem2Time
+    ;lda #SFX_STAB2
+    ;sta SfxFlags
 .rts
     rts
 

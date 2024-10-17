@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from collections import Counter
 import random
-from asmgen import ToAsm, ToAsmD, ToAsmLabel
+from asmgen import ToAsm, ToAsm2, ToAsmD, ToAsmLabel
 from dataclasses import dataclass, field
 from typing import List, Tuple
 
@@ -444,12 +444,13 @@ def get_rand_8x8_spawn():
         file.write(ToAsm(listY,4))
 
 
-def get_randdir_lut():
+def get_nextdir_lut():
     # Generates a 24 byte LUT that functions as such:
-    # xxx11 = First pick of 4 EN_DIR direction
-    # xx1xx = Permutation pattern
-    # 11xxx = index into permutation pattern
+    # xxx11 = The first pick out of 4 EN_DIR directions
+    # xx1xx = Pick one of three permutation pattern
+    # 11xxx = Pick one of three permutation pattern index (0-2)
     lut = [0] * 24
+    step_lut = [0] * 24
     dir = [EN_DIR_L, EN_DIR_R, EN_DIR_U, EN_DIR_D]
     select = [
         [EN_DIR_R, EN_DIR_U, EN_DIR_D],
@@ -476,9 +477,15 @@ def get_randdir_lut():
                 index = (k * 8) + (j * 4) + i
 
                 lut[index] = possibleNext[perm[k]]
+
+    for i in range(0,24):
+        step_lut[i] = f'{(i + 16) % 24:2d}'
+
     with open(f'gen/nextdir.asm', "w") as file:
         file.write("nextdir_lut:\n")
         file.write(ToAsm(lut,8))
+        file.write("nextdir_step_lut:\n")
+        file.write(ToAsm2(step_lut,8))
 
 def get_seek_lut():
     # Generates a next direction priority table that seeks out the target
@@ -630,7 +637,7 @@ get_seek_lut()
 get_hitbox_info()
 get_hitbox2_info()
 get_room_px_check()
-get_randdir_lut()
+get_nextdir_lut()
 get_pause_map_codegen()
 get_en_offgrid_lut()
 get_bl_col_test_lut()

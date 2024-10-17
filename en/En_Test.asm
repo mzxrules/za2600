@@ -2,6 +2,7 @@
 ; mzxrules 2023
 ;==============================================================================
 En_Test: SUBROUTINE
+/*
     bit enState
     bvs .main
     lda #$40
@@ -63,4 +64,5 @@ En_Test: SUBROUTINE
 
     lda #SLOT_FC_MAIN
     sta BANK_SLOT
+*/
     rts

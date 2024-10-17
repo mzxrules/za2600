@@ -205,11 +205,34 @@ EnMove_Card_WallCheck: SUBROUTINE
 ; EnMoveNextDir returns new direction
 ; X = enNum
 ; Y = EnMoveNextDir
+;
+; EnMoveRandDirSeed is a number between 0 and 23, constructed such that:
+; xxx11 = The first pick out of 4 EN_DIR directions
+; xx1xx = Pick one of three permutation pattern
+; 11xxx = Pick one of three permutation pattern index (0-2)
+;
+; The goal is to randomly select an EN_DIR until either an unblocked direction
+; is found, or all directions are exhausted. We start by generating a random
+; number between 0 and 23 for EnMoveRandDirSeed, and use that to generate
+; one of the 24 possible permutations of 4 directions with a lookup table.
+;
+; The first EN_DIR pick is encoded into the EnMoveRandDirSeed value, rather
+; than being stored in the look-up table. The next picks are harder to explain.
+;
+; Note that the second pick is from a set of 3 items, or 6 permutations. These
+; permutations can be generalized by the patterns [0, 1, 2] and [0, 2, 1],
+; in that all 6 permutations can be formed by "rolling" the pattern.
+;
+; For each of the four directions, nextdir_lut contains a 3 byte sequence of
+; pattern [0, 1, 2], and a 3 byte sequence of pattern [0, 2, 1] such that the
+; first selected EN_DIR is omitted from the sequence. Thus the last three picks
+; are obtained by incrementing the permutation pattern index
 ;==============================================================================
 EnMove_Card_RandDir: SUBROUTINE
     lda #3
     sta EnMoveRandDirCount
     jsr Random              ; 32
+; Generate a random number between 0-2
     ldy #0
     cmp #$55
     bcc .select_seed
@@ -217,7 +240,7 @@ EnMove_Card_RandDir: SUBROUTINE
     cmp #$AA
     bcc .select_seed
     iny
-.select_seed
+.select_seed ; y = permutation pattern index
     and #7
     ora Mul8,y
     sta EnMoveRandDirSeed
@@ -251,6 +274,7 @@ EnMove_Card_RandDirIfBlocked:
     lda #3
     sta EnMoveRandDirCount
     jsr Random
+; Generate a random number between 0-2
     ldy #0
     cmp #$55
     bcc .select3
@@ -258,7 +282,8 @@ EnMove_Card_RandDirIfBlocked:
     cmp #$AA
     bcc .select3
     iny
-.select3
+.select3 ; y = permutation pattern index
+; Only the 111xx bits are seeded by RNG, the low bits are set based on enDir
     and #4
     ora Mul8,y
     ora enDir,x
@@ -291,10 +316,10 @@ EnMove_Card_SeekDir:
     lda en0X,x
     sec
     sbc plX
-    sta EnMoveTemp0 ; enX - plX >= 0, left
-                    ; enX - plX <  0, right
+    sta EnMoveTemp0 ; enX - plX >= 0, left (carry set)
+                    ; enX - plX <  0, right (carry clear)
 
-    rol EnMoveSeekFlags
+    rol EnMoveSeekFlags ; clear carry
     bit EnMoveTemp0
     bpl .checkY
     ; negate A
@@ -306,10 +331,10 @@ EnMove_Card_SeekDir:
     lda en0Y,x
     sec
     sbc plY
-    sta EnMoveTemp1 ; enY - plY >= 0, down
-                    ; enY - plY <  0, up
+    sta EnMoveTemp1 ; enY - plY >= 0, down (carry set)
+                    ; enY - plY <  0, up (carry clear)
 
-    rol EnMoveSeekFlags
+    rol EnMoveSeekFlags ; clear carry
     bit EnMoveTemp1
     bpl .checkAxis
     ; negate A
@@ -339,71 +364,17 @@ EnMove_Card_SeekDir:
 
 EnMove_Card_NewDir: SUBROUTINE
     lda Rand16
-    and #2
-    bne .contdir_seek
+    bmi .contdir_seek
     jmp EnMove_Card_RandDir
 .contdir_seek
     jmp EnMove_Card_SeekDir
 
 EnMove_Card_ContDir: SUBROUTINE
     lda Rand16
-    and #2
-    bne .contdir_seek
+    bmi .contdir_seek
     jmp EnMove_Card_RandDirIfBlocked
 .contdir_seek
     jmp EnMove_Card_SeekDirIfBlocked
-
-;==============================================================================
-; Selects a new direction based on the shortest path to the player
-; X = enNum
-;==============================================================================
-EnMove_Ord_SeekDir: SUBROUTINE
-    lda #0
-    sta EnMoveSeekFlags
-
-    lda en0X,x
-    sec
-    sbc plX
-    sta EnMoveTemp0 ; enX - plX >= 0, left
-                    ; enX - plX <  0, right
-
-    rol EnMoveSeekFlags
-    bit EnMoveTemp0
-    bpl .checkY
-    ; negate A
-    eor #$FF
-    adc #1
-    sta EnMoveTemp0
-
-.checkY
-    lda en0Y,x
-    sec
-    sbc plY
-    sta EnMoveTemp1 ; enY - plY >= 0, down
-                    ; enY - plY <  0, up
-
-    rol EnMoveSeekFlags
-    bit EnMoveTemp1
-    bpl .checkAxis
-    ; negate A
-    eor #$FF
-    adc #1
-    sta EnMoveTemp1
-
-.checkAxis
-    lda EnMoveTemp0
-    sec
-    sbc EnMoveTemp1 ; abs(xDelta) - abs(yDelta)
-    lda EnMoveSeekFlags
-    rol
-    asl
-    asl
-    tax
-.loop
-    inx
-    ldy EnMove_SeekDirLUT-1,x
-    ldx enNum
-    rts
 
 ;==============================================================================
 ; Applies recoil movement, if applicable

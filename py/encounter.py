@@ -127,7 +127,7 @@ SPAWN_PATTERN = [
     ["En_Wizrobe"] * 4,
     ["En_WizrobeBlue"] * 3,
 
-    ["En_Wallmaster"],
+    ["En_WallmasterSp"],
 
     ["En_BossGhini"],
 

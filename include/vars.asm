@@ -169,7 +169,7 @@ SeqFlags    ds 1
 SeqTFrame   ds 2
 SeqCur      ds 2
 SfxFlags    ds 1
-    ; 1xxx_xxxx New Sfx
+SFX_NEW =   $80 ; 1xxx_xxxx New Sfx
 SfxCur      ds 1
 SeqSolveCur ds 1 ; Plays secret seq when negative
 SEQ_SOLVE_DUR = $B8
@@ -333,7 +333,9 @@ enArmosHpTemp   = Temp0
 
 ; == Wallmaster
     ORG CLASS_EN_ENEMY
+enWallCount         ds 2 ;
 enWallPhase         ds 2 ; anim timer for phasing through wall
+enWallTimer         ds 2
     EN_SIZE WALLMASTER
 
 ; == Leever

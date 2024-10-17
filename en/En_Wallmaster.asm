@@ -3,73 +3,112 @@
 ;==============================================================================
 
 EN_WALLMASTER_CAPTURE = $80
-EN_WALLMASTER_INIT = $40
+EN_WALLMASTER_INIT = $01
+EN_WALLMASTER_ENTER = $02
 
-En_WallmasterInit: SUBROUTINE
+En_WallmasterSp: SUBROUTINE
     lda #3
+    sta enWallCount,x
+    lda #EN_WALLMASTER
+    sta enType,x
+
+En_WallmasterReset: SUBROUTINE
+    lda #1
     sta enHp,x
 
-; calculate initial position
-.calcX
-    lda #EnBoardXL
-    ldy plX
-    cpy #BoardXC
-    bcc .setX
-    lda #EnBoardXR
-.setX
-    sta en0X,x
-
-.calcY
-    ldy plY
-    cpy #BoardYC
-    bcc .down
-.up
     lda #0
-    ldy #EnBoardYU
-    bcs .setY ; jmp
-.down
-    lda #32
-    ldy #EnBoardYD
-.setY
-    sta enWallPhase
-    sty en0Y,x
+    sta enState,x
+    sta enStun,x
 
+    lda #$80
+    sta en0Y,x
+    rts
+
+En_WallmasterInit: SUBROUTINE
 ; test if the wallmaster should appear
-    lda plX
-    ldy plY
-    cmp #EnBoardXL
-    beq .setPos
-    cmp #EnBoardXR
-    beq .setPos
+    ldy #0
+    lda plY
+    cmp #EnBoardYU
+    beq .setPosY
+    iny
+    cmp #EnBoardYD
+    beq .setPosY
 
-    cpy #EnBoardYU
-    beq .setPos
-    cpy #EnBoardYD
+    lda plX
+    cmp #EnBoardXL
+    beq .setPosX
+    cmp #EnBoardXR
     bne .rts
 
-.setPos
-    lda #EN_WALLMASTER_INIT
+.setPosX
+    sta en0X,x
+    lda #32
+    sta enWallPhase,x
+    ldy #0
+    lda plY
+    cmp #BoardYC
+    bcc .setPosX_Y
+    iny
+.setPosX_Y
+    clc
+    lda plY
+    adc #2
+    and #~#3
+    adc .x_off,y
+    sta en0Y,x
+    bpl .init_final ;jmp
+    rts
+
+.setPosY
+    sta en0Y,x
+    lda .wallphase_start,y
+    sta enWallPhase,x
+
+    ldy #0
+    lda plX
+    cmp #BoardXC
+    bcc .setPosY_x
+    iny
+.setPosY_x
+    clc
+    lda plX
+    adc #2
+    and #~#3
+    adc .x_off,y
+    sta en0X,x
+.init_final
+    lda #EN_WALLMASTER_INIT | #EN_WALLMASTER_ENTER
     sta enState,x
+    lda #-30
+    sta enWallTimer,x
 .rts
     rts
 
+.wallphase_start
+    .byte #0, #32
+
+.x_off
+    .byte #28, #-28
+
 En_WallmasterCapture:
-    inc enWallPhase
-    ldx enWallPhase
-    cpx #33
+    inc enWallPhase,x
+    lda enWallPhase,x
+    cmp #33
     bne .rts
     jmp SPAWN_AT_DEFAULT
 
 En_Wallmaster: SUBROUTINE
     lda enState,x
-    rol
-    bcs En_WallmasterCapture
-    bpl En_WallmasterInit
+    bmi En_WallmasterCapture ; EN_WALLMASTER_CAPTURE
+    ror
+    bcc En_WallmasterInit
+    ror
+    bcc .main
 
-; Handle phasing state
+.phase_through_wall
     lda enWallPhase,x
     cmp #16
-    beq .main_thing
+    beq .set_main
     bmi .incWallPhase
     dec enWallPhase,x
     rts
@@ -77,7 +116,25 @@ En_Wallmaster: SUBROUTINE
     inc enWallPhase,x
     rts
 
-.main_thing
+.set_main
+    lda #EN_WALLMASTER_INIT
+    sta enState,x
+
+.main
+    jsr En_WallmasterUpdateTimer
+    bne .skip_sink_through_floor
+
+.sink_through_floor
+    inc enWallPhase,x
+    lda enWallPhase,x
+    cmp #32
+    bne .rts1
+    lda #$0
+    sta enState,x
+.rts1
+    rts
+.skip_sink_through_floor
+
 ; check damaged
     lda #SLOT_F0_BATTLE
     sta BANK_SLOT
@@ -87,9 +144,12 @@ En_Wallmaster: SUBROUTINE
     sta BANK_SLOT
     lda enHp,x
     bpl .endCheckDamaged
+    dec enWallCount,x
+    beq .kill
+    jmp En_WallmasterReset
+.kill
     jmp EnSys_KillEnemyB
 .endCheckDamaged
-
 
 .checkPlayerHit
     bit plState2
@@ -102,9 +162,9 @@ En_Wallmaster: SUBROUTINE
     ora #PS_LOCK_ALL
     sta plState
     lda plX
-    sta enX,x
+    sta en0X,x
     lda plY
-    sta enY,x
+    sta en0Y,x
     lda #EN_WALLMASTER_CAPTURE
     ora enState,x
     sta enState,x
@@ -134,7 +194,6 @@ En_Wallmaster: SUBROUTINE
     jmp EnMove_Recoil
 
 .normal_movement
-
     ldy en0X,x
     lda EnMove_OffgridLUT,y
     bne .move
@@ -154,4 +213,19 @@ En_Wallmaster: SUBROUTINE
 .rts
     rts
 
-    LOG_SIZE "En_Wallmaster", En_WallmasterCapture
+En_WallmasterUpdateTimer: SUBROUTINE
+    lda Frame
+    and #$7
+    cmp #1
+    lda enWallTimer,x
+    beq .rts
+    bcs .skip_timer_lengthen
+    adc #-$7
+    sta enWallTimer,x
+.skip_timer_lengthen
+    inc enWallTimer,x
+.rts
+    rts
+
+
+    LOG_SIZE "En_Wallmaster", En_WallmasterSp

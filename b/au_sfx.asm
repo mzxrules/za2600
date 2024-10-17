@@ -31,6 +31,18 @@ SfxEnter: SUBROUTINE
     bpl SfxStop_l
     rts
 
+SfxFire: SUBROUTINE
+    ldx SfxCur
+    cpx #3
+    bpl SfxStop_l
+    lda #30
+    sta AUDFT1
+    lda #8
+    sta AUDCT1
+    lda #4
+    sta AUDVT1
+    rts
+
 SfxStop_l:
     lda #0
     sta SfxFlags
@@ -75,6 +87,27 @@ SfxBossRoar: SUBROUTINE
     lda SfxBossRoarFPattern,x
     sta AUDFT1
     rts
+
+SfxStab2: SUBROUTINE
+STAB2_DELAY = #5
+    ldy SfxCur
+    cpy #STAB2_DELAY
+    bmi .rts
+    ldx #8
+    stx AUDVT1
+    stx AUDCT1
+    lda SfxStab2Pattern-#STAB2_DELAY,y
+    sta AUDFT1
+    cpy #STAB2_DELAY + #11-#1
+    bpl SfxStop_l
+.rts
+    rts
+
+SfxStab2Pattern:
+STAB2_BASE = 5
+    .byte #STAB2_BASE+0, #STAB2_BASE+1, #STAB2_BASE+2, #STAB2_BASE+3
+    .byte #STAB2_BASE+4, #STAB2_BASE+5, #STAB2_BASE+6, #STAB2_BASE+7
+    .byte #STAB2_BASE+9, #STAB2_BASE+11, #STAB2_BASE+13
 
 SfxBossRoarFPattern:
     .byte #27-#18, #25-#18, #22-#18, #22-#18, #22-#18, #24-#18, #26-#18, #30-#18

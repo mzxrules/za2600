@@ -134,6 +134,9 @@ BlPushBlock: ; SUBROUTINE
     bcc .rts ; has not pushed long enough
 
     and #3
+    cmp plDir
+    bne .rts
+
     sta blDir
     lda #-16 -1 ; Will decrement 1
     sta roomPush

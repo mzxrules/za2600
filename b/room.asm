@@ -490,6 +490,9 @@ DoorCheck: SUBROUTINE
     bmi .rts
     cmp #[16<<2]
     bcc .rts
+    and #3
+    cmp plDir
+    bne .rts
     lda #[PS_GLIDE | PS_LOCK_ALL]
     ora plState
     sta plState

@@ -569,8 +569,8 @@ BANK_39
 
 BANK_40
     INCLUDE "b/EnMove_Common.asm"
-    INCLUDE "b/EnMove.asm"
     INCLUDE "gen/EnMove_SeekDirLUT.asm"
+    INCLUDE "b/EnMove.asm"
     INCLUDE "gen/EnMove_BallBlockedLUT.asm"
     align 128
     INCLUDE "gen/EnMove_OffgridLUT.asm"
@@ -765,6 +765,7 @@ BANK_50
 
 BANK_51
     INCLUDE "b/EnMove_Common.asm"
+    INCLUDE "gen/EnMove_SeekDirLUT.asm"
     INCLUDE "b/EnMove2.asm"
     LOG_BANK_SIZE "-BANK 51- Entity Movement (Ordinal)", BANK_51
 

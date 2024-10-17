@@ -1,17 +1,41 @@
 List of todos, ordered by importance
 
-Status Hud - Potentially make HP match ring level
-Event System
-Door Unlock System - Complete
-Ganon Fight Kernel
-Exits - Complete
-Raft System - Complete
-Enemy Spawns - Second Implementation
-Wizrobes
-Stalfos
-Bubbles
-Keese
-Bosses
+Bosses:
+    Ganon - needs custom kernel, have some sprites
+    Patra
+    Ghini
+    Glock - Need Design, have sprites
+    Dig
+    Gohma Blue (Yellow implemented)
+
+Enemies:
+    Wizrobes - have sprites, need custom room collision routine
+    Goryia - Boomerang
+    Gel - Fix overtime budget (See EnMove_Card_WallCheck)
+    Armos - Make stairs/item appear
+    Blue Leevers - need behavior
+    Base Enemy - Environment Missile attack?
+    Stalfos - Key drop on kill mechanic?
+    Zola - Cut?
+    Bubbles - Cut?
+
+Systems:
+    Second Quest
+        * Quest Select at game start
+        * Implement fast quest config data fetching
+        * World Editor support
+    Dungeon Underground
+        * Underground Passage
+        * Underground Item
+    Random Drops
+        * TypeB and TypeC drop tables?
+        * 8th enemy has the bomb mechanics?
+    EnMove_Card_WallCheck
+        * Find optimizations
+    Enemy Spawns - Second Implementation
+    Status Hud - Complete
+    Door Unlock System - Complete
+    Raft System - Complete
 
 Main Game Loop:
 

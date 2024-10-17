@@ -5,7 +5,7 @@
 EnDraw_Wallmaster: SUBROUTINE
     lda #>SprE9
     sta enSpr+1
-    lda enWallPhase
+    lda enWallPhase,x
     lsr
     clc
     adc #<SprE9-8

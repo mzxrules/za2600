@@ -33,19 +33,19 @@ En_Peehat: SUBROUTINE
     cmp #EN_PEEHAT_NESTING
     beq .state_fall
 
+; Update enPeehatFlyThink timer
     lda Frame
     and #$7
-    bne .skip_timer_lengthen
-    lda enPeehatFlyThink,x
-    sec
-    sbc #$7
-    sta enPeehatFlyThink,x
-
-.skip_timer_lengthen
-    lda enPeehatFlyThink,x
     cmp #1
-    adc #0
+    lda enPeehatFlyThink,x
+    beq .end_update_timer
+    bcs .skip_timer_lengthen
+    adc #-$7
     sta enPeehatFlyThink,x
+.skip_timer_lengthen
+    inc enPeehatFlyThink,x
+
+.end_update_timer
     bne .battle_logic
     ldy enState,x
     iny ; advance to next state

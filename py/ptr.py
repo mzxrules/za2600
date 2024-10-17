@@ -78,6 +78,7 @@ Entity_Table = [
     "En_LikeLikeMain", "SEG_43", "SEG_42", "EnDraw_LikeLike",
     "En_Rope",         "SEG_43", "SEG_42", "EnDraw_Rope",
     "En_RopeMain",     "SEG_43", "SEG_42", "EnDraw_Rope",
+    "En_WallmasterSp", "SEG_44", "SEG_42", "EnDraw_None",
     "En_Wallmaster",   "SEG_44", "SEG_42", "EnDraw_Wallmaster",
     "En_Gibdo",        "SEG_49", "SEG_42", "EnDraw_Gibdo",
     "En_Goriya",       "SEG_47", "SEG_42", "EnDraw_None",
@@ -324,7 +325,9 @@ tbl = [
     genConstants=True,
     vals=[
         "SfxStab",
+        "SfxStab2",
         "SfxBomb",
+        "SfxFire",
         "SfxItemPickup",
         "SfxItemPickupKey",
         "SfxPlDef",
