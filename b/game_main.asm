@@ -21,8 +21,7 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda #SLOT_F4_RS_DEST
     sta BANK_SLOT
     jsr RsInit_Del
-    lda #0
-    beq .roomLoadCpuSkip
+    jmp .roomLoadCpuSkip
 .roomSkipInit
 
 .Missile:

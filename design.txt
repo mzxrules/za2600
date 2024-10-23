@@ -906,3 +906,39 @@ HIDDEN_CAVE TODO:
 51 - Bush (more variance)
 63 - Bush
 78 - Bush
+
+
+PFScroll Proto:
+
+roomIdNext
+roomId
+
+Move Dir, roomIdNext - roomId,
+N = #-$10 ; 0 curRoom -> B
+;           1 RoomLoad nextRoom
+;           2 nextRoom -> A
+;           3 Animation N:  roomDY starts #ROOM_PX_HEIGHT*2-1 and decs every frame
+S = #+$10 ; 0 curRoom -> A
+;           1 RoomLoad nextRoom
+;           2 nextRoom -> B;
+;           3 Animation S:  roomDY starts #ROOM_PX_HEIGHT-1 and incs every frame
+W = #-$01 ; 0 curRoom -> A
+;           1 RoomLoad nextRoom
+;           2 nextRoom -> B
+;           3 Animation W:
+E = #+$01
+I = **    ; 0 curRoom -> A
+;           1 RoomLoad nextRoom
+;           2 nextRoom -> A
+;           3 no animation
+
+
+; Tasks:
+curRoom -> A
+curRoom -> B
+RoomLoad nextRoom
+Animation N
+Animation S
+Animation W
+Animation E
+Return Main

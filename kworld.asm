@@ -1,7 +1,7 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-KERNEL_WORLD: SUBROUTINE ; rKERNEL
+KERNEL_WORLD: SUBROUTINE ; rKERNEL_WORLD
     VKERNEL1 WorldSprBank
     lda #SLOT_F0_SPR0
     sta BANK_SLOT

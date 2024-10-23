@@ -45,10 +45,10 @@ ENTRY_INIT:  ; Address F000
     txa ; set A to 0
 
     ; kernel transfer
-    ldx #KERNEL_LEN
+    ldx #KERNEL_WORLD_LEN
 .initWorldKernMem
     lda KERNEL_WORLD-1,x
-    sta wKERNEL-1,x
+    sta wKERNEL_WORLD-1,x
     dex
     bne .initWorldKernMem
 

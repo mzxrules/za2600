@@ -22,6 +22,9 @@ zelda_dep := main.asm \
   gen/editor_color.txt \
   gen/editor_en_bindings.txt \
 
+pfscroll_proto_dep := pfscroll_proto.asm \
+  $(wildcard scroll/*.asm)
+
 all: $(output_bin)
 
 init:
@@ -41,6 +44,9 @@ audio.bin: gen/ms_header.asm audio.asm
 
 proto.bin: proto.asm
 	dasm proto.asm -f3 -oproto.bin -sproto.sym -T1 -Iinclude
+
+pfscroll.bin: $(pfscroll_proto_dep)
+	dasm pfscroll_proto.asm -f3 -opfscroll.bin -spfscroll.sym -T1 -Iinclude
 
 zelda.bin: $(zelda_dep)
 	dasm main.asm -f3 -ozelda_PAL60.bin -DPAL60 -Iinclude $(flags)

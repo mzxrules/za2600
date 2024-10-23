@@ -9,7 +9,7 @@ PosMenuObject: SUBROUTINE
 ;   Flute, Wand, Meat,  Rang
 DRAW_PAUSE_MENU: SUBROUTINE
 
-    lda #%00110000 ; ball size 8, reflect playfield
+    lda #%00110000 ; ball size 8, standard playfield
     sta CTRLPF
     lda #COLOR_PF_BLUE_D
     sta COLUPF

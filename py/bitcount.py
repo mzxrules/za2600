@@ -616,6 +616,9 @@ def get_bl_col_test_lut():
         file.write("EnMove_BallBlockedYLUT:\n")
         file.write(ToAsm(yLut,16))
 
+def get_pfscroll_lut():
+    return
+
 def get_roomheight():
     roomHeight = []
     roomHeight8 = []

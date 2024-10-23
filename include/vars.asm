@@ -672,7 +672,7 @@ WORLD_EN        ds 128 ; Enemy Encounter
     SEG.U VARS_RAM
     ORG $FA00
 wRAM_SEG
-wKERNEL             ds KERNEL_LEN
+wKERNEL_WORLD       ds KERNEL_WORLD_LEN
 wPF1RoomL           ds ROOM_PX_HEIGHT
 wPF2Room            ds ROOM_PX_HEIGHT
 wPF1RoomR           ds ROOM_PX_HEIGHT
@@ -685,7 +685,7 @@ wWorldRoomFlags     ds 128
 
     ORG $F800
 rRAM_SEG
-rKERNEL             ds KERNEL_LEN
+rKERNEL_WORLD       ds KERNEL_WORLD_LEN
 rPF1RoomL           ds ROOM_PX_HEIGHT
 rPF2Room            ds ROOM_PX_HEIGHT
 rPF1RoomR           ds ROOM_PX_HEIGHT
@@ -738,8 +738,8 @@ rKERNEL48   ds KERNEL48_LEN
 ; * Constants                            *
 ; ****************************************
 
-KERNEL_LEN  = $A9   ; World Kernel length
-KERNEL48_LEN = $68  ; 48 pix kernel length
+KERNEL_WORLD_LEN = $A9 ; World Kernel length
+KERNEL48_LEN     = $68 ; 48 pix kernel length
 
 ROOM_PX_HEIGHT      = 20 ; height of room in pixels
 ROOM_SPR_HEIGHT     = 16 ; height of room sprite sheet

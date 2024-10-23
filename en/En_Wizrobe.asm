@@ -4,13 +4,19 @@
 
 En_Wizrobe: SUBROUTINE
     lda enState,x
+    rol
+    bcs .init
     bmi .main
 
+.spawn
+    jsr Random
+    rts
+
+.init
     lda #$80
     sta enState,x
-    jsr Random
-    and #3
-    sta enDir,x
+    rts
+
 
 .main
     rts
