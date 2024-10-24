@@ -24,62 +24,16 @@ roomDY      ds 1
 
 
 ; Temps
-roomScrollDir   ds 1
-roomScrollTask  ds 1
-roomScrollTask2 ds 1
-roomScrollDY    ds 1
 Temp0           ds 1
 Temp1           ds 1
 Temp2           ds 1
 
 ; Debug
-testIndex       ds 1
+testIndex       = Temp2
 
 ; ****************************************
 ; * Extended RAM                         *
 ; ****************************************
-    SEG.U VARS_RAM
-    ORG $F000
-rPF1_0A             ds ROOM_PX_HEIGHT
-rPF1_0B             ds ROOM_PX_HEIGHT
-rPF2_0A             ds ROOM_PX_HEIGHT
-rPF2_0B             ds ROOM_PX_HEIGHT
-rPF0_1A             ds ROOM_PX_HEIGHT
-rPF0_1B             ds ROOM_PX_HEIGHT
-rPF1_1A             ds ROOM_PX_HEIGHT
-rPF1_1B             ds ROOM_PX_HEIGHT
-rPF2_1A             ds ROOM_PX_HEIGHT
-rPF2_1B             ds ROOM_PX_HEIGHT
-    ORG $F100
-rPF1L_0             ds ROOM_PX_HEIGHT
-rPF2M_0             ds ROOM_PX_HEIGHT
-rPF1R_0             ds ROOM_PX_HEIGHT
-
-rPF1L_1             ds ROOM_PX_HEIGHT
-rPF2M_1             ds ROOM_PX_HEIGHT
-rPF1R_1             ds ROOM_PX_HEIGHT
-
-    ORG $F200
-wPF1_0A             ds ROOM_PX_HEIGHT
-wPF1_0B             ds ROOM_PX_HEIGHT
-wPF2_0A             ds ROOM_PX_HEIGHT
-wPF2_0B             ds ROOM_PX_HEIGHT
-wPF0_1A             ds ROOM_PX_HEIGHT
-wPF0_1B             ds ROOM_PX_HEIGHT
-wPF1_1A             ds ROOM_PX_HEIGHT
-wPF1_1B             ds ROOM_PX_HEIGHT
-wPF2_1A             ds ROOM_PX_HEIGHT
-wPF2_1B             ds ROOM_PX_HEIGHT
-
-    ORG $F300
-wPF1L_0             ds ROOM_PX_HEIGHT
-wPF2M_0             ds ROOM_PX_HEIGHT
-wPF1R_0             ds ROOM_PX_HEIGHT
-
-wPF1L_1             ds ROOM_PX_HEIGHT
-wPF2M_1             ds ROOM_PX_HEIGHT
-wPF1R_1             ds ROOM_PX_HEIGHT
-
 
     ORG $F800
 rRAM_SEG

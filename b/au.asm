@@ -31,8 +31,11 @@ UpdateAudio: SUBROUTINE
     sta SeqCur
     sta SeqCur + 1
     ldx Frame
+    inx
     stx SeqTFrame
     stx SeqTFrame + 1
+    jsr MsNone
+    jmp .sfxStart ; More CPU time for Room Load
 .continueSequence
     ldx #0
     jsr AudioChannel

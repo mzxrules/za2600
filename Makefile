@@ -9,6 +9,7 @@ zelda_dep := main.asm \
   $(wildcard en/*.asm) \
   $(wildcard rs/*.asm) \
   $(wildcard spr/*.asm) \
+  $(wildcard scroll/*.asm) \
   kworld.asm \
   gen/atan2.asm \
   gen/world/b1world.asm \

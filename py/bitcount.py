@@ -619,6 +619,24 @@ def get_bl_col_test_lut():
 def get_pfscroll_lut():
     return
 
+def get_pftransfer_lut():
+    data = []
+    for i in range(0, 256):
+        v = i
+        #v = ((v & 0xF0) >> 4) + ((v & 0x0F) << 4)
+        v = ((v & 0xCC) >> 2) + ((v & 0x33) << 2)
+        v = ((v & 0xAA) >> 1) + ((v & 0x55) << 1)
+
+        if v > 255:
+            print(f'{i}  {v}')
+            quit()
+        data.append(v)
+
+    with open(f'gen/bit_mirror_nybble_swap.asm', "w") as file:
+        file.write("bit_mirror_nybble_swap:\n")
+        file.write(ToAsm(data,8))
+
+
 def get_roomheight():
     roomHeight = []
     roomHeight8 = []
@@ -646,6 +664,7 @@ get_en_offgrid_lut()
 get_bl_col_test_lut()
 get_ord_bounds_lut()
 get_rand_8x8_spawn()
+get_pftransfer_lut()
 
 with open(f'gen/bitcount.asm', "w") as file:
     file.write(bitcountOut)

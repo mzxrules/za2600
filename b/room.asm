@@ -43,6 +43,7 @@ RoomUpdate:  ; SUBROUTINE
     and #~RF_EV_LOADED
     sta roomFlags
     bpl .rts ; not #RF_EV_LOAD
+; Reset flags and variables
     ora #RF_EV_LOADED
     and #~[RF_EV_LOAD + RF_NO_ENCLEAR + RF_EV_CLEAR + RF_PF_IGNORE + RF_PF_AXIS + RF_USED_CANDLE]
     sta roomFlags
@@ -51,8 +52,6 @@ RoomUpdate:  ; SUBROUTINE
     lda #[PS_GLIDE | PS_LOCK_ALL]
     sta plState
 
-
-LoadRoom: SUBROUTINE
     lda #0      ;EN_NONE
     sta enType
     sta enType+1
@@ -65,6 +64,12 @@ LoadRoom: SUBROUTINE
     sta plItem2Time
     sta KernelId
 
+    lda #SLOT_FC_HALT_RSCR
+    sta BANK_SLOT
+    jmp ROOMSCROLL_HALT_START
+
+
+LoadRoom: SUBROUTINE
     ; load world bank data
     ldy worldId
     lda WorldBankOff,y

@@ -2,19 +2,37 @@
 ; mzxrules 2024
 ;==============================================================================
 
-; always.asm hook
-MAIN_ROOMSCROLL: BHA_BANK_JMP #SLOT_FC_MAIN, ROOMSCROLL_RETURN
-
 ROOMSCROLL_TIMER_EW = 32
 
-KERNEL_SCROLL1:  ; 192 scanlines
-    sta WSYNC
-    lda INTIM
-    bne KERNEL_SCROLL1
-    sta VBLANK
+KERNEL_SCROLL1: SUBROUTINE  ; 192 scanlines
 
     lda #%00110000  ; ball size 8, standard playfield
     sta CTRLPF
+
+    lda #SLOT_RW_F0_ROOMSCROLL
+    sta BANK_SLOT_RAM
+
+    lda #SLOT_F4_ROOMSCROLL
+    sta BANK_SLOT
+
+    sta WSYNC
+
+    lda rBgColor
+    sta COLUBK
+
+    lda rFgColor
+    sta COLUPF
+
+    lda #$FF
+    sta PF0
+    sta PF1
+    sta PF2
+
+    lda rPlColor
+    sta COLUP0
+
+    lda roomScrollDY
+    sta roomDY
 
     ldy #79 ; #192
 KERNEL_SCROLL1_LOOP1: SUBROUTINE ;-59
@@ -48,47 +66,38 @@ KERNEL_SCROLL1_LOOP1: SUBROUTINE ;-59
     dey
     bpl KERNEL_SCROLL1_LOOP1
     sta WSYNC
+    sty PF0
+    sty PF1
+    sty PF2
+    sta WSYNC
     iny
     sty PF0
     sty PF1
     sty PF2
-
-    ldy #192 - 160 - 1
-KERNEL_SCROLL1_LOOP2
+    sty COLUBK
+    sty COLUPF
     sta WSYNC
-    dey
-    bne KERNEL_SCROLL1_LOOP2
+    sta WSYNC
+    sta WSYNC
     rts
 
 ;TOP_FRAME ;3 37 192 30
 ROOMSCROLL_VERTICAL_SYNC: ; 3 SCANLINES
-    lda #2
-    ldx #49
-    sta WSYNC
-    sta VSYNC
-    stx TIM64T ; 41 scanline timer
-    inc Frame
-    sta WSYNC
-    sta WSYNC
-    ;lda #%00110001  ; ball size 8, mirrored playfield
-    ;sta CTRLPF
-    lda #0      ; LoaD Accumulator with 0 so D1=0
-    sta PF0     ; blank the playfield
-    sta PF1
-    sta PF2
-    sta GRP0    ; blanks player0 if VDELP0 was off
-    sta GRP1    ; blanks player0 if VDELP0 was on, player1 if VDELP1 was off
-    sta GRP0    ; blanks                           player1 if VDELP1 was on
-    sta WSYNC
-    sta VSYNC
-
+    jsr VERTICAL_SYNC
 
 ROOMSCROLL_VERTICAL_BLANK: SUBROUTINE
-
     jsr RoomScroll_Update
+
+    lda #SLOT_F4_AU1
+    sta BANK_SLOT
+    jsr UpdateAudio
+
     lda #SLOT_RW_F0_ROOMSCROLL
     sta BANK_SLOT_RAM
-    jsr KERNEL_SCROLL1
+
+    lda #SLOT_F4_MAIN_DRAW
+    sta BANK_SLOT
+    jsr POSITION_SPRITES
 
 
 ROOMSCROLL_OVERSCAN: SUBROUTINE
@@ -98,7 +107,7 @@ ROOMSCROLL_OVERSCAN: SUBROUTINE
     lda #32
     sta TIM64T ; 27 scanline timer
 
-    jsr RoomScrollTask_AnimW2
+    jsr RoomScrollTask2
 
 ROOMSCROLL_OVERSCAN_WAIT:
     sta WSYNC
@@ -106,6 +115,23 @@ ROOMSCROLL_OVERSCAN_WAIT:
     bne ROOMSCROLL_OVERSCAN_WAIT
 
     jmp ROOMSCROLL_VERTICAL_SYNC
+
+
+RoomScrollTask2: SUBROUTINE
+    lda roomScrollTask2
+    cmp #ROOMSCROLL_TASK__EAST
+    beq .east
+    cmp #ROOMSCROLL_TASK__WEST
+    beq .west
+    cmp #ROOMSCROLL_TASK__LOAD
+    beq .load
+    rts
+.east
+    jmp RoomScrollTask_AnimE2
+.west
+    jmp RoomScrollTask_AnimW2
+.load
+    jmp RoomScrollTask_Load2
 
 
 ROOMSCROLL_HALT_START: SUBROUTINE
@@ -124,7 +150,7 @@ ROOMSCROLL_HALT_START: SUBROUTINE
     bpl .scroll_dir_check_loop
     tya ; -1
     ldx #ROOM_PX_HEIGHT-1
-    bmi .set_scroll_vars
+    bpl .set_scroll_vars ; jmp
 .select_scroll_dir
     lda RoomScroll_Timer,y
     ldx RoomScroll_RoomDY,y
@@ -151,9 +177,10 @@ RoomScroll_RoomDY
 
 
 RoomScrollTask_Invalid: SUBROUTINE
-    lda #SLOT_F0_ROOM
-    sta BANK_SLOT
-    jsr LoadRoom
+    ldy roomScrollTask
+    lda RoomScroll_TaskInvalid,y
+    tay
+    jmp RoomScroll_RunTask
 
 RoomScrollTask_End:
     lda #%00110001
@@ -169,10 +196,7 @@ RoomScrollTask_End:
     txs
     jmp MAIN_ROOMSCROLL
 
-RoomScroll_Update:
-    lda roomScrollDY
-    sta roomDY
-
+RoomScroll_Update: SUBROUTINE
     lda roomScrollDir
     bmi RoomScrollTask_Invalid
     lda roomScrollTask
@@ -181,9 +205,9 @@ RoomScroll_Update:
     ora roomScrollDir
     tax
     ldy RoomScroll_TaskMatrix,x
-    sty roomScrollTask2
 
-RoomScrollTask:
+RoomScroll_RunTask:
+    sty roomScrollTask2
     lda RoomScrollTaskBank,y
     sta BANK_SLOT
     lda RoomScrollTaskH,y
@@ -194,9 +218,24 @@ RoomScrollTask:
 
 
 RoomScrollTask_LoadRoom: SUBROUTINE
-    inc roomScrollTask
     jmp LoadRoom
 
+RoomScrollTask_Load2: SUBROUTINE
+    lda #SLOT_F0_RS_INIT
+    sta BANK_SLOT
+    lda #SLOT_F4_RS_DEST
+    sta BANK_SLOT
+    jsr RsInit_Del
+
+    lda worldId
+    beq .skipRoomChecks
+    lda #SLOT_F0_ROOM
+    sta BANK_SLOT
+    jsr UpdateDoors
+.skipRoomChecks
+
+    inc roomScrollTask
+    rts
 
 RoomScrollTask_AnimN: SUBROUTINE
 ; room travels down
@@ -215,79 +254,37 @@ RoomScrollTask_AnimS: SUBROUTINE
 .rts
     rts
 
-RoomScrollTask_AnimE: SUBROUTINE
-    lda #SLOT_RW_F0_ROOMSCROLL
-    sta BANK_SLOT_RAM
-; Room travels left
+RoomScrollTask_AnimE2: SUBROUTINE
     ldy #ROOM_PX_HEIGHT-1
 .loop
-    clc
+    jsr RoomScroll_Left
+    dey
+    cpy #[#ROOM_PX_HEIGHT/2]-1
+    bne .loop
+.rts
+    rts
 
-; RoomB
-    lda rPF2_1B,y
-    ror
-    sta wPF2_1B,y
+RoomScrollTask_AnimE: SUBROUTINE
+    lda #ROOMSCROLL_TIMER_EW
+    cmp roomTimer
+    beq .skip
 
-    lda rPF1_1B,y
-    rol
-    sta wPF1_1B,y
+    lda #SLOT_RW_F0_ROOMSCROLL
+    sta BANK_SLOT_RAM
 
-    lda rPF0_1B,y
-    ror
-    sta wPF0_1B,y
-    and #%1000
-    cmp #%1000
-
-    lda rPF2_0B,y
-    ror
-    sta wPF2_0B,y
-
-    lda rPF1_0B,y
-    rol
-    sta wPF1_0B,y
-
-; get carry
-    rol
-    and #1
-    tax
-    sec
-
-; RoomA
-    lda rPF2_1A,y
-    ror
-    and .PF2_carry_mask,x
-    sta wPF2_1A,y
-
-    lda rPF1_1A,y
-    rol
-    sta wPF1_1A,y
-
-    lda rPF0_1A,y
-    ror
-    sta wPF0_1A,y
-    and #%1000
-    cmp #%1000
-
-    lda rPF2_0A,y
-    ror
-    sta wPF2_0A,y
-
-    lda rPF1_0A,y
-    rol
-    sta wPF1_0A,y
-
-
+    ldy #[#ROOM_PX_HEIGHT/2]-1
+.loop
+    jsr RoomScroll_Left
     dey
     bpl .loop
-
+.skip
     dec roomTimer
     bne .rts
     inc roomScrollTask
 .rts
     rts
-
-.PF2_carry_mask
-    .byte  #$F7,  #$FF
+RoomScrollTask_None:
+    rts
 
 
 RoomScrollTask_AnimW2: SUBROUTINE
@@ -323,73 +320,3 @@ RoomScrollTask_AnimW: SUBROUTINE
     inc roomScrollTask
 .rts
     rts
-
-
-RoomScroll_Right: SUBROUTINE
-    clc
-
-; RoomB
-    lda rPF1_0B,y
-    ror
-    sta wPF1_0B,y
-
-    lda rPF2_0B,y
-    rol
-    sta wPF2_0B,y
-
-; get carry
-    rol
-    and #1
-    tax
-    sec
-
-    lda rPF0_1B,y
-    rol
-    and .PF0_carry_mask,x
-    sta wPF0_1B,y
-
-
-    lda rPF1_1B,y
-    ror
-    sta wPF1_1B,y
-
-    lda rPF2_1B,y
-    rol
-    sta wPF2_1B,y
-    and #%10000
-    cmp #%10000
-
-; RoomA
-
-    lda rPF1_0A,y
-    ror
-    sta wPF1_0A,y
-
-    lda rPF2_0A,y
-    rol
-    sta wPF2_0A,y
-
-
-; get carry
-    rol
-    and #1
-    tax
-    sec
-
-    lda rPF0_1A,y
-    rol
-    and .PF0_carry_mask,x
-    sta wPF0_1A,y
-
-    lda rPF1_1A,y
-    ror
-    sta wPF1_1A,y
-
-    lda rPF2_1A,y
-    rol
-    ora #$F0
-    sta wPF2_1A,y
-    rts
-
-.PF0_carry_mask
-    .byte  #$EF,  #$FF

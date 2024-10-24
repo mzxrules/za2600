@@ -25,34 +25,25 @@ UnmirrorRoomB: SUBROUTINE
     sta wPF1_0B,y
     lda rPF2Room,y
     sta wPF2_0B,y
-    tax
-    lda bit_mirror,x
+    tax ; rPF2Room
+
+    asl
+    asl
+    asl
+    asl
+    sta roomScrollTemp ; PF1 2nd
+
+    lda bit_mirror_nybble_swap,x
 ; PF0 2nd
-    rol
-    rol
-    rol
-    rol
     ora #$0F ; Force bits on to make anim easier
     sta wPF0_1B,y
 
-; PF1 2nd
-
-    lda rPF2Room,y
-    and #$F
-    asl
-    asl
-    asl
-    asl
-    sta Temp2
+; PF1 2nd continued
 
     ldx rPF1RoomR,y
-    lda bit_mirror,x
-    and #$F0
-    lsr
-    lsr
-    lsr
-    lsr
-    ora Temp2
+    lda bit_mirror_nybble_swap,x
+    and #$0F
+    ora roomScrollTemp
     sta wPF1_1B,y
 
     lda rPF1RoomR,y

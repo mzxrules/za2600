@@ -9,6 +9,7 @@ ROOMSCROLL_TASK__EAST   = 4
 ROOMSCROLL_TASK__WEST   = 5
 ROOMSCROLL_TASK__NORTH  = 6
 ROOMSCROLL_TASK__SOUTH  = 7
+ROOMSCROLL_TASK__NONE   = 8
 
 RoomScroll_TaskMatrix:
 ; E, W, N, s
@@ -17,6 +18,11 @@ RoomScroll_TaskMatrix:
     ROOMSCROLL_TASK ROOMB, ROOMB, ROOMB, ROOMA
     ROOMSCROLL_TASK  EAST,  WEST, NORTH, SOUTH
     ROOMSCROLL_TASK   END,   END,   END,   END
+
+RoomScroll_TaskInvalid:
+    .byte ROOMSCROLL_TASK__ROOMA
+    .byte ROOMSCROLL_TASK__LOAD
+    .byte ROOMSCROLL_TASK__END
 
 RoomScrollTaskBank:
     .byte #SLOT_FC_HALT_RSCR
@@ -27,6 +33,7 @@ RoomScrollTaskBank:
     .byte #SLOT_F4_ROOMSCROLL
     .byte #SLOT_F4_ROOMSCROLL
     .byte #SLOT_F4_ROOMSCROLL
+    .byte #SLOT_FC_HALT_RSCR
 
 RoomScrollTaskL:
     .byte <(RoomScrollTask_End-1)
@@ -37,6 +44,7 @@ RoomScrollTaskL:
     .byte <(RoomScrollTask_AnimW-1)
     .byte <(RoomScrollTask_AnimN-1)
     .byte <(RoomScrollTask_AnimS-1)
+    .byte <(RoomScrollTask_None-1)
 
 RoomScrollTaskH:
     .byte >(RoomScrollTask_End-1)
@@ -47,3 +55,4 @@ RoomScrollTaskH:
     .byte >(RoomScrollTask_AnimW-1)
     .byte >(RoomScrollTask_AnimN-1)
     .byte >(RoomScrollTask_AnimS-1)
+    .byte >(RoomScrollTask_None-1)

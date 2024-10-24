@@ -38,6 +38,9 @@ BANK_1
     INCLUDE "b/game_main.asm"
     LOG_BANK_SIZE_M1 "-BANK 1- Main Game", BANK_1
 
+    ORG $07FF ; Bank ID
+    .byte 01
+
 ; ****************************************
 ; *               BANK 2                 *
 ; ****************************************
@@ -381,20 +384,32 @@ Pause_MapPlot:
 ; ****************************************
     SEG Bank27
     ORG $6C00
-    RORG $F000
+    RORG $FC00
 
 BANK_27
-    LOG_BANK_SIZE "-BANK 27- Halt Reserve 1", BANK_27
+    INCLUDE "c/always.asm"
+    INCLUDE "scroll/Game_HaltRoom.asm"
+    INCLUDE "scroll/task_lut.asm"
+    LOG_BANK_SIZE "-BANK 27- Halt RoomScroll", BANK_27
+    ORG $6FFF ; bank id
+    .byte 27
 
 ; ****************************************
 ; *               BANK 28                *
 ; ****************************************
     SEG Bank28
     ORG $7000
-    RORG $F000
+    RORG $F400
 
 BANK_28
-    LOG_BANK_SIZE "-BANK 28- Halt Reserve 2", BANK_28
+    INCLUDE "gen/bit_mirror_nybble_swap.asm"
+    INCLUDE "scroll/room_B.asm"
+    INCLUDE "scroll/TransferA.asm"
+    INCLUDE "scroll/TransferB.asm"
+    INCLUDE "scroll/RoomScroll_Right.asm"
+    INCLUDE "scroll/RoomScroll_Left.asm"
+
+    LOG_BANK_SIZE "-BANK 28- Halt RoomScroll 2", BANK_28
 
 ; ****************************************
 ; *               BANK 29                *
@@ -800,4 +815,4 @@ BANK_53
 
     ORG $FFFF
     RORG $FFFF
-    .byte 0
+    .byte 63

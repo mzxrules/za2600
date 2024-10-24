@@ -14,15 +14,6 @@ VERTICAL_BLANK: SUBROUTINE ; 37 SCANLINES
     lda #SLOT_F0_ROOM
     sta BANK_SLOT
     jsr RoomUpdate
-    bit roomFlags
-    bvc .roomSkipInit ; #RF_EV_LOADED
-    lda #SLOT_F0_RS_INIT
-    sta BANK_SLOT
-    lda #SLOT_F4_RS_DEST
-    sta BANK_SLOT
-    jsr RsInit_Del
-    jmp .roomLoadCpuSkip
-.roomSkipInit
 
 .Missile:
     lda #SLOT_F0_MISSILE
@@ -37,7 +28,6 @@ PAUSE_RETURN:
     lda #SLOT_F4_PL2
     sta BANK_SLOT
     jsr PlayerItem
-.roomLoadCpuSkip
 
 ; room setup
     lda worldId
@@ -47,6 +37,7 @@ PAUSE_RETURN:
     jsr DoorCheck
     jsr UpdateDoors
 .skipRoomChecks
+ROOMSCROLL_RETURN:  ; .roomLoadCpuSkip
 
     lda #SLOT_F4_AU1
     sta BANK_SLOT

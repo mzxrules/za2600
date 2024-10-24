@@ -321,6 +321,14 @@ KERNEL_HUD_LOOP:
 .waitTimerLoop
     lda INTIM
     bne .waitTimerLoop
+    ; The miracle scanline?!
+    ; Test if World Kernel or RoomScroll Kernel should be rendered
+    lda SLOT_FC_IDENT
+    cmp #1
+    beq .kswap_KERNEL_WORLD
+    jmp KERNEL_SCROLL1
+
+.kswap_KERNEL_WORLD
     sta WSYNC
 
     ldy #ROOM_HEIGHT

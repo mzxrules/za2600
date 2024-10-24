@@ -571,9 +571,16 @@ THudHealthL     ds 1
 THudHealthMaxH  ds 1
 THudHealthH     ds 1
 THudDigits      ds 6
-    ORG THudHealthMaxH
-THudHealthDisp  ds 1
+THudHealthDisp  = THudHealthMaxH
 ; == 14 ==
+
+    SEG.U VARS_ROOMSCROLL
+    ORG EN_FREE ; safe space since entity system is not live
+roomScrollDir   ds 1
+roomScrollTask  ds 1
+roomScrollTask2 ds 1
+roomScrollDY    ds 1
+roomScrollTemp = Temp0
 
     SEG.U VARS_EN_SYS
     ORG Temp0 + 1
@@ -653,10 +660,8 @@ TextReg     ds 12
     echo "-RAM-",$80,(.)
 
 ; ****************************************
-; * Extended RAM                         *
+; * Level Data ROM Banks                 *
 ; ****************************************
-
-; Level Data ROM Banks
 
     ORG $F400
 WORLD_T_PF1L    ds 128
@@ -668,7 +673,9 @@ WORLD_RS        ds 128 ; Room Script
 WORLD_EX        ds 128 ; Extra Data (Exits, Items)
 WORLD_EN        ds 128 ; Enemy Encounter
 
-; Ram Bank 0-2
+; ****************************************
+; * Extended RAM 0-2 - World Data        *
+; ****************************************
     SEG.U VARS_RAM
     ORG $FA00
 wRAM_SEG
@@ -710,6 +717,9 @@ WRF_SV_OPEN_S    = $04 ; xxxx_x1xx S open
 WRF_SV_OPEN_E    = $10 ; xxx1_xxxx E open
 WRF_SV_OPEN_W    = $40 ; x1xx_xxxx W open
 
+; ****************************************
+; * Extended RAM - Pause Bank 3          *
+; ****************************************
 PAUSE_MAP_HEIGHT = 40
 
     ORG $F200
@@ -728,11 +738,41 @@ rMAP_3  ds PAUSE_MAP_HEIGHT
 rMAP_4  ds PAUSE_MAP_HEIGHT
 rMAP_5  ds PAUSE_MAP_HEIGHT
 
-
+; ****************************************
+; * Extended RAM 4 - KERNEL48            *
+; ****************************************
     ORG $F600
 wKERNEL48   ds KERNEL48_LEN
     ORG $F400
 rKERNEL48   ds KERNEL48_LEN
+
+; ****************************************
+; * Extended RAM 5 - RoomScroll          *
+; ****************************************
+    SEG.U VARS_RAM
+    ORG $F000
+rPF1_0A             ds ROOM_PX_HEIGHT
+rPF1_0B             ds ROOM_PX_HEIGHT
+rPF2_0A             ds ROOM_PX_HEIGHT
+rPF2_0B             ds ROOM_PX_HEIGHT
+rPF0_1A             ds ROOM_PX_HEIGHT
+rPF0_1B             ds ROOM_PX_HEIGHT
+rPF1_1A             ds ROOM_PX_HEIGHT
+rPF1_1B             ds ROOM_PX_HEIGHT
+rPF2_1A             ds ROOM_PX_HEIGHT
+rPF2_1B             ds ROOM_PX_HEIGHT
+
+    ORG $F200
+wPF1_0A             ds ROOM_PX_HEIGHT
+wPF1_0B             ds ROOM_PX_HEIGHT
+wPF2_0A             ds ROOM_PX_HEIGHT
+wPF2_0B             ds ROOM_PX_HEIGHT
+wPF0_1A             ds ROOM_PX_HEIGHT
+wPF0_1B             ds ROOM_PX_HEIGHT
+wPF1_1A             ds ROOM_PX_HEIGHT
+wPF1_1B             ds ROOM_PX_HEIGHT
+wPF2_1A             ds ROOM_PX_HEIGHT
+wPF2_1B             ds ROOM_PX_HEIGHT
 
 ; ****************************************
 ; * Constants                            *
@@ -877,6 +917,8 @@ RAMSEG_FC = $C0
 BANK_SLOT_RAM   = $3E
 BANK_SLOT       = $3F
 
+SLOT_FC_IDENT   = $FFFF ; not consistently used
+
 SLOT_FC_MAIN    = RAMSEG_FC | 1
 SLOT_FC_PAUSE   = RAMSEG_FC | 2
 SLOT_FC_HALT    = RAMSEG_FC | 3
@@ -910,8 +952,8 @@ SLOT_F4_PAUSE_DRAW_MENU2    = RAMSEG_F4 | 25
 SLOT_F0_PAUSE_MENU_MAP      = RAMSEG_F0 | 26
 SLOT_F4_PAUSE_MENU_MAP      = RAMSEG_F4 | 26
 
-SLOT_00_HALT_RESERVE1       = 27
-SLOT_00_HALT_RESERVE2       = 28
+SLOT_FC_HALT_RSCR           = RAMSEG_FC | 27
+SLOT_F4_ROOMSCROLL          = RAMSEG_F4 | 28
 
 SLOT_F0_PL      = RAMSEG_F0 | 29
 SLOT_F4_PL2     = RAMSEG_F4 | 30
@@ -959,3 +1001,6 @@ SLOT_RW_F0_KERNEL48 = RAMSEG_F0 | 4
 SLOT_RW_F4_KERNEL48 = RAMSEG_F4 | 4
 SLOT_RW_F8_KERNEL48 = RAMSEG_F8 | 4
 SLOT_RW_FC_KERNEL48 = RAMSEG_FC | 4
+
+SLOT_RW_F0_ROOMSCROLL = RAMSEG_F0 | 5
+
