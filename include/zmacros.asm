@@ -2,6 +2,12 @@
 ; mzxrules 2021
 ;==============================================================================
 
+; Defines read/write variables
+    MACRO RW
+r{1} {2}
+w{1} = (r{1} + $200)
+    ENDM
+
 ; Defines variable defs for itemFlags
     MACRO ITEM
 ITEMV_{1} = itemFlags + {2}

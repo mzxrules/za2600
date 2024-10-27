@@ -72,13 +72,13 @@ RoomUpdate:  ; SUBROUTINE
 LoadRoom: SUBROUTINE
     ; load world bank data
     ldy worldId
-    lda WorldBankOff,y
+    lda WorldData_BankOffset,y
     tay
-    lda WorldRom,y
+    lda WorldData_WorldRomSlot,y
     sta BANK_SLOT
-    lda WorldRam,y
+    lda WorldData_WorldRamSlot,y
     sta BANK_SLOT_RAM
-    lda WorldRoomSprites,y
+    lda WorldData_RoomSpritesRomSlot,y
     sta TRoomSprB
 
     ldy roomIdNext

@@ -22,7 +22,8 @@ HALT_FROM_FLUTE:
 
     lda #SLOT_F4_PAUSE_DRAW_WORLD
     sta BANK_SLOT
-
+    lda PAnim
+    sta wHaltWorldDY
     jsr DRAW_PAUSE_WORLD
 
 HALT_OVERSCAN: SUBROUTINE ; 30 scanlines

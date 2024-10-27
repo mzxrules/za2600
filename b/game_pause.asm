@@ -80,7 +80,7 @@ PAUSE_FROM_GAME:
     lda roomId
     and #$F
     sec
-    sbc WorldMapXOff,y
+    sbc WorldData_MapRoomXOff,y
     cmp #8
     bcs .skipBlink
     tax
@@ -144,6 +144,8 @@ ITER    SET ITER+1
     sta BANK_SLOT
     bit PauseState
     bvs .draw_menu
+    lda PAnim
+    sta wHaltWorldDY
     jsr DRAW_PAUSE_WORLD
     jmp PAUSE_OVERSCAN
 .draw_menu
@@ -338,7 +340,7 @@ Pause_InvertMul5:
     .byte 35, 30, 25, 20
     .byte 15, 10,  5,  0
 
-WorldMapXOff:
+WorldData_MapRoomXOff:
     .byte 0, 0, 8, 8, 0, 0, 8, 0, 0, 8
 
 MapCurRoomOff:

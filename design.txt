@@ -942,3 +942,17 @@ Animation S
 Animation W
 Animation E
 Return Main
+
+
+Game Halt System
+
+Can occur in two distinct sections:
+
+* FRAME_HALT_TOP
+* FRAME_HALT_BOTTOM
+
+Render Modes:
+World + Hud (slow, temps can't be used longterm)
+World + No Hud a.k.a "Pause" (faster, less memory)
+RSWorld  + Hud (RSWorld draws no sprites)
+RSWorld2 + Hud (Same but vertical color scrolling)

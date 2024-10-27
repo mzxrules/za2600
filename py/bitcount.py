@@ -617,10 +617,44 @@ def get_bl_col_test_lut():
         file.write(ToAsm(yLut,16))
 
 def get_pfscroll_lut():
-    return
+    # blX $40 == screen px 76; blX 0 = screen px 12
+
+    # build PFx table for unreflected playfields
+    offset = []
+    bit = []
+
+    #PF1_0
+    for i in range(7,0-1,-1):
+        offset.append(0*ROOM_PX_HEIGHT)
+        bit.append(1<<i)
+
+    #PF2_0
+    for i in range(0,7+1):
+        offset.append(2*ROOM_PX_HEIGHT)
+        bit.append(1<<i)
+
+    #PF0_1
+    for i in range(4,7+1):
+        offset.append(4*ROOM_PX_HEIGHT)
+        bit.append(1<<i)
+    #PF1_1
+    for i in range(7,0-1,-1):
+        offset.append(6*ROOM_PX_HEIGHT)
+        bit.append(1<<i)
+
+    #PF2_1
+    for i in range(0,7+1):
+        offset.append(8*ROOM_PX_HEIGHT)
+        bit.append(1<<i)
+
+    with open(f'gen/bl_unmirrored_lut.asm', "w") as file:
+        file.write("bl_unmirrored_offset:\n")
+        file.write(ToAsm(offset,8))
+        file.write("bl_unmirrored_bit:\n")
+        file.write(ToAsm(bit,8))
 
 def get_pftransfer_lut():
-    data = []
+    mirror_nybble = []
     for i in range(0, 256):
         v = i
         #v = ((v & 0xF0) >> 4) + ((v & 0x0F) << 4)
@@ -630,18 +664,16 @@ def get_pftransfer_lut():
         if v > 255:
             print(f'{i}  {v}')
             quit()
-        data.append(v)
+        mirror_nybble.append(v)
 
     with open(f'gen/bit_mirror_nybble_swap.asm', "w") as file:
         file.write("bit_mirror_nybble_swap:\n")
-        file.write(ToAsm(data,8))
+        file.write(ToAsm(mirror_nybble,16))
 
 
 def get_roomheight():
     roomHeight = []
     roomHeight8 = []
-
-    ROOM_PX_HEIGHT = 20
 
     for i in range(ROOM_PX_HEIGHT):
         c = i + 1
@@ -665,6 +697,7 @@ get_bl_col_test_lut()
 get_ord_bounds_lut()
 get_rand_8x8_spawn()
 get_pftransfer_lut()
+get_pfscroll_lut()
 
 with open(f'gen/bitcount.asm', "w") as file:
     file.write(bitcountOut)

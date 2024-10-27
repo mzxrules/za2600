@@ -7,9 +7,14 @@ RoomScrollTask_TransferB: SUBROUTINE
 UnmirrorRoomB: SUBROUTINE
     lda #SLOT_RW_F0_ROOMSCROLL
     sta BANK_SLOT_RAM
+
+    lda rFgColor
+    sta wCOLUPF_B+19
+    lda rBgColor
+    sta wCOLUBK_B+19
+
     ldy #19
 .loop
-
 ; Mirrored
 ; PF2 left is 0...7
 ; PF2 right is 7...0
@@ -56,4 +61,53 @@ UnmirrorRoomB: SUBROUTINE
 
     dey
     bpl .loop
+
+; manually write ball to PF
+    lda blX
+    lsr
+    lsr
+    tax
+
+    lda blY
+    bmi .rts
+    lsr
+    lsr
+    pha ; y >> 2
+
+    clc
+    adc bl_unmirrored_offset-1,x
+    tay
+
+; Set carry flag to draw 3 px high ball sprite
+    lda rBLH
+    cmp #8
+
+    lda rPF_SCROLLB,y
+    ora bl_unmirrored_bit-1,x
+    sta wPF_SCROLLB,y
+    sta wPF_SCROLLB+1,y
+    bcc .cont1
+    sta wPF_SCROLLB+2,y
+.cont1
+
+    pla ; y >> 2
+    inx
+    clc
+    adc bl_unmirrored_offset-1,x
+    tay
+
+; Set carry flag to draw 3 px high ball sprite
+    lda rBLH
+    cmp #8
+
+    lda rPF_SCROLLB,y
+    ora bl_unmirrored_bit-1,x
+    sta wPF_SCROLLB,y
+    sta wPF_SCROLLB+1,y
+    bcc .cont2
+    sta wPF_SCROLLB+2,y
+.cont2
+
+.rts
     rts
+

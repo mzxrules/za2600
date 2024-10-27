@@ -155,7 +155,7 @@ VERTICAL_SYNC: SUBROUTINE
     inc Frame
 
     ldx worldId
-    lda WorldCompassRoom,x
+    lda WorldData_CompassRoom,x
     and #7
     eor #7
     asl
@@ -164,12 +164,6 @@ VERTICAL_SYNC: SUBROUTINE
     sta RESBL
     asl
     sta HMBL
-    ldx roomId
-    lda roomFlags
-    bpl .set_cur_room
-    ldx roomIdNext
-.set_cur_room
-    stx Temp0 ; position room
 
 ;==============================================================================
 ; PosHudObjects
@@ -196,7 +190,7 @@ PosHudObjects:
 .roomIdMask
     ; 7 cycle end
 
-    and Temp0           ; 3 ; roomId
+    and roomId          ; 3
     eor #7              ; 2
     asl                 ; 2
     asl                 ; 2
@@ -261,19 +255,19 @@ ALWAYS_RTS:
     rts
 
 
-WorldBankOff:
+WorldData_BankOffset:
     .byte 0, 1, 1, 1, 1, 1, 1, 2, 2, 2
 
-WorldRom:
+WorldData_WorldRomSlot:
     .byte #SLOT_F4_W0, #SLOT_F4_W1, #SLOT_F4_W2
 
-WorldRam:
+WorldData_WorldRamSlot:
     .byte #SLOT_RW_F8_W0, #SLOT_RW_F8_W1, #SLOT_RW_F8_W2
 
-WorldRoomSprites:
+WorldData_RoomSpritesRomSlot:
     .byte #SLOT_F4_PF_OVER, #SLOT_F4_PF_DUNG, #SLOT_F4_PF_DUNG
 
-WorldCompassRoom:
+WorldData_CompassRoom:
     .byte $00
     .byte $36
     .byte $0D

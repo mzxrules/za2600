@@ -1,7 +1,7 @@
 Pause_Menu_Map: SUBROUTINE
     ldx worldId
-    ldy WorldBankOff,x
-    lda WorldRom,y
+    ldy WorldData_BankOffset,x
+    lda WorldData_WorldRomSlot,y
     sta BANK_SLOT
 
 ; select line to update
@@ -14,7 +14,7 @@ Pause_Menu_Map: SUBROUTINE
     asl
     asl
     clc
-    adc WorldMapXOff,x
+    adc WorldData_MapRoomXOff,x
     sta PMapRoom
 
 ; compute visited rooms and room links

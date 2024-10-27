@@ -78,46 +78,32 @@ OVERSCAN: SUBROUTINE ; 30 scanlines
 .end_plStun_inc
 
 ; test player board bounds
-    ldy roomId
+    ldy #4
+    lda plY
+    cmp #BoardYD-1
+    beq .swapRoom
+    dey
+    cmp #BoardYU+1
+    beq .swapRoom
+    dey
     lda plX
     cmp #BoardXR+1
-    bne .plXRSkip
-    ldx #BoardXL
-    stx plX
-    inc roomIdNext
-.plXRSkip
+    beq .swapRoom
+    dey
     cmp #BoardXL-1
-    bne .plXLSkip
-    ldx #BoardXR
-    stx plX
-    dec roomIdNext
-.plXLSkip
-    lda plY
-    cmp #BoardYU+1
-    bne .plYUSkip
-    ldx #BoardYD
-    stx plY
-    clc
-    lda roomIdNext
-    adc #$F0
-    sta roomIdNext
-    lda plY
-.plYUSkip
-    cmp #BoardYD-1
-    bne .plYDSkip
-    ldx #BoardYU
-    stx plY
-    clc
-    lda roomIdNext
-    adc #$10
-    sta roomIdNext
-.plYDSkip
-
-    cpy roomIdNext
-    beq .endSwapRoom
+    bne .endSwapRoom
+.swapRoom
+    sty wHaltType
     lda #RF_EV_LOAD
     ora roomFlags
     sta roomFlags
+    ldx ObjXYAddr-1,y
+    lda PlayerXYRoomPos-1,y
+    sta OBJ_PL,x
+    lda roomIdNext
+    clc
+    adc RoomScrollNext-1,y
+    sta roomIdNext
 .endSwapRoom
 
 ;==============================================================================
@@ -330,9 +316,13 @@ ObjXYAddr:
 PlayerXYDist1:
     .byte -1, 1, 1, -1
 
-    ;align 16
+PlayerXYRoomPos:  ; For repositioning player falling off board in dir
+    .byte #BoardXR, #BoardXL, #BoardYD, #BoardYU
 
-WORLD_ENT: ; Initial room spawns for worlds 0-9
+RoomScrollNext:  ; For repositioning player falling off board in dir
+    .byte -1, 1, $F0, $10
+
+WorldData_Entrance:  ; Initial room spawns for worlds 0-9
     .byte $77, $73, $7D, $7C, $71, $76, $79, $71, $76, $7E
 
 ;==============================================================================
@@ -419,7 +409,7 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     sta plY
 
     ldy worldId
-    lda WORLD_ENT,y
+    lda WorldData_Entrance,y
     sta roomIdNext
     lda #RF_EV_LOAD
     sta roomFlags

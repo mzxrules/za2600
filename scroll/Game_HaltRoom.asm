@@ -4,83 +4,6 @@
 
 ROOMSCROLL_TIMER_EW = 32
 
-KERNEL_SCROLL1: SUBROUTINE  ; 192 scanlines
-
-    lda #%00110000  ; ball size 8, standard playfield
-    sta CTRLPF
-
-    lda #SLOT_RW_F0_ROOMSCROLL
-    sta BANK_SLOT_RAM
-
-    lda #SLOT_F4_ROOMSCROLL
-    sta BANK_SLOT
-
-    sta WSYNC
-
-    lda rBgColor
-    sta COLUBK
-
-    lda rFgColor
-    sta COLUPF
-
-    lda #$FF
-    sta PF0
-    sta PF1
-    sta PF2
-
-    lda rPlColor
-    sta COLUP0
-
-    lda roomScrollDY
-    sta roomDY
-
-    ldy #79 ; #192
-KERNEL_SCROLL1_LOOP1: SUBROUTINE ;-59
-    REPEAT 2
-    sta WSYNC
-    ldx roomDY
-    lda #$FF
-    sta PF0
-    lda rPF1_0A,x
-    sta PF1
-    lda rPF2_0A,x
-    sta PF2
-
-    sleep 8
-
-    lda rPF0_1A,x
-    sta PF0
-    nop
-    lda rPF1_1A,x
-    sta PF1
-    lda rPF2_1A,x
-    sta PF2
-    REPEND
-
-    tya
-    and #3
-    beq .PFDec  ; 2/3
-    .byte $2C   ; 4-5
-.PFDec
-    dec roomDY  ; 5
-    dey
-    bpl KERNEL_SCROLL1_LOOP1
-    sta WSYNC
-    sty PF0
-    sty PF1
-    sty PF2
-    sta WSYNC
-    iny
-    sty PF0
-    sty PF1
-    sty PF2
-    sty COLUBK
-    sty COLUPF
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    rts
-
 ;TOP_FRAME ;3 37 192 30
 ROOMSCROLL_VERTICAL_SYNC: ; 3 SCANLINES
     jsr VERTICAL_SYNC
@@ -94,6 +17,11 @@ ROOMSCROLL_VERTICAL_BLANK: SUBROUTINE
 
     lda #SLOT_RW_F0_ROOMSCROLL
     sta BANK_SLOT_RAM
+
+    lda <#KERNEL_SCROLL1
+    sta wHaltDrawKernel
+    lda >#KERNEL_SCROLL1
+    sta wHaltDrawKernel+1
 
     lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT
@@ -133,21 +61,17 @@ RoomScrollTask2: SUBROUTINE
 .load
     jmp RoomScrollTask_Load2
 
-
 ROOMSCROLL_HALT_START: SUBROUTINE
     ldx #$FF
     txs
 
-; Set scroll Direction:
-    ldy #3
-    lda roomIdNext
-    sec
-    sbc roomId
-.scroll_dir_check_loop
-    cmp RoomScroll_DirCheck,y
-    beq .select_scroll_dir
+    ldy rHaltType
+    lda #0
+    sta wHaltType
     dey
-    bpl .scroll_dir_check_loop
+    bpl .select_scroll_dir
+
+
     tya ; -1
     ldx #ROOM_PX_HEIGHT-1
     bpl .set_scroll_vars ; jmp
@@ -164,10 +88,6 @@ ROOMSCROLL_HALT_START: SUBROUTINE
     sta roomScrollTask2
     jmp ROOMSCROLL_VERTICAL_BLANK
 
-
-RoomScroll_DirCheck:
-; E, W, N, S
-    .byte #$01, #$FF, #$F0, #$10
 
 RoomScroll_Timer
     .byte #ROOMSCROLL_TIMER_EW, #ROOMSCROLL_TIMER_EW, #ROOM_PX_HEIGHT, #ROOM_PX_HEIGHT
@@ -216,11 +136,10 @@ RoomScroll_RunTask:
     pha
     rts
 
-
-RoomScrollTask_LoadRoom: SUBROUTINE
-    jmp LoadRoom
-
 RoomScrollTask_Load2: SUBROUTINE
+    lda #SLOT_F0_ROOM
+    sta BANK_SLOT
+    jsr LoadRoom
     lda #SLOT_F0_RS_INIT
     sta BANK_SLOT
     lda #SLOT_F4_RS_DEST
@@ -234,7 +153,22 @@ RoomScrollTask_Load2: SUBROUTINE
     jsr UpdateDoors
 .skipRoomChecks
 
+    lda #SLOT_F4_MAIN_DRAW
+    sta BANK_SLOT
+
+    ldx #0
+    bit rRoomColorFlags
+    bvs .dark
+    lda rRoomColorFlags
+    and #$3F
+    tax
+.dark
+    lda WorldColorsFg,x
+    sta wFgColor
+    lda WorldColorsBg,x
+    sta wBgColor
     inc roomScrollTask
+RoomScrollTask_LoadRoom: SUBROUTINE
     rts
 
 RoomScrollTask_AnimN: SUBROUTINE

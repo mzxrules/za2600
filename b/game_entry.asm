@@ -217,7 +217,7 @@ ENTRY_START_GAME:
     sta Rand16
 
     ; set ball
-    lda #$60
+    lda #$80
     sta blY
 
     ; set player stats

@@ -137,13 +137,9 @@ POSITION_SPRITES: SUBROUTINE
     lsr
     ; divide by 8, rounding up
     tay
-    lda .HealthPattern,y
+    lda .HealthPattern+8,y
     sta THudHealthMaxL,x
-    cpy #8
-    bpl .hpBarLoopCont
-    ldy #8
-.hpBarLoopCont
-    lda .HealthPattern-8,y
+    lda .HealthPattern,y
     sta THudHealthMaxH,x
     dex
     bpl .hpBarLoop
@@ -326,7 +322,7 @@ KERNEL_HUD_LOOP:
     lda SLOT_FC_IDENT
     cmp #1
     beq .kswap_KERNEL_WORLD
-    jmp KERNEL_SCROLL1
+    jmp (rHaltDrawKernel)
 
 .kswap_KERNEL_WORLD
     sta WSYNC
@@ -345,6 +341,16 @@ KERNEL_WORLD_RESUME:
 
     LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN
     align $20
+
+.HUD_SPLIT_TEST:
+    .byte 0, 0, 1, 0, 0, 1, 0 ;, 0
+
+.HealthPattern:
+    .byte $00, $00, $00, $00, $00, $00, $00, $00
+    .byte $00, $01, $03, $07, $0F, $1F, $3F, $7F
+    .byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    .byte $FF
+
     INCLUDE "c/draw_data.asm"
 
 .MapFlagAddr

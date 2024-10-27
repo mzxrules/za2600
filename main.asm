@@ -6,8 +6,9 @@ TIA_BASE_ADDRESS = $00
     INCLUDE "vcs.h"
     INCLUDE "macro.h"
     INCLUDE "zmacros.asm"
+    INCLUDE "const.asm"
     INCLUDE "vars.asm"
-    INCLUDE "gen/const.asm"
+    INCLUDE "gen/constgen.asm"
 
 ; ****************************************
 ; *               BANK 0                 *
@@ -388,6 +389,7 @@ Pause_MapPlot:
 
 BANK_27
     INCLUDE "c/always.asm"
+    INCLUDE "scroll/kernel_scroll1.asm"
     INCLUDE "scroll/Game_HaltRoom.asm"
     INCLUDE "scroll/task_lut.asm"
     LOG_BANK_SIZE "-BANK 27- Halt RoomScroll", BANK_27
@@ -408,6 +410,7 @@ BANK_28
     INCLUDE "scroll/TransferB.asm"
     INCLUDE "scroll/RoomScroll_Right.asm"
     INCLUDE "scroll/RoomScroll_Left.asm"
+    INCLUDE "gen/bl_unmirrored_lut.asm"
 
     LOG_BANK_SIZE "-BANK 28- Halt RoomScroll 2", BANK_28
 
@@ -810,6 +813,17 @@ BANK_53
     INCLUDE "en/En_Stairs.asm"
     INCLUDE "en/En_Item.asm"
     LOG_BANK_SIZE "-BANK 53-", BANK_53
+
+; ****************************************
+; *               BANK 54                *
+; ****************************************
+    SEG Bank54
+    ORG $D800
+    RORG $FC00
+BANK_54
+    INCLUDE "scroll/kernel_scroll2.asm"
+
+    LOG_BANK_SIZE "SCROLL_KERNEL_MAIN", BANK_54
 
 ; End
 

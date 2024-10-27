@@ -6,7 +6,7 @@
 
 DRAW_PAUSE_WORLD:
 
-    ldy PAnim
+    ldy rHaltWorldDY
     sty roomDY
     INCLUDE "c/draw_world_init.asm"
 
@@ -30,7 +30,7 @@ KERNEL_PAUSE_WORLD_MAIN:  ; 192 scanlines
     bne .loop
 
 ; Pad with black above world view
-    ldx PAnim
+    ldx rHaltWorldDY
     cpx #19
     bpl .skipVerticalShift
 .wsyncLoop
@@ -49,7 +49,7 @@ KERNEL_PAUSE_WORLD_MAIN:  ; 192 scanlines
 
     lda rFgColor
     sta COLUPF
-    ldy PAnim
+    ldy rHaltWorldDY
     lda .RoomHeight,y
     tay
 KERNEL_PAUSE_WORLD_RESUME:

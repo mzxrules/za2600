@@ -594,7 +594,7 @@ def DumpConstants():
             idx += 1
 
     out = GetConstants(const, constLen)
-    with open("gen/const.asm", "w") as file:
+    with open("gen/constgen.asm", "w") as file:
         file.write(out)
 
 def DumpPtrAsm():
