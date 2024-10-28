@@ -241,28 +241,12 @@ LoadRoom: SUBROUTINE
 
     ldy #1
 .dungRoomUpDownBorder
-    lda rPF1RoomL+2
-    ora #$FF
+    lda #$FF
     sta wPF1RoomL,y
-
-    lda rPF2Room+2
-    ora #$FF
     sta wPF2Room,y
-
-    lda rPF1RoomR+2
-    ora #$FF
     sta wPF1RoomR,y
-
-    lda rPF1RoomL+ROOM_PX_HEIGHT-3
-    ora #$FF
     sta wPF1RoomL+ROOM_PX_HEIGHT-2,y
-
-    lda rPF1RoomR+ROOM_PX_HEIGHT-3
-    ora #$FF
     sta wPF1RoomR+ROOM_PX_HEIGHT-2,y
-
-    lda rPF2Room+ROOM_PX_HEIGHT-3
-    ora #$FF
     sta wPF2Room+ROOM_PX_HEIGHT-2,y
     dey
     bpl .dungRoomUpDownBorder

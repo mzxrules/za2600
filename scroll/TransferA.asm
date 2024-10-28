@@ -12,9 +12,9 @@ UnmirrorRoomA: SUBROUTINE
     sta wCOLUPF_A+19
     lda rBgColor
     sta wCOLUBK_A+19
+
     ldy #19
 .loop
-
 ; Mirrored
 ; PF2 left is 0...7
 ; PF2 right is 7...0
@@ -32,10 +32,8 @@ UnmirrorRoomA: SUBROUTINE
     sta wPF2_0A,y
     tax ; rPF2Room
 
-    asl
-    asl
-    asl
-    asl
+    lda bit_nybble_swap,x
+    and #$F0
     sta roomScrollTemp ; PF1 2nd
 
     lda bit_mirror_nybble_swap,x
@@ -51,11 +49,8 @@ UnmirrorRoomA: SUBROUTINE
     ora roomScrollTemp
     sta wPF1_1A,y
 
-    lda rPF1RoomR,y
-    lsr
-    lsr
-    lsr
-    lsr
+    ldx rPF1RoomR,y
+    lda bit_nybble_swap,x
     ora #$F0
     sta wPF2_1A,y
 
@@ -85,8 +80,14 @@ UnmirrorRoomA: SUBROUTINE
     lda rPF_SCROLLA,y
     ora bl_unmirrored_bit-1,x
     sta wPF_SCROLLA,y
+
+    lda rPF_SCROLLA+1,y
+    ora bl_unmirrored_bit-1,x
     sta wPF_SCROLLA+1,y
     bcc .cont1
+
+    lda rPF_SCROLLA+2,y
+    ora bl_unmirrored_bit-1,x
     sta wPF_SCROLLA+2,y
 .cont1
 
@@ -103,8 +104,14 @@ UnmirrorRoomA: SUBROUTINE
     lda rPF_SCROLLA,y
     ora bl_unmirrored_bit-1,x
     sta wPF_SCROLLA,y
+
+    lda rPF_SCROLLA+1,y
+    ora bl_unmirrored_bit-1,x
     sta wPF_SCROLLA+1,y
     bcc .cont2
+
+    lda rPF_SCROLLA+2,y
+    ora bl_unmirrored_bit-1,x
     sta wPF_SCROLLA+2,y
 .cont2
 

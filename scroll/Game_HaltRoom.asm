@@ -189,6 +189,8 @@ RoomScrollTask_AnimS: SUBROUTINE
     rts
 
 RoomScrollTask_AnimE2: SUBROUTINE
+    lda #SLOT_F4_ROOMSCROLL_WE
+    sta BANK_SLOT
     ldy #ROOM_PX_HEIGHT-1
 .loop
     jsr RoomScroll_Left
@@ -222,9 +224,8 @@ RoomScrollTask_None:
 
 
 RoomScrollTask_AnimW2: SUBROUTINE
-    lda roomScrollTask2
-    cmp #ROOMSCROLL_TASK__WEST
-    bne .rts
+    lda #SLOT_F4_ROOMSCROLL_WE
+    sta BANK_SLOT
     ldy #ROOM_PX_HEIGHT-1
 .loop
     jsr RoomScroll_Right

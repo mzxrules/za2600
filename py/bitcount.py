@@ -654,17 +654,19 @@ def get_pfscroll_lut():
         file.write(ToAsm(bit,8))
 
 def get_pftransfer_lut():
+    swap_nybble = []
     mirror_nybble = []
     for i in range(0, 256):
         v = i
-        #v = ((v & 0xF0) >> 4) + ((v & 0x0F) << 4)
+        swap = ((v & 0xF0) >> 4) + ((v & 0x0F) << 4)
         v = ((v & 0xCC) >> 2) + ((v & 0x33) << 2)
         v = ((v & 0xAA) >> 1) + ((v & 0x55) << 1)
-
-        if v > 255:
-            print(f'{i}  {v}')
-            quit()
+        swap_nybble.append(swap)
         mirror_nybble.append(v)
+
+    with open(f'gen/bit_nybble_swap.asm', "w") as file:
+        file.write("bit_nybble_swap:\n")
+        file.write(ToAsm(swap_nybble,16))
 
     with open(f'gen/bit_mirror_nybble_swap.asm', "w") as file:
         file.write("bit_mirror_nybble_swap:\n")

@@ -405,11 +405,9 @@ BANK_27
 
 BANK_28
     INCLUDE "gen/bit_mirror_nybble_swap.asm"
-    INCLUDE "scroll/room_B.asm"
+    INCLUDE "gen/bit_nybble_swap.asm"
     INCLUDE "scroll/TransferA.asm"
     INCLUDE "scroll/TransferB.asm"
-    INCLUDE "scroll/RoomScroll_Right.asm"
-    INCLUDE "scroll/RoomScroll_Left.asm"
     INCLUDE "gen/bl_unmirrored_lut.asm"
 
     LOG_BANK_SIZE "-BANK 28- Halt RoomScroll 2", BANK_28
@@ -823,7 +821,20 @@ BANK_53
 BANK_54
     INCLUDE "scroll/kernel_scroll2.asm"
 
-    LOG_BANK_SIZE "SCROLL_KERNEL_MAIN", BANK_54
+    LOG_BANK_SIZE "-BANK 54- SCROLL_KERNEL_MAIN", BANK_54
+
+
+; ****************************************
+; *               BANK 55                *
+; ****************************************
+    SEG Bank54
+    ORG $DC00
+    RORG $F400
+BANK_55
+    INCLUDE "scroll/RoomScroll_Right.asm"
+    INCLUDE "scroll/RoomScroll_Left.asm"
+
+    LOG_BANK_SIZE "-BANK 55- HALT_RoomScroll", BANK_55
 
 ; End
 

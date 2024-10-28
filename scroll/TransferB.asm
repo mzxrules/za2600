@@ -32,10 +32,8 @@ UnmirrorRoomB: SUBROUTINE
     sta wPF2_0B,y
     tax ; rPF2Room
 
-    asl
-    asl
-    asl
-    asl
+    lda bit_nybble_swap,x
+    and #$F0
     sta roomScrollTemp ; PF1 2nd
 
     lda bit_mirror_nybble_swap,x
@@ -51,11 +49,8 @@ UnmirrorRoomB: SUBROUTINE
     ora roomScrollTemp
     sta wPF1_1B,y
 
-    lda rPF1RoomR,y
-    lsr
-    lsr
-    lsr
-    lsr
+    ldx rPF1RoomR,y
+    lda bit_nybble_swap,x
     ora #$F0
     sta wPF2_1B,y
 
@@ -85,8 +80,14 @@ UnmirrorRoomB: SUBROUTINE
     lda rPF_SCROLLB,y
     ora bl_unmirrored_bit-1,x
     sta wPF_SCROLLB,y
+
+    lda rPF_SCROLLB+1,y
+    ora bl_unmirrored_bit-1,x
     sta wPF_SCROLLB+1,y
     bcc .cont1
+
+    lda rPF_SCROLLB+2,y
+    ora bl_unmirrored_bit-1,x
     sta wPF_SCROLLB+2,y
 .cont1
 
@@ -103,11 +104,16 @@ UnmirrorRoomB: SUBROUTINE
     lda rPF_SCROLLB,y
     ora bl_unmirrored_bit-1,x
     sta wPF_SCROLLB,y
+
+    lda rPF_SCROLLB+1,y
+    ora bl_unmirrored_bit-1,x
     sta wPF_SCROLLB+1,y
     bcc .cont2
+
+    lda rPF_SCROLLB+2,y
+    ora bl_unmirrored_bit-1,x
     sta wPF_SCROLLB+2,y
 .cont2
 
 .rts
     rts
-
