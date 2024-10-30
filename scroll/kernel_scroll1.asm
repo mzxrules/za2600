@@ -104,7 +104,4 @@ KERNEL_SCROLL1_LOOP1: SUBROUTINE ;-59
     sty PF2
     sty COLUBK
     sty COLUPF
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
     rts

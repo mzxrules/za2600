@@ -55,14 +55,6 @@ SIZE_EN_{1} = . - EN_FREE + $8000
 ROOM_PF2_{1} = [[[{2} & 0xF] << 4] | [[{2} & $F0] >> 4 ]]
     ENDM
 
-; RoomScroll Matrix
-    MACRO ROOMSCROLL_TASK
-    .byte #ROOMSCROLL_TASK__{1}
-    .byte #ROOMSCROLL_TASK__{2}
-    .byte #ROOMSCROLL_TASK__{3}
-    .byte #ROOMSCROLL_TASK__{4}
-    ENDM
-
 ; Rewriteable Kernel Variable
     MACRO VKERNEL1
 r{1} = . - KERNEL_WORLD + rKERNEL_WORLD + 1

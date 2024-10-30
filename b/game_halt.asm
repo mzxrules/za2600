@@ -5,13 +5,10 @@
 HALT_VERTICAL_SYNC:
     jsr VERTICAL_SYNC
 
-HALT_FROM_FLUTE:
-    lda PHaltType
-    cmp #HALT_TYPE_FLUTE
-    bne .next
-    jsr HaltFlute_OverscanTop
-.next
+HALT_VERTICAL_BLANK: SUBROUTINE
+    jsr HtTask_Run
 
+HALT_FROM_FLUTE:
     lda #SLOT_F4_AU1
     sta BANK_SLOT
     jsr UpdateAudio
@@ -22,8 +19,6 @@ HALT_FROM_FLUTE:
 
     lda #SLOT_F4_PAUSE_DRAW_WORLD
     sta BANK_SLOT
-    lda PAnim
-    sta wHaltWorldDY
     jsr DRAW_PAUSE_WORLD
 
 HALT_OVERSCAN: SUBROUTINE ; 30 scanlines
@@ -31,7 +26,8 @@ HALT_OVERSCAN: SUBROUTINE ; 30 scanlines
     lda #2
     sta VBLANK
     lda #36
-    sta TIM64T ; 27 scanline timer
+    sta TIM64T ; 30 scanline timer
+    sta wHaltVState
 ; reset world kernel vars
     lda #7
     sta wENH
@@ -40,15 +36,7 @@ HALT_OVERSCAN: SUBROUTINE ; 30 scanlines
     sta wREFP1_T
 
 HALT_FROM_ENTER_LOC:
-    lda PHaltType
-    cmp #HALT_TYPE_ENTER_DUNG
-    beq .do_ent
-    cmp #HALT_TYPE_ENTER_CAVE
-    bne .next
-.do_ent
-    jsr HaltEnterLoc_OverscanBottom
-.next
-
+    jsr HtTask_Run
 
 HALT_OVERSCAN_WAIT:
     sta WSYNC
@@ -58,208 +46,45 @@ HALT_OVERSCAN_WAIT:
     jmp HALT_VERTICAL_SYNC
 
 
-HALT_FLUTE_ENTRY: SUBROUTINE
+HALT_PLAY_FLUTE_ENTRY: SUBROUTINE
     ldx #$FF
     txs
     lda Frame
-    sta PFrame
+    sta wHaltFrame
 
-    lda #HALT_TYPE_FLUTE
-    sta PHaltType
+    ldy #HALT_TYPE_PLAY_FLUTE
+    sty wHaltType
+    lda HtTaskScriptIndex,y
+    sta wHaltTask
 
-    lda #19
-    sta PAnim
+    lda #ROOM_PX_HEIGHT-1
+    sta wHaltWorldDY
     jmp HALT_FROM_FLUTE
 
 HALT_ENTER_CAVE_ENTRY: SUBROUTINE
-    lda #HALT_TYPE_ENTER_CAVE
-    sta PHaltType
+    ldy #HALT_TYPE_ENTER_CAVE
+    sty wHaltType
     bpl .entry_common ; jmp
 
 HALT_ENTER_DUNG_ENTRY:
-    lda #HALT_TYPE_ENTER_DUNG
-    sta PHaltType
+    ldy #HALT_TYPE_ENTER_DUNG
+    sty wHaltType
 
 .entry_common
 ; Reset the stack
     ldx #$FF
     txs
-
     lda Frame
-    sta PFrame
+    sta wHaltFrame
+
+    lda HtTaskScriptIndex,y
+    sta wHaltTask
 
     lda #MS_PLAY_NONE
     sta SeqFlags
     lda #SFX_ENTER
     sta SfxFlags
 
-    lda #19
-    sta PAnim
+    lda #ROOM_PX_HEIGHT-1
+    sta wHaltWorldDY
     jmp HALT_FROM_ENTER_LOC
-
-
-HaltFlute_OverscanTop: SUBROUTINE
-    lda PFrame
-    clc
-    adc #$7F
-    cmp Frame
-    beq .test_spawn_tornado
-    rts
-
-.test_spawn_tornado
-    lda #-4
-    sta plItemTimer
-    lda itemTri
-    beq .noTornado
-    lda worldId
-    bne .noTornado
-    lda roomId
-    bmi .noTornado
-
-; update next dest if tornado was set
-    ldx #-1
-    lda plState3
-    and #PS_ACTIVE_ITEM2
-    tay
-    cpy #PLAYER_FLUTE_FX
-    bne .loop
-    lda plItem2Dir
-    and #7
-    tax
-.loop
-    inx
-    cpx #8
-    bne .skipRollover
-    ldx #0
-.skipRollover
-    lda Bit8,x
-    and itemTri
-    beq .loop
-; x = next destination index
-
-; If the timer is 0, spawn the tornado and set destination
-    lda plItem2Time
-    beq .spawn_tornado
-; If timer is not zero, but a tornado is active, just update destination
-    cpy #PLAYER_FLUTE_FX
-    beq .update_dest
-    bne .noTornado
-
-.spawn_tornado
-    lda #-85
-    sta plItem2Time
-    lda #0
-    sta plm1X
-    lda plY
-    sta plm1Y
-    lda #PLAYER_FLUTE_FX
-    sta plState3
-
-.update_dest
-    stx plItem2Dir
-
-.noTornado
-
-    ldx #$FF
-    txs
-    lda #SLOT_F0_PL
-    sta BANK_SLOT
-    jmp MAIN_UNPAUSE
-
-
-HaltEnterLoc_OverscanBottom: SUBROUTINE
-    lda Frame
-    sec
-    sbc PFrame
-    cmp #32
-    bne .enter_anim
-.enter_loc
-    lda #$40
-    sta plX
-    lda #$10
-    sta plY
-
-    lda #7
-    sta wPLH
-; Reset the stack
-    ldx #$FF
-    txs
-; Push return address of OVERSCAN_WAIT
-    lda #>OVERSCAN_WAIT
-    pha
-    lda #<OVERSCAN_WAIT-1
-    pha
-    lda PHaltType
-    cmp #HALT_TYPE_ENTER_CAVE
-    beq .MAIN_CAVE_ENT
-    jmp MAIN_DUNG_ENT
-.MAIN_CAVE_ENT
-    jmp MAIN_CAVE_ENT
-
-.enter_anim
-    cmp #0
-    beq .skipAnim
-    and #3
-    bne .skipAnim
-
-    ldy rPLH
-    dey
-    sty wPLH
-
-    ldx roomRS
-    cpx #RS_ENT_DUNG_STAIRS
-    beq .walk_down_anim
-
-.walk_up_anim
-    ldy plY
-    iny
-    sty plY
-.walk_down_anim
-.skipAnim
-    lda PHaltType
-    cmp #HALT_TYPE_ENTER_CAVE
-    beq .rts
-
-.setup_mem
-    lda Frame
-    and #$07
-    asl
-    asl
-    asl
-    asl
-    tax
-
-    ldy #15
-
-.mem_init_loop
-.w0
-    lda #SLOT_RW_F8_W0
-    sta BANK_SLOT_RAM
-
-    lda rWorldRoomENCount,x
-    bne .w1
-    lda #$FF
-    sta wWorldRoomENCount,x
-
-.w1
-    lda #SLOT_RW_F8_W1
-    sta BANK_SLOT_RAM
-    lda #$FF
-    sta wWorldRoomENCount,x
-
-.w2
-    lda #SLOT_RW_F8_W2
-    sta BANK_SLOT_RAM
-    lda #$FF
-    sta wWorldRoomENCount,x
-    inx
-    dey
-    bpl .mem_init_loop
-
-
-    lda #SLOT_RW_F8_W0
-    sta BANK_SLOT_RAM
-.rts
-    rts
-
-

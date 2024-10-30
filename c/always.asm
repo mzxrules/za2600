@@ -147,7 +147,8 @@ GiItemSpr:
     .byte $78   ; GiWandBook
 
 VERTICAL_SYNC: SUBROUTINE
-    lda #2
+    lda #$80 | #$02
+    sta wHaltVState
     ldx #49
     sta WSYNC
     sta VSYNC

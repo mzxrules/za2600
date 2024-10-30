@@ -1,17 +1,17 @@
 ;==============================================================================
 ; mzxrules 2024
 ;==============================================================================
-RoomScrollTask_TransferB: SUBROUTINE
-    inc roomScrollTask
+HtTask_TransferA: SUBROUTINE
+    jsr Halt_IncTask
 
-UnmirrorRoomB: SUBROUTINE
+UnmirrorRoomA: SUBROUTINE
     lda #SLOT_RW_F0_ROOMSCROLL
     sta BANK_SLOT_RAM
 
     lda rFgColor
-    sta wCOLUPF_B+19
+    sta wCOLUPF_A+19
     lda rBgColor
-    sta wCOLUBK_B+19
+    sta wCOLUBK_A+19
 
     ldy #19
 .loop
@@ -27,9 +27,9 @@ UnmirrorRoomB: SUBROUTINE
 ; PF2 2nd is 0...7, so
 
     lda rPF1RoomL,y
-    sta wPF1_0B,y
+    sta wPF1_0A,y
     lda rPF2Room,y
-    sta wPF2_0B,y
+    sta wPF2_0A,y
     tax ; rPF2Room
 
     lda bit_nybble_swap,x
@@ -39,7 +39,7 @@ UnmirrorRoomB: SUBROUTINE
     lda bit_mirror_nybble_swap,x
 ; PF0 2nd
     ora #$0F ; Force bits on to make anim easier
-    sta wPF0_1B,y
+    sta wPF0_1A,y
 
 ; PF1 2nd continued
 
@@ -47,12 +47,12 @@ UnmirrorRoomB: SUBROUTINE
     lda bit_mirror_nybble_swap,x
     and #$0F
     ora roomScrollTemp
-    sta wPF1_1B,y
+    sta wPF1_1A,y
 
     ldx rPF1RoomR,y
     lda bit_nybble_swap,x
     ora #$F0
-    sta wPF2_1B,y
+    sta wPF2_1A,y
 
     dey
     bpl .loop
@@ -77,18 +77,18 @@ UnmirrorRoomB: SUBROUTINE
     lda rBLH
     cmp #8
 
-    lda rPF_SCROLLB,y
+    lda rPF_SCROLLA,y
     ora bl_unmirrored_bit-1,x
-    sta wPF_SCROLLB,y
+    sta wPF_SCROLLA,y
 
-    lda rPF_SCROLLB+1,y
+    lda rPF_SCROLLA+1,y
     ora bl_unmirrored_bit-1,x
-    sta wPF_SCROLLB+1,y
+    sta wPF_SCROLLA+1,y
     bcc .cont1
 
-    lda rPF_SCROLLB+2,y
+    lda rPF_SCROLLA+2,y
     ora bl_unmirrored_bit-1,x
-    sta wPF_SCROLLB+2,y
+    sta wPF_SCROLLA+2,y
 .cont1
 
     pla ; y >> 2
@@ -101,18 +101,18 @@ UnmirrorRoomB: SUBROUTINE
     lda rBLH
     cmp #8
 
-    lda rPF_SCROLLB,y
+    lda rPF_SCROLLA,y
     ora bl_unmirrored_bit-1,x
-    sta wPF_SCROLLB,y
+    sta wPF_SCROLLA,y
 
-    lda rPF_SCROLLB+1,y
+    lda rPF_SCROLLA+1,y
     ora bl_unmirrored_bit-1,x
-    sta wPF_SCROLLB+1,y
+    sta wPF_SCROLLA+1,y
     bcc .cont2
 
-    lda rPF_SCROLLB+2,y
+    lda rPF_SCROLLA+2,y
     ora bl_unmirrored_bit-1,x
-    sta wPF_SCROLLB+2,y
+    sta wPF_SCROLLA+2,y
 .cont2
 
 .rts

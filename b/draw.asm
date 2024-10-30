@@ -322,7 +322,7 @@ KERNEL_HUD_LOOP:
     lda SLOT_FC_IDENT
     cmp #1
     beq .kswap_KERNEL_WORLD
-    jmp (rHaltDrawKernel)
+    jmp (rHaltKernelDraw)
 
 .kswap_KERNEL_WORLD
     sta WSYNC

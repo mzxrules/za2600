@@ -63,6 +63,7 @@ BANK_2
     RORG $FC00
 BANK_3
     INCLUDE "c/always.asm"
+    INCLUDE "ht/HtTask.asm"
     INCLUDE "b/game_halt.asm"
     LOG_BANK_SIZE "-BANK 3- Halt Game", BANK_3
 
@@ -389,9 +390,9 @@ Pause_MapPlot:
 
 BANK_27
     INCLUDE "c/always.asm"
+    INCLUDE "ht/HtTask.asm"
     INCLUDE "scroll/kernel_scroll1.asm"
     INCLUDE "scroll/Game_HaltRoom.asm"
-    INCLUDE "scroll/task_lut.asm"
     LOG_BANK_SIZE "-BANK 27- Halt RoomScroll", BANK_27
     ORG $6FFF ; bank id
     .byte 27
@@ -406,8 +407,8 @@ BANK_27
 BANK_28
     INCLUDE "gen/bit_mirror_nybble_swap.asm"
     INCLUDE "gen/bit_nybble_swap.asm"
-    INCLUDE "scroll/TransferA.asm"
-    INCLUDE "scroll/TransferB.asm"
+    INCLUDE "ht/HtTask_TransferA.asm"
+    INCLUDE "ht/HtTask_TransferB.asm"
     INCLUDE "gen/bl_unmirrored_lut.asm"
 
     LOG_BANK_SIZE "-BANK 28- Halt RoomScroll 2", BANK_28
@@ -833,6 +834,11 @@ BANK_54
 BANK_55
     INCLUDE "scroll/RoomScroll_Right.asm"
     INCLUDE "scroll/RoomScroll_Left.asm"
+    INCLUDE "ht/HtTask_AnimEast.asm"
+    INCLUDE "ht/HtTask_AnimNorth.asm"
+    INCLUDE "ht/HtTask_AnimSouth.asm"
+    INCLUDE "ht/HtTask_EnterLoc.asm"
+    INCLUDE "ht/HtTask_PlayFlute.asm"
 
     LOG_BANK_SIZE "-BANK 55- HALT_RoomScroll", BANK_55
 

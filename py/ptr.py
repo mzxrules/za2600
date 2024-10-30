@@ -118,6 +118,20 @@ Entity_Table = [
     "En_Appear",       "SEG_45", "SEG_46", "EnDraw_Appear",
 ]
 
+HaltTask_Table = [
+    "HtTask_RoomScrollEnd",     "SEG_HA",
+    "HtTask_TransferA",         "SLOT_F4_ROOMSCROLL",
+    "HtTask_TransferB",         "SLOT_F4_ROOMSCROLL",
+    "HtTask_LoadRoom",          "SEG_HA",
+    "HtTask_AnimEast",          "SEG_55",
+    "HtTask_AnimWest",          "SEG_55",
+    "HtTask_AnimNorth",         "SEG_55",
+    "HtTask_AnimSouth",         "SEG_55",
+    "HtTask_PlayFlute",         "SEG_55",
+    "HtTask_EnterLoc",          "SEG_55",
+    "HtTask_None",              "SEG_HA",
+]
+
 RoomScript_Table = [
     "Rs_None",                      "RsInit_None",
     "Rs_BlockCenter",               "RsInit_BlockCenter",
@@ -245,6 +259,12 @@ tbl = [
     genConstants=False,
     vals=RoomScript_Table[1::2],
     bankLut=None),
+    GameEnum("HtTask", "HtTask",
+    genEditorBindings=False,
+    genPtrTable=True,
+    genConstants=True,
+    vals=HaltTask_Table[0::2],
+    bankLut=HaltTask_Table[1::2]),
     GameEnum("Ball", "Bl",
     genEditorBindings=False,
     genPtrTable=True,

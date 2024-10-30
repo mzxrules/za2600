@@ -949,7 +949,9 @@ Game Halt System
 Can occur in two distinct sections:
 
 * FRAME_HALT_TOP
+    HALT_FROM_FLUTE
 * FRAME_HALT_BOTTOM
+    HALT_FROM_ENTER_LOC
 
 Render Modes:
 World + Hud (slow, temps can't be used longterm)

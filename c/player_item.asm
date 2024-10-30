@@ -352,7 +352,7 @@ PlayerUseFlute: SUBROUTINE
     sta SfxFlags
     lda #SLOT_FC_HALT
     sta BANK_SLOT
-    jmp HALT_FLUTE_ENTRY
+    jmp HALT_PLAY_FLUTE_ENTRY
 
 PlayerUpdateFluteFx: SUBROUTINE
     lda plItem2Time

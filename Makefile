@@ -7,6 +7,7 @@ zelda_dep := main.asm \
   $(wildcard b/*.asm) \
   $(wildcard c/*.asm) \
   $(wildcard en/*.asm) \
+  $(wildcard ht/*.asm) \
   $(wildcard rs/*.asm) \
   $(wildcard spr/*.asm) \
   $(wildcard scroll/*.asm) \
@@ -17,6 +18,7 @@ zelda_dep := main.asm \
   gen/mesg_data_0A.asm \
   gen/ms_header.asm \
   gen/bitcount.asm \
+  gen/HtTask_Scripts.asm \
   gen/pf_destroy.asm \
   gen/spr_tri.asm \
   gen/EnDraw_BossManhandlaGen.asm \
@@ -76,6 +78,9 @@ gen/editor_en_bindings.txt: py/encounter.py
 
 gen/bitcount.asm: py/bitcount.py
 	python3 py/bitcount.py
+
+gen/HtTask_Scripts.asm: py/httask_scripts.py
+	python3 py/httask_scripts.py
 
 gen/pf_destroy.asm: py/pf_destroy.py
 	python3 py/pf_destroy.py

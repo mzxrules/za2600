@@ -130,7 +130,6 @@ BANK_1
 BANK_4
 
     INCLUDE "scroll/bit_mirror.asm"
-    INCLUDE "scroll/room_B.asm"
     INCLUDE "scroll/TransferA.asm"
     INCLUDE "scroll/TransferB.asm"
 

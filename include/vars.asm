@@ -530,7 +530,6 @@ AUDVT1      ds 1
     ORG AUDVT1 + 1
 PFrame          ds 1
 PAnim           ds 1
-PHaltType       ds 1
 
     ORG plSpr
 PItemSpr0       ds 2
@@ -573,9 +572,6 @@ THudHealthDisp  = THudHealthMaxH
 
     SEG.U VARS_ROOMSCROLL
     ORG EN_FREE ; safe space since entity system is not live
-roomScrollDir   ds 1
-roomScrollTask  ds 1
-roomScrollTask2 ds 1
 roomScrollDY    ds 1
 roomScrollTemp = Temp0
 
@@ -687,17 +683,23 @@ RF_WC_ROOM_DARK = $40
  RW RoomPF2Type,        ds 1
  ROOM_PF2 TRIFORCE, 35
 
- RW HaltDrawKernel,     ds 2
+ RW HaltKernelDraw,     ds 2
+ RW HaltKernelId,       ds 1
+ RW HaltVState,         ds 1 ; negative is Vertical Blank, else Overscan
+HALT_VSTATE_TOP = #$80
+ RW HaltFrame,          ds 1
  RW HaltType,           ds 1
-HALT_TYPE_INVALID       = 0
+HALT_TYPE_RSCR_NONE     = 0
 HALT_TYPE_RSCR_WEST     = 1
 HALT_TYPE_RSCR_EAST     = 2
 HALT_TYPE_RSCR_NORTH    = 3
 HALT_TYPE_RSCR_SOUTH    = 4
-HALT_TYPE_FLUTE         = 5
+HALT_TYPE_PLAY_FLUTE         = 5
 HALT_TYPE_ENTER_DUNG    = 6
 HALT_TYPE_ENTER_CAVE    = 7
+ RW HaltTask,           ds 1
  RW HaltWorldDY,        ds 1
+RW_WORLD        = .
 
     ORG $F900
  RW WorldRoomENCount,   ds 128
