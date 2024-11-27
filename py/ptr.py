@@ -119,7 +119,8 @@ Entity_Table = [
 ]
 
 HaltTask_Table = [
-    "HtTask_RoomScrollEnd",     "SEG_HA",
+    "HtTask_RoomScrollStart",   "SEG_55",
+    "HtTask_RoomScrollEnd",     "SEG_55",
     "HtTask_TransferA",         "SLOT_F4_ROOMSCROLL",
     "HtTask_TransferB",         "SLOT_F4_ROOMSCROLL",
     "HtTask_LoadRoom",          "SEG_HA",

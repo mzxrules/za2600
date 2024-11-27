@@ -64,9 +64,10 @@ RoomUpdate:  ; SUBROUTINE
     sta plItem2Time
     sta KernelId
 
-    lda #SLOT_FC_HALT_RSCR
+    lda #SLOT_FC_HALT
     sta BANK_SLOT
-    jmp ROOMSCROLL_HALT_START
+    ldy rHaltType
+    jmp HALT_GAME
 
 
 LoadRoom: SUBROUTINE

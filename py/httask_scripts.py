@@ -5,6 +5,7 @@ from func_common import ToSnakeCase
 HALT_TASK_SCRIPTS = [
     # HALT_TYPE_RSCR_NONE
     [
+        "HtTask_RoomScrollStart",
         "HtTask_TransferA",
         "HtTask_LoadRoom",
         "HtTask_TransferA",
@@ -12,6 +13,7 @@ HALT_TASK_SCRIPTS = [
     ],
     # HALT_TYPE_RSCR_WEST
     [
+        "HtTask_RoomScrollStart",
         "HtTask_TransferA",
         "HtTask_LoadRoom",
         "HtTask_TransferB",
@@ -20,6 +22,7 @@ HALT_TASK_SCRIPTS = [
     ],
     # HALT_TYPE_RSCR_EAST
     [
+        "HtTask_RoomScrollStart",
         "HtTask_TransferA",
         "HtTask_LoadRoom",
         "HtTask_TransferB",
@@ -28,6 +31,7 @@ HALT_TASK_SCRIPTS = [
     ],
     # HALT_TYPE_RSCR_NORTH
     [
+        "HtTask_RoomScrollStart",
         "HtTask_TransferA",
         "HtTask_LoadRoom",
         "HtTask_TransferB",
@@ -36,6 +40,7 @@ HALT_TASK_SCRIPTS = [
     ],
     # HALT_TYPE_RSCR_SOUTH
     [
+        "HtTask_RoomScrollStart",
         "HtTask_TransferB",
         "HtTask_LoadRoom",
         "HtTask_TransferA",

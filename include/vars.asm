@@ -185,12 +185,12 @@ enType      ds 2
 miType      ds 2
 en0X        ds 1
 en1X        ds 1
-EN_NPC_FREE1:
+EN_NPC_FREE1:  ; ds 2
 mi0X        ds 1
 mi1X        ds 1
 en0Y        ds 1
 en1Y        ds 1
-EN_NPC_FREE2:
+EN_NPC_FREE2:  ; ds 2
 mi0Y        ds 1
 mi1Y        ds 1
 EN_ZERO:    ; Zero initialized memory
@@ -694,7 +694,7 @@ HALT_TYPE_RSCR_WEST     = 1
 HALT_TYPE_RSCR_EAST     = 2
 HALT_TYPE_RSCR_NORTH    = 3
 HALT_TYPE_RSCR_SOUTH    = 4
-HALT_TYPE_PLAY_FLUTE         = 5
+HALT_TYPE_PLAY_FLUTE    = 5
 HALT_TYPE_ENTER_DUNG    = 6
 HALT_TYPE_ENTER_CAVE    = 7
  RW HaltTask,           ds 1

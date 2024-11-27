@@ -2,7 +2,6 @@
 ; mzxrules 2024
 ;==============================================================================
 
-ROOMSCROLL_TIMER_EW = 64+1
 
 ;TOP_FRAME ;3 37 192 30
 ROOMSCROLL_VERTICAL_SYNC: ; 3 SCANLINES
@@ -39,6 +38,12 @@ ROOMSCROLL_OVERSCAN: SUBROUTINE
     lda #36
     sta TIM64T ; 30 scanline timer
     sta wHaltVState
+; reset world kernel vars
+    lda #7
+    sta wENH
+    lda #0
+    sta wNUSIZ1_T
+    sta wREFP1_T
 
     jsr HtTask_Run
 
@@ -50,92 +55,29 @@ ROOMSCROLL_OVERSCAN_WAIT:
     jmp ROOMSCROLL_VERTICAL_SYNC
 
 
-ROOMSCROLL_HALT_START: SUBROUTINE
-    ldx #$FF
-    txs
-
-    ldy rHaltType
-    lda #0
-    sta wHaltType
-
-    lda HtTaskScriptIndex,y
-    sta wHaltTask
-
-    lda RoomScroll_Timer,y
-    ldx RoomScroll_RoomDY,y
-    sta roomTimer
-    stx roomScrollDY
-    jmp ROOMSCROLL_VERTICAL_BLANK
-
-
-RoomScroll_Timer
-    .byte -1
-    .byte #ROOMSCROLL_TIMER_EW, #ROOMSCROLL_TIMER_EW, #ROOM_PX_HEIGHT, #ROOM_PX_HEIGHT
-
-RoomScroll_RoomDY
-    .byte #ROOM_PX_HEIGHT-1
-    .byte #ROOM_PX_HEIGHT-1, #ROOM_PX_HEIGHT-1, #ROOM_PX_HEIGHT-1, #ROOM_PX_HEIGHT*2-1
-
-
-HtTask_RoomScrollEnd:
-    lda rHaltVState
-    bmi .continue
+HtTask_ColorFadeTest: SUBROUTINE
+    lda Frame
+    ;eor #$FF
+    ;sec
+    ;adc #0
+    and #$07
+    tay
+    ldx FadePF_lut,y
+    lda ColorDataPF,x
+    sta wCOLUPF_A+19
+    ldx FadeBK_lut,y
+    lda ColorDataBK,x
+    sta wCOLUBK_A+19
     rts
-.continue
-    lda #%00110001
-    sta CTRLPF
-    lda #ROOM_PX_HEIGHT-1
-    sta roomDY
-    lda roomIdNext
-    sta roomId
-
-    lda #-18
-    sta roomTimer
-    ldx #$FF
-    txs
-    jmp MAIN_ROOMSCROLL
 
 
-HtTask_LoadRoom: SUBROUTINE
-    lda rHaltVState
-    bpl .continue ; not #HALT_VSTATE_TOP
-    rts
-.continue
-    lda #SLOT_F0_ROOM
-    sta BANK_SLOT
-    jsr LoadRoom
-    lda #SLOT_F0_RS_INIT
-    sta BANK_SLOT
-    lda #SLOT_F4_RS_DEST
-    sta BANK_SLOT
-    jsr RsInit_Del
+FadeBK_lut:
+    .byte $00, $00
+FadePF_lut:
+    .byte $00, $00, $01, $02, $03, $03, $03
 
-    lda worldId
-    beq .skipRoomChecks
-    lda #SLOT_F0_ROOM
-    sta BANK_SLOT
-    jsr UpdateDoors
-.skipRoomChecks
 
-    lda #SLOT_F4_MAIN_DRAW
-    sta BANK_SLOT
-
-    ldx #0
-    bit rRoomColorFlags
-    bvs .dark
-    lda rRoomColorFlags
-    and #$3F
-    tax
-.dark
-    lda WorldColorsFg,x
-    sta wFgColor
-    lda WorldColorsBg,x
-    sta wBgColor
-    jmp Halt_IncTask
-    ;rts
-
-Halt_IncTask: SUBROUTINE
-    ldx rHaltTask
-    inx
-    stx wHaltTask
-    rts
+ColorDataPF:
+    .byte $00, $F0, $20, $40
+ColorDataBK:
+    .byte $00, $E0, $A0, $90

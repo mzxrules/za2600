@@ -6,6 +6,17 @@
 HtTask_EnterLoc: SUBROUTINE
     lda rHaltVState
     bpl .continue ; not #HALT_VSTATE_TOP
+    ldx rHaltFrame
+    inx
+    cpx Frame
+    bne .rts_2
+
+    lda #MS_PLAY_NONE
+    sta SeqFlags
+    lda #SFX_ENTER
+    sta SfxFlags
+
+.rts_2
     rts
 .continue
     lda Frame

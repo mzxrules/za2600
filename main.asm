@@ -64,6 +64,7 @@ BANK_2
 BANK_3
     INCLUDE "c/always.asm"
     INCLUDE "ht/HtTask.asm"
+    INCLUDE "scroll/kernel_scroll1.asm"
     INCLUDE "b/game_halt.asm"
     LOG_BANK_SIZE "-BANK 3- Halt Game", BANK_3
 
@@ -389,11 +390,7 @@ Pause_MapPlot:
     RORG $FC00
 
 BANK_27
-    INCLUDE "c/always.asm"
-    INCLUDE "ht/HtTask.asm"
-    INCLUDE "scroll/kernel_scroll1.asm"
-    INCLUDE "scroll/Game_HaltRoom.asm"
-    LOG_BANK_SIZE "-BANK 27- Halt RoomScroll", BANK_27
+    LOG_BANK_SIZE "-BANK 27- RESERVED", BANK_27
     ORG $6FFF ; bank id
     .byte 27
 
@@ -839,6 +836,8 @@ BANK_55
     INCLUDE "ht/HtTask_AnimSouth.asm"
     INCLUDE "ht/HtTask_EnterLoc.asm"
     INCLUDE "ht/HtTask_PlayFlute.asm"
+    INCLUDE "ht/HtTask_RoomScrollStart.asm"
+    INCLUDE "ht/HtTask_RoomScrollEnd.asm"
 
     LOG_BANK_SIZE "-BANK 55- HALT_RoomScroll", BANK_55
 

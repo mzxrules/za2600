@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from asmgen import *
-from color_game_table import ROOM_COLOR_TABLE
+from color_game_table import ROOM_COLOR_TABLE, ROOM_COLOR_INDEX_TABLE
 
 files = [
     'world/w{}door0.bin',
@@ -18,27 +18,29 @@ mdata = []
 
 def GetDoorWallWorld(c):
     dw = [
-        (0b00, 0b0),
-        (0b00, 0b1),
-        (0b01, 0b0),
-        (0b01, 0b1),
-        (0b10, 0b0),
-        (0b10, 0b1),
-        (0b11, 0b0),
-        (0b11, 0b1),
+        (0b00, 0b0), # None
+        (0b00, 0b1), # Middle
+        (0b01, 0b0), # Wall with 4 pixel centered opening
+        (0b01, 0b1), # Full Wall
+        (0b10, 0b0), # Wall with top or left open
+        (0b10, 0b1), # Wall with bottom or right open
+        (0b11, 0b0), # Wall with 16 pixel centered open (NS only)
+        (0b11, 0b1), # Undefined
     ]
     return dw[c & 7]
 
 def GetDoorWallDung(c):
-    d = c & 3
-    w = 0
-    if c >= 3:
-        d = 3
-    if c == 4:
-        w = 0b10
-    if c == 5:
-        w = 0b11
-    return d, w
+    dw = [
+        (0b00, 0b00), # Open
+        (0b01, 0b00), # Keydoor
+        (0b10, 0b00), # Shutter Door
+        (0b11, 0b00), # Wall
+        (0b11, 0b10), # Bombable Wall
+        (0b11, 0b11), # False Wall
+        (0b11, 0b00), # Undefined
+        (0b11, 0b00), # Undefined
+    ]
+    return dw[c & 7]
 
 def GetPackedDoorWallData(worldId, data):
     doors = []
@@ -108,23 +110,35 @@ def GetPFColors(co):
     bg = ROOM_COLOR_TABLE[co // 16]
     return (fg, bg)
 
+def AddFgBg(roomColorFgBg, fg, bg):
+    fgIndex = ROOM_COLOR_INDEX_TABLE[fg]
+    bgIndex = ROOM_COLOR_INDEX_TABLE[bg]
+
+    index = bgIndex * 16 + fgIndex
+    roomColorFgBg[index] = (fg, bg)
+
 def PackRoomColors(mdata):
-    colorKey = { 0: GetPFColors(0),
-                11: GetPFColors(11)}
-    for worldId in range(WORLD_COUNT):
+    roomColorFgBg = {}
+
+    # Room Colors 0
+    AddFgBg(roomColorFgBg, "COLOR_PF_BLACK", "COLOR_PF_BLACK")
+    # Room Colors 1
+    AddFgBg(roomColorFgBg, "COLOR_PF_CHOCOLATE", "COLOR_PF_BLACK")
+
+    for worldId in range(WORLD_COUNT-1, 0-1, -1):
         level = mdata[worldId]
+        if worldId == 0:
+            print(len(roomColorFgBg))
+
         for co in level[5]:
-            if co == 0:
-                continue
-            if co not in colorKey:
-                colorKey[co] = GetPFColors(co)
-    coIndex = {}
-    for (i, co) in enumerate(colorKey):
-        coIndex[co] = i
+            if co not in roomColorFgBg:
+                roomColorFgBg[co] = GetPFColors(co)
+
+    coIndex = {k: v for v, k in enumerate(roomColorFgBg)}
 
     fgList = []
     bgList = []
-    for fg, bg in colorKey.values():
+    for fg, bg in roomColorFgBg.values():
         fgList.append(fg)
         bgList.append(bg)
 
@@ -133,10 +147,11 @@ def PackRoomColors(mdata):
         level = mdata[worldId]
         for i,co in enumerate(level[5]):
             v = 0
-            fg = colorKey[co][0]
+            fg = roomColorFgBg[co][0]
             if worldId != 0:
                 if fg == "COLOR_PF_WATER" or fg == "COLOR_PF_RED":
                     v = 0x80
+            # pack RF_WC_ROOM_BOOT and RF_WC_ROOM_DARK flags
             data[i] = v | coIndex[co] | (level[6][i] << 6)
 
         with open(f"gen/world/b{worldId}co.bin", "wb") as file:

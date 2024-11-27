@@ -36,8 +36,9 @@ put "('local5')" CustomBlock p16 at "('thisx'+4+1)" "('thisy')"
 
 goto "q"
 
+. "In: local1 is PF_COLOR index"
+. "Return: local is Atari COLU value
 : "#get_color"
 set "$" to "&$color_room_('local1')&"
-. "local = atari color code"
-set "local" "('&$&_('atari_reg')')"
+set "local" "('&$&_('ui_atari_tv_flag')')"
 goto "#return"

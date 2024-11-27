@@ -98,5 +98,5 @@ set "local2" 254
 goto "setco"
 
 : "setco"
-set "CUSTOM&local&_&atari_reg&" to "('CUSTOM&local&_&atari_reg&'+'local2'%256)"
+set "CUSTOM&local&_&ui_atari_tv_flag&" to "('CUSTOM&local&_&ui_atari_tv_flag&'+'local2'%256)"
 goto "q"

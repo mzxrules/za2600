@@ -8,7 +8,6 @@ HALT_VERTICAL_SYNC:
 HALT_VERTICAL_BLANK: SUBROUTINE
     jsr HtTask_Run
 
-HALT_FROM_FLUTE:
     lda #SLOT_F4_AU1
     sta BANK_SLOT
     jsr UpdateAudio
@@ -17,9 +16,9 @@ HALT_FROM_FLUTE:
     sta BANK_SLOT
     jsr EnDraw_Del
 
-    lda #SLOT_F4_PAUSE_DRAW_WORLD
+    lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT
-    jsr DRAW_PAUSE_WORLD
+    jsr POSITION_SPRITES
 
 HALT_OVERSCAN: SUBROUTINE ; 30 scanlines
     sta WSYNC
@@ -35,7 +34,14 @@ HALT_OVERSCAN: SUBROUTINE ; 30 scanlines
     sta wNUSIZ1_T
     sta wREFP1_T
 
-HALT_FROM_ENTER_LOC:
+; Clean-up for room scroll kernel
+    sta PF0
+    sta PF1
+    sta PF2
+    sta COLUBK
+    sta COLUPF
+
+HALT_OVERSCAN_BLANK:
     jsr HtTask_Run
 
 HALT_OVERSCAN_WAIT:
@@ -46,31 +52,9 @@ HALT_OVERSCAN_WAIT:
     jmp HALT_VERTICAL_SYNC
 
 
-HALT_PLAY_FLUTE_ENTRY: SUBROUTINE
-    ldx #$FF
-    txs
-    lda Frame
-    sta wHaltFrame
-
-    ldy #HALT_TYPE_PLAY_FLUTE
-    sty wHaltType
-    lda HtTaskScriptIndex,y
-    sta wHaltTask
-
-    lda #ROOM_PX_HEIGHT-1
-    sta wHaltWorldDY
-    jmp HALT_FROM_FLUTE
-
-HALT_ENTER_CAVE_ENTRY: SUBROUTINE
-    ldy #HALT_TYPE_ENTER_CAVE
-    sty wHaltType
-    bpl .entry_common ; jmp
-
-HALT_ENTER_DUNG_ENTRY:
-    ldy #HALT_TYPE_ENTER_DUNG
+HALT_GAME: SUBROUTINE
     sty wHaltType
 
-.entry_common
 ; Reset the stack
     ldx #$FF
     txs
@@ -80,11 +64,67 @@ HALT_ENTER_DUNG_ENTRY:
     lda HtTaskScriptIndex,y
     sta wHaltTask
 
-    lda #MS_PLAY_NONE
-    sta SeqFlags
-    lda #SFX_ENTER
-    sta SfxFlags
-
     lda #ROOM_PX_HEIGHT-1
     sta wHaltWorldDY
-    jmp HALT_FROM_ENTER_LOC
+    lda rHaltVState
+    bpl HALT_OVERSCAN_BLANK
+    bmi HALT_VERTICAL_BLANK
+
+
+HtTask_LoadRoom: SUBROUTINE
+    lda rHaltVState
+    bpl .continue ; not #HALT_VSTATE_TOP
+    rts
+.continue
+
+    jsr Halt_SetKernelRoomScroll1
+    lda #SLOT_F0_ROOM
+    sta BANK_SLOT
+    jsr LoadRoom
+    lda #SLOT_F0_RS_INIT
+    sta BANK_SLOT
+    lda #SLOT_F4_RS_DEST
+    sta BANK_SLOT
+    jsr RsInit_Del
+
+    lda worldId
+    beq .skipRoomChecks
+    lda #SLOT_F0_ROOM
+    sta BANK_SLOT
+    jsr UpdateDoors
+.skipRoomChecks
+
+    lda #SLOT_F4_MAIN_DRAW
+    sta BANK_SLOT
+
+    ldx #0
+    bit rRoomColorFlags
+    bvs .dark
+    lda rRoomColorFlags
+    and #$3F
+    tax
+.dark
+    lda WorldColorsFg,x
+    sta wFgColor
+    lda WorldColorsBg,x
+    sta wBgColor
+
+Halt_IncTask: SUBROUTINE
+    ldx rHaltTask
+    inx
+    stx wHaltTask
+    rts
+
+Halt_SetKernelWorld: SUBROUTINE
+    lda <[#KERNEL_WORLD_RESUME-4]
+    sta wHaltKernelDraw
+    lda >[#KERNEL_WORLD_RESUME-4]
+    sta wHaltKernelDraw+1
+    rts
+
+Halt_SetKernelRoomScroll1: SUBROUTINE
+    lda <#KERNEL_SCROLL1
+    sta wHaltKernelDraw
+    lda >#KERNEL_SCROLL1
+    sta wHaltKernelDraw+1
+    rts

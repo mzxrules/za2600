@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from color_atari_table import ATARI_COLOR_TABLE
 from color_game_table import GAME_COLOR_TABLE, ROOM_COLOR_TABLE
+from asmgen import ToAsm
 
 ROOM_BGCOLOR_TABLE = [
     "COLOR_PF_BLACK",
@@ -21,8 +22,30 @@ ROOM_BGCOLOR_TABLE = [
     #"COLOR_PF_RED",
     "COLOR_PF_PATH",
     #"COLOR_PF_SACRED",
-    #"COLOR_PF_WHITE"
+    #"COLOR_PF_WHITE",
 ]
+
+COLOR_PF_FADE_TABLE = [
+    #"COLOR_PF_BLACK",
+    "COLOR_PF_GRAY_D",
+    #"COLOR_PF_GRAY_L",
+    "COLOR_PF_WHITE",
+
+    #"COLOR_PF_PATH",
+    #"COLOR_PF_GREEN",
+    "COLOR_PF_RED",
+    #"COLOR_PF_CHOCOLATE",
+    "COLOR_PF_WATER",
+
+    "COLOR_PF_BLUE_D",
+    "COLOR_PF_BLUE_L",
+    "COLOR_PF_PURPLE_D", #
+    "COLOR_PF_PURPLE",
+    "COLOR_PF_TEAL_D", #
+    "COLOR_PF_TEAL_L", #
+    #"COLOR_PF_SACRED",
+]
+
 
 def gen_color_lookups():
     output = ""
@@ -73,6 +96,13 @@ def color_distance(rgb1, rgb2):
     g = rgb1[1] - rgb2[1]
     b = rgb1[2] - rgb2[2]
     return  (((512+rmean)*r*r)/256) + 4*g*g + (((767-rmean)*b*b)/256) ** 0.5
+
+def color_distance_euclidean(rgb1, rgb2):
+    r = rgb1[0] - rgb2[0]
+    g = rgb1[1] - rgb2[1]
+    b = rgb1[2] - rgb2[2]
+    return (r*r) + (g*g) + (b*b)
+
 
 def color_test(palette):
     output = f"==========\n{palette} TEST\n==========\n"
@@ -202,21 +232,104 @@ def luminocity_test():
         k += ":"
         print(f"{k:<20} {nl:>3.0f}, {pl:>3.0f}")
 
+
+
+def luminocity_values():
+    output = ""
+    for i in range(0, 256, 2):
+        nc = ATARI_COLOR_TABLE["ntsc"][i//2]
+        nl = luminocity_a(nc)
+        pc = ATARI_COLOR_TABLE["pal"][i//2]
+        pl = luminocity_a(pc)
+
+        output += f"{i:02X} {nl:>3.0f}, {pl:>3.0f}\n"
+        if (i + 2) % 16 == 0:
+            output += "\n"
+    with open(f'gen/luminocity_test_output.txt', "w") as file:
+        file.write(output)
+
+def get_fade_to_black(colorId, atariColorSet, steps=16):
+    colorRGB = atariColorSet[colorId//2]
+
+    lum = luminocity_a(colorRGB)
+    resultColorIndex = []
+    resultLum = []
+    resultDist = []
+
+
+    for i in range(1, steps-1):
+        stepRatio = i / (steps-1)
+
+        targetColorRGB = (colorRGB[0]*stepRatio//1, colorRGB[1]*stepRatio//1, colorRGB[2]*stepRatio//1)
+        targetLum = lum * stepRatio
+        closestColorIndex = 0
+        closestLum = targetLum
+        closestDist = 100000000
+
+        for colorIndex in range(0, len(atariColorSet)):
+            curColorRGB = atariColorSet[colorIndex]
+            curLum = luminocity_a(curColorRGB)
+            curDist = color_distance_euclidean(targetColorRGB, curColorRGB)
+            # lumDiff = abs(targetLum - curLum)
+            if curDist < closestDist:
+                closestColorIndex = colorIndex
+                closestLum = curLum #lumDiff
+                closestDist = curDist
+
+        resultColorIndex.append(closestColorIndex*2)
+        resultLum.append(closestLum)
+        resultDist.append(closestDist)
+
+    return (resultColorIndex, resultLum, resultDist)
+
+def get_luminocity_table():
+    return None
+
+def generate_pf_fade_lut():
+    output = ''
+    for color in COLOR_PF_FADE_TABLE:
+    #color = "COLOR_PF_RED"
+        ntsc, pal = GAME_COLOR_TABLE[color]
+        ntscFadeIndex, ntscLum, ntscDist = get_fade_to_black(ntsc, ATARI_COLOR_TABLE["ntsc"])
+        #palFade = get_fade_to_black(pal, ATARI_COLOR_TABLE["pal"])
+
+        j = ", "
+        output += f"; {color}\n"
+        output += f"; {j.join([f'{x:>5.1f}' for x in ntscLum])}\n"
+        output += f"; {j.join([f'{x:>5.1f}' for x in ntscDist])}\n"
+        output += "\n"
+
+        output += ToAsm(ntscFadeIndex)
+
+    with open(f'gen/color_fade_lut.txt', "w") as file:
+        file.write(output)
+    print("color_fade_lut updated")
+    return
+
+def generate_color_stats():
+    output = ''
+    output += color_test("ntsc")
+    output += '\n\n'
+    output += color_test("pal")
+    with open(f'gen/color_stats.txt', "w") as file:
+        file.write(output)
+
+def generate_editor_color():
+    output = ""
+    output += gen_color_lookups()
+    output += color_to_mzx("ntsc")
+    output += color_to_mzx("pal")
+    output += gen_mzx_atari_color_ids()
+    with open(f'gen/editor_color.txt', "w") as file:
+        file.write(output)
+
 # luminocity_test()
 
-output = ''
-output += color_test("ntsc")
-output += '\n\n'
-output += color_test("pal")
-with open(f'gen/color_stats.txt', "w") as file:
-    file.write(output)
+luminocity_values()
+generate_pf_fade_lut()
 
-#quit()
 
-output = ""
-output += gen_color_lookups()
-output += color_to_mzx("ntsc")
-output += color_to_mzx("pal")
-output += gen_mzx_atari_color_ids()
-with open(f'gen/editor_color.txt', "w") as file:
-    file.write(output)
+# quit()
+
+generate_color_stats()
+generate_editor_color()

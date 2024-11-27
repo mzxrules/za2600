@@ -30,9 +30,9 @@ GAME_COLOR_TABLE = {
     "COLOR_PF_WHITE":       (0x0E,0x0E),
 
     "COLOR_PF_PATH":        (0x3C,0x4C),
-    "COLOR_PF_CHOCOLATE":   (0xF0,0x22),
     "COLOR_PF_GREEN":       (0xD0,0x52),
     "COLOR_PF_RED":         (0x40,0x60),
+    "COLOR_PF_CHOCOLATE":   (0xF0,0x22),
     "COLOR_PF_WATER":       (0x7C,0xBA), #(0xAE,0x9E), # ??, BA
 
     "COLOR_PF_BLUE_D":      (0x90,0xC0),
@@ -68,3 +68,5 @@ ROOM_COLOR_TABLE = [
     "COLOR_PF_SACRED",
     "COLOR_PF_WHITE"
 ]
+
+ROOM_COLOR_INDEX_TABLE = {k: v for v, k in enumerate(ROOM_COLOR_TABLE)}

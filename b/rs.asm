@@ -197,7 +197,8 @@ RS_ENTER_CAVE:
     jsr ENTER_CAVE
     lda #SLOT_FC_HALT
     sta BANK_SLOT
-    jmp HALT_ENTER_CAVE_ENTRY
+    ldy #HALT_TYPE_ENTER_CAVE
+    jmp HALT_GAME
 
 Rs_Cave:
     lda roomFlags
@@ -350,7 +351,8 @@ Rs_EntDungSpectacleRock:
     sty worldId
     lda #SLOT_FC_HALT
     sta BANK_SLOT
-    jmp HALT_ENTER_DUNG_ENTRY ; SPAWN_AT_DEFAULT
+    ldy #HALT_TYPE_ENTER_DUNG
+    jmp HALT_GAME ; SPAWN_AT_DEFAULT
 
 Rs_ExitDung: ; SUBROUTINE
     bit roomFlags

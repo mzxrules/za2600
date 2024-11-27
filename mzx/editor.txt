@@ -151,7 +151,7 @@ goto "#load_data"
 goto "#set_world"
 
 : "q"
-inc "frametimer" by 1
+inc "ui_cursor_timer" by 1
 goto "#draw_ui"
 
 wait for 1
@@ -170,11 +170,11 @@ set "ui_roomvisible" "('ui_darkrooms'x1 o ('$lvldark.&loopcount&'x1))"
 set "tilecolor" to "('ui_roomvisible'*'tilecolor')"
 put "('tilecolor')" Sprite "('loopcount')" at "('loopcount'%'lmod'*33+'lvlx')" "('loopcount'/'lmod'*21+56)"
 if "loopcount" != "roomId" then "sprite_draw_next"
-set "curcolor" to "('tilecolor' a 0x0F = 0x0F * -7+15)"
-set "curcolor" to "('frametimer'a0x4>0*'curcolor')"
+set "ui_cursor_color" to "('tilecolor' a 0x0F = 0x0F * -7+15)"
+set "ui_cursor_color" to "('ui_cursor_timer'a0x4>0*'ui_cursor_color')"
 set "ui_cursor_x" to "('loopcount'%'lmod'*33+'lvlx')"
 set "ui_cursor_y" to "('loopcount'/'lmod'*21+56)"
-put "('curcolor')" Sprite p80 at "ui_cursor_x" "ui_cursor_y"
+put "('ui_cursor_color')" Sprite p80 at "ui_cursor_x" "ui_cursor_y"
 . "Item Icon"
 set "ui_roomEX" to "('$lvlex.&loopcount&')"
 set "$" to "$Rs&$lvlrs.('roomId')&"
@@ -656,19 +656,19 @@ goto "q"
 
 : "#up"
 set "roomId" to "('roomId'+'lcell'-'lmod'%'lcell')"
-set "frametimer" to 4
+set "ui_cursor_timer" to 4
 goto "#return"
 : "#down"
 set "roomId" to "('roomId'+'lmod'%'lcell')"
-set "frametimer" to 4
+set "ui_cursor_timer" to 4
 goto "#return"
 : "#left"
 set "roomId" to "('roomId'/'lmod'*'lmod'+('roomId'+'lmod'-1%'lmod'))"
-set "frametimer" to 4
+set "ui_cursor_timer" to 4
 goto "#return"
 : "#right"
 set "roomId" to "('roomId'/'lmod'*'lmod'+('roomId'+1%'lmod'))"
-set "frametimer" to 4
+set "ui_cursor_timer" to 4
 goto "#return"
 
 

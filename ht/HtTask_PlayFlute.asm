@@ -67,10 +67,11 @@ HtTask_PlayFlute: SUBROUTINE
     stx plItem2Dir
 
 .noTornado
-    ldx #$FF
-    txs
     lda #SLOT_F0_PL
     sta BANK_SLOT
-    lda #0
-    sta wHaltType
+
+    ldx #$FF
+    txs
+    inx ; #0
+    stx wHaltType
     jmp MAIN_UNPAUSE

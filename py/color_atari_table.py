@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
-# Generates Atari 2600 color tables for megazeux
+# Atari 2600 RGB color tables
 
-# NTSC color RGB
 ATARI_COLOR_TABLE = {
     "ntsc" : [
         (0,0,0),(64,64,64),(108,108,108),(144,144,144),(176,176,176),(200,200,200),(220,220,220),(236,236,236),

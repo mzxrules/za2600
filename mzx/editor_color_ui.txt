@@ -10,17 +10,17 @@ loop for 15
 goto "q"
 
 : "keyo"
-set "atari_reg" "('atari_reg'x1)"
+set "ui_atari_tv_flag" "('ui_atari_tv_flag'x1)"
 : "q"
 loop start
 set "$" to "&$color_room_('loopcount')&"
 . "local = atari color code"
-set "local" "('&$&_('atari_reg')')"
+set "local" "('&$&_('ui_atari_tv_flag')')"
 
 . "update color palette"
-set "smzx_r&loopcount&" "zcol('local'/2)r('atari_reg')"
-set "smzx_g&loopcount&" "zcol('local'/2)g('atari_reg')"
-set "smzx_b&loopcount&" "zcol('local'/2)b('atari_reg')"
+set "smzx_r&loopcount&" "zcol('local'/2)r('ui_atari_tv_flag')"
+set "smzx_g&loopcount&" "zcol('local'/2)g('ui_atari_tv_flag')"
+set "smzx_b&loopcount&" "zcol('local'/2)b('ui_atari_tv_flag')"
 
 set "local2" to "('local'/16)"
 goto "#hex"
