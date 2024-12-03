@@ -2,11 +2,6 @@
 ; mzxrules 2022
 ;==============================================================================
 
-MAIN_ROOMSCROLL: BHA_BANK_JMP #SLOT_FC_MAIN, ROOMSCROLL_RETURN
-MAIN_UNPAUSE: BHA_BANK_JMP #SLOT_FC_MAIN, PAUSE_RETURN
-MAIN_DUNG_ENT: BHA_BANK_JMP #SLOT_FC_MAIN, SPAWN_AT_DEFAULT
-MAIN_CAVE_ENT: BHA_BANK_JMP #SLOT_FC_MAIN, ALWAYS_RTS
-
 ;==============================================================================
 ; PosWorldObjects
 ;----------
@@ -41,9 +36,6 @@ DivideLoop
     sta HMOVE
     dec blX
     rts
-
-Mul8:
-    .byte 0x00, 0x08, 0x10, 0x18, 0x20, 0x28, 0x30, 0x38, 0x40, 0x48, 0x50, 0x58
 
 Bit8:
     .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
@@ -146,6 +138,11 @@ GiItemSpr:
 
     .byte $78   ; GiWandBook
 
+Mul8:
+    .byte 0x00, 0x08, 0x10, 0x18, 0x20, 0x28, 0x30, 0x38
+    .byte 0x40, 0x48, 0x50, 0x58, 0x60, 0x68, 0x70, 0x78
+    .byte 0x80, 0x88, 0x90, 0x98
+
 VERTICAL_SYNC: SUBROUTINE
     lda #$80 | #$02
     sta wHaltVState
@@ -156,7 +153,7 @@ VERTICAL_SYNC: SUBROUTINE
     inc Frame
 
     ldx worldId
-    lda WorldData_CompassRoom,x
+    lda WorldData_CompassRoom-#LV_MIN,x
     and #7
     eor #7
     asl
@@ -182,9 +179,9 @@ PosHudObjects:
 
     lda worldId         ; 3
     ; 7 cycle start
-    bne .dungeon        ; 2/3
+    bpl .dungeon        ; 2/3
     lda #$F             ; 2
-    bne .roomIdMask     ; 3
+    bne .roomIdMask     ; 3 ; jmp
 .dungeon
     lda #$7             ; 2
     nop                 ; 2
@@ -203,7 +200,7 @@ PosHudObjects:
     sta RESM0           ; 3 - Player Dot
     ; 18 cycles start
     lda worldId         ; 3
-    bne .MapShift       ; 2/3
+    bpl .MapShift       ; 2/3
     lda #0              ; 2
     beq .SetMapShift    ; 3
 .MapShift
@@ -235,6 +232,24 @@ PosHudObjects:
     rts
     LOG_SIZE "VERTICAL SYNC", VERTICAL_SYNC
 
+WorldData_CompassRoom:
+; Q1, Q2
+    .byte $36, $08 ; LV 1
+    .byte $0D, $1B ; LV 2
+    .byte $3D, $20 ; LV 3
+    .byte $03, $3F ; LV 4
+    .byte $14, $00 ; LV 5
+    .byte $0C, $16 ; LV 6
+    .byte $23, $03 ; LV 7
+    .byte $24, $15 ; LV 8
+    .byte $3A, $0F ; LV 9
+    .byte $00, $00 ; Overworld
+
+MAIN_ROOMSCROLL: BHA_BANK_JMP #SLOT_FC_MAIN, ROOMSCROLL_RETURN
+MAIN_UNPAUSE: BHA_BANK_JMP #SLOT_FC_MAIN, PAUSE_RETURN
+MAIN_DUNG_ENT: BHA_BANK_JMP #SLOT_FC_MAIN, SPAWN_AT_DEFAULT
+MAIN_CAVE_ENT: BHA_BANK_JMP #SLOT_FC_MAIN, ALWAYS_RTS
+
 EnItemDraw: SUBROUTINE ; y == itemDraw
     lda #>SprItem0
     sta enSpr+1
@@ -254,28 +269,3 @@ EnItemDraw: SUBROUTINE ; y == itemDraw
     sta enSpr
 ALWAYS_RTS:
     rts
-
-
-WorldData_BankOffset:
-    .byte 0, 1, 1, 1, 1, 1, 1, 2, 2, 2
-
-WorldData_WorldRomSlot:
-    .byte #SLOT_F4_W0, #SLOT_F4_W1, #SLOT_F4_W2
-
-WorldData_WorldRamSlot:
-    .byte #SLOT_RW_F8_W0, #SLOT_RW_F8_W1, #SLOT_RW_F8_W2
-
-WorldData_RoomSpritesRomSlot:
-    .byte #SLOT_F4_PF_OVER, #SLOT_F4_PF_DUNG, #SLOT_F4_PF_DUNG
-
-WorldData_CompassRoom:
-    .byte $00
-    .byte $36
-    .byte $0D
-    .byte $3D
-    .byte $03
-    .byte $14
-    .byte $0C
-    .byte $23
-    .byte $24
-    .byte $3A

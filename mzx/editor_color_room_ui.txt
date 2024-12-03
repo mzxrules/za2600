@@ -22,7 +22,7 @@ inc "$" "$x2_&local2&"
 loop start
 put c0f CustomBlock "$.&loopcount&" at "('thisx'+'loopcount'+1)" "('thisy'+1)"
 loop for "('$.length'-1)"
-put "('local4')" CustomBlock p16 at "('thisx'+4+1)" "('thisy'+1)"
+put "('local4')" CustomBlock p1f at "('thisx'+4+1)" "('thisy'+1)"
 
 . "print_bgcode"
 set "$" "bg "
@@ -32,7 +32,7 @@ inc "$" "$x2_&local3&"
 loop start
 put c0f CustomBlock "$.&loopcount&" at "('thisx'+'loopcount'+1)" "('thisy')"
 loop for "('$.length'-1)"
-put "('local5')" CustomBlock p16 at "('thisx'+4+1)" "('thisy')"
+put "('local5')" CustomBlock p1f at "('thisx'+4+1)" "('thisy')"
 
 goto "q"
 

@@ -32,9 +32,9 @@ POSITION_SPRITES: SUBROUTINE
 
 .hud_minimap_visible
     ldy worldId
-    ldx .MapFlagAddr,y
+    ldx .MapFlagAddr-#LV_MIN,y
     lda $00,x
-    and .MapFlagMask,y
+    and .MapFlagMask-#LV_MIN,y
     beq .setMinimapColor
     lda #COLOR_MINIMAP
 .setMinimapColor
@@ -42,27 +42,27 @@ POSITION_SPRITES: SUBROUTINE
 
 
 .hud_compass_pos_y
-    ldx .CompassFlagAddr,y
+    ldx .CompassFlagAddr-#LV_MIN,y
     lda $00,x
-    and .CompassFlagMask,y
+    and .CompassFlagMask-#LV_MIN,y
     beq .setCompassPoint
-    lda .MapCompassDotENA,y
+    lda .WorldData_MapCompassDotENA-#LV_MIN,y
 .setCompassPoint
     sta THudMapCPosY
 
 
 .hud_minimap_sprite
-    lda #<(MINIMAP) ; Sprite + height-1
+    lda #<[MINIMAP] ; Sprite + height-1
     clc
-    adc Mul8,y
+    adc Mul8-#LV_MIN,y
     sta THudMapSpr
-    lda #>(MINIMAP)
+    lda #>[MINIMAP]
     sta THudMapSpr+1
 ; double width map if on overworld
-    ldx #5
+    ldx #%101
     lda worldId
-    beq .minimap_16
-    ldx #$00
+    bmi .minimap_16
+    ldx #%000
 .minimap_16
     stx NUSIZ1 ; double minimap size if world 0
     lda #0
@@ -354,36 +354,45 @@ KERNEL_WORLD_RESUME:
     INCLUDE "c/draw_data.asm"
 
 .MapFlagAddr
-    .byte #$FF, #<ITEMV_MAP_1
+    .byte #<ITEMV_MAP_1, #<ITEMV_MAP_1
     .byte #<itemMaps, #<itemMaps, #<itemMaps, #<itemMaps
     .byte #<itemMaps, #<itemMaps, #<itemMaps, #<itemMaps
+    .byte #<itemMaps, #<itemMaps, #<itemMaps, #<itemMaps
+    .byte #<itemMaps, #<itemMaps, #<itemMaps, #<itemMaps
+    .byte #$FF, #$FF
 
 .MapFlagMask
-    .byte #$FF, #ITEMF_MAP_1
-    .byte 0x01 ; 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80,
+    .byte #ITEMF_MAP_1, #ITEMF_MAP_1
+    .byte 0x01, 0x01, 0x02, 0x02, 0x04, 0x04, 0x08, 0x08
+    .byte 0x10, 0x10, 0x20, 0x20, 0x40, 0x40, 0x80, 0x80
+    .byte #$FF, #$FF
+
 .MapDotENA
     .byte 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x01
 
 .CompassFlagAddr
-    .byte #$FF, #<ITEMV_COMPASS_1
+    .byte #<ITEMV_COMPASS_1, #<ITEMV_COMPASS_1
     .byte #<itemCompass, #<itemCompass, #<itemCompass, #<itemCompass
     .byte #<itemCompass, #<itemCompass, #<itemCompass, #<itemCompass
+    .byte #$FF, #$FF
 
 .CompassFlagMask
-    .byte #0, #ITEMF_COMPASS_1
-    .byte 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
+    .byte #ITEMF_COMPASS_1, #ITEMF_COMPASS_1
+    .byte 0x01, 0x01, 0x02, 0x02, 0x04, 0x04, 0x08, 0x08
+    .byte 0x10, 0x10, 0x20, 0x20, 0x40, 0x40, 0x80, 0x80
+    .byte #0, #0
 
-.MapCompassDotENA
-    .byte $00 ; $00
-    .byte $10 ; $36
-    .byte $02 ; $0D
-    .byte $10 ; $3D
-    .byte $02 ; $03
-    .byte $04 ; $14
-    .byte $02 ; $0C
-    .byte $08 ; $23
-    .byte $08 ; $24
-    .byte $10 ; $3A
+.WorldData_MapCompassDotENA
+    .byte $10, $02 ; $36, $08 // LV 1
+    .byte $02, $04 ; $0D, $1B // LV 2
+    .byte $10, $08 ; $3D, $20 // LV 3
+    .byte $02, $10 ; $03, $3F // LV 4
+    .byte $04, $02 ; $14, $00 // LV 5
+    .byte $02, $04 ; $0C, $16 // LV 6
+    .byte $08, $02 ; $23, $03 // LV 7
+    .byte $08, $04 ; $24, $15 // LV 8
+    .byte $10, $02 ; $3A, $0F // LV 9
+    .byte $00, $00 ; N/A, N/A // Overworld
 
 .BombCountSprL
     .byte 0*8+7, 1*8+7, 2*8+7, 3*8+7, 4*8+7, 5*8+7, 6*8+7, 7*8+7, 8*8+7, 9*8+7

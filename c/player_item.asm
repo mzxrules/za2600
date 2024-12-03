@@ -176,7 +176,7 @@ PlayerUpdateFireFx: SUBROUTINE
     lda #0
     sta plItem2Time
     lda plState3
-    and #~PS_ACTIVE_ITEM2
+    and #~#PS_ACTIVE_ITEM2
     sta plState3
     rts
 

@@ -20,7 +20,7 @@ HtTask_PlayFlute: SUBROUTINE
     lda itemTri
     beq .noTornado
     lda worldId
-    bne .noTornado
+    bpl .noTornado
     lda roomId
     bmi .noTornado
 

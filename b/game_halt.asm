@@ -16,6 +16,7 @@ HALT_VERTICAL_BLANK: SUBROUTINE
     sta BANK_SLOT
     jsr EnDraw_Del
 
+    jsr Halt_SetKernelWorld
     lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT
     jsr POSITION_SPRITES
@@ -88,7 +89,7 @@ HtTask_LoadRoom: SUBROUTINE
     jsr RsInit_Del
 
     lda worldId
-    beq .skipRoomChecks
+    bmi .skipRoomChecks
     lda #SLOT_F0_ROOM
     sta BANK_SLOT
     jsr UpdateDoors

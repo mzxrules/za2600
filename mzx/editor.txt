@@ -15,6 +15,9 @@ loop 127
 set "$w0en" "$lvlen"
 set "$w1en" "$lvlen"
 set "$w2en" "$lvlen"
+set "$w3en" "$lvlen"
+set "$w4en" "$lvlen"
+set "$w5en" "$lvlen"
 
 . "init cave opening display data"
 loop start
@@ -147,6 +150,7 @@ set "spr129_refy" to 0
 
 
 set "worldId" to 0
+set "worldIsDungeon" to 0
 goto "#load_data"
 goto "#set_world"
 
@@ -362,7 +366,7 @@ set "$w&loopcount&ex" to "fwrite('$w&loopcount&ex.length')"
 set "" to "fwrite_open"
 goto "#write_rsex"
 goto "#write_rsen"
-loop for 2
+loop for 5
 * "~FSAVED"
 goto "q"
 
@@ -413,6 +417,10 @@ if "$" === "Rs_EntCaveBushBlocked_P5820" "#write_ex_Cv_Type"
 if "$" === "Rs_EntCaveBushBlocked_P6420" "#write_ex_Cv_Type"
 if "$" === "Rs_EntCaveBushBlocked_P6438" "#write_ex_Cv_Type"
 if "$" === "Rs_EntCaveBushBlocked_P6C18" "#write_ex_Cv_Type"
+if "$" === "Rs_EntDungMid" then "#write_ex_Lv_Type"
+if "$" === "Rs_EntDungFlute" then "#write_ex_Lv_Type"
+if "$" === "Rs_EntDungBush" then "#write_ex_Lv_Type"
+if "$" === "Rs_EntDungSpectacleRockBlocked" then "#write_ex_Lv_Type"
 if "exjump" == 0 "#write_ex_default"
 inc "l" 1
 if "l" < 128 "write_rsex_loop"
@@ -449,6 +457,20 @@ set "$" "fwrite"
 goto "#return"
 : "write_ex_Cv_Type_c"
 if "ex" < "CvCount" "write_ex_Cv_Type_l"
+set "exjump" 0
+goto "#return"
+
+: "#write_ex_Lv_Type"
+set "exjump" 1
+set "ex" -1
+: "write_ex_Lv_Type_l"
+inc "ex" 1
+if "zz&d2&" != "('&$Lv('ex')&')" "write_ex_Lv_Type_c"
+set "$" "&$Lv('ex')&"
+set "$" "fwrite"
+goto "#return"
+: "write_ex_Lv_Type_c"
+if "ex" < "LvCount" "write_ex_Lv_Type_l"
 set "exjump" 0
 goto "#return"
 
@@ -534,7 +556,7 @@ set "$w&loopcount&door3" to "fread('fread_length')"
 set "" to "fread_open"
 goto "#load_rsex"
 goto "#load_rsen"
-loop for 2
+loop for 5
 goto "#return"
 
 : "keym"
@@ -548,7 +570,8 @@ set "$w&worldId&door3" to "$lvldoor3"
 set "$w&worldId&rs" to "$lvlrs"
 set "$w&worldId&ex" to "$lvlex"
 set "$w&worldId&en" to "$lvlen"
-set "worldId" to "('worldId'+1%3)"
+set "worldId" to "('worldId'+1%6)"
+set "worldIsDungeon" to "('worldId'%3!=0)"
 goto "#set_world"
 goto "q"
 
@@ -628,28 +651,28 @@ goto "#return"
 : "key1"
 . "north door"
 . "doors & 0x03"
-set "$lvldoor0.&roomId&" "('$lvldoor0.&roomId&' + 1 % ('worldId'=0+6))"
+set "$lvldoor0.&roomId&" "('$lvldoor0.&roomId&' + 1 % ('worldIsDungeon'=0+6))"
 goto "#update_room"
 goto "q"
 
 : "key2"
 . "south door"
 . "doors & 0x0C"
-set "$lvldoor1.&roomId&" "('$lvldoor1.&roomId&' + 1 % ('worldId'=0+6))"
+set "$lvldoor1.&roomId&" "('$lvldoor1.&roomId&' + 1 % ('worldIsDungeon'=0+6))"
 goto "#update_room"
 goto "q"
 
 : "key4"
 . "east door"
 . "doors & 0x30"
-set "$lvldoor2.&roomId&" "('$lvldoor2.&roomId&' + 1 % ('worldId'=0+6))"
+set "$lvldoor2.&roomId&" "('$lvldoor2.&roomId&' + 1 % ('worldIsDungeon'=0+6))"
 goto "#update_room"
 goto "q"
 
 : "key3"
 . "west door"
 . "doors & 0xC0"
-set "$lvldoor3.&roomId&" "('$lvldoor3.&roomId&' + 1 % ('worldId'=0+6))"
+set "$lvldoor3.&roomId&" "('$lvldoor3.&roomId&' + 1 % ('worldIsDungeon'=0+6))"
 goto "#update_room"
 goto "q"
 
@@ -693,15 +716,15 @@ if "ui_rs_cavesprite" = 0 "skip_ui_rs_cavesprite"
 set "sprA" "ui_rs_cavesprite"
 goto "#mask_room_spr"
 : "skip_ui_rs_cavesprite"
-set "sprA" "('worldId'=0*3)"
+set "sprA" "('worldIsDungeon'=0*3)"
 goto "#mask_room_spr"
-set "sprA" to "('worldId'=0+ 1)"
+set "sprA" to "('worldIsDungeon'=0+ 1)"
 goto "#compose_room_spr"
 set "lur" to 0
 : "update_room_doors"
 set "doors" to "$lvldoor&lur&.&roomId&"
 if "doors" = 0 then "update_room_doors_skip"
-set "sprA" to "('doors'*4 + 'lur' + 32 + ('worldId'=0*32))"
+set "sprA" to "('doors'*4 + 'lur' + 32 + ('worldIsDungeon'=0*32))"
 goto "#compose_room_spr"
 : "update_room_doors_skip"
 inc "lur" by 1
@@ -754,8 +777,7 @@ set "$lvlrs" to "$w&worldId&rs"
 set "$lvlex" to "$w&worldId&ex"
 set "$lvlen" to "$w&worldId&en"
 goto "#set_editor_room_sprites"
-if "worldId" = 0 then "#draw_16x8"
-if "worldId" > 0 then "#draw_16x8"
+goto "#draw_16x8"
 
 set "roomId" to 0
 : "init_room_spr"
@@ -792,7 +814,7 @@ goto "#return"
 : "#set_editor_room_sprites"
 loop start
 set "sx" to "('loopcount'%32)"
-set "sy" to "('loopcount'/32*64+'SS_ROOM'+('worldId'!=0*128))"
+set "sy" to "('loopcount'/32*64+'SS_ROOM'+('worldIsDungeon'!=0*128))"
 set "tx" to "('loopcount'*2+'SPR_PF1')"
 
 copy char "('sx'+'sy')" to "('tx')"
@@ -801,7 +823,7 @@ loop 63
 
 loop start
 set "sx" to "('loopcount'%32)"
-set "sy" to "('loopcount'/32*64+'SS_ROOM'+('worldId'!=0*128))"
+set "sy" to "('loopcount'/32*64+'SS_ROOM'+('worldIsDungeon'!=0*128))"
 set "tx" to "('loopcount'*2+'SPR_PF2')"
 
 copy char "('sx'+'sy')" to "('tx')"

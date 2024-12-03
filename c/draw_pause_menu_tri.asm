@@ -3,7 +3,7 @@
 ;==============================================================================
 DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_PAUSE_DRAW_MENU2
     lda worldId
-    beq .continue_draw_tri
+    bmi .continue_draw_tri
     ldy #17
 .line_delay
     sta WSYNC

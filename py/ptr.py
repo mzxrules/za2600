@@ -35,6 +35,8 @@ class GameEnum:
             return 1 << x
         if self.name == "PlItem":
             return x if x < 8 else (x-8)
+        if self.name == "Level":
+            return 0x80 - 18 + x
         return x
 
 Entity_Table = [
@@ -368,6 +370,23 @@ tbl = [
         "SfxEnter",
     ],
     bankLut=None),
+    GameEnum("Level", "Lv",
+    genEditorBindings=True,
+    genPtrTable=False,
+    genConstants=True,
+    vals=[
+        "Lv_A1", "Lv_B1",
+        "Lv_A2", "Lv_B2",
+        "Lv_A3", "Lv_B3",
+        "Lv_A4", "Lv_B4",
+        "Lv_A5", "Lv_B5",
+        "Lv_A6", "Lv_B6",
+        "Lv_A7", "Lv_B7",
+        "Lv_A8", "Lv_B8",
+        "Lv_A9", "Lv_B9",
+        "Lv_A0", "Lv_B0",
+    ],
+    bankLut=None),
     GameEnum("PlMoveDir", "PlDir",
     genEditorBindings=False,
     genPtrTable=False,
@@ -587,8 +606,11 @@ tbl = [
 def GetEditorBindings(sn, list):
     out = f'set "{sn}Count" to {len(list)}\n'
     for i in range(len(list)):
+        v = i
+        if sn == "Lv":
+            v = 0x80 - 18 + i
         out += f'set "${sn}{i}" to "{list[i]}"\n'
-        out += f'set "{list[i]}" to {i}\n'
+        out += f'set "{list[i]}" to {v}\n'
     return out
 
 def DumpEditorBindings():

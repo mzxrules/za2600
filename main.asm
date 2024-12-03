@@ -276,7 +276,6 @@ BANK_18
     INCBIN "world/w0rs.bin"
     INCBIN "world/w0ex.bin"
     INCBIN "gen/world/b0en.bin"
-
     LOG_BANK_SIZE "-BANK 18- Q1 World 0", BANK_18
 
 ; ****************************************
@@ -319,6 +318,12 @@ BANK_20
     RORG $F400
 
 BANK_21
+    INCLUDE "gen/world/b3world.asm"
+    INCBIN "gen/world/b3wa.bin"
+    INCBIN "gen/world/b3co.bin"
+    INCBIN "world/w3rs.bin"
+    INCBIN "world/w3ex.bin"
+    INCBIN "gen/world/b3en.bin"
     LOG_BANK_SIZE "-BANK 21- Q2 World 0", BANK_21
 
 ; ****************************************
@@ -329,6 +334,12 @@ BANK_21
     RORG $F400
 
 BANK_22
+    INCLUDE "gen/world/b4world.asm"
+    INCBIN "gen/world/b4wa.bin"
+    INCBIN "gen/world/b4co.bin"
+    INCBIN "world/w4rs.bin"
+    INCBIN "world/w4ex.bin"
+    INCBIN "gen/world/b4en.bin"
     LOG_BANK_SIZE "-BANK 22- Q2 Dungeon 1", BANK_22
 
 ; ****************************************
@@ -339,6 +350,12 @@ BANK_22
     RORG $F400
 
 BANK_23
+    INCLUDE "gen/world/b5world.asm"
+    INCBIN "gen/world/b5wa.bin"
+    INCBIN "gen/world/b5co.bin"
+    INCBIN "world/w5rs.bin"
+    INCBIN "world/w5ex.bin"
+    INCBIN "gen/world/b5en.bin"
     LOG_BANK_SIZE "-BANK 13- Q2 Dungeon 2", BANK_23
 
 ; ****************************************

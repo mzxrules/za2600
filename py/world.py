@@ -12,9 +12,12 @@ files = [
     'world/w{}dark.bin',
 ]
 
-WORLD_COUNT = 3
+WORLD_COUNT = 6
 
 mdata = []
+
+def IsOverworld(worldId):
+    return worldId == 0 or worldId == 3
 
 def GetDoorWallWorld(c):
     dw = [
@@ -51,7 +54,7 @@ def GetPackedDoorWallData(worldId, data):
         wall = 0
 
         for i, c in enumerate(value):
-            if worldId == 0:
+            if IsOverworld(worldId):
                 d, w = GetDoorWallWorld(c)
             else:
                 d, w = GetDoorWallDung(c)
@@ -125,10 +128,8 @@ def PackRoomColors(mdata):
     # Room Colors 1
     AddFgBg(roomColorFgBg, "COLOR_PF_CHOCOLATE", "COLOR_PF_BLACK")
 
-    for worldId in range(WORLD_COUNT-1, 0-1, -1):
+    for worldId in range(0, WORLD_COUNT):
         level = mdata[worldId]
-        if worldId == 0:
-            print(len(roomColorFgBg))
 
         for co in level[5]:
             if co not in roomColorFgBg:
@@ -148,7 +149,7 @@ def PackRoomColors(mdata):
         for i,co in enumerate(level[5]):
             v = 0
             fg = roomColorFgBg[co][0]
-            if worldId != 0:
+            if not IsOverworld(worldId):
                 if fg == "COLOR_PF_WATER" or fg == "COLOR_PF_RED":
                     v = 0x80
             # pack RF_WC_ROOM_BOOT and RF_WC_ROOM_DARK flags
@@ -185,6 +186,9 @@ def ModelEncounterScript(worldId, encounterToRoom):
 
 def BuildRoomEncounterTables(encounterToRoom):
     roomEN = [
+        [0] * 128,
+        [0] * 128,
+        [0] * 128,
         [0] * 128,
         [0] * 128,
         [0] * 128,
@@ -246,10 +250,16 @@ def Main():
                 level.append(list(file.read()))
         mdata.append(level)
 
-
+    # Q1
     PackRoomAndDoorData(0, mdata[0])
     PackRoomAndDoorData(1, mdata[1])
     PackRoomAndDoorData(2, mdata[2])
+
+    # Q2
+    PackRoomAndDoorData(3, mdata[3])
+    PackRoomAndDoorData(4, mdata[4])
+    PackRoomAndDoorData(5, mdata[5])
+
     PackRoomColors(mdata)
     GenerateEncounters()
 

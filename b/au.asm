@@ -11,7 +11,7 @@ UpdateAudio: SUBROUTINE
 
     ; Play region dependent sequence
     ldy worldId
-    bne .playDungeonTheme
+    bpl .playDungeonTheme
     ldy roomId
     ;play MS_PLAY_THEME or MS_PLAY_THEME_L depending on SeqFlag state
     bpl .continueSeqSwitch
@@ -20,8 +20,11 @@ UpdateAudio: SUBROUTINE
     bne .continueSeqSwitch ; jmp
 .playDungeonTheme
     lda #MS_PLAY_DUNG
-    cpy #9
-    bmi .continueSeqSwitch
+    cpy #LV_A9
+    beq .playFinalTheme
+    cpy #LV_B9
+    bne .continueSeqSwitch
+.playFinalTheme
     lda #MS_PLAY_FINAL
 
 .continueSeqSwitch

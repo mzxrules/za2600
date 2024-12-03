@@ -1,7 +1,7 @@
 Pause_Menu_Map: SUBROUTINE
     ldx worldId
-    ldy WorldData_BankOffset,x
-    lda WorldData_WorldRomSlot,y
+    ldy .WorldData_BankOffset-#LV_MIN,x
+    lda .WorldData_WorldRomSlot,y
     sta BANK_SLOT
 
 ; select line to update
@@ -14,7 +14,7 @@ Pause_Menu_Map: SUBROUTINE
     asl
     asl
     clc
-    adc WorldData_MapRoomXOff,x
+    adc WorldData_MapRoomXOff-#LV_MIN,x
     sta PMapRoom
 
 ; compute visited rooms and room links
@@ -100,7 +100,7 @@ Pause_Menu_Map: SUBROUTINE
 
 ; Y == map y
     ldx worldId
-    lda Mul8,x
+    lda Mul8-#LV_MIN,x
     clc
     adc Pause_Invert,y
     tax
@@ -123,3 +123,6 @@ Pause_Menu_Map: SUBROUTINE
     lda #SLOT_F4_PAUSE_MENU_MAP
     sta BANK_SLOT
     jmp Pause_MapPlot
+
+    INCLUDE "WorldData_BankOffset.asm"
+    INCLUDE "WorldData_WorldRomSlot.asm"

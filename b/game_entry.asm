@@ -220,12 +220,15 @@ ENTRY_START_GAME:
     lda #$80
     sta blY
 
+    lda #LV_A0
+    sta worldId
+
     ; set player stats
     lda #$18
     sta plHealthMax
     jsr RESPAWN
     IFCONST TESTPOS
-    lda #0
+    lda #LV_A0
     sta worldId
     lda #$0
     sta roomIdNext

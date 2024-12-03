@@ -5,6 +5,8 @@
 KERNEL_WORLD_LEN = $A9 ; World Kernel length
 KERNEL48_LEN     = $68 ; 48 pix kernel length
 
+LV_MIN = $6E ; lowest worldId value
+
 ROOM_PX_HEIGHT      = 20 ; height of room in pixels
 ROOM_SPR_HEIGHT     = 16 ; height of room sprite sheet
 ROOM_SPR_SHEET      = 16 ; width of room sprite sheet in 8 bit sprites

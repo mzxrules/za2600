@@ -120,14 +120,24 @@ The game space is broken down into worlds and then further down into rooms.
 There are two different meanings for the term world.
 
 In game, the worldId variable more accurately tracks the current level the
-player is in; worldId 1-9 represent Levels 1 thru 9, while worldId 0 is the
-overworld. Each world has 128 main rooms, and 128 sub-rooms. Currently,
-sub-rooms are only used for caves.
+player is in.
+    * Bit 0 of the value stores quest type:
+        * 0 - First quest, Q1, or A
+        * 1 - Second quest, Q2, or B
+    * LV_A0, LV_B0 represents the overworld. These are negative in value
+    * LV_A1-LV_A9, LV_B1-LV_B9 are dungeons 1-9. These are positive in value
+
+Each world has 128 main rooms, and 128 sub-rooms. Currently, sub-rooms are only
+used for caves.
 
 In the level data, there are only three worlds per quest.
-    * World 0 stores the Overworld
-    * World 1 stores Levels 1 thru 6
-    * World 2 stores Levels 7 thru 9
+    * World 0 stores Q1 Overworld
+    * World 1 stores Q1 Levels 1 thru 6
+    * World 2 stores Q1 Levels 7 thru 9
+    * World 3 stores Q2 Overworld
+    * World 4 stores Q2 Levels 1 thru 6
+    * World 5 stores Q2 Levels 7 thru 9
+
 Each world can only have a maximum of 128 rooms.
 
 
@@ -1095,3 +1105,9 @@ Instead, RAM banks 1-3 store room flags
    Shop masks are overlapped
    $FC = Shop Type ($10, $14, $18)
    $0F = Shop Inventory
+
+
+
+===============================================================================
+> Unsorted Notes
+===============================================================================

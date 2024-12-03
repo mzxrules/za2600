@@ -31,7 +31,7 @@ PAUSE_RETURN:
 
 ; room setup
     lda worldId
-    beq .skipRoomChecks
+    bmi .skipRoomChecks
     lda #SLOT_F0_ROOM
     sta BANK_SLOT
     jsr DoorCheck
@@ -250,7 +250,7 @@ endPFCollision
 ; Update Shutter Doors
 .RoomOpenShutterDoor
     lda worldId
-    beq .endOpenShutterDoor
+    bmi .endOpenShutterDoor
     lda roomTimer
     bmi .endOpenShutterDoor
     lda roomFlags
@@ -324,7 +324,16 @@ RoomScrollNext:  ; For repositioning player falling off board in dir
     .byte -1, 1, $F0, $10
 
 WorldData_Entrance:  ; Initial room spawns for worlds 0-9
-    .byte $77, $73, $7D, $7C, $71, $76, $79, $71, $76, $7E
+    .byte $73, $77 ; LV 1
+    .byte $7D, $79 ; LV 2
+    .byte $7C, $75 ; LV 3
+    .byte $71, $7D ; LV 4
+    .byte $76, $72 ; LV 5
+    .byte $79, $74 ; LV 6
+    .byte $71, $71 ; LV 7
+    .byte $76, $77 ; LV 8
+    .byte $7E, $7C ; LV 9
+    .byte $77, $77
 
 ;==============================================================================
 ; UPDATE_PL_HEALTH
@@ -410,7 +419,7 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     sta plY
 
     ldy worldId
-    lda WorldData_Entrance,y
+    lda WorldData_Entrance-#LV_MIN,y
     sta roomIdNext
     lda #RF_EV_LOAD
     sta roomFlags
@@ -440,7 +449,9 @@ RETURN_WORLD: SUBROUTINE
     sta plY
     lda worldSR
     sta roomIdNext
-    lda #0
+    lda worldId
+    and #1
+    ora #$80
     sta worldId
     lda roomFlags
     ora #RF_EV_LOAD

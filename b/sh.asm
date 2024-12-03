@@ -239,8 +239,14 @@ GiPotionRed:
     rts
 
 GiTriforce:
-    ldx worldId
-    lda Bit8-1,x
+    lda worldId
+    bmi .rts
+    sec
+    sbc #LV_MIN
+    bmi .rts
+    lsr
+    tax
+    lda Bit8,x
     ora itemTri
     sta itemTri
     rts
@@ -269,10 +275,13 @@ GiHeart:
     rts
 
 GiMap: SUBROUTINE
-    ldy worldId
-    cpy #2
-    bcc .setMap1
-    lda Bit8-2,y
+    lda worldId
+    sec
+    sbc #LV_MIN
+    lsr
+    beq .setMap1
+    tay
+    lda Bit8-1,y
     ora itemMaps
     sta itemMaps
     rts
@@ -282,10 +291,13 @@ GiMap: SUBROUTINE
     sta ITEMV_MAP_1
     rts
 GiCompass: SUBROUTINE
-    ldy worldId
-    cpy #2
-    bcc .setCompass1
-    lda Bit8-2,y
+    lda worldId
+    sec
+    sbc #LV_MIN
+    lsr
+    beq .setCompass1
+    tay
+    lda Bit8-1,y
     ora itemCompass
     sta itemCompass
     rts

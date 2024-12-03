@@ -19,7 +19,7 @@ EnStairs: SUBROUTINE
     cmp plY
     bne .rts
     lda worldId
-    bne .dungeonStairs
+    bpl .dungeonStairs
 .worldStairs
     ldy en0Y,x
     lda en0X,x

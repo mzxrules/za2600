@@ -73,9 +73,9 @@ RoomUpdate:  ; SUBROUTINE
 LoadRoom: SUBROUTINE
     ; load world bank data
     ldy worldId
-    lda WorldData_BankOffset,y
+    lda .WorldData_BankOffset-#LV_MIN,y
     tay
-    lda WorldData_WorldRomSlot,y
+    lda .WorldData_WorldRomSlot,y
     sta BANK_SLOT
     lda WorldData_WorldRamSlot,y
     sta BANK_SLOT_RAM
@@ -169,7 +169,7 @@ LoadRoom: SUBROUTINE
     sta BANK_SLOT
 
     lda worldId
-    bne .dungRoomInitMemLoop
+    bpl .dungRoomInitMemLoop
 
 ; Load World Room Sprites
 .worldRoomInitMem
@@ -253,6 +253,9 @@ LoadRoom: SUBROUTINE
     bpl .dungRoomUpDownBorder
 .rts
     rts
+
+    INCLUDE "WorldData_BankOffset.asm"
+    INCLUDE "WorldData_WorldRomSlot.asm"
 
 UpdateWorldDoors: SUBROUTINE
     lda roomDoors
@@ -612,3 +615,12 @@ WorldDoorPF1B:
 WorldDoorPF1C:
     ; Bottom
     .byte $00, $00, $C0, $C0, $C0, $00, $AB, $AB
+
+
+WorldData_WorldRamSlot:
+    .byte #SLOT_RW_F8_W0, #SLOT_RW_F8_W1, #SLOT_RW_F8_W2
+    .byte #SLOT_RW_F8_W0, #SLOT_RW_F8_W1, #SLOT_RW_F8_W2
+
+WorldData_RoomSpritesRomSlot:
+    .byte #SLOT_F4_PF_OVER, #SLOT_F4_PF_DUNG, #SLOT_F4_PF_DUNG
+    .byte #SLOT_F4_PF_OVER, #SLOT_F4_PF_DUNG, #SLOT_F4_PF_DUNG

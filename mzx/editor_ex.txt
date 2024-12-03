@@ -5,8 +5,11 @@ set "local1" to "$lvlrs.('roomId')"
 set "local2" to "$lvlex.('roomId')"
 set "$$" to "$Rs&local1&"
 
+put c02 CustomBlock "$x2_&local2&.0" at "('thisx'+1)" "thisy"
+put c02 CustomBlock "$x2_&local2&.1" at "('thisx'+2)" "thisy"
+
 loop start
-put c0f CustomBlock p20 at "('thisx'+1+'loopcount')" "thisy"
+put c0f CustomBlock p20 at "('thisx'+3+'loopcount')" "thisy"
 loop for 32
 . "KEEP SYNCED WITH editor.txt"
 if "$$" === "Rs_Item" then "Rs_Item"
@@ -33,27 +36,36 @@ if "$$" === "Rs_EntCaveBushBlocked_P5820" then "Cv_Type"
 if "$$" === "Rs_EntCaveBushBlocked_P6420" then "Cv_Type"
 if "$$" === "Rs_EntCaveBushBlocked_P6438" then "Cv_Type"
 if "$$" === "Rs_EntCaveBushBlocked_P6C18" then "Cv_Type"
+if "$$" === "Rs_EntDungMid" then "Lv_Type"
+if "$$" === "Rs_EntDungFlute" then "Lv_Type"
+if "$$" === "Rs_EntDungBush" then "Lv_Type"
+if "$$" === "Rs_EntDungSpectacleRockBlocked" then "Lv_Type"
 
 : "NoValue"
-put c0f CustomBlock "$x2_&local2&.0" at "('thisx'+1)" "thisy"
-put c0f CustomBlock "$x2_&local2&.1" at "('thisx'+2)" "thisy"
 goto "q"
 
 : "Rs_Item"
 loop start
-put c0f CustomBlock "$Gi&local2&.&loopcount&" at "('thisx'+1+'loopcount')" "thisy"
+put c0f CustomBlock "$Gi&local2&.&loopcount&" at "('thisx'+4+'loopcount')" "thisy"
 loop for "('$Gi&local2&.length'-1)"
 goto "q"
 
 : "Cv_Type"
 loop start
-put c0f CustomBlock "$Cv&local2&.&loopcount&" at "('thisx'+1+'loopcount')" "thisy"
+put c0f CustomBlock "$Cv&local2&.&loopcount&" at "('thisx'+4+'loopcount')" "thisy"
 loop for "('$Cv&local2&.length'-1)"
+goto "q"
+
+: "Lv_Type"
+loop start
+put c0f CustomBlock "$Lv('local2'-128+18).&loopcount&" at "('thisx'+4+'loopcount')" "thisy"
+loop for "('$Lv('local2'-128+18).length'-1)"
+* "~F&local2&"
 goto "q"
 
 : "Npc_Mesg"
 loop start
-put c0f CustomBlock "$Mesg&local2&.&loopcount&" at "('thisx'+1+'loopcount')" "thisy"
+put c0f CustomBlock "$Mesg&local2&.&loopcount&" at "('thisx'+4+'loopcount')" "thisy"
 loop for "('$Mesg&local2&.length'-1)"
 goto "q"
 
@@ -70,7 +82,7 @@ goto "q"
 
 : "#print_str"
 loop start
-put c0f CustomBlock "$.&loopcount&" at "('thisx'+1+'loopcount')" "thisy"
+put c0f CustomBlock "$.&loopcount&" at "('thisx'+4+'loopcount')" "thisy"
 loop for "('$.length'-1)"
 goto "#return"
 

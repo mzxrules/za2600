@@ -1,0 +1,14 @@
+char ' '
+: "q"
+wait for 1
+set "local1" to "$lvlrs.('roomId')"
+
+put c02 CustomBlock "$x2_&local1&.0" at "('thisx'+1)" "thisy"
+put c02 CustomBlock "$x2_&local1&.1" at "('thisx'+2)" "thisy"
+loop start
+put c0f CustomBlock p20 at "('thisx'+4+'loopcount')" "thisy"
+loop for 32
+loop start
+put c0f CustomBlock "$Rs&local1&.&loopcount&" at "('thisx'+4+'loopcount')" "thisy"
+loop for "('$Rs&local1&.length'-1)"
+goto "q"
