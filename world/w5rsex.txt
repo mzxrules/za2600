@@ -4,8 +4,6 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_Item
-GiTriforce
 Rs_None
 zz0
 Rs_None
@@ -40,8 +38,10 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_Item
-GiTriforce
+Rs_None
+zz0
+Rs_None
+zz0
 Rs_None
 zz0
 Rs_None

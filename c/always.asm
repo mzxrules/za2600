@@ -144,6 +144,8 @@ Mul8:
     .byte 0x80, 0x88, 0x90, 0x98
 
 VERTICAL_SYNC: SUBROUTINE
+    lda #SLOT_F0_SPR_HUD
+    sta BANK_SLOT
     lda #$80 | #$02
     sta wHaltVState
     ldx #49
@@ -152,6 +154,8 @@ VERTICAL_SYNC: SUBROUTINE
     stx TIM64T ; 41 scanline timer
     inc Frame
 
+; Position compass point    ; 12
+; Assumes compass point is set on cycle 29
     ldx worldId
     lda WorldData_CompassRoom-#LV_MIN,x
     and #7
@@ -162,11 +166,16 @@ VERTICAL_SYNC: SUBROUTINE
     sta RESBL
     asl
     sta HMBL
+    lda roomId
+    sec
+    sbc MapData_RoomOffsetX-#LV_MIN,x
+    sta Temp0
+
 
 ;==============================================================================
 ; PosHudObjects
 ;----------
-; Positions all HUD elements within a single scanline
+; Positions all HUD elements, except compass point, within a single scanline
 ;----------
 ; Timing Notes:
 ; $18 2 iter (9) + 15 = 24
@@ -188,7 +197,7 @@ PosHudObjects:
 .roomIdMask
     ; 7 cycle end
 
-    and roomId          ; 3
+    and Temp0           ; 3
     eor #7              ; 2
     asl                 ; 2
     asl                 ; 2
@@ -232,18 +241,8 @@ PosHudObjects:
     rts
     LOG_SIZE "VERTICAL SYNC", VERTICAL_SYNC
 
-WorldData_CompassRoom:
-; Q1, Q2
-    .byte $36, $08 ; LV 1
-    .byte $0D, $1B ; LV 2
-    .byte $3D, $20 ; LV 3
-    .byte $03, $3F ; LV 4
-    .byte $14, $00 ; LV 5
-    .byte $0C, $16 ; LV 6
-    .byte $23, $03 ; LV 7
-    .byte $24, $15 ; LV 8
-    .byte $3A, $0F ; LV 9
-    .byte $00, $00 ; Overworld
+MapData_RoomOffsetX:
+    INCLUDE "gen/world/mapdata_room_offset_x.asm"
 
 MAIN_ROOMSCROLL: BHA_BANK_JMP #SLOT_FC_MAIN, ROOMSCROLL_RETURN
 MAIN_UNPAUSE: BHA_BANK_JMP #SLOT_FC_MAIN, PAUSE_RETURN

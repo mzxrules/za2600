@@ -14,13 +14,16 @@ Pause_Menu_Map: SUBROUTINE
     asl
     asl
     clc
-    adc WorldData_MapRoomXOff-#LV_MIN,x
+    adc MapData_RoomOffsetX-#LV_MIN,x
     sta PMapRoom
 
 ; compute visited rooms and room links
     tay
     ldx #7
 .visit_room_loop
+    tya
+    and #$7F
+    tay
     lda rWorldRoomFlags,y
     and #WRF_SV_VISIT
     clc

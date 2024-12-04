@@ -80,7 +80,7 @@ PAUSE_FROM_GAME:
     lda roomId
     and #$F
     sec
-    sbc WorldData_MapRoomXOff-#LV_MIN,y
+    sbc MapData_RoomOffsetX-#LV_MIN,y
     cmp #8
     bcs .skipBlink
     tax
@@ -340,19 +340,6 @@ Pause_Invert:
 Pause_InvertMul5:
     .byte 35, 30, 25, 20
     .byte 15, 10,  5,  0
-
-WorldData_MapRoomXOff:
-; Q1, Q2
-    .byte 0, 1 ; LV 1
-    .byte 8, 8 ; LV 2
-    .byte 8, 0 ; LV 3
-    .byte 0, 8 ; LV 4
-    .byte 0, 0 ; LV 5
-    .byte 8, 0 ; LV 6
-    .byte 0, 0 ; LV 7
-    .byte 0, 0 ; LV 8
-    .byte 8, 8 ; LV 9
-    .byte 0, 0 ; Overworld
 
 MapCurRoomOff:
     .byte 0 * #PAUSE_MAP_HEIGHT + 2

@@ -323,17 +323,8 @@ PlayerXYRoomPos:  ; For repositioning player falling off board in dir
 RoomScrollNext:  ; For repositioning player falling off board in dir
     .byte -1, 1, $F0, $10
 
-WorldData_Entrance:  ; Initial room spawns for worlds 0-9
-    .byte $73, $77 ; LV 1
-    .byte $7D, $79 ; LV 2
-    .byte $7C, $75 ; LV 3
-    .byte $71, $7D ; LV 4
-    .byte $76, $72 ; LV 5
-    .byte $79, $74 ; LV 6
-    .byte $71, $71 ; LV 7
-    .byte $76, $77 ; LV 8
-    .byte $7E, $7C ; LV 9
-    .byte $77, $77
+MapData_EntranceRoomId:  ; Initial room spawns for worlds 0-9
+    INCLUDE "gen/world/mapdata_entrance_roomId.asm"
 
 ;==============================================================================
 ; UPDATE_PL_HEALTH
@@ -419,7 +410,7 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     sta plY
 
     ldy worldId
-    lda WorldData_Entrance-#LV_MIN,y
+    lda MapData_EntranceRoomId-#LV_MIN,y
     sta roomIdNext
     lda #RF_EV_LOAD
     sta roomFlags

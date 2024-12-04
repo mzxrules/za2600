@@ -258,6 +258,8 @@ MINIMAP
     .align $80
     INCLUDE "spr/spr_num_l.asm"
     .byte $0
+WorldData_CompassRoom:
+    INCLUDE "gen/world/mapdata_compass_adj_roomId.asm"
     .align $80
     INCLUDE "spr/spr_num_r.asm"
     LOG_BANK_SIZE "-BANK 17- Sprites HUD", BANK_17

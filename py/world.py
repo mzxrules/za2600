@@ -16,6 +16,79 @@ WORLD_COUNT = 6
 
 mdata = []
 
+mapdata_entrance_roomId = [
+    # Q1, Q2
+    0x73, 0x77, # LV 1
+    0x7D, 0x79, # LV 2
+    0x7C, 0x75, # LV 3
+    0x71, 0x7D, # LV 4
+    0x76, 0x72, # LV 5
+    0x79, 0x74, # LV 6
+    0x71, 0x71, # LV 7
+    0x76, 0x77, # LV 8
+    0x7E, 0x7C, # LV 9
+    0x77, 0x77, # Overworld
+]
+
+mapdata_compass_roomId = [
+    # Q1, Q2
+    0x36, 0x08, # LV 1
+    0x0D, 0x1B, # LV 2
+    0x3D, 0x20, # LV 3
+    0x03, 0x3F, # LV 4
+    0x14, 0x00, # LV 5
+    0x0C, 0x16, # LV 6
+    0x23, 0x13, # LV 7
+    0x24, 0x25, # LV 8
+    0x3A, 0x0F, # LV 9
+    -1, -1, # Overworld
+]
+
+mapdata_room_offset_x = [
+    # Q1, Q2
+     0, 4, # LV 1
+    10, 6, # LV 2
+     8, 0, # LV 3
+    -2,10, # LV 4
+     2,-2, # LV 5
+     7,-1, # LV 6
+    -1, 0, # LV 7
+     2, 0, # LV 8
+     8, 8, # LV 9
+     0, 0, # Overworld
+]
+
+
+def GetMapDotENA(roomId):
+    if roomId < 0 or roomId >= 128:
+        return 0
+    y = roomId >> 4
+    return 1 << ((y+1) % 8)
+
+def GenerateMapData():
+    mapdata_compass_dotENA = []
+    mapdata_compass_adj_roomId = []
+
+    for roomId in mapdata_compass_roomId:
+        mapdata_compass_dotENA.append(GetMapDotENA(roomId))
+
+    for roomId, offX in zip(mapdata_compass_roomId, mapdata_room_offset_x):
+        if roomId < 0:
+            roomId = 0
+        mapdata_compass_adj_roomId.append(roomId - offX)
+
+    with open(f"gen/world/mapdata_entrance_roomId.asm", "w") as file:
+        file.write(ToAsm(mapdata_entrance_roomId,2))
+
+    with open(f"gen/world/mapdata_compass_adj_roomId.asm", "w") as file:
+        file.write(ToAsm(mapdata_compass_adj_roomId,2))
+
+    with open(f"gen/world/mapdata_compass_dotENA.asm", "w") as file:
+        file.write(ToAsm(mapdata_compass_dotENA,2))
+
+    with open(f"gen/world/mapdata_room_offset_x.asm", "w") as file:
+        file.write(ToAsm(mapdata_room_offset_x,2))
+
 def IsOverworld(worldId):
     return worldId == 0 or worldId == 3
 
@@ -262,6 +335,7 @@ def Main():
 
     PackRoomColors(mdata)
     GenerateEncounters()
+    GenerateMapData()
 
 Main()
 

@@ -46,7 +46,7 @@ POSITION_SPRITES: SUBROUTINE
     lda $00,x
     and .CompassFlagMask-#LV_MIN,y
     beq .setCompassPoint
-    lda .WorldData_MapCompassDotENA-#LV_MIN,y
+    lda .MapData_CompassDotENA-#LV_MIN,y
 .setCompassPoint
     sta THudMapCPosY
 
@@ -374,6 +374,8 @@ KERNEL_WORLD_RESUME:
     .byte #<ITEMV_COMPASS_1, #<ITEMV_COMPASS_1
     .byte #<itemCompass, #<itemCompass, #<itemCompass, #<itemCompass
     .byte #<itemCompass, #<itemCompass, #<itemCompass, #<itemCompass
+    .byte #<itemCompass, #<itemCompass, #<itemCompass, #<itemCompass
+    .byte #<itemCompass, #<itemCompass, #<itemCompass, #<itemCompass
     .byte #$FF, #$FF
 
 .CompassFlagMask
@@ -382,17 +384,8 @@ KERNEL_WORLD_RESUME:
     .byte 0x10, 0x10, 0x20, 0x20, 0x40, 0x40, 0x80, 0x80
     .byte #0, #0
 
-.WorldData_MapCompassDotENA
-    .byte $10, $02 ; $36, $08 // LV 1
-    .byte $02, $04 ; $0D, $1B // LV 2
-    .byte $10, $08 ; $3D, $20 // LV 3
-    .byte $02, $10 ; $03, $3F // LV 4
-    .byte $04, $02 ; $14, $00 // LV 5
-    .byte $02, $04 ; $0C, $16 // LV 6
-    .byte $08, $02 ; $23, $03 // LV 7
-    .byte $08, $04 ; $24, $15 // LV 8
-    .byte $10, $02 ; $3A, $0F // LV 9
-    .byte $00, $00 ; N/A, N/A // Overworld
+.MapData_CompassDotENA
+    INCLUDE "gen/world/mapdata_compass_dotENA.asm"
 
 .BombCountSprL
     .byte 0*8+7, 1*8+7, 2*8+7, 3*8+7, 4*8+7, 5*8+7, 6*8+7, 7*8+7, 8*8+7, 9*8+7
