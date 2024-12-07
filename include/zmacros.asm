@@ -91,7 +91,6 @@ COLOR_{1} = {2}
 ; PF Destroy Macros
 ; A1 = X coordinate $
 ; A2 = Y coordinate $
-; A3 = Y depth
     MACRO SET_WALL_DESTROY_XY
     lda #>[RsInit_Wall_P{1}{2}-1]
     pha

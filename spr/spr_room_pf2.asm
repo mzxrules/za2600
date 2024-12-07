@@ -502,7 +502,7 @@ PF2Room29:
     .byte $7E ; |.XXXXXX.| mirrored
     .byte $EE ; |.XXX.XXX| mirrored
     .byte $C6 ; |.XX...XX| mirrored
-    .byte $93 ; |XX..X..X| mirrored
+    .byte $92 ; |.X..X..X| mirrored
     .byte $C6 ; |.XX...XX| mirrored
     .byte $FC ; |..XXXXXX| mirrored
     .byte $00 ; |........| mirrored
@@ -514,14 +514,14 @@ PF2Room30:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
-    .byte $FF ; |XXXXXXXX| mirrored
-    .byte $FF ; |XXXXXXXX| mirrored
-    .byte $FF ; |XXXXXXXX| mirrored
-    .byte $FF ; |XXXXXXXX| mirrored
-    .byte $FF ; |XXXXXXXX| mirrored
-    .byte $FF ; |XXXXXXXX| mirrored
-    .byte $FF ; |XXXXXXXX| mirrored
-    .byte $FF ; |XXXXXXXX| mirrored
+    .byte $FC ; |..XXXXXX| mirrored
+    .byte $FE ; |.XXXXXXX| mirrored
+    .byte $FE ; |.XXXXXXX| mirrored
+    .byte $FE ; |.XXXXXXX| mirrored
+    .byte $FE ; |.XXXXXXX| mirrored
+    .byte $FE ; |.XXXXXXX| mirrored
+    .byte $FE ; |.XXXXXXX| mirrored
+    .byte $FC ; |..XXXXXX| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored

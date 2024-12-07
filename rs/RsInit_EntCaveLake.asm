@@ -1,7 +1,7 @@
 ;==============================================================================
 ; mzxrules 2023
 ;==============================================================================
-RsInit_EntDungFlute: SUBROUTINE
+RsInit_EntCaveLake: SUBROUTINE
     ldy roomId
     lda rWorldRoomFlags,y
     and #WRF_SV_DESTROY
@@ -11,12 +11,9 @@ RsInit_EntDungFlute: SUBROUTINE
 .loop
     lda .LEVEL_7_PF2,y
     sta wPF2Room+7,y
-    lda #$C0
-    sta wPF1RoomL+7,y
-    sta wPF1RoomR+7,y
     dey
     bpl .loop
-    lda #RS_ENT_DUNG_MID
+    lda #RS_ENT_CAVE_MID
     sta roomRS
 .rts
     rts
@@ -28,6 +25,6 @@ RsInit_EntDungFlute: SUBROUTINE
     .byte $7E ; |.XXXXXX.| mirrored
     .byte $EE ; |.XXX.XXX| mirrored
     .byte $C6 ; |.XX...XX| mirrored
-    .byte $93 ; |XX..X..X| mirrored
+    .byte $92 ; |.X..X..X| mirrored
     .byte $C6 ; |.XX...XX| mirrored
     .byte $FC ; |..XXXXXX| mirrored

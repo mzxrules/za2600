@@ -4,8 +4,8 @@
 
 Cv_Del:
     ldx roomEX
-    cpx #CV_MESG_HINT_TREE_AT_DEAD_END+1
-    bpl .rts
+    cpx #CV_END_LIST
+    bcs .rts
     lda #EN_NPC_APPEAR
     sta enType
     lda CaveTypeH,x
@@ -148,6 +148,16 @@ Rs_EntCaveWallCenter:
     ldy #$38
     jmp RS_ENTER_CAVE
 
+Rs_EntCaveWall_P2820:
+    ldx #$28
+    cpx plX
+    bne .rts
+    ldy #$24
+    cpy plY
+    bne .rts
+    ldy #$20
+    jmp RS_ENTER_CAVE
+
 Rs_EntCaveWall_P4820:
     ldx #$48
     cpx plX
@@ -194,10 +204,24 @@ Rs_EntCaveMid:
     bne .rts
     ldy #$20
 RS_ENTER_CAVE:
+    lda roomEX
+    cmp #CV_LV_START
+    bcc .overworld_cave
+; enter dungeon
+    stx worldSX
+    sty worldSY
+    adc [#LV_MIN - #CV_LV_START -1]
+    sta worldId
+    lda roomId
+    sta worldSR
+    ldy #HALT_TYPE_ENTER_DUNG
+    bpl .halt ; jmp
+.overworld_cave
     jsr ENTER_CAVE
+    ldy #HALT_TYPE_ENTER_CAVE
+.halt
     lda #SLOT_FC_HALT
     sta BANK_SLOT
-    ldy #HALT_TYPE_ENTER_CAVE
     jmp HALT_GAME
 
 Rs_Cave:
@@ -299,15 +323,6 @@ Rs_PosItem_X:
     .byte $5C, $64, $6C, $74
 
 
-Rs_EntDungData_TestX:
-    .byte #$40, #$40, #$58
-Rs_EntDungData_TestY:
-    .byte #$28, #$1C, #$24
-Rs_EntDungData_RetX:
-    .byte #$40, #$48, #$58
-Rs_EntDungData_RetY:
-    .byte #$20, #$1C, #$1C
-
 Rs_EntDungBush: SUBROUTINE
     ldx #0
     lda enType
@@ -326,33 +341,17 @@ Rs_EntDungBush: SUBROUTINE
     sta roomRS
     rts
 
-Rs_EntDungMid: SUBROUTINE
 Rs_EntDungStairs: SUBROUTINE
-Rs_EntDungSpectacleRock:
-    lda roomRS
-    sec
-    sbc #RS_ENT_DUNG_MID
-    tax
-
     lda plX
-    cmp Rs_EntDungData_TestX,x
+    cmp #$40
     bne .rts
     lda plY
-    cmp Rs_EntDungData_TestY,x
+    cmp #$1C
     bne .rts
-    lda Rs_EntDungData_RetX,x
-    sta worldSX
-    lda Rs_EntDungData_RetY,x
-    sta worldSY
-    lda roomId
-    sta worldSR
 
-    ldy roomEX
-    sty worldId
-    lda #SLOT_FC_HALT
-    sta BANK_SLOT
-    ldy #HALT_TYPE_ENTER_DUNG
-    jmp HALT_GAME ; SPAWN_AT_DEFAULT
+    ldx #$48
+    ldy #$1C
+    jmp ENTER_CAVE
 
 Rs_ExitDung: ; SUBROUTINE
     bit roomFlags
@@ -426,10 +425,20 @@ Rs_EntCaveWallLeftBlocked:
     SET_WALL_DESTROY_XY 14, 38
 Rs_EntCaveWallRightBlocked:
     SET_WALL_DESTROY_XY 6C, 38
+Rs_EntCaveWallBlocked_P2820:
+    SET_WALL_DESTROY_XY 28, 20
 Rs_EntCaveWallBlocked_P4820:
     SET_WALL_DESTROY_XY 48, 20
-Rs_EntDungSpectacleRockBlocked:
-    SET_WALL_DESTROY_XY 58, 20
+
+;==============================================================================
+; Rs_EntCaveWallBlocked
+;----------
+; Tests if a wall was destroyed by a bomb.
+;----------
+; Room scripts that call SET_WALL_DESTROY_XY push a RsInit_Wall_PXXYY
+; pointer onto the stack, then jumps here. If the check passes, the
+; RsInit_Wall routine is called, destroying the wall on the playfield
+;==============================================================================
 Rs_EntCaveWallBlocked
     bit CXM0FB
     bvc .skip_rts
@@ -469,6 +478,15 @@ Rs_EntCaveBushBlocked_P6438:
 Rs_EntCaveBushBlocked_P6C18:
     SET_BUSH_DESTROY_XY 6C, 18
 
+;==============================================================================
+; Rs_EntCaveWallBlocked
+;----------
+; Tests if a bush was destroyed by fire.
+;----------
+; Room scripts that call SET_BUSH_DESTROY_XY push a RsInit_Bush_PXXYY
+; pointer onto the stack, then jumps here. If the check passes, the
+; RsInit_Bush routine is called, which removes the bush from the playfield.
+;==============================================================================
 Rs_EntCaveBushBlocked
     ldy roomId
     lda rWorldRoomFlags,y
@@ -510,7 +528,7 @@ Rs_EntCaveBushStairs:
     jmp PlaceStairs
 
 
-Rs_EntDungFlute: SUBROUTINE
+Rs_EntCaveLake: SUBROUTINE
     ldy roomId
     lda rWorldRoomFlags,y
     and #WRF_SV_DESTROY
@@ -572,9 +590,6 @@ Rs_EntDungFlute: SUBROUTINE
     tay
     lda .LEVEL_7_PF2,y
     sta wPF2Room+7,y
-    lda #$C0
-    sta wPF1RoomL+7,y
-    sta wPF1RoomR+7,y
     txa
     and #7
     eor #5
@@ -592,7 +607,7 @@ Rs_EntDungFlute: SUBROUTINE
     lda #SEQ_SOLVE_DUR
     sta SeqSolveCur
 
-    lda #RS_ENT_DUNG_MID
+    lda #RS_ENT_CAVE_MID
     sta roomRS
     rts
 
@@ -602,6 +617,6 @@ Rs_EntDungFlute: SUBROUTINE
     .byte $7E ; |.XXXXXX.| mirrored
     .byte $EE ; |.XXX.XXX| mirrored
     .byte $C6 ; |.XX...XX| mirrored
-    .byte $93 ; |XX..X..X| mirrored
+    .byte $92 ; |.X..X..X| mirrored
     .byte $C6 ; |.XX...XX| mirrored
     .byte $FC ; |..XXXXXX| mirrored

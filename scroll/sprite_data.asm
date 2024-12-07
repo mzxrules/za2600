@@ -69,7 +69,7 @@ PF2_M:
     .byte $7E ; |.XXXXXX.| mirrored
     .byte $EE ; |.XXX.XXX| mirrored
     .byte $C6 ; |.XX...XX| mirrored
-    .byte $93 ; |XX..X..X| mirrored
+    .byte $92 ; |.X..X..X| mirrored
     .byte $C6 ; |.XX...XX| mirrored
     .byte $FC ; |..XXXXXX| mirrored
     .byte $00 ; |........| mirrored

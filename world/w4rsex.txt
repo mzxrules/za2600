@@ -140,8 +140,8 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_Item
+GiBomb
 Rs_None
 zz0
 Rs_None

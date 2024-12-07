@@ -27,11 +27,11 @@ bush_locations = [
     ]
 
 wall_locations = [
-    (0x14,0x38, "Rs_EntCaveWallLeftBlocked",        "Rs_EntCaveWallLeft"),
-    (0x40,0x38, "Rs_EntCaveWallCenterBlocked",      "Rs_EntCaveWallCenter"),
-    (0x6C,0x38, "Rs_EntCaveWallRightBlocked",       "Rs_EntCaveWallRight"),
-    (0x48,0x20, "Rs_EntCaveWallBlocked_P4820",      "Rs_EntCaveWall_P4820"),
-    (0x58,0x20, "Rs_EntDungSpectacleRockBlocked",   "Rs_EntDungSpectacleRock"),
+    (0x14,0x38, "Rs_EntCaveWallLeftBlocked",    "Rs_EntCaveWallLeft"),
+    (0x40,0x38, "Rs_EntCaveWallCenterBlocked",  "Rs_EntCaveWallCenter"),
+    (0x6C,0x38, "Rs_EntCaveWallRightBlocked",   "Rs_EntCaveWallRight"),
+    (0x28,0x20, "Rs_EntCaveWallBlocked_P2820",  "Rs_EntCaveWall_P2820"),
+    (0x48,0x20, "Rs_EntCaveWallBlocked_P4820",  "Rs_EntCaveWall_P4820"),
 ]
 
 

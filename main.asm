@@ -503,7 +503,7 @@ BANK_33
     INCLUDE "rs/RsInit_BlockSpiral.asm"
     INCLUDE "rs/RsInit_BlockPathStairs.asm"
     INCLUDE "rs/RsInit_FairyFountain.asm"
-    INCLUDE "rs/RsInit_EntDungFlute.asm"
+    INCLUDE "rs/RsInit_EntCaveLake.asm"
     INCLUDE "rs/RsInit_Waterfall.asm"
 
     LOG_BANK_SIZE "-BANK 33- RoomScriptInit", BANK_33

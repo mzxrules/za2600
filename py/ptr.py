@@ -39,6 +39,18 @@ class GameEnum:
             return 0x80 - 18 + x
         return x
 
+    def YieldPtr(self):
+        if self.name == "CaveType":
+            for item in self.vals:
+                if item != "Cv_EndList":
+                    yield item
+                else:
+                    break
+        else:
+            for item in self.vals:
+                yield item
+
+
 Entity_Table = [
     "EnNone",          "SEG_NA", "SEG_42", "EnDraw_None",
     "EnItem",          "SEG_53", "SEG_42", "EnDraw_Item",
@@ -146,20 +158,17 @@ RoomScript_Table = [
     "Rs_EntCaveWallLeftBlocked",    "RsInit_EntCaveWallLeftBlocked",
     "Rs_EntCaveWallCenterBlocked",  "RsInit_EntCaveWallCenterBlocked",
     "Rs_EntCaveWallRightBlocked",   "RsInit_EntCaveWallRightBlocked",
+    "Rs_EntCaveWallBlocked_P2820",  "RsInit_Wall_P2820",
     "Rs_EntCaveWallBlocked_P4820",  "RsInit_Wall_P4820",
     "Rs_EntCaveWallLeft",           "RsInit_EntCaveWallLeft",
     "Rs_EntCaveWallCenter",         "RsInit_EntCaveWallCenter",
     "Rs_EntCaveWallRight",          "RsInit_EntCaveWallRight",
+    "Rs_EntCaveWall_P2820",         "RsInit_EntCaveWall_P2820",
     "Rs_EntCaveWall_P4820",         "RsInit_EntCaveWall_P4820",
     "Rs_EntCaveMid",                "RsInit_None",
     "Rs_EntCaveMidSecretNorth",     "RsInit_None",
-    # Group
-    "Rs_EntDungMid",                "RsInit_None", #0,
-    "Rs_EntDungStairs",             "RsInit_None", #1
-    "Rs_EntDungSpectacleRock",      "RsInit_None", #2
-    # End Group
-    "Rs_EntDungFlute",              "RsInit_EntDungFlute",
-    "Rs_EntDungSpectacleRockBlocked","RsInit_EntDungSpectacleRockBlocked",
+    "Rs_EntCaveLake",               "RsInit_EntCaveLake",
+    "Rs_EntDungStairs",             "RsInit_None",
     "Rs_EntDungBush",               "RsInit_None",
     # RsBush must be grouped
     "Rs_EntDungBushBlocked",        "RsInit_EntDungBushBlocked",
@@ -236,6 +245,21 @@ GiValues_Table = [
     "GiBowArrowSilver",
     "GiWandBook",
 ]
+
+Level_Table = [
+    "Lv_A1", "Lv_B1",
+    "Lv_A2", "Lv_B2",
+    "Lv_A3", "Lv_B3",
+    "Lv_A4", "Lv_B4",
+    "Lv_A5", "Lv_B5",
+    "Lv_A6", "Lv_B6",
+    "Lv_A7", "Lv_B7",
+    "Lv_A8", "Lv_B8",
+    "Lv_A9", "Lv_B9",
+    "Lv_A0", "Lv_B0",
+]
+
+Cave_Level_Table = [ "Cv_" + x for x in Level_Table]
 
 tbl = [
     GameEnum("En", "En",
@@ -371,21 +395,10 @@ tbl = [
     ],
     bankLut=None),
     GameEnum("Level", "Lv",
-    genEditorBindings=True,
+    genEditorBindings=False,
     genPtrTable=False,
     genConstants=True,
-    vals=[
-        "Lv_A1", "Lv_B1",
-        "Lv_A2", "Lv_B2",
-        "Lv_A3", "Lv_B3",
-        "Lv_A4", "Lv_B4",
-        "Lv_A5", "Lv_B5",
-        "Lv_A6", "Lv_B6",
-        "Lv_A7", "Lv_B7",
-        "Lv_A8", "Lv_B8",
-        "Lv_A9", "Lv_B9",
-        "Lv_A0", "Lv_B0",
-    ],
+    vals=Level_Table,
     bankLut=None),
     GameEnum("PlMoveDir", "PlDir",
     genEditorBindings=False,
@@ -463,7 +476,9 @@ tbl = [
         "Cv_MesgHintLostWoods",
         "Cv_MesgHintLostHills",
         "Cv_MesgHintTreeAtDeadEnd",
-    ],
+
+        "Cv_EndList", # Terminator for room script
+    ] + Cave_Level_Table,
     bankLut=None),
     GameEnum("PlItem", "PlItem",
     genEditorBindings=False,
@@ -648,7 +663,7 @@ def DumpPtrAsm():
         l = []
         h = []
 
-        for item in e.vals:
+        for item in e.YieldPtr():
             l.append(f"<({item}-1)")
             h.append(f">({item}-1)")
 

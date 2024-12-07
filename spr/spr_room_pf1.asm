@@ -514,14 +514,14 @@ PF1Room30:
     .byte $C0 ; |XX......|
     .byte $C0 ; |XX......|
     .byte $C0 ; |XX......|
-    .byte $C3 ; |XX....XX|
-    .byte $07 ; |.....XXX|
-    .byte $07 ; |.....XXX|
-    .byte $07 ; |.....XXX|
-    .byte $07 ; |.....XXX|
-    .byte $C7 ; |XX...XXX|
-    .byte $C7 ; |XX...XXX|
-    .byte $C3 ; |XX....XX|
+    .byte $C0 ; |XX......|
+    .byte $1E ; |...XXXX.|
+    .byte $0C ; |....XX..|
+    .byte $0C ; |....XX..|
+    .byte $0C ; |....XX..|
+    .byte $C4 ; |XX...X..|
+    .byte $C0 ; |XX......|
+    .byte $C0 ; |XX......|
     .byte $C0 ; |XX......|
     .byte $C0 ; |XX......|
     .byte $C0 ; |XX......|
