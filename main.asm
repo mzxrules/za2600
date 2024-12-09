@@ -260,6 +260,8 @@ MINIMAP
     .byte $0
 WorldData_CompassRoom:
     INCLUDE "gen/world/mapdata_compass_adj_roomId.asm"
+MapData_RoomOffsetX:
+    INCLUDE "gen/world/mapdata_room_offset_x.asm"
     .align $80
     INCLUDE "spr/spr_num_r.asm"
     LOG_BANK_SIZE "-BANK 17- Sprites HUD", BANK_17

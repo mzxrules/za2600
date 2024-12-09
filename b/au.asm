@@ -21,9 +21,7 @@ UpdateAudio: SUBROUTINE
 .playDungeonTheme
     lda #MS_PLAY_DUNG
     cpy #LV_A9
-    beq .playFinalTheme
-    cpy #LV_B9
-    bne .continueSeqSwitch
+    bcc .continueSeqSwitch ; #LV_A9, #LV_B9
 .playFinalTheme
     lda #MS_PLAY_FINAL
 

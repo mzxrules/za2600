@@ -24,8 +24,6 @@ Enemies:
 Systems:
     Second Quest
         * Quest Select at game start
-        * Implement fast quest config data fetching
-        * World Editor support
     Dungeon Underground
         * Underground Passage
         * Underground Item

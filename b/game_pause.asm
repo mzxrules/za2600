@@ -16,6 +16,40 @@ PAUSE_ENTRY: SUBROUTINE
 PAUSE_VERTICAL_SYNC:
     jsr VERTICAL_SYNC
 
+; blink dungeon map position
+    lda Frame
+    clc
+    adc #$3
+    and #7
+    sta PMapY
+    lda roomId
+    lsr
+    lsr
+    lsr
+    lsr
+    cmp PMapY
+    bne .skipBlink
+    ldy worldId
+    lda roomId
+    and #$F
+    sec
+    sbc MapData_RoomOffsetX-#LV_MIN,y
+    cmp #8
+    bcs .skipBlink
+    tax
+    ldy PMapY
+    lda MapCurRoomOff,x
+    clc
+    adc Pause_InvertMul5,y
+    tay
+
+    lda #SLOT_RW_F0_DUNG_MAP
+    sta BANK_SLOT_RAM
+    lda rMAP_0,y
+    eor MapCurRoomEor,x
+    sta wMAP_0,y
+.skipBlink
+
 PAUSE_FROM_GAME:
     ; Check game pause status
     bit PauseState
@@ -62,41 +96,6 @@ PAUSE_FROM_GAME:
     jmp MAIN_UNPAUSE
 
 .runPauseMenu
-
-; blink dungeon map position
-    lda Frame
-    clc
-    adc #$3
-    and #7
-    sta PMapY
-    lda roomId
-    lsr
-    lsr
-    lsr
-    lsr
-    cmp PMapY
-    bne .skipBlink
-    ldy worldId
-    lda roomId
-    and #$F
-    sec
-    sbc MapData_RoomOffsetX-#LV_MIN,y
-    cmp #8
-    bcs .skipBlink
-    tax
-    ldy PMapY
-    lda MapCurRoomOff,x
-    clc
-    adc Pause_InvertMul5,y
-    tay
-
-    lda #SLOT_RW_F0_DUNG_MAP
-    sta BANK_SLOT_RAM
-    lda rMAP_0,y
-    eor MapCurRoomEor,x
-    sta wMAP_0,y
-.skipBlink
-
 .runPauseUpdate
     lda #SLOT_F4_AU1
     sta BANK_SLOT

@@ -1,8 +1,8 @@
 Pause_Menu_Map: SUBROUTINE
-    ldx worldId
-    ldy .WorldData_BankOffset-#LV_MIN,x
-    lda .WorldData_WorldRomSlot,y
+    lda #SLOT_F4_SPR_HUD
     sta BANK_SLOT
+
+    ldx worldId
 
 ; select line to update
     lda Frame
@@ -14,16 +14,24 @@ Pause_Menu_Map: SUBROUTINE
     asl
     asl
     clc
-    adc MapData_RoomOffsetX-#LV_MIN,x
+    adc MapData_RoomOffsetX+0x400-#LV_MIN,x
+    and #$7F
     sta PMapRoom
 
+; fetch current world data
+    ldy .WorldData_BankOffset-#LV_MIN,x
+    lda .WorldData_WorldRomSlot,y
+    sta BANK_SLOT
+
 ; compute visited rooms and room links
-    tay
+    ldy PMapRoom
+    dey
     ldx #7
 .visit_room_loop
-    tya
-    and #$7F
-    tay
+    iny
+    bpl .cont
+    ldy #0
+.cont
     lda rWorldRoomFlags,y
     and #WRF_SV_VISIT
     clc
@@ -88,7 +96,6 @@ Pause_Menu_Map: SUBROUTINE
 .path_w_false
     rol PMapRoomW
 
-    iny
     dex
     bpl .visit_room_loop
 
