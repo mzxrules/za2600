@@ -4,6 +4,8 @@
 
 ; Vertical Blank Routine
 HtTask_PlayFlute: SUBROUTINE
+    lda #HALT_KERNEL_HUD_WORLD
+    sta wHaltKernelId
     lda rHaltVState
     bpl .rts ; not #HALT_VSTATE_TOP
     lda rHaltFrame

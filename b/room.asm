@@ -1,44 +1,8 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
-LoadCaveRoom: SUBROUTINE
-    ; Don't overwrite room vars
-    lda #1
-    sta wRoomColorFlags
-    lda #RS_CAVE
-    sta roomRS
-    lda #$F3
-    sta roomDoors
-    lda #MS_PLAY_NONE
-    sta SeqFlags
 
-    lda #$FF
-    ldy #1
-.loadRoomSprite1
-    sta wPF2Room + ROOM_PX_HEIGHT-2,y
-    sta wPF1RoomL + ROOM_PX_HEIGHT-2,y
-    sta wPF1RoomR + ROOM_PX_HEIGHT-2,y
-    dey
-    bpl .loadRoomSprite1
-
-    lda #0
-    ldy #ROOM_PX_HEIGHT-2 -1
-.loadRoomSprite2
-    sta wPF2Room,y
-    dey
-    bpl .loadRoomSprite2
-
-    lda #$C0
-    ldy #ROOM_PX_HEIGHT-2 -1
-.loadRoomSprite3
-    sta wPF1RoomL,y
-    sta wPF1RoomR,y
-    dey
-    bpl .loadRoomSprite3
-.rts
-    rts
-
-RoomUpdate:  ; SUBROUTINE
+RoomUpdate: SUBROUTINE
     lda roomFlags
     and #~RF_EV_LOADED
     sta roomFlags
@@ -68,25 +32,47 @@ RoomUpdate:  ; SUBROUTINE
     sta BANK_SLOT
     ldy rHaltType
     jmp HALT_GAME
+.rts
+    rts
 
 
 LoadRoom: SUBROUTINE
     ; load world bank data
     ldy worldId
     lda .WorldData_BankOffset-#LV_MIN,y
-    tay
+    tay ; bank id
+
+    ; Fetch bank ram
+    lda WorldData_WorldRamSlot,y
+    pha
+    eor #RAMSEG_F8 ^ #RAMSEG_F4
+    sta BANK_SLOT_RAM
+
+    ; Transfer variables to the next ram bank
+    ldx #HALT_VARS_SIZE-1
+    lda rPlColor
+    sta wPlColor-0x400
+.transfer_halt_vars
+    lda rHALT_VARS,x
+    sta wHALT_VARS-0x400,x
+    dex
+    bpl .transfer_halt_vars
+    pla
+    sta BANK_SLOT_RAM
+
+    ; Fetch world data
     lda .WorldData_WorldRomSlot,y
     sta BANK_SLOT
-    lda WorldData_WorldRamSlot,y
-    sta BANK_SLOT_RAM
     lda WorldData_RoomSpritesRomSlot,y
     sta TRoomSprB
 
     ldy roomIdNext
-    sty roomId
     bpl .skipCaveRoom
-    jmp LoadCaveRoom
+    lda #SLOT_F4_ROOM2
+    sta BANK_SLOT
+    jmp LoadRoom_Cave
 .skipCaveRoom
+    sty roomId
     lda WORLD_RS,y
     sta roomRS
     lda WORLD_EX,y
@@ -579,7 +565,6 @@ CheckBreakwall: SUBROUTINE
     beq DoorOpen
     rts
 
-    align 4
 DungDoorMask:
     ; S/N/E/W
     .byte $0C, $03, $30, $C0
@@ -590,7 +575,6 @@ DungDoorFlagB:
 DungDoorRoomOff:
     .byte $10, $F0, $01, $FF
 
-    align 8
     ; wall types:
     ; none, central long, left-right long, full
     ; right long, left long, left-right short, invalid

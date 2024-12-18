@@ -7,6 +7,8 @@ HtTask_RoomScrollEnd: SUBROUTINE
     bmi .continue
     rts
 .continue
+    lda #HALT_KERNEL_HUD_WORLD
+    sta wHaltKernelId
     jsr Halt_SetKernelWorld
     lda #%00110001
     sta CTRLPF

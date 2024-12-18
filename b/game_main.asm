@@ -53,7 +53,7 @@ ROOMSCROLL_RETURN:  ; .roomLoadCpuSkip
 
     lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT
-    jsr POSITION_SPRITES
+    jsr DRAW_HUD_WORLD
 
 OVERSCAN: SUBROUTINE ; 30 scanlines
 ; reset world kernel vars

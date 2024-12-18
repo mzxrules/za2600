@@ -16,10 +16,7 @@ HALT_VERTICAL_BLANK: SUBROUTINE
     sta BANK_SLOT
     jsr EnDraw_Del
 
-    jsr Halt_SetKernelWorld
-    lda #SLOT_F4_MAIN_DRAW
-    sta BANK_SLOT
-    jsr POSITION_SPRITES
+    jsr Halt_KernelMain
 
 HALT_OVERSCAN: SUBROUTINE ; 30 scanlines
     sta WSYNC
@@ -78,7 +75,8 @@ HtTask_LoadRoom: SUBROUTINE
     rts
 .continue
 
-    jsr Halt_SetKernelRoomScroll1
+    lda #HALT_KERNEL_HUD_SCROLL
+    sta wHaltKernelId
     lda #SLOT_F0_ROOM
     sta BANK_SLOT
     jsr LoadRoom
@@ -115,6 +113,36 @@ Halt_IncTask: SUBROUTINE
     inx
     stx wHaltTask
     rts
+
+Halt_KernelMain: SUBROUTINE
+    ldx rHaltKernelId
+    beq Halt_Kernel_HUD_WORLD
+    dex
+    beq Halt_Kernel_HUD_WORLD
+    dex
+    beq Halt_Kernel_HUD_SCROLL
+    dex
+    beq Halt_Kernel_PAUSE_WORLD
+.infinite
+    bne .infinite
+
+Halt_Kernel_HUD_WORLD:
+    jsr Halt_SetKernelWorld
+    lda #SLOT_F4_MAIN_DRAW
+    sta BANK_SLOT
+    jmp DRAW_HUD_WORLD
+
+Halt_Kernel_HUD_SCROLL:
+    jsr Halt_SetKernelRoomScroll1
+    lda #SLOT_F4_MAIN_DRAW
+    sta BANK_SLOT
+    jmp DRAW_HUD_WORLD
+
+Halt_Kernel_PAUSE_WORLD:
+    jsr Halt_SetKernelWorld
+    lda #SLOT_F4_PAUSE_DRAW_WORLD
+    sta BANK_SLOT
+    jmp DRAW_PAUSE_WORLD
 
 Halt_SetKernelWorld: SUBROUTINE
     lda <[#KERNEL_WORLD_RESUME-4]

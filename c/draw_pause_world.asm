@@ -5,16 +5,14 @@
     INCLUDE "c/draw_data.asm"
 
 DRAW_PAUSE_WORLD:
-
     ldy rHaltWorldDY
     sty roomDY
     INCLUDE "c/draw_world_init.asm"
 
-
-KERNEL_PAUSE_WORLD_MAIN:  ; 192 scanlines
+KERNEL_MAIN_PAUSE_WORLD:  ; 192 scanlines
     sta WSYNC
     lda INTIM
-    bne KERNEL_PAUSE_WORLD_MAIN
+    bne KERNEL_MAIN_PAUSE_WORLD
     sta VBLANK
     lda #0
     sta COLUBK
@@ -52,10 +50,12 @@ KERNEL_PAUSE_WORLD_MAIN:  ; 192 scanlines
     ldy rHaltWorldDY
     lda .RoomHeight,y
     tay
-KERNEL_PAUSE_WORLD_RESUME:
+
     jsr PosWorldObjects
     sta WSYNC
 
+    ; y = room height
+KERNEL_PAUSE_WORLD_RESUME:
     lda #$FF
     sta PF0
     sta PF1

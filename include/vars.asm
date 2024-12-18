@@ -683,8 +683,14 @@ RF_WC_ROOM_DARK = $40
  RW RoomPF2Type,        ds 1
  ROOM_PF2 TRIFORCE, 35
 
+ RW HALT_VARS, = .
  RW HaltKernelDraw,     ds 2
  RW HaltKernelId,       ds 1
+HALT_KERNEL_HUD_WORLD_NOPL  = 0
+HALT_KERNEL_HUD_WORLD       = 1
+HALT_KERNEL_HUD_SCROLL      = 2
+HALT_KERNEL_PAUSE_WORLD     = 3
+; HALT_KERNEL_PAUSE_SCROLL
  RW HaltVState,         ds 1 ; negative is Vertical Blank, else Overscan
 HALT_VSTATE_TOP = #$80
  RW HaltFrame,          ds 1
@@ -699,6 +705,7 @@ HALT_TYPE_ENTER_DUNG    = 6
 HALT_TYPE_ENTER_CAVE    = 7
  RW HaltTask,           ds 1
  RW HaltWorldDY,        ds 1
+HALT_VARS_SIZE = . - rHALT_VARS
 RW_WORLD        = .
 
     ORG $F900

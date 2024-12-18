@@ -264,6 +264,7 @@ MapData_RoomOffsetX:
     INCLUDE "gen/world/mapdata_room_offset_x.asm"
     .align $80
     INCLUDE "spr/spr_num_r.asm"
+    INCLUDE "c/PosHudObjects.asm"
     LOG_BANK_SIZE "-BANK 17- Sprites HUD", BANK_17
 
 ; ****************************************
@@ -859,6 +860,7 @@ BANK_55
     INCLUDE "ht/HtTask_PlayFlute.asm"
     INCLUDE "ht/HtTask_RoomScrollStart.asm"
     INCLUDE "ht/HtTask_RoomScrollEnd.asm"
+    INCLUDE "c/LoadRoom_Subworld.asm"
 
     LOG_BANK_SIZE "-BANK 55- HALT_RoomScroll", BANK_55
 

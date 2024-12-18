@@ -135,12 +135,17 @@ DEG_270         = DEG_090 | ATAN2_SIGNY
 ROOM_MAZE_1 = $1B
 ROOM_MAZE_2 = $61
 
-; Segment Constants
+
+; ****************************************
+; * Segment Constants                    *
+; ****************************************
+
 RAMSEG_F0 = $00
 RAMSEG_F4 = $40
 RAMSEG_F8 = $80
 RAMSEG_FC = $C0
 
+; Slot registers
 BANK_SLOT_RAM   = $3E
 BANK_SLOT       = $3F
 
@@ -156,6 +161,7 @@ SLOT_F0_TEXT        = RAMSEG_F0 | 9
 SLOT_F0_SHOP        = RAMSEG_F0 | 10
 
 SLOT_F0_ROOM    = RAMSEG_F0 | 11
+SLOT_F4_ROOM2   = SEG_55
 
 SLOT_F4_PF_OVER = RAMSEG_F4 | 12
 SLOT_F4_PF_DUNG = RAMSEG_F4 | 13

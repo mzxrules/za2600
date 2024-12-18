@@ -5,7 +5,8 @@
 ROOMSCROLL_TIMER_EW = 64+1
 
 HtTask_RoomScrollStart: SUBROUTINE
-    jsr Halt_SetKernelWorld
+    lda #HALT_KERNEL_HUD_WORLD_NOPL
+    sta wHaltKernelId
 
     ldy rHaltType
     ldx .roomDY,y

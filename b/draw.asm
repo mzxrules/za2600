@@ -1,10 +1,11 @@
 ;==============================================================================
 ; mzxrules 2021
 ;==============================================================================
+
+DRAW_HUD_WORLD: SUBROUTINE
 ;==============================================================================
-; Pre-Position Sprites
+; World Draw Setup
 ;==============================================================================
-POSITION_SPRITES: SUBROUTINE
 
 ; room draw start
     ldy KernelId
@@ -145,12 +146,12 @@ POSITION_SPRITES: SUBROUTINE
     bpl .hpBarLoop
 
 ;===================================================
-; Kernel Main
+; Kernel Main - HUD and World
 ;===================================================
-KERNEL_MAIN:  ; 192 scanlines
+KERNEL_MAIN_HUD_WORLD:  ; 192 scanlines
     sta WSYNC
     lda INTIM
-    bne KERNEL_MAIN
+    bne KERNEL_MAIN_HUD_WORLD
     sta VBLANK
 
 KERNEL_HUD:
@@ -318,10 +319,12 @@ KERNEL_HUD_LOOP:
     lda INTIM
     bne .waitTimerLoop
     ; The miracle scanline?!
-    ; Test if World Kernel or RoomScroll Kernel should be rendered
-    lda SLOT_FC_IDENT
-    cmp #1
-    beq .kswap_KERNEL_WORLD
+    lda rHaltKernelId
+    bne .kernel_draw_player ; #HALT_KERNEL_HUD_WORLD_NOPL
+    lda #$DC
+    sta plDY
+    sta m0DY
+.kernel_draw_player
     jmp (rHaltKernelDraw)
 
 .kswap_KERNEL_WORLD
@@ -329,7 +332,6 @@ KERNEL_HUD_LOOP:
 
     ldy #ROOM_HEIGHT
 KERNEL_WORLD_RESUME:
-
     lda #$FF
     sta PF0
     sta PF1
@@ -339,7 +341,7 @@ KERNEL_WORLD_RESUME:
 
     jmp rKERNEL_WORLD ; JUMP WORLD KERNEL
 
-    LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN
+    LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN_HUD_WORLD
     align $20
 
 .HUD_SPLIT_TEST:

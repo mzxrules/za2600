@@ -4,6 +4,8 @@
 
 ; Overscan routine
 HtTask_EnterLoc: SUBROUTINE
+    lda #HALT_KERNEL_PAUSE_WORLD
+    sta wHaltKernelId
     lda rHaltVState
     bpl .continue ; not #HALT_VSTATE_TOP
     ldx rHaltFrame
