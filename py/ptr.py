@@ -144,6 +144,8 @@ HaltTask_Table = [
     "HtTask_AnimSouth",         "SEG_55",
     "HtTask_PlayFlute",         "SEG_55",
     "HtTask_EnterLoc",          "SEG_55",
+    "HtTask_AnimDeath",         "SEG_55",
+    "HtTask_IdleGameOver",      "SEG_55",
     "HtTask_None",              "SEG_HA",
 ]
 
@@ -193,7 +195,6 @@ RoomScript_Table = [
     "Rs_Stairs",                    "RsInit_None",
     "Rs_Cave",                      "RsInit_None",
     "Rs_Waterfall",                 "RsInit_Waterfall",
-    "Rs_GameOver",                  "RsInit_None",
 ]
 
 GiValues_Table = [

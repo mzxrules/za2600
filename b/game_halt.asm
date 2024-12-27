@@ -49,7 +49,11 @@ HALT_OVERSCAN_WAIT:
     sta WSYNC
     jmp HALT_VERTICAL_SYNC
 
-
+;==============================================================================
+; HALT_GAME
+;----------
+; Y = HaltType
+;==============================================================================
 HALT_GAME: SUBROUTINE
     sty wHaltType
 

@@ -37,7 +37,7 @@ PAUSE_RETURN:
     jsr DoorCheck
     jsr UpdateDoors
 .skipRoomChecks
-ROOMSCROLL_RETURN:  ; .roomLoadCpuSkip
+LOADROOM_RETURN:
 
     lda #SLOT_F4_AU1
     sta BANK_SLOT
@@ -274,12 +274,8 @@ endPFCollision
 ; Game Over check
     ldy plHealth
     bne .skipGameOver
-    lda #SLOT_F0_RS0
-    sta BANK_SLOT
-    lda #SLOT_F4_RS1
-    sta BANK_SLOT
-
-    jsr Rs_GameOver
+    ldy #HALT_TYPE_GAME_OVER
+    jmp HALT_GAME_FC
 .skipGameOver
 
 OVERSCAN_WAIT:
@@ -399,10 +395,11 @@ RESPAWN: SUBROUTINE
     lda #$18
     sta plHealth
 SPAWN_AT_DEFAULT: SUBROUTINE
-    lda #0
-    sta plState
     lda #MS_PLAY_RSEQ
     sta SeqFlags
+SPAWN_AT_DEFAULT_PRESERVE_SEQ:
+    lda #0
+    sta plState
 
     lda #$40
     sta plX

@@ -59,6 +59,11 @@ HALT_TASK_SCRIPTS = [
     [
         "HtTask_EnterLoc"
     ],
+    # HALT_TYPE_GAME_OVER
+    [
+        "HtTask_AnimDeath",
+        "HtTask_IdleGameOver",
+    ],
 ]
 
 def build_taskscript():

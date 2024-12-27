@@ -522,7 +522,6 @@ BANK_34
     INCLUDE "gen/Rs_DelLUT.asm"
     INCLUDE "gen/CaveType_DelLUT.asm"
     INCLUDE "b/rs.asm"
-    INCLUDE "rs/Rs_GameOver.asm"
     INCLUDE "rs/Rs_Maze.asm"
     INCLUDE "rs/Rs_RaftSpot.asm"
     INCLUDE "rs/Rs_ShoreItem.asm"
@@ -861,6 +860,8 @@ BANK_55
     INCLUDE "ht/HtTask_RoomScrollStart.asm"
     INCLUDE "ht/HtTask_RoomScrollEnd.asm"
     INCLUDE "c/LoadRoom_Subworld.asm"
+    INCLUDE "ht/HtTask_AnimDeath.asm"
+    INCLUDE "ht/HtTask_IdleGameOver.asm"
 
     LOG_BANK_SIZE "-BANK 55- HALT_RoomScroll", BANK_55
 

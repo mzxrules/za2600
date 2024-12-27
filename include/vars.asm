@@ -693,6 +693,7 @@ HALT_KERNEL_PAUSE_WORLD     = 3
 ; HALT_KERNEL_PAUSE_SCROLL
  RW HaltVState,         ds 1 ; negative is Vertical Blank, else Overscan
 HALT_VSTATE_TOP = #$80
+HALT_VSTATE_BOT = #$00
  RW HaltFrame,          ds 1
  RW HaltType,           ds 1
 HALT_TYPE_RSCR_NONE     = 0
@@ -703,6 +704,7 @@ HALT_TYPE_RSCR_SOUTH    = 4
 HALT_TYPE_PLAY_FLUTE    = 5
 HALT_TYPE_ENTER_DUNG    = 6
 HALT_TYPE_ENTER_CAVE    = 7
+HALT_TYPE_GAME_OVER     = 8
  RW HaltTask,           ds 1
  RW HaltWorldDY,        ds 1
 HALT_VARS_SIZE = . - rHALT_VARS

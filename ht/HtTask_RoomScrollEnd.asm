@@ -24,4 +24,4 @@ HtTask_RoomScrollEnd: SUBROUTINE
     txs
     inx ; #0
     stx wHaltType
-    jmp MAIN_ROOMSCROLL
+    jmp MAIN_LOADROOM_RETURN
