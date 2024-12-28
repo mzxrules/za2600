@@ -3,9 +3,12 @@
 ;==============================================================================
 
 EnDraw_GreatFairy: SUBROUTINE
-
     lda #>SprItem0
     sta enSpr+1
+
+; Wait for initialization before drawing
+    bit enState
+    bpl .flicker
 
     lda enGFairyDie
     bne .custom

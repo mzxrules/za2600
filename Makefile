@@ -8,6 +8,7 @@ zelda_dep := main.asm \
   $(wildcard c/*.asm) \
   $(wildcard en/*.asm) \
   $(wildcard ht/*.asm) \
+  $(wildcard pl/*.asm) \
   $(wildcard rs/*.asm) \
   $(wildcard spr/*.asm) \
   $(wildcard scroll/*.asm) \

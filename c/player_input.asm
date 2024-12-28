@@ -235,11 +235,6 @@ PlayerItem: SUBROUTINE
     jsr PlayerUseItem
     jsr PlayerUpdateItem
     jsr PlayerUpdateSecondaryItem
-    jsr PlayerDrawItem
-
-    ldx m0X
-    lda Obj_ClampXLUT,x
-    sta m0X
     rts
 
 PlayerUseItem: SUBROUTINE
@@ -282,36 +277,4 @@ PlayerUpdateSecondaryItem: SUBROUTINE
     lda PlUpdateItemL+8,x
     pha
 .rts
-    rts
-
-PlayerDrawItem: SUBROUTINE
-    ldy plItemTimer ; Expected in some draw functions
-    beq .drawSecondary
-    lda plItem2Time
-    ror
-    bcs .drawSecondary
-
-    lda plState2
-    and #PS_ACTIVE_ITEM
-    tax
-    lda PlDrawItemH,x
-    pha
-    lda PlDrawItemL,x
-    pha
-    rts
-.drawSecondary
-    lda plItem2Time
-    beq PlayerDrawNone
-    lda plState3
-    and #PS_ACTIVE_ITEM2
-    tax
-    lda PlDrawItemH+8,x
-    pha
-    lda PlDrawItemL+8,x
-    pha
-    rts
-
-PlayerDrawNone:
-    lda #$80
-    sta m0Y
     rts

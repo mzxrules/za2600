@@ -2,49 +2,11 @@
 ; mzxrules 2024
 ;==============================================================================
 
-WeaponWidth:
-WeaponWidth_4px_thick:
-    .byte $20, $20, $10, $10
-WeaponWidth_8px_thick:
-    .byte $30, $30, $10, $10
-WeaponWidth_4px_thin:
-    .byte $20, $20, $00, $00
-WeaponWidth_8px_thin:
-    .byte $30, $30, $00, $00
-
-
-WeaponHeight:
-WeaponHeight_4px_thick:
-    .byte 1, 1, 3, 3
-WeaponHeight_8px_thick:
-    .byte 1, 1, 7, 7
-WeaponHeight_4px_thin:
-    .byte 0, 0, 3, 3
-WeaponHeight_8px_thin:
-    .byte 0, 0, 7, 7
-
-WeaponOffX:
-WeaponOffX_4px:
-    .byte -2, 8, 4, 4
-WeaponOffX_8px:
-    .byte -6, 8, 4, 4
-
-WeaponOffY:
-WeaponOffY_4px:
-    .byte 3, 3, 7, -3
-WeaponOffY_8px:
-    .byte 3, 3, 7, -7
-
-
 BoxOffX:  ; Fire, Bomb, Magic
     .byte -4, 10, 3, 3
 BoxOffY:  ; Fire, Bomb, Magic
     .byte 2, 2, 9, -5
 
-    .byte -2,  4, -8, 8, -8, 4,  4, -8, 8, -8, 4
-BombAnimDeltaX:
-    .byte -2, -4,  8, 0, -8, 4, -4,  8, 0, -8, 4
-BombAnimDeltaY:
 
 PlayerUseArrow: SUBROUTINE
     lda itemRupees
@@ -64,16 +26,22 @@ PlayerUseArrow: SUBROUTINE
 
     lda #SFX_ARROW
     sta SfxFlags
-    lda WeaponOffX_8px,y
+    lda .WeaponOffX_8px,y
     clc
     adc plX
     sta plm0X
-    lda WeaponOffY_8px,y
+    lda .WeaponOffY_8px,y
     clc
     adc plY
     sta plm0Y
 .rts
     rts
+
+.WeaponOffX_8px:
+    .byte -6, 8, 4, 4
+
+.WeaponOffY_8px:
+    .byte 3, 3, 7, -7
 
 PlayerUpdateArrow: SUBROUTINE
     ldy plItemDir
@@ -93,32 +61,6 @@ PlayerUpdateArrow: SUBROUTINE
     sta plm0Y
     sta plm0X
 .rts
-    rts
-
-PlayerDrawArrow: SUBROUTINE
-    ldy plItemDir
-    lda WeaponWidth_8px_thin,y
-    sta wNUSIZ0_T
-    lda WeaponHeight_8px_thin,y
-    sta wM0H
-    lda plm0X
-    sta m0X
-    lda plm0Y
-    sta m0Y
-    rts
-
-PlayerDrawSwordFx: SUBROUTINE
-    ldy plItem2Dir
-    lda WeaponWidth_4px_thick,y
-    sta wNUSIZ0_T
-    lda WeaponHeight_4px_thick,y
-    sta wM0H
-    ldx plm1X
-    inx
-    stx m0X
-    ldx plm1Y
-    inx
-    stx m0Y
     rts
 
 PlayerUseCandle: SUBROUTINE
@@ -178,19 +120,6 @@ PlayerUpdateFireFx: SUBROUTINE
     sta plState3
     rts
 
-PlayerDrawFireFx: SUBROUTINE
-    lda #$20
-    sta wNUSIZ0_T
-    lda plItem2Time
-    and #3
-    sta wM0H
-    lda plm1X
-    sta m0X
-    lda plm1Y
-    sta m0Y
-    rts
-
-
 PlayerUseBomb: SUBROUTINE
     lda itemBombs
     and #$1F
@@ -203,45 +132,6 @@ PlayerUseBomb: SUBROUTINE
 
     ldx #OBJ_PLM0
     jmp PlayerPlaceItemNearbyTypeB
-
-PlayerDrawBomb: SUBROUTINE
-    lda plm0Y
-    bmi .draw_initial
-    cpy #ITEM_ANIM_BOMB_DETONATE
-    bmi .draw_initial
-
-.drawBombAnimation
-    bne .skipDetonateEffect
-    lda #SFX_BOMB
-    sta SfxFlags
-
-.skipDetonateEffect
-    lda #7
-    sta wM0H
-    lda #$30
-    sta wNUSIZ0_T
-
-    clc
-    lda BombAnimDeltaX-$100,y
-    adc plm0X
-    sta m0X
-    clc
-    lda BombAnimDeltaY-$100,y
-    adc plm0Y
-    sta m0Y
-    rts
-.draw_initial
-
-; Initial Animation state
-    lda #$20
-    sta wNUSIZ0_T
-    lda #3
-    sta wM0H
-    lda plm0X
-    sta m0X
-    lda plm0Y
-    sta m0Y
-    rts
 
 PlayerEquipSword: SUBROUTINE
     lda plState2
@@ -283,59 +173,6 @@ PlayerUseMeat: SUBROUTINE
 
 PlayerUseRang:
     rts
-
-PlayerDrawSword: SUBROUTINE
-    lda #0
-    sta Temp0
-    bpl .draw_continue
-
-PlayerDrawWand:
-    lda #8
-    sta Temp0
-    bpl .draw_continue
-
-.draw_continue
-    lda plDir
-    sta plItemDir
-    ora Temp0
-    cpy #ITEM_ANIM_SWORD_STAB_LONG
-    bmi .endSword
-    cpy #ITEM_ANIM_SWORD_STAB_SHORT
-    beq .drawSword4
-    clc
-    ora #4 ; Draw Sword 8
-.drawSword4
-    tay
-    lda WeaponWidth,y
-    sta wNUSIZ0_T
-    lda WeaponHeight,y
-    sta wM0H
-
-; the next tables are only 8 bytes each
-    tya
-    and #7
-    tay
-
-    lda WeaponOffX,y
-    clc
-    adc plX
-.x_underflow_fix
-    cmp #$C0
-    bcc .skip_fix
-    lda #$20
-    sta wNUSIZ0_T
-    lda #-2 -1
-    adc plX
-.skip_fix
-    sta m0X
-    lda WeaponOffY,y
-    clc
-    adc plY
-    sta m0Y
-.endSword
-.rts
-    rts
-
 
 ; Flute State
 ; plItemDir bvs resumes tornado after room transition
@@ -461,40 +298,8 @@ PlayerFluteContinueFromTransition: SUBROUTINE
     sta plItem2Time
     rts
 
-
-PlayerDrawFluteFx: SUBROUTINE
-    lda plItem2Time
-    and #3
-    tax
-    lda plm1Y
-    clc
-    adc PlayerTornadoAnimOffY-1,x
-    sta m0Y
-    lda PlayerTornadoAnimWidth-1,x
-    sta wNUSIZ0_T
-    lda PlayerTornadoAnimHeight-1,x
-    sta wM0H
-    lda plm1X
-    clc
-    adc PlayerTornadoAnimOffX-1,x
-    sta m0X
-    rts
-
-
 PlayerFluteDest:
     .byte $37, $3C, $74, $45, $0B, $22, $42, $5C
-
-PlayerTornadoAnimOffX:
-    .byte 2, -2, 0
-
-PlayerTornadoAnimOffY:
-    .byte 2, 4, 0
-
-PlayerTornadoAnimHeight:
-    .byte 2, 2, 1
-
-PlayerTornadoAnimWidth:
-    .byte $20, $30, $10
 
 
 PlayerUseWand: SUBROUTINE
@@ -594,17 +399,6 @@ PlayerUpdateWandFx: SUBROUTINE
     rts
 
 
-PlayerDrawWandFx: SUBROUTINE
-    lda #$20
-    sta wNUSIZ0_T
-    lda #3
-    sta wM0H
-    lda plm1X
-    sta m0X
-    lda plm1Y
-    sta m0Y
-    rts
-
 PlayerXYDist2:
     .byte -2, 2, 2, -2
 
@@ -627,22 +421,4 @@ PlayerUpdateMeatFx: SUBROUTINE
     sta plItem2Time
 .rts
 PlayerUpdateNone:
-    rts
-
-PlayerDrawMeatFx: SUBROUTINE
-    lda plItem2Time
-    cmp #$F0
-    bcc .drawNormal
-    and #$4
-    bne .drawNormal
-    jmp PlayerDrawNone
-.drawNormal
-    lda #$20
-    sta wNUSIZ0_T
-    lda #2
-    sta wM0H
-    lda plm1X
-    sta m0X
-    lda plm1Y
-    sta m0Y
     rts

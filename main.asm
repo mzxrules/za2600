@@ -409,12 +409,15 @@ Pause_MapPlot:
 ; ****************************************
     SEG Bank27
     ORG $6C00
-    RORG $FC00
+    RORG $F400
 
 BANK_27
-    LOG_BANK_SIZE "-BANK 27- RESERVED", BANK_27
-    ORG $6FFF ; bank id
-    .byte 27
+    INCLUDE "gen/bit_mirror_nybble_swap.asm"
+    INCLUDE "gen/bit_nybble_swap.asm"
+    INCLUDE "ht/HtTask_TransferA.asm"
+    INCLUDE "ht/HtTask_TransferB.asm"
+    INCLUDE "gen/bl_unmirrored_lut.asm"
+    LOG_BANK_SIZE "-BANK 27- HtTask_Transfer", BANK_27
 
 ; ****************************************
 ; *               BANK 28                *
@@ -424,13 +427,20 @@ BANK_27
     RORG $F400
 
 BANK_28
-    INCLUDE "gen/bit_mirror_nybble_swap.asm"
-    INCLUDE "gen/bit_nybble_swap.asm"
-    INCLUDE "ht/HtTask_TransferA.asm"
-    INCLUDE "ht/HtTask_TransferB.asm"
-    INCLUDE "gen/bl_unmirrored_lut.asm"
+    INCLUDE "gen/Obj_ClampXLUT.asm"
+    INCLUDE "pl/PlDraw_ItemDel.asm"
+    INCLUDE "gen/PlDrawItem_DelLUT.asm"
+    INCLUDE "pl/PlDraw_CommonData.asm"
+    INCLUDE "pl/PlDraw_Arrow.asm"
+    INCLUDE "pl/PlDraw_Bomb.asm"
+    INCLUDE "pl/PlDraw_FireFx.asm"
+    INCLUDE "pl/PlDraw_FluteFx.asm"
+    INCLUDE "pl/PlDraw_MeatFx.asm"
+    INCLUDE "pl/PlDraw_Sword.asm"
+    INCLUDE "pl/PlDraw_SwordFx.asm"
+    INCLUDE "pl/PlDraw_WandFx.asm"
 
-    LOG_BANK_SIZE "-BANK 28- Halt RoomScroll 2", BANK_28
+    LOG_BANK_SIZE "-BANK 28- PlDraw", BANK_28
 
 ; ****************************************
 ; *               BANK 29                *
@@ -440,7 +450,6 @@ BANK_28
     RORG $F000
 
 BANK_29
-    INCLUDE "gen/Obj_ClampXLUT.asm"
     INCLUDE "c/player_input.asm"
 
     LOG_BANK_SIZE "-BANK 29- Player", BANK_29
@@ -455,7 +464,6 @@ BANK_29
 BANK_30
     INCLUDE "gen/PlUseItem_DelLUT.asm"
     INCLUDE "gen/PlUpdateItem_DelLUT.asm"
-    INCLUDE "gen/PlDrawItem_DelLUT.asm"
     INCLUDE "c/player_item.asm"
     LOG_BANK_SIZE "-BANK 30- Player RESERVE", BANK_30
 
@@ -837,11 +845,10 @@ BANK_53
 ; ****************************************
     SEG Bank54
     ORG $D800
-    RORG $FC00
+    RORG $F400
 BANK_54
-    INCLUDE "scroll/kernel_scroll2.asm"
 
-    LOG_BANK_SIZE "-BANK 54- SCROLL_KERNEL_MAIN", BANK_54
+    LOG_BANK_SIZE "-BANK 54- ", BANK_54
 
 
 ; ****************************************
@@ -864,7 +871,7 @@ BANK_55
     INCLUDE "ht/HtTask_AnimDeath.asm"
     INCLUDE "ht/HtTask_IdleGameOver.asm"
 
-    LOG_BANK_SIZE "-BANK 55- HALT_RoomScroll", BANK_55
+    LOG_BANK_SIZE "-BANK 55- HtTask", BANK_55
 
 ; End
 

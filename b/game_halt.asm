@@ -12,6 +12,10 @@ HALT_VERTICAL_BLANK: SUBROUTINE
     sta BANK_SLOT
     jsr UpdateAudio
 
+    lda #SLOT_F4_PLDRAW
+    sta BANK_SLOT
+    jsr PlDraw_Item
+
     lda #SLOT_F0_ENDRAW
     sta BANK_SLOT
     jsr EnDraw_Del

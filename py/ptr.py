@@ -547,21 +547,21 @@ tbl = [
     genPtrTable=True,
     genConstants=False,
     vals=[
-        "PlayerDrawSword",  # Sword
-        "PlayerDrawBomb",   # Bomb
-        "PlayerDrawArrow",  # Arrow
-        "PlayerDrawSword",  # Candle
-        "PlayerDrawNone",   # Flute
-        "PlayerDrawWand",   # Wand
-        "PlayerDrawSword",  # Meat
-        "PlayerDrawNone",   # Rang
+        "PlDraw_Sword",  # Sword
+        "PlDraw_Bomb",   # Bomb
+        "PlDraw_Arrow",  # Arrow
+        "PlDraw_Sword",  # Candle
+        "PlDraw_None",   # Flute
+        "PlDraw_Wand",   # Wand
+        "PlDraw_Sword",  # Meat
+        "PlDraw_None",   # Rang
 
-        "PlayerDrawSwordFx",
-        "PlayerDrawFireFx",
-        "PlayerDrawFluteFx",
-        "PlayerDrawFluteFx",
-        "PlayerDrawWandFx",
-        "PlayerDrawMeatFx",
+        "PlDraw_SwordFx",
+        "PlDraw_FireFx",
+        "PlDraw_FluteFx",
+        "PlDraw_FluteFx",
+        "PlDraw_WandFx",
+        "PlDraw_MeatFx",
     ],
     bankLut=None),
     GameEnum("PlItemPick", "PlItemPick",

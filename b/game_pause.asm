@@ -134,6 +134,10 @@ ITER    SET ITER+1
     bit PauseState
     bvs .skip_draw_en
 
+    lda #SLOT_F4_PLDRAW
+    sta BANK_SLOT
+    jsr PlDraw_Item
+
     lda #SLOT_F0_ENDRAW
     sta BANK_SLOT
     jsr EnDraw_Del
