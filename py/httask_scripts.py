@@ -8,7 +8,7 @@ HALT_TASK_SCRIPTS = [
         "HtTask_RoomScrollStart",
         "HtTask_TransferA",
         "HtTask_LoadRoom",
-        "HtTask_TransferA",
+        "HtTask_TransferB",
         "HtTask_RoomScrollEnd",
     ],
     # HALT_TYPE_RSCR_WEST

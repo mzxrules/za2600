@@ -86,13 +86,13 @@ PlayerUpdateArrow: SUBROUTINE
     cmp PlayerXYBoardLimitMin,y
     bmi .offScreen
     cmp PlayerXYBoardLimitMax,y
-    bpl .offScreen
-    rts
+    bmi .rts
 
 .offScreen
     lda #$80
     sta plm0Y
     sta plm0X
+.rts
     rts
 
 PlayerDrawArrow: SUBROUTINE
@@ -147,9 +147,7 @@ PlayerUseCandle: SUBROUTINE
     sta plState3
 
     ldx #OBJ_PLM1
-    jsr PlayerPlaceNearbyTypeB
-    sty plItem2Dir
-    rts
+    jmp PlayerPlaceItemNearbyTypeB
 
 PlayerUpdateFireFx: SUBROUTINE
     lda plItem2Time
@@ -204,9 +202,7 @@ PlayerUseBomb: SUBROUTINE
     sta plItemTimer
 
     ldx #OBJ_PLM0
-    jsr PlayerPlaceNearbyTypeB
-    sty plItemDir
-    rts
+    jmp PlayerPlaceItemNearbyTypeB
 
 PlayerDrawBomb: SUBROUTINE
     lda plm0Y
@@ -283,9 +279,7 @@ PlayerUseMeat: SUBROUTINE
     sta plState3
 
     ldx #OBJ_PLM1
-    jsr PlayerPlaceNearbyTypeB
-    sty plItem2Dir
-    rts
+    jmp PlayerPlaceItemNearbyTypeB
 
 PlayerUseRang:
     rts
@@ -363,18 +357,20 @@ PlayerUpdateFluteFx: SUBROUTINE
     bne .skipTimerInc
     inc plItem2Time
 .skipTimerInc
-    inc plm1X
-    inc plm1X
+; assume plm1X is never negative
+    clc
+    lda plm1X
+    adc #2
+    sta plm1X
 
 ; Check player collision
 ; Have fun analyzing this one
     ; x
-    lda plm1X
+    ; A plm1X
     sbc plX
-    adc #7
-    bmi .rts
-    cmp #12
-    bpl .rts
+    sbc #8-1
+    adc #4+8-1
+    bcc .rts
     ; y
     lda plm1Y
     sbc plY
@@ -407,6 +403,9 @@ PlayerUpdateFluteFx: SUBROUTINE
     lda PlayerFluteDest,x
     sta roomIdNext
 
+    lda #HALT_TYPE_RSCR_EAST
+    sta wHaltType
+
     lda roomFlags
     ora #RF_EV_LOAD
     sta roomFlags
@@ -434,10 +433,10 @@ PlayerUpdateFluteFx2: SUBROUTINE
 .lastFrame
 ; Spawn Player
     lda plState
-    and #~PS_LOCK_ALL
+    and #~#PS_LOCK_ALL
     sta plState
     lda plItem2Dir
-    and #~PS_CATCH_WIND
+    and #~#PS_CATCH_WIND
     sta plItem2Dir
     lda #$34
     sta plX
@@ -452,7 +451,7 @@ PlayerFluteContinueFromTransition: SUBROUTINE
     ora #PS_LOCK_ALL
     sta plState
     lda plItem2Dir
-    and #~PS_CATCH_WIND
+    and #~#PS_CATCH_WIND
     sta plItem2Dir
     lda #$10
     sta plm1Y
@@ -525,8 +524,7 @@ PlayerUpdateWand: SUBROUTINE
 
 ; Set Magic
     ldx #OBJ_PLM1
-    jsr PlayerPlaceNearbyTypeB
-    sty plItem2Dir
+    jsr PlayerPlaceItemNearbyTypeB
     lda #PLAYER_WAND_FX
     sta plState3
     lda #-80
@@ -545,8 +543,7 @@ PlayerUpdateSword:
     bne .rts
 
     ldx #OBJ_PLM1
-    jsr PlayerPlaceNearbyTypeB
-    sty plItem2Dir
+    jsr PlayerPlaceItemNearbyTypeB
     lda #PLAYER_SWORD_FX
     sta plState3
     lda #-80
@@ -559,9 +556,13 @@ PlayerUpdateSword:
 ;==============================================================================
 ; Position a boxlike item next to the player
 ;-----------------------
-;   X = ObjectId
+;   X = ObjectId (OBJ_PLM0,1)
 ;   Y returns plDir
 ;==============================================================================
+PlayerPlaceItemNearbyTypeB: SUBROUTINE
+    lda plDir
+    sta plItemDir-#OBJ_PLM0,x
+
 PlayerPlaceNearbyTypeB: SUBROUTINE
     ldy plDir
     lda plX

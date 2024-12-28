@@ -144,6 +144,9 @@ Mul8:
     .byte 0x80, 0x88, 0x90, 0x98
 
 VERTICAL_SYNC: SUBROUTINE
+    lda #$80
+    sta m0Y
+    sta m1Y
     lda #SLOT_F0_SPR_HUD
     sta BANK_SLOT
     lda #HALT_VSTATE_TOP | #$02

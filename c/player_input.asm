@@ -301,7 +301,7 @@ PlayerDrawItem: SUBROUTINE
     rts
 .drawSecondary
     lda plItem2Time
-    beq .noDraw
+    beq PlayerDrawNone
     lda plState3
     and #PS_ACTIVE_ITEM2
     tax
@@ -312,7 +312,6 @@ PlayerDrawItem: SUBROUTINE
     rts
 
 PlayerDrawNone:
-.noDraw
     lda #$80
     sta m0Y
     rts
