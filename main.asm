@@ -440,6 +440,7 @@ BANK_28
     RORG $F000
 
 BANK_29
+    INCLUDE "gen/Obj_ClampXLUT.asm"
     INCLUDE "c/player_input.asm"
 
     LOG_BANK_SIZE "-BANK 29- Player", BANK_29

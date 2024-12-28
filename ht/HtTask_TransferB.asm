@@ -2,9 +2,6 @@
 ; mzxrules 2024
 ;==============================================================================
 UnmirrorRoomB_Blackout: SUBROUTINE
-    lda #COLOR_PF_GRAY_D
-    sta wCOLUPF_B+19
-    sta wCOLUBK_B+19
 .loop_blackout
     lda #$FF
     sta wPF1_0B,y
@@ -16,21 +13,31 @@ UnmirrorRoomB_Blackout: SUBROUTINE
     bpl .loop_blackout
     rts
 
-HtTask_TransferB:  ; SUBROUTINE
-    jsr Halt_IncTask
+HtTask_TransferB_Color: SUBROUTINE
+    ldy #ROOM_PX_HEIGHT-1
+    sty wTransferB
+.loop
+    lda rFgColor
+    sta wCOLUPF_B,y
+    lda rBgColor
+    sta wCOLUBK_B,y
+    dey
+    bpl .loop
+    rts
 
-UnmirrorRoomB:
+HtTask_TransferB: SUBROUTINE
     lda #SLOT_RW_F0_ROOMSCROLL
     sta BANK_SLOT_RAM
 
-    ldy #ROOM_PX_HEIGHT-1
+    ldy rTransferB ; #ROOM_PX_HEIGHT-1 or #0
+    beq HtTask_TransferB_Color
+    lda #0
+    sta wTransferB
+    jsr Halt_IncTask
+
+UnmirrorRoomB:
     bit rRoomColorFlags
     bvs UnmirrorRoomB_Blackout ; #RF_WC_ROOM_DARK
-
-    lda rFgColor
-    sta wCOLUPF_B+19
-    lda rBgColor
-    sta wCOLUBK_B+19
 
 .loop
 ; Mirrored

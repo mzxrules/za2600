@@ -546,6 +546,18 @@ def get_ord_bounds_lut():
         file.write("EnMoveOrd_WallCheckLUT:\n")
         file.write(output)
 
+def get_obj_clamp():
+    table = []
+    for x in range(256):
+        if x > 0x86 and x <= 0xC2:
+            x = 0x86
+        elif x > 0xC2:
+            x = 0x00
+        table.append(x)
+
+    with open(f'gen/Obj_ClampXLUT.asm', "w") as file:
+        file.write("Obj_ClampXLUT:\n")
+        file.write(ToAsm(table,16))
 
 def get_bitcount():
     table = []
@@ -700,6 +712,7 @@ get_ord_bounds_lut()
 get_rand_8x8_spawn()
 get_pftransfer_lut()
 get_pfscroll_lut()
+get_obj_clamp()
 
 with open(f'gen/bitcount.asm', "w") as file:
     file.write(bitcountOut)

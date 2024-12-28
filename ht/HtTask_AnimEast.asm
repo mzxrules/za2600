@@ -24,7 +24,10 @@ HtTask_AnimEast: SUBROUTINE
     dey
     cpy roomScrollTemp
     bne .loop
-.rts
+
+    lda roomTimer
+    cmp #32
+    beq HtTask_AnimEastWestColor
     rts
 
 HtTask_AnimWest: SUBROUTINE
@@ -50,9 +53,22 @@ HtTask_AnimWest: SUBROUTINE
     dey
     cpy roomScrollTemp
     bne .loop
-.rts
+
+    lda roomTimer
+    cmp #32
+    beq HtTask_AnimEastWestColor
     rts
 
+HtTask_AnimEastWestColor: SUBROUTINE
+    ldy #ROOM_PX_HEIGHT-1
+.loop_color
+    lda rCOLUPF_B,y
+    sta wCOLUPF_A,y
+    lda rCOLUBK_B,y
+    sta wCOLUBK_A,y
+    dey
+    bpl .loop_color
+    rts
 
 RSCR_EW_IndexStart
     .byte #ROOM_PX_HEIGHT-1, #[#ROOM_PX_HEIGHT/2]-1

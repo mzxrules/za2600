@@ -236,6 +236,10 @@ PlayerItem: SUBROUTINE
     jsr PlayerUpdateItem
     jsr PlayerUpdateSecondaryItem
     jsr PlayerDrawItem
+
+    ldx m0X
+    lda Obj_ClampXLUT,x
+    sta m0X
     rts
 
 PlayerUseItem: SUBROUTINE

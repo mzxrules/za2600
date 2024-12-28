@@ -146,6 +146,7 @@ HaltTask_Table = [
     "HtTask_EnterLoc",          "SEG_55",
     "HtTask_AnimDeath",         "SEG_55",
     "HtTask_IdleGameOver",      "SEG_55",
+    "HtTask_WaitVStateBottom",  "SEG_HA",
     "HtTask_None",              "SEG_HA",
 ]
 

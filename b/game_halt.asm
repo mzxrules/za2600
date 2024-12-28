@@ -116,7 +116,14 @@ Halt_IncTask: SUBROUTINE
     ldx rHaltTask
     inx
     stx wHaltTask
+.rts
     rts
+
+HtTask_WaitVStateBottom:  ; SUBROUTINE
+    lda rHaltVState
+    bmi .rts ; #HALT_VSTATE_TOP
+    jsr Halt_IncTask
+    jmp HtTask_Run
 
 Halt_KernelMain: SUBROUTINE
     ldx rHaltKernelId

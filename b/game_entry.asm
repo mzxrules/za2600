@@ -11,8 +11,8 @@
 
 ENTRY: SUBROUTINE ; Address FC00
     CLEAN_START
-; wipe ram
-    ldy #3
+; wipe extended ram
+    ldy #5
 .wipe_rambanks_loop
     sty BANK_SLOT_RAM
 .wipeRam
