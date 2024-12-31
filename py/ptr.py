@@ -99,7 +99,7 @@ Entity_Table = [
     "En_GoriyaBlue",   "SEG_47", "SEG_42", "EnDraw_None",
     "En_GoriyaMain",   "SEG_47", "SEG_42", "EnDraw_Goriya",
     "En_Keese",        "SEG_45", "SEG_45", "EnDraw_Keese",
-    "En_Pols",         "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_Pols",         "SEG_54", "SEG_42", "EnDraw_Pols",
     "En_Stalfos",      "SEG_45", "SEG_42", "EnDraw_Stalfos",
     "En_Vire",         "SEG_49", "SEG_42", "EnDraw_Vire",
     "En_VireKeese",    "SEG_45", "SEG_46", "EnDraw_Appear",

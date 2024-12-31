@@ -478,6 +478,8 @@ BANK_31
     INCLUDE "b/EnMove_Common.asm"
     INCLUDE "gen/En_DelLUT.asm"
     INCLUDE "gen/En_DelBankLUT.asm"
+    INCLUDE "el/EnCol_Room.asm"
+    INCLUDE "el/EnCol_Ball.asm"
     INCLUDE "b/en.asm"
     INCLUDE "gen/EnSysEncounterTable.asm"
     LOG_BANK_SIZE "-BANK 31- Entity Common", BANK_31
@@ -616,6 +618,8 @@ BANK_40
     INCLUDE "gen/EnMove_SeekDirLUT.asm"
     INCLUDE "b/EnMove.asm"
     INCLUDE "gen/EnMove_BallBlockedLUT.asm"
+    INCLUDE "el/EnMove_Card_BorderCheck.asm"
+    INCLUDE "el/EnMove_Card_RoomCheck.asm"
     align 128
     INCLUDE "gen/EnMove_OffgridLUT.asm"
     LOG_BANK_SIZE "-BANK 40- Entity Movement", BANK_40
@@ -664,6 +668,7 @@ BANK_42
     INCLUDE "en/Endraw_Zol.asm"
     INCLUDE "en/Endraw_Gel.asm"
     INCLUDE "en/EnDraw_Lynel.asm"
+    INCLUDE "en/EnDraw_Pols.asm"
 
     INCLUDE "gen/mesg_digits.asm"
     INCLUDE "en/EnDraw_Npc.asm"
@@ -847,6 +852,7 @@ BANK_53
     ORG $D800
     RORG $F400
 BANK_54
+    INCLUDE "en/En_Pols.asm"
 
     LOG_BANK_SIZE "-BANK 54- ", BANK_54
 

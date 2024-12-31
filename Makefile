@@ -6,6 +6,7 @@ zelda_dep := main.asm \
   $(wildcard include/*.asm) \
   $(wildcard b/*.asm) \
   $(wildcard c/*.asm) \
+  $(wildcard el/*.asm) \
   $(wildcard en/*.asm) \
   $(wildcard ht/*.asm) \
   $(wildcard pl/*.asm) \

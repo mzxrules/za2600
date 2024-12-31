@@ -115,7 +115,7 @@ EnRandSpawn:
     lda room_spawn_y,y
     sta EnSysSpawnY
 
-    jsr CheckRoomCol_Unsafe_XA
+    jsr EnCol_Room_XA_Unsafe
     bne EnRandSpawnRetry
 
     lda EnSysSpawnY

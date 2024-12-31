@@ -18,6 +18,9 @@ EnDam_Manhandla:
 EnDam_Common:
     .byte -1, -2, -4, -1, -1, -4
 
+EnDam_Pols:
+    .byte -1, -2, -4, -16, -1, -4
+
 ;==============================================================================
 ; HbGetPlAtt
 ;----------
@@ -345,6 +348,13 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
 
 ; Handle Darknuts specially
     lda #enType,x
+    cmp #EN_POLS
+    bne .check_darknut
+    ldy HbDamage
+    lda EnDam_Pols,y
+    jmp .gethit_damage_a
+
+.check_darknut
     cmp #EN_DARKNUT_MAIN
     bne .gethit
 
@@ -363,7 +373,7 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
 .gethit
     ldy HbDamage
     lda EnDam_Common,y
-
+.gethit_damage_a
     ldy #SFX_EN_DAMAGE
     clc
     adc enHp,x

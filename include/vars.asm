@@ -373,6 +373,13 @@ enVireShiftY        ds 2
 enVireBounceTimer   ds 2
     EN_SIZE VIRE
 
+; == Pols
+    ORG CLASS_EN_ENEMY
+enPolsStep          ds 2
+enPolsShiftY        ds 2
+enPolsBounceTimer   ds 2
+    EN_SIZE POLS
+
 ; == Keese
     ORG CLASS_EN_ENEMY
 ; enHp

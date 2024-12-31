@@ -457,7 +457,6 @@ RETURN_WORLD: SUBROUTINE
     rts
 
 En_Zora:
-En_Pols:
 En_BossGhini:
 En_BossDig:
 En_BossPatra:

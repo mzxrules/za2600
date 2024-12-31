@@ -16,7 +16,7 @@ EnMove_Card_WallCheck_TEST: SUBROUTINE
 
 
 ;==============================================================================
-; Computes free spaces, cardinal to position (EnMoveNX, EnMoveNY)
+; Finds walls cardinal to position (EnMoveNX, EnMoveNY)
 ; EnMoveBlockedDir stores all blocked directions
 ; X = enNum
 ; Clobbers Y register
@@ -67,9 +67,9 @@ EnMove_Card_WallCheck: SUBROUTINE
     sta EnMoveBlockedDir
 
 
-;CheckRoomCol_XA:
+;EnCol_Room_XA:
 .dl ; LEFT (-1, 0)
-    tya
+    tya ; EnMoveNY
 
 ; todo - determine if bounds check is necessary
     ; cpx #[$04/4 + 1] ; 2

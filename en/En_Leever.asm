@@ -217,7 +217,7 @@ En_LeeverGetSpawnTryXY: SUBROUTINE
     sta enLeeverTryY
     tay
     ldx enLeeverTryX
-    jsr CheckRoomCol
+    jsr EnCol_Room
     bne .no_go2
     ldx enNum
     rts

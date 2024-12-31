@@ -2,58 +2,6 @@
 ; mzxrules 2021
 ;==============================================================================
 
-;==============================================================================
-; Tests room collision
-; X = x position
-; Y = y position (move to reg a?)
-; returns A != 0 if collision occurs
-; y position must not be in range 0-3
-;==============================================================================
-CheckRoomCol: SUBROUTINE
-; adjust x coordinate
-    txa
-    lsr
-    lsr
-    tax
-
-; adjust y coordinate
-    tya
-    lsr
-    lsr
-; A stores adjusted y coord
-
-CheckRoomCol_XA:
-    cpx #[$04/4] ; 2
-    bmi .rts     ; 2
-    cmp #[$10/4] ; 2
-    bmi .rts     ; 2
-CheckRoomCol_Unsafe_XA:
-    cpx #[$60/4]
-    beq .special_right
-    cpx #[$20/4]
-    beq .special_left
-    clc
-    adc room_col8_off-1,x
-    tay
-    lda rPF1RoomL-2,y
-    ora rPF1RoomL-1,y
-    and room_col8_mask-1,x
-    rts
-
-.special_right
-    adc #ROOM_PX_HEIGHT -1
-.special_left
-    tax
-    lda rPF1RoomL-2,x
-    ora rPF1RoomL-1,x
-    ora rPF2Room-2,x
-    ora rPF2Room-1,x
-    and #1
-
-.rts
-    rts
-
-
 EnNone:
     lda #$F0
     sta en0Y,x
