@@ -4,10 +4,9 @@
 
 EnDraw_BossGohma: SUBROUTINE
 
-    lda en0X
-    sta enX
-    lda en0Y
-    sta enY
+    ldy enGohmaCiColor
+    jsr EnDraw_PosAndStunColor
+
 
     lda Frame
     and #1
@@ -39,11 +38,17 @@ EnDraw_BossGohma: SUBROUTINE
     sta enSpr+1
     lda BossGohma_SprH,y
     sta enSpr
-    lda #COLOR_EN_TRIFORCE
-    sta wEnColor
+
     lda #8
     sta wENH
-    rts
+
+    ldx #1
+    lda miType,x
+    ror
+    bcs .draw_missile
+    ldx #0
+.draw_missile
+    jmp EnDraw_SmallMissile
 
 
 BossGohma_SprL:

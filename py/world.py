@@ -122,7 +122,7 @@ def GetPackedDoorWallData(worldId, data):
     doors = []
     walls = []
 
-    for value in zip(*data): # n, s, e, w
+    for value in zip(*data): # tuple (n, s, e, w)
         door = 0
         wall = 0
 
@@ -314,6 +314,22 @@ def GenerateEncounters():
 
     BuildRoomEncounterTables(encounterToRoom)
 
+def ApplyDemo():
+    mdata[0][0][0x17] = 3
+    mdata[0][3][0x17] = 3
+    mdata[0][3][0x27] = 3
+
+    mdata[0][0][0x60] = 3
+
+    # Level 7
+    mdata[2][0][0x71] = 3
+    mdata[2][2][0x71] = 3
+    mdata[2][3][0x71] = 3
+
+    # Level 8
+    mdata[2][0][0x76] = 3
+    mdata[2][2][0x76] = 3
+    mdata[2][3][0x76] = 3
 
 def Main():
     for worldId in range(WORLD_COUNT):
@@ -322,6 +338,8 @@ def Main():
             with open(filename.format(worldId), "rb") as file:
                 level.append(list(file.read()))
         mdata.append(level)
+
+    #ApplyDemo()
 
     # Q1
     PackRoomAndDoorData(0, mdata[0])

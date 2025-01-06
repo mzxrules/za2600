@@ -442,12 +442,18 @@ enDonTemp           = Temp0
     ORG CLASS_EN_BOSS_SHOOT
 ; enState
                         ; 1xxx_xxxx = init
+GOHMA_MOVE_R    = $40   ; 0 move left, 1 move right
+GOHMA_MOVE_U    = $20
+GOHMA_FIRE      = $10
                         ; xxxx_x111 = animation state
                         ; xxxx_1xxx = RESERVED
 GOHMA_ANIM_0    = $00
 GOHMA_ANIM_1    = $02
 GOHMA_ANIM_2    = $04
-enGohmaTimer ds 1
+enGohmaTimer    ds 1
+enGohmaStep     ds 1
+enGohmaCiColor  ds 1
+enGohmaFire     ds 1
     EN_SIZE BOSS_GOHMA
 
 ; == Glock (Trinexx)

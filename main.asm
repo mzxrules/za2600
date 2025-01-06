@@ -705,8 +705,6 @@ BANK_44
     INCLUDE "en/En_Test.asm"
     INCLUDE "en/En_TestMissile.asm"
     INCLUDE "en/En_BossGohma.asm"
-    INCLUDE "en/En_BossGlock.asm"
-    INCLUDE "en/En_BossGlockHead.asm"
     LOG_BANK_SIZE "-BANK 44-", BANK_44
 
 ; ****************************************
@@ -853,6 +851,8 @@ BANK_53
     RORG $F400
 BANK_54
     INCLUDE "en/En_Pols.asm"
+    INCLUDE "en/En_BossGlock.asm"
+    INCLUDE "en/En_BossGlockHead.asm"
 
     LOG_BANK_SIZE "-BANK 54- ", BANK_54
 

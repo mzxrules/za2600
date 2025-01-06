@@ -117,8 +117,9 @@ Entity_Table = [
     "En_BossGhini",    "SEG_NA", "SEG_42", "EnDraw_None",
 
     "En_BossGohma",    "SEG_44", "SEG_46", "EnDraw_BossGohma",
-    "En_BossGlock",    "SEG_44", "SEG_46", "EnDraw_BossGlock",
-    "En_BossGlockHead","SEG_44", "SEG_46", "EnDraw_BossGlockHead",
+    "En_BossGohmaBlue","SEG_44", "SEG_46", "EnDraw_BossGohma",
+    "En_BossGlock",    "SEG_54", "SEG_46", "EnDraw_BossGlock",
+    "En_BossGlockHead","SEG_54", "SEG_46", "EnDraw_BossGlockHead",
     "En_BossAqua",     "SEG_47", "SEG_46", "EnDraw_BossAqua",
     "En_BossManhandla","SEG_47", "SEG_46", "EnDraw_BossManhandla",
     "En_BossDon",      "SEG_50", "SEG_50", "EnDraw_BossDon",

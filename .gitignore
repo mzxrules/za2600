@@ -6,6 +6,8 @@
 *.sym
 *.bin
 
+/py/ksim.py
+
 # mzx files
 backup1.mzx
 backup2.mzx
