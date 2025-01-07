@@ -14,8 +14,6 @@ files = [
 
 WORLD_COUNT = 6
 
-mdata = []
-
 mapdata_entrance_roomId = [
     # Q1, Q2
     0x73, 0x77, # LV 1
@@ -314,7 +312,7 @@ def GenerateEncounters():
 
     BuildRoomEncounterTables(encounterToRoom)
 
-def ApplyDemo():
+def ApplyDemo(mdata):
     mdata[0][0][0x17] = 3
     mdata[0][3][0x17] = 3
     mdata[0][3][0x27] = 3
@@ -331,15 +329,21 @@ def ApplyDemo():
     mdata[2][2][0x76] = 3
     mdata[2][3][0x76] = 3
 
-def Main():
+def GetMapData():
+    data = []
     for worldId in range(WORLD_COUNT):
         level = []
-        for i, filename in enumerate(files):
+        for _, filename in enumerate(files):
             with open(filename.format(worldId), "rb") as file:
                 level.append(list(file.read()))
-        mdata.append(level)
+        data.append(level)
 
-    #ApplyDemo()
+    return data
+
+def Main():
+    mdata = GetMapData()
+
+    #ApplyDemo(mdata)
 
     # Q1
     PackRoomAndDoorData(0, mdata[0])
@@ -354,7 +358,6 @@ def Main():
     PackRoomColors(mdata)
     GenerateEncounters()
     GenerateMapData()
+    print("WORLD DATA REBUILT")
 
 Main()
-
-print("WORLD DATA REBUILT")

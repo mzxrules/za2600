@@ -322,39 +322,39 @@ PF2Room18:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
 PF2Room19:
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
+    .byte $FF ; |XXXXXXXX| mirrored
+    .byte $FF ; |XXXXXXXX| mirrored
+    .byte $FF ; |XXXXXXXX| mirrored
+    .byte $FF ; |XXXXXXXX| mirrored
+    .byte $FF ; |XXXXXXXX| mirrored
+    .byte $FF ; |XXXXXXXX| mirrored
+    .byte $80 ; |.......X| mirrored
+    .byte $80 ; |.......X| mirrored
+    .byte $80 ; |.......X| mirrored
+    .byte $80 ; |.......X| mirrored
+    .byte $80 ; |.......X| mirrored
+    .byte $80 ; |.......X| mirrored
+    .byte $80 ; |.......X| mirrored
+    .byte $80 ; |.......X| mirrored
+    .byte $80 ; |.......X| mirrored
+    .byte $80 ; |.......X| mirrored
 PF2Room20:
-    .byte $0F ; |XXXX....| mirrored
-    .byte $0F ; |XXXX....| mirrored
-    .byte $0F ; |XXXX....| mirrored
-    .byte $0F ; |XXXX....| mirrored
-    .byte $0F ; |XXXX....| mirrored
-    .byte $0F ; |XXXX....| mirrored
-    .byte $0F ; |XXXX....| mirrored
-    .byte $0F ; |XXXX....| mirrored
-    .byte $0F ; |XXXX....| mirrored
-    .byte $07 ; |XXX.....| mirrored
-    .byte $03 ; |XX......| mirrored
+    .byte $FF ; |XXXXXXXX| mirrored
+    .byte $3F ; |XXXXXX..| mirrored
+    .byte $1F ; |XXXXX...| mirrored
     .byte $01 ; |X.......| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $01 ; |X.......| mirrored
+    .byte $03 ; |XX......| mirrored
+    .byte $03 ; |XX......| mirrored
+    .byte $07 ; |XXX.....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $3F ; |XXXXXX..| mirrored
 PF2Room21:
     .byte $C0 ; |......XX| mirrored
     .byte $80 ; |.......X| mirrored
@@ -458,18 +458,18 @@ PF2Room26:
     .byte $FF ; |XXXXXXXX| mirrored
     .byte $FF ; |XXXXXXXX| mirrored
 PF2Room27:
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
-    .byte $00 ; |........| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $0F ; |XXXX....| mirrored
+    .byte $07 ; |XXX.....| mirrored
+    .byte $03 ; |XX......| mirrored
+    .byte $01 ; |X.......| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
@@ -495,16 +495,16 @@ PF2Room29:
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
+    .byte $03 ; |XX......| mirrored
+    .byte $03 ; |XX......| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
-    .byte $68 ; |...X.XX.| mirrored
-    .byte $74 ; |..X.XXX.| mirrored
-    .byte $7E ; |.XXXXXX.| mirrored
-    .byte $EE ; |.XXX.XXX| mirrored
-    .byte $C6 ; |.XX...XX| mirrored
-    .byte $92 ; |.X..X..X| mirrored
-    .byte $C6 ; |.XX...XX| mirrored
     .byte $FC ; |..XXXXXX| mirrored
+    .byte $FC ; |..XXXXXX| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $00 ; |........| mirrored
+    .byte $03 ; |XX......| mirrored
+    .byte $03 ; |XX......| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
     .byte $00 ; |........| mirrored
