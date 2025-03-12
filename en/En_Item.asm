@@ -3,10 +3,10 @@
 ;==============================================================================
 EN_ITEM_DRAW            = #$80
 EN_ITEM_INIT            = #$40
-EN_ITEM_RNG             = #$00
-EN_ITEM_PERMANENT       = #$01
-EN_ITEM_ROOMEX_IS_POS   = #$02
-EN_ITEM_TYPE_MASK       = #$03
+EN_ITEM_TYPE_MASK       = #$01
+EN_ITEM_TYPE_RNG        = #$00
+EN_ITEM_TYPE_PERMANENT  = #$01
+EN_ITEM_SET_EXPOS       = #$02
 EN_ITEM_APPEAR_TIME     =  -75 ; * 4 frames
 
 EnItem: SUBROUTINE
@@ -27,6 +27,39 @@ EnItem: SUBROUTINE
     ora #EN_ITEM_INIT
     sta enState,x
 
+    and #EN_ITEM_SET_EXPOS
+    beq .main
+; Set init position
+    lda enState,x
+    and #~#EN_ITEM_SET_EXPOS
+    sta enState,x
+
+    lda cdItemExPos,x
+    tay
+    bne .set_ex_pos
+
+.set_center_pos
+    lda #$40
+    sta en0X,x
+    lda #$2C
+    sta en0Y,x
+    bne .endCollisionCheck ; jmp
+
+.set_ex_pos
+    ; x range $0C to $74
+    ; y range $10 to $48
+    and #$F
+    tay
+    lda EnItem_ExPosX,y
+    sta en0X,x
+    lda cdItemExPos,x
+    and #$F0
+    lsr
+    lsr
+    adc #$10
+    sta en0Y,x
+    bne .endCollisionCheck ; jmp
+
 .main
     bit plState2
     bvc .endCollisionCheck ; EN_LAST_DRAWN
@@ -35,7 +68,7 @@ EnItem: SUBROUTINE
 
     lda enState,x
     and #~[#GI_EVENT_RESERVED | #EN_ITEM_DRAW]
-    cmp #EN_ITEM_INIT | #EN_ITEM_PERMANENT
+    cmp #EN_ITEM_INIT | #EN_ITEM_TYPE_PERMANENT
     beq .collide_perm_drop
 
 .collide_rng_drop
@@ -69,7 +102,7 @@ EnItem: SUBROUTINE
 
     lda enState,x
     and #EN_ITEM_TYPE_MASK
-    cmp #EN_ITEM_RNG
+    cmp #EN_ITEM_TYPE_RNG
     bne .rts
 
     lda Frame
@@ -86,3 +119,9 @@ EnItem: SUBROUTINE
 .skip_update_timer
 .rts
     rts
+
+EnItem_ExPosX:
+    .byte $0C, $14, $18, $20
+    .byte $28, $30, $34, $38
+    .byte $44, $48, $4C, $54
+    .byte $5C, $64, $6C, $74

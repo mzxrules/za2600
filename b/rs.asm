@@ -120,53 +120,33 @@ Rs_NpcMonster:
 
 Rs_EntCaveWallLeft: SUBROUTINE
     ldx #$14
-    cpx plX
-    bne .rts
-    ldy #$3C
-    cpy plY
-    bne .rts
+    lda #$3C
     ldy #$38
-    jmp RS_ENTER_CAVE
+    bne RS_TRY_ENTER_CAVE ; jmp
 
 Rs_EntCaveWallRight:
     ldx #$6C
-    cpx plX
-    bne .rts
-    ldy #$3C
-    cpy plY
-    bne .rts
+    lda #$3C
     ldy #$38
-    jmp RS_ENTER_CAVE
+    bne RS_TRY_ENTER_CAVE ; jmp
 
 Rs_EntCaveWallCenter:
     ldx #$40
-    cpx plX
-    bne .rts
-    ldy #$3C
-    cpy plY
-    bne .rts
+    lda #$3C
     ldy #$38
-    jmp RS_ENTER_CAVE
+    bne RS_TRY_ENTER_CAVE ; jmp
 
 Rs_EntCaveWall_P2820:
     ldx #$28
-    cpx plX
-    bne .rts
-    ldy #$24
-    cpy plY
-    bne .rts
+    lda #$24
     ldy #$20
-    jmp RS_ENTER_CAVE
+    bne RS_TRY_ENTER_CAVE ; jmp
 
 Rs_EntCaveWall_P4820:
     ldx #$48
-    cpx plX
-    bne .rts
-    ldy #$24
-    cpy plY
-    bne .rts
+    lda #$24
     ldy #$20
-    jmp RS_ENTER_CAVE
+    bne RS_TRY_ENTER_CAVE ; jmp
 
 Rs_EntCaveMidSecretNorth:
     lda plState
@@ -197,12 +177,24 @@ Rs_EntCaveMidSecretNorth:
 
 Rs_EntCaveMid:
     ldx #$40
+    lda #$28
+    ldy #$20
+
+;==============================================================================
+; RS_TRY_ENTER_CAVE
+;----------
+; Tests if player position would enter a cave
+;----------
+; X = check X and worldSX
+; A = check y
+; Y = worldSY
+;==============================================================================
+RS_TRY_ENTER_CAVE:
     cpx plX
     bne .rts
-    ldy #$28
-    cpy plY
+    cmp plY
     bne .rts
-    ldy #$20
+
 RS_ENTER_CAVE:
     lda roomEX
     cmp #CV_LV_START
@@ -246,20 +238,15 @@ Rs_Cave:
     jmp RETURN_WORLD
 
 
-Rs_ItemKey: SUBROUTINE
-Rs_Item: SUBROUTINE
-    lda roomENCount
-    bne .rts ; more enemies to kill
-    lda roomId
-    and #$7F
-    tax
-    lda rWorldRoomFlags,x
-    bmi .NoLoad
-
-    lda roomFlags
-    and #RF_EV_ENCLEAR | #RF_EV_CLEAR
-    beq .rts
-
+;==============================================================================
+; Rs_SpawnPermItem
+;----------
+; Tests if player position would enter a cave
+;----------
+; RsSpawnItem       = Item to Spawn
+; RsSpawnItemExPos  = Item ExPos. See EnItem for more info
+;==============================================================================
+Rs_SpawnPermItem: SUBROUTINE
 ; select entity slot for our permanent item
 ; if enType = EN_NONE, slot 0
 ; if enType = EN_ITEM, slot 1 if enType + 1 is > EN_ITEM, else slot 0
@@ -278,50 +265,52 @@ Rs_Item: SUBROUTINE
 .set_item_slot
     lda #EN_ITEM
     sta enType,x
-    lda #EN_ITEM_PERMANENT
+    lda #EN_ITEM_TYPE_PERMANENT | #EN_ITEM_SET_EXPOS
     sta enState,x
 
-    lda roomRS
-    cmp #RS_ITEM_KEY
-    beq .pos_key
-
-    lda roomEX
+    lda RsSpawnItem
     sta cdItemType,x
-    lda #$40
-    sta en0X,x
-    lda #$2C
-    sta en0Y,x
-.NoLoad
-    lda #RS_NONE
-    sta roomRS
-.rts
+    lda RsSpawnItemExPos
+    sta cdItemExPos,x
     rts
 
-.pos_key
-    ; x range $0C to $74
-    ; y range $10 to $48
+Rs_ItemKey_Center: SUBROUTINE
+    lda #$00
+    beq .itemkey_center_cont ; jmp
+Rs_ItemKey: ; SUBROUTINE
     lda roomEX
-    and #$F
-    tay
-    lda Rs_PosItem_X,y
-    sta en0X,x
-    lda roomEX
-    and #$F0
-    lsr
-    lsr
-    adc #$10
-    sta en0Y,x
+.itemkey_center_cont
+    sta RsSpawnItemExPos
     lda #GI_KEY
-    sta roomEX
-    sta cdItemType,x
-    bpl .NoLoad ;jmp
+    sta RsSpawnItem
+    bne Rs_ItemCheckAppear
 
-Rs_PosItem_X:
-    .byte $0C, $14, $18, $20
-    .byte $28, $30, $34, $38
-    .byte $44, $48, $4C, $54
-    .byte $5C, $64, $6C, $74
+Rs_Item: SUBROUTINE
+    lda roomEX
+    sta RsSpawnItem
+    lda #$00
+    sta RsSpawnItemExPos
 
+Rs_ItemCheckAppear: SUBROUTINE
+    lda roomENCount
+    bne .rts ; more enemies to kill
+    lda roomId
+    and #$7F
+    tax
+    lda rWorldRoomFlags,x
+    bmi .NoLoad
+
+    lda roomFlags
+    and #RF_EV_ENCLEAR | #RF_EV_CLEAR
+    beq .rts
+
+    jsr Rs_SpawnPermItem
+
+.NoLoad
+    ;lda #RS_NONE
+    ;sta roomRS
+.rts
+    rts
 
 Rs_EntDungBush: SUBROUTINE
     ldx #0
@@ -342,15 +331,14 @@ Rs_EntDungBush: SUBROUTINE
     rts
 
 Rs_EntDungStairs: SUBROUTINE
-    lda plX
-    cmp #$40
+    ldx #$40
+    cpx plX
     bne .rts
-    lda plY
-    cmp #$1C
+    ldy #$1C
+    cpy plY
     bne .rts
 
     ldx #$48
-    ldy #$1C
     jmp ENTER_CAVE
 
 Rs_ExitDung: ; SUBROUTINE
@@ -418,6 +406,23 @@ Rs_BlockSpiralStairs: ; SUBROUTINE
     ldy #STAIR_POS_P2828
     bpl PlaceStairs ; jmp
 
+Rs_MidRightStairs: ; SUBROUTINE
+    lda roomFlags
+    and #RF_EV_CLEAR
+    beq .rts
+    ldy #STAIR_POS_P742C
+    bpl PlaceStairs ; jmp
+
+Rs_MidRightStairsCenterKey: ; SUBROUTINE
+    lda roomFlags
+    and #RF_EV_CLEAR
+    beq .rts
+    lda #RS_NONE
+    sta roomRS
+
+    ldy #STAIR_POS_P742C
+    jsr PlaceStairs
+    jmp Rs_ItemKey_Center
 
 Rs_EntCaveWallCenterBlocked: SUBROUTINE
     SET_WALL_DESTROY_XY 40, 38

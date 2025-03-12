@@ -8,7 +8,6 @@ Bosses:
     Ghini
     Glock - Need Design, have sprites
     Dig
-    Gohma Blue (Yellow implemented)
 
 Enemies:
     Wizrobes - have sprites, need custom room collision routine

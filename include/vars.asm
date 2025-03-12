@@ -295,8 +295,9 @@ CD_UPDATE_B     = $80 ; 1xxx_xxxx
 CD_UPDATE_A     = $40 ; x1xx_xxxx
                       ; xx11_11xx GI_EVENT reserved
 CD_LAST_UPDATE  = $01 ; Stores last update's active entity
-cdItemType  ds 2
-cdItemTimer ds 2
+cdItemType      ds 2
+cdItemTimer     ds 2
+cdItemExPos     ds 2
     EN_SIZE ITEM
 
 ; == En_Stairs
@@ -648,6 +649,11 @@ MiSysColDX      ds 1
 MiSysColDY      ds 1
 MiSysColFlag    ds 1
 atan2Temp       ds 1
+
+    SEG.U VARS_RS
+    ORG Temp0
+RsSpawnItem         ds 1
+RsSpawnItemExPos    ds 1
 
     SEG.U VARS_SHOP_KERNEL
     ORG Temp0

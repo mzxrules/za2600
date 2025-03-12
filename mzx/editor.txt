@@ -199,9 +199,20 @@ set "ui_positem_y" 999
 goto "draw_ui_position_dot"
 
 : "draw_ui_dot_itemkey"
+: "draw_ui_dot_expos"
+if "ui_roomEX" == 0 then "#draw_ui_dot_expos_00"
+if "ui_roomEX" != 0 then "#draw_ui_dot_expos_ff"
+goto "draw_ui_position_dot"
+
+: "#draw_ui_dot_expos_00"
+set "ui_positem_x" "(0x40)"
+set "ui_positem_y" "(0x2C)"
+goto "#return"
+
+: "#draw_ui_dot_expos_ff"
 set "ui_positem_x" "('ui_positem_x_('ui_roomEX'%16)')"
 set "ui_positem_y" "(('ui_roomEX'>>2)+0x10)"
-goto "draw_ui_position_dot"
+goto "#return"
 
 : "draw_ui_dot_P"
 set "ui_positem_x" "hx2_&$+('$.length'-4)#2&"

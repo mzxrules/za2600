@@ -206,7 +206,7 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_ItemKey
+Rs_None
 zz0
 Rs_BlockDiamondStairs
 zz40

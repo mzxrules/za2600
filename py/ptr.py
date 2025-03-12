@@ -158,6 +158,8 @@ RoomScript_Table = [
     "Rs_BlockDiamondStairs",        "RsInit_BlockDiamondStairs",
     "Rs_BlockSpiralStairs",         "RsInit_BlockSpiral",
     "Rs_BlockPathStairs",           "RsInit_BlockPathStairs",
+    "Rs_MidRightStairs",            "RsInit_None",
+    "Rs_MidRightStairsCenterKey",   "RsInit_None",
     "Rs_BAD_HIDDEN_CAVE",           "RsInit_None",
     "Rs_EntCaveWallLeftBlocked",    "RsInit_EntCaveWallLeftBlocked",
     "Rs_EntCaveWallCenterBlocked",  "RsInit_EntCaveWallCenterBlocked",

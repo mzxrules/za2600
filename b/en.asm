@@ -132,7 +132,7 @@ EnSys_KillEnemyB: SUBROUTINE
     sta cdItemType,x
     lda #EN_ITEM
     sta enType,x
-    lda #EN_ITEM_RNG
+    lda #EN_ITEM_TYPE_RNG
     sta enState,x
     lda #EN_ITEM_APPEAR_TIME
     sta cdItemTimer,x

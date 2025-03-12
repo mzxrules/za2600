@@ -10,22 +10,12 @@ Rs_ShoreItem: SUBROUTINE
     lda rWorldRoomFlags,x
     bmi Rs_Shore ; #WRF_SV_ITEM_GET ;.NoLoad
 
-; Find an open slot to spawn EN_ITEM
-    ldx #0
-    lda enType
-    beq .spawn_item
-    inx
-.spawn_item
-    lda #EN_ITEM
-    sta enType,x
-    lda #EN_ITEM_PERMANENT
-    sta enState,x
     lda roomEX
-    sta cdItemType,x
-    lda #$6C
-    sta en0X,x
-    lda #$2C
-    sta en0Y,x
+    sta RsSpawnItem
+    lda #$7E
+    sta RsSpawnItemExPos
+
+    jsr Rs_SpawnPermItem
 
 Rs_Shore: ; SUBROUTINE
     lda #RF_PF_AXIS

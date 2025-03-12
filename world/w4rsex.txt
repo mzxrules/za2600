@@ -12,8 +12,8 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_Item
+GiHeart
 Rs_Item
 GiTriforce
 Rs_None
@@ -46,8 +46,8 @@ Rs_Item
 GiTriforce
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_MidRightStairsCenterKey
+zz104
 Rs_None
 zz0
 Rs_None
@@ -108,8 +108,8 @@ Rs_None
 zz0
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_Item
+GiRupee5
 Rs_None
 zz0
 Rs_None
@@ -206,8 +206,8 @@ Rs_Item
 GiHeart
 Rs_None
 zz0
-Rs_None
-zz0
+Rs_BlockDiamondStairs
+zz24
 Rs_None
 zz0
 Rs_None
