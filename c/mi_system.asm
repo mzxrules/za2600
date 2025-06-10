@@ -18,14 +18,23 @@ MiSystem: SUBROUTINE
     jsr MiProcess
     jsr MiPlCol
 
+    lda miType,x
+    and #$0F
+    cmp #MI_RUN_RANG
+    bne .test_bounds_kill
+    lda enRangTime,x
+    bne .continue
+    beq .kill ; jmp
+
+.test_bounds_kill
     lda mi0X,x
     cmp #EnBoardXL
     bmi .kill
-    cmp #EnBoardXR+7
+    cmp #EnBoardXR+1
     bpl .kill
 
     lda mi0Y,x
-    cmp #EnBoardYU+7
+    cmp #EnBoardYU+1
     bpl .kill
     cmp #EnBoardYD
     bpl .continue
@@ -68,6 +77,44 @@ hitbox2_bb_type:
 hitbox2_bb_arrow:
     .byte #HITBOX2_BB_ARROW_L, #HITBOX2_BB_ARROW_R, #HITBOX2_BB_ARROW_U, #HITBOX2_BB_ARROW_D
     .byte #HITBOX2_BB_SQ4
+
+MiRunRang: SUBROUTINE
+    inc enRangTime,x
+    lda enRangTime,x
+    cmp #EN_GORIYA_RANG_TIME
+    beq .reverse_rang
+
+    lda mi0X,x
+    cmp #EnBoardXL
+    bmi .reverse_rang
+    cmp #EnBoardXR+1
+    bpl .reverse_rang
+
+    lda mi0Y,x
+    cmp #EnBoardYU+1
+    bpl .reverse_rang
+    cmp #EnBoardYD
+    bpl .continue
+
+.reverse_rang
+    lda enRangTime,x
+    eor #$FF
+    sec
+    adc #2
+    bmi .setTime
+    lda #0
+.setTime
+    sta enRangTime,x
+    sta enEnemyShootT,x
+    lda mi0Dir,x
+    eor #1
+    sta mi0Dir,x
+
+.continue
+    ldy mi0Dir,x
+    lda #HITBOX2_BB_MISSILE
+    sta HbDir
+    bpl MiMoveCardDel ; jmp
 
 MiRunRock:
     ldy mi0Dir,x
@@ -172,8 +219,6 @@ MiSysUpdateAtanPos: SUBROUTINE
 
 MiNone:
 MiHit:
-MiSpawnRang:
-MiRunRang:
     lda #MI_NONE
     sta miType,x
     rts
@@ -219,6 +264,9 @@ MiSpawnBall:
     rts
 
 ; X is missile slot
+MiSpawnRang:
+    lda #1
+    sta enRangTime,x
 MiSpawnSword:
 MiSpawnArrow:
 MiSpawnWave:

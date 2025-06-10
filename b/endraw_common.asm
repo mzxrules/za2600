@@ -34,6 +34,13 @@ EnWeaponOffY_4px_thick:
 EnWeaponOffY_8px_thin:
     .byte 4, 4, 0, 0
 
+; EnWeaponOffX  ; Drawn displacement from mi0X
+EnWeaponOffX_rang:
+    .byte 3+1, 2+1
+
+EnWeaponOffY_rang:
+    .byte 2, 3
+
 ;==============================================================================
 ; Sets position and color variables, overriding with stun colors
 ; Y = Color Index
@@ -143,6 +150,40 @@ EnDraw_Gel2:
 .rts
     rts
 
+EnDraw_Rang: SUBROUTINE
+    lda miType,x
+    ror
+    bcc .rts
+
+    lda Frame
+    ror
+    and #1
+    tay
+    bne .horiz
+.vert
+    lda #3
+    sta wM1H
+    lda rNUSIZ1_T
+    ora #%010000
+    sta wNUSIZ1_T
+    jmp .pos
+.horiz
+    lda #1
+    sta wM1H
+    lda rNUSIZ1_T
+    ora #%100000
+    sta wNUSIZ1_T
+.pos
+    clc
+    lda mi0X,x
+    adc EnWeaponOffX_rang,y
+    sta m1X
+    clc
+    lda mi0Y,x
+    adc EnWeaponOffY_rang,y
+    sta m1Y
+.rts
+    rts
 
 EnDraw_GoriyaColors:
 EnDraw_DarknutColors:

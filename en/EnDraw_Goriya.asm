@@ -4,6 +4,7 @@
 
 EnDraw_Goriya: SUBROUTINE
     lda enState,x
+    lsr
     and #1
     tay
     lda EnDraw_GoriyaColors,y
@@ -18,6 +19,6 @@ EnDraw_Goriya: SUBROUTINE
     adc #<SprE4
     sta enSpr
 
-    jmp EnDraw_SmallMissile
+    jmp EnDraw_Rang
 
     LOG_SIZE "EnDraw_Goriya", EnDraw_Goriya

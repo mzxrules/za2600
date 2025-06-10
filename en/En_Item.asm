@@ -87,6 +87,13 @@ EnItem: SUBROUTINE
     sta wWorldRoomFlags,y
 
     lda cdItemType,x
+    cmp #GI_TRIFORCE
+    bne .skip_pos_player_tri
+    lda #$40
+    sta plX
+    lda #$2C
+    sta plY
+.skip_pos_player_tri
 ; If key...
     cmp #GI_KEY
     beq .EnItem_GiItem

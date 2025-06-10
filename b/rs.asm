@@ -241,7 +241,7 @@ Rs_Cave:
 ;==============================================================================
 ; Rs_SpawnPermItem
 ;----------
-; Tests if player position would enter a cave
+; Spawns a permanently collectable item
 ;----------
 ; RsSpawnItem       = Item to Spawn
 ; RsSpawnItemExPos  = Item ExPos. See EnItem for more info
@@ -307,8 +307,8 @@ Rs_ItemCheckAppear: SUBROUTINE
     jsr Rs_SpawnPermItem
 
 .NoLoad
-    ;lda #RS_NONE
-    ;sta roomRS
+    lda #RS_NONE
+    sta roomRS
 .rts
     rts
 

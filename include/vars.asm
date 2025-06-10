@@ -317,13 +317,18 @@ enGFairyDie ds 1
 ;==============================================================================
 
 ; == Base Enemy
-; Darknut, Gibdo, Lynel, Octorok, Stalfos
     ORG CLASS_EN_ENEMY
 enEnemyStep         ds 2
 enEnemySpdFrac      ds 2
 enEnemyShootT       ds 2
 enEnemyType         ds 2
+CLASS_EN_ENEMY_BASE
     EN_SIZE DARKNUT
+    EN_SIZE GIBDO
+    EN_SIZE LYNEL
+    EN_SIZE MOBLIN
+    EN_SIZE OCTOROK
+    EN_SIZE STALFOS
 
 ; == Armos
     ORG CLASS_EN_ENEMY
@@ -350,9 +355,8 @@ enLeeverTryY    = Temp3
     EN_SIZE LEEVER
 
 ; == Goriya
-    ORG CLASS_EN_ENEMY
-enGoriyaThink       ds 2
-enGoriyaStep        ds 2
+    ORG CLASS_EN_ENEMY_BASE
+enRangTime          ds 2
     EN_SIZE GORIYA
 
 ; == LikeLike
