@@ -242,6 +242,9 @@ BANK_16
     INCLUDE "spr/spr_sh.asm"
     INCLUDE "spr/spr_don.asm"
 
+    align $100
+    INCLUDE "spr/spr_ganon.asm"
+
     LOG_BANK_SIZE "-BANK 16- Sprites Dung 2", BANK_16
 
 
@@ -741,6 +744,7 @@ BANK_46
     INCLUDE "en/EnDraw_Appear.asm"
     INCLUDE "en/EnDraw_BossAqua.asm"
     INCLUDE "en/EnDraw_BossManhandla.asm"
+    INCLUDE "en/EnDraw_BossGanon.asm"
     LOG_BANK_SIZE "-BANK 46-", BANK_46
 
 ; ****************************************
@@ -841,6 +845,7 @@ BANK_53
     INCLUDE "en/EnDraw_Armos.asm"
     INCLUDE "en/En_Stairs.asm"
     INCLUDE "en/En_Item.asm"
+    INCLUDE "en/En_BossGanon.asm"
     LOG_BANK_SIZE "-BANK 53-", BANK_53
 
 ; ****************************************

@@ -460,7 +460,6 @@ En_Zora:
 En_BossGhini:
 En_BossDig:
 En_BossPatra:
-En_BossGanon:
     jmp EnSys_KillEnemyA
 
 En_Del:

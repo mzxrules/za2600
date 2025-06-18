@@ -171,6 +171,33 @@ loop 6
 set "$sht" to "spr/spr_don.asm"
 goto "#dumpsht"
 
+. "Ganon Boss"
+set "CHAR" to "(11*256 + 8)"
+
+. "32 byte chars"
+loop start
+inc "$" by "SprGanon&loopcount&:\n"
+inc "CHAR" 64
+set "sp&sp&" to 4
+set "yrepeat" to 0
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+dec "CHAR" 32
+set "sp&sp&" to 14
+set "yrepeat" to 0
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+dec "CHAR" 32
+set "sp&sp&" to 14
+set "yrepeat" to 0
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "CHAR" by 1
+loop 7
+
+set "$sht" to "spr/spr_ganon.asm"
+goto "#dumpsht"
+
 
 . "Manhandla Boss"
 set "CHAR" to "(12*256 + 64+64)"

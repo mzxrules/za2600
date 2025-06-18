@@ -125,7 +125,7 @@ Entity_Table = [
     "En_BossDon",      "SEG_50", "SEG_50", "EnDraw_BossDon",
     "En_BossDig",      "SEG_NA", "SEG_42", "EnDraw_None",
     "En_BossPatra",    "SEG_NA", "SEG_42", "EnDraw_None",
-    "En_BossGanon",    "SEG_NA", "SEG_42", "EnDraw_None",
+    "En_BossGanon",    "SEG_53", "SEG_46", "EnDraw_BossGanon",
     #"EnBoss_Cucco",    "SEG_NA", "SEG_42", "EnDraw_None",
 
     "En_Waterfall",    "SEG_NA", "SEG_46", "EnDraw_Waterfall",
