@@ -30,6 +30,9 @@ zelda_dep := main.asm \
 pfscroll_proto_dep := pfscroll_proto.asm \
   $(wildcard scroll/*.asm)
 
+proto_boss4_dep := proto_boss4.asm \
+  $(wildcard proto/boss4/*.asm)
+
 all: $(output_bin)
 
 init:
@@ -49,6 +52,9 @@ audio.bin: gen/ms_header.asm audio.asm
 
 proto.bin: proto.asm
 	dasm proto.asm -f3 -oproto.bin -sproto.sym -T1 -Iinclude
+
+proto_boss4.bin: $(proto_boss4_dep)
+	dasm proto_boss4.asm -f3 -oproto_boss4.bin -sproto_boss4.sym -T1 -Iinclude
 
 pfscroll.bin: $(pfscroll_proto_dep)
 	dasm pfscroll_proto.asm -f3 -opfscroll.bin -spfscroll.sym -T1 -Iinclude

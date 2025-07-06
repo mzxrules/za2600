@@ -621,6 +621,22 @@ tbl = [
         "MiSpawnWave",  "MiRunWave",
     ],
     bankLut=None),
+    GameEnum("Boss4Kernel", "Boss4Kernel",
+    genEditorBindings=False,
+    genPtrTable=True,
+    genConstants=False,
+    vals=[
+        "KERNEL_BOSS4_LOOP_33",
+        "KERNEL_BOSS4_LOOP_36",
+        "KERNEL_BOSS4_LOOP_39",
+        "KERNEL_BOSS4_LOOP_42",
+        "KERNEL_BOSS4_LOOP_45",
+        "KERNEL_BOSS4_LOOP_48",
+        "KERNEL_BOSS4_LOOP_51",
+        "KERNEL_BOSS4_LOOP_54",
+        "KERNEL_BOSS4_LOOP_57",
+    ],
+    bankLut=None),
 ]
 
 def GetEditorBindings(sn, list):

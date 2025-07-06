@@ -268,15 +268,15 @@ SprItem29:
     .byte $00 ; |........|
     .byte $00 ; |........|
     .byte $00 ; |........|
-SprItem30:
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+SprRock0:
+    .byte $76 ; |.XXX.XX.|
+    .byte $5F ; |.X.XXXXX|
+    .byte $B7 ; |X.XX.XXX|
+    .byte $BA ; |X.XXX.X.|
+    .byte $BD ; |X.XXXX.X|
+    .byte $D6 ; |XX.X.XX.|
+    .byte $6E ; |.XX.XXX.|
+    .byte $3C ; |..XXXX..|
 SprItem31:
     .byte $FF ; |XXXXXXXX|
     .byte $83 ; |X.....XX|

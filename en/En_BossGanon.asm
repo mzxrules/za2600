@@ -3,9 +3,14 @@
 ;==============================================================================
 
 En_BossGanon:
+    lda enState,x
+    bmi .skip
+    lda #$80
+    sta enState,x
+
     lda #$20
     sta en0X,x
     lda #$30
     sta en0Y,x
-
+.skip
     rts

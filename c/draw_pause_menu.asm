@@ -159,134 +159,49 @@ KERNEL_PAUSE_MENU_MAIN: SUBROUTINE ; 192 scanlines
     sta NUSIZ1
 
 ;==============================================================================
-; Draw Box Top Line
-;==============================================================================
-    sta WSYNC
-    ldy #4
-    lda #3
-    sta PF1
-    lda #$FF
-    sta PF2
-.sleep_line_top
-    dey
-    bpl .sleep_line_top
-    sta PF0
-    lda #$FE
-    sta PF1
-    lda #0
-    sta PF2
-
-    sta WSYNC
-    lda #0
-    sta PF0
-    sta PF2
-    lda #2
-    sta PF1
-
-    sta WSYNC
-    sta WSYNC
-
-;==============================================================================
-; Draw Top Row Items
+; Draw Item Box
 ;==============================================================================
 
-    INCLUDE "c/draw_pause_item4_kernel.asm"
+; Box Top
+    ldx #2
+    jsr draw_pause_item4_box_lines
 
-;==============================================================================
-; Draw Top Row Cursor
-;==============================================================================
-    sta WSYNC
-    lda #$30
-    sta NUSIZ0
-    lda #COLOR_WHITE
-    sta COLUP0
-    lda plState2
-    and #4
-    bne .skipRow0
-    lda #2
-    sta ENAM0
-.skipRow0
-    sta WSYNC
-    lda #0
-    sta ENAM0
-    lda #$02
-    sta NUSIZ0
-    sta WSYNC
+; Top item row
+    jsr draw_pause_item4_kernel
+    ldx #0
+    jsr draw_pause_item4_cursor
 
-;==============================================================================
-; Draw Bottom Row Items
-;==============================================================================
-    SUBROUTINE
+; Bottom item row
     jsr draw_pause_item4_init
-    INCLUDE "c/draw_pause_item4_kernel.asm"
+    jsr draw_pause_item4_kernel
+    ldx #1
+    jsr draw_pause_item4_cursor
 
-;==============================================================================
-; Draw Bottom Row Cursor
-;==============================================================================
-    sta WSYNC
-    lda #$30
-    sta NUSIZ0
-    lda #COLOR_WHITE
-    sta COLUP0
-    lda plState2
-    and #4
-    beq .skipRow1
-    lda #2
-    sta ENAM0
-.skipRow1
-    sta WSYNC
-    lda #0
-    sta ENAM0
-    lda #$02
-    sta NUSIZ0
-    sta WSYNC
-
-;==============================================================================
-; Draw Box Bottom Line
-;==============================================================================
-    sta WSYNC
-    ldy #4
-    lda #3
-    sta PF1
-    lda #$FF
-    sta PF2
-.sleep_line_bottom
-    dey
-    bpl .sleep_line_bottom
-    sta PF0
-    lda #$FE
-    sta PF1
-    lda #0
-    sta PF2
-
-    sta WSYNC
-    sta PF0
-    sta PF1
-
-    sta WSYNC
-    sta WSYNC
+; Box end
+    ldx #0
+    jsr draw_pause_item4_box_lines
 
 ; Raft
-    lda ITEMV_RAFT
+    lda ITEMV_RAFT      ; 3 (timing assumes cycle 0)
     and #ITEMF_RAFT
     beq .setRaftItem
     lda #GI_RAFT
 .setRaftItem
-    sta PGiItems+0
+    sta PGiItems+0      ; 12 (worst case)
 ; Boots
     lda ITEMV_BOOTS
     and #ITEMF_BOOTS
     beq .setBootsItem
     lda #GI_BOOTS
 .setBootsItem
-    sta PGiItems+1
+    sta PGiItems+1      ; 24 (worst case)
 ; Bracelet
     lda ITEMV_BRACELET
     and #ITEMF_BRACELET
     beq .setBraceletItem
     lda #GI_BRACELET
 .setBraceletItem
-    sta PGiItems+2
+    sta PGiItems+2      ; 36 (worst case)
 
 ; Potion
     bit ITEMV_POTION_RED
@@ -303,11 +218,15 @@ KERNEL_PAUSE_MENU_MAIN: SUBROUTINE ; 192 scanlines
 .displayPotionBlue
     lda #GI_POTION_BLUE
 .setPotionItem
-    sta PGiItems+3
+    sta PGiItems+3      ; 58 (worst case)
 
-    SUBROUTINE
+;==============================================================================
+; Draw Row Underneath Items
+;==============================================================================
+
     jsr draw_pause_item4_init
-    INCLUDE "c/draw_pause_item4_kernel.asm"
+    jsr draw_pause_item4_kernel
+
     jmp DRAW_PAUSE_MENU_TRI
 
 draw_pause_menu_item_cursor_pos:
@@ -332,6 +251,55 @@ draw_pause_menu_wand_gi_disp:
     .byte #GI_BOOK
     .byte #GI_WAND_BOOK
 
-draw_pause_item4_init: SUBROUTINE
-    INCLUDE "c/draw_pause_item4_init.asm"
+draw_pause_menu_cursor_bitflip:
+    .byte $04, $00
+
+
+;==============================================================================
+; X = 0 for box bottom, 2 for box top (to draw side lines)
+;==============================================================================
+draw_pause_item4_box_lines: SUBROUTINE
+    sta WSYNC
+    ldy #4
+    lda #3
+    sta PF1
+    lda #$FF
+    sta PF2
+.sleep_line_bottom
+    dey
+    bpl .sleep_line_bottom
+    sta PF0
+    lda #$FE
+    sta PF1
+    lda #0
+    sta PF2
+
+    sta WSYNC
+    sta PF0
+    stx PF1
+
+    sta WSYNC
+    sta WSYNC
+    rts
+
+;==============================================================================
+; X = row index the last drawn row of items is on
+;==============================================================================
+draw_pause_item4_cursor: SUBROUTINE
+    lda #$30
+    sta NUSIZ0
+    lda #COLOR_WHITE
+    sta COLUP0
+    lda plState2
+    and #4
+    eor draw_pause_menu_cursor_bitflip,x
+    lsr
+    sta ENAM0
+    sta WSYNC
+
+    lda #0
+    sta ENAM0
+    lda #$02
+    sta NUSIZ0
+    sta WSYNC
     rts

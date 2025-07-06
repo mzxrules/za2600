@@ -514,8 +514,8 @@ WizrobeA Logic:
         flicker sprite on/off
 
 Glock Logic:
-    Glock is a three headed monster. After the first head takes enough damage, it is severed
-    and will freely roam the room
+    Glock is a three headed monster. After the first head takes enough damage,
+    it is severed and will freely roam the room
 
     Intro
     Telegraph
@@ -1027,6 +1027,46 @@ ItemKey x positions:
 14: $6D 109.06666666666666
 15: $74 116.0
 
+
+===============================================================================
+> Boss Ganon Kernel
+===============================================================================
+
+en0Y between $10 to $38
+$10 is Y of $27 to $8
+$38 is Y of $4F to $30
+
+en0Y between $10 to $30
+
+en0X is between $0C and $54
+it's more idea to start support at $0D
+
+TIMING NOTES:
+
+enX = $0D-$15, then on cycle 33 a sta GRP1 (3) has no glitches
+enX = $22-$2A, then on cycle 40 a sta GRP1 (3) has no glitches
+enX = $25-$2D, then on cycle 41 a sta GRP1 (3) has no glitches (write effect 44.1?)
+
+Full pattern table:
+
+cycle 33 - $0D-$15
+cycle 36 - $16-$1E
+cycle 39 - $1F-$27
+cycle 42 - $28-$30
+cycle 45 - $31-$39
+cycle 48 - $3A-$42
+cycle 51 - $43-$4B
+cycle 54 - $4C-$54
+cycle 57 - $55-$5D
+
+
+spr1x $25 >
+PixPos 49 cycle 39.0 to PixPos 56 cycle 41.1, spr2x = $35, PixPos 65 cycle 44.1
+spr1x $2D >
+PixPos 57 cycle 41.2 to PixPos 64 cycle 44.0, spr2x = $3D, PixPos 73 cycle 47.0
+
+
+plY $0C = 217 px
 
 ===============================================================================
 > Legacy Systems - ClearDrop

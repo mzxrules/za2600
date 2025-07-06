@@ -18,6 +18,7 @@ BANK_SLOT_RAM   = $3E
 BANK_SLOT       = $3F
 
 INPUT_BANK = RAMSEG_F0 | 1
+ITEM_BANK  = RAMSEG_F0 | 1
 
     COLOR UNDEF,        $00,$00
     COLOR BLACK,        $00,$00
@@ -162,7 +163,7 @@ VERTICAL_SYNC: ; 3 SCANLINES
     ldy #3
 
     jsr DoThings
-    jsr PlayerItem
+    ; jsr PlayerItem
 
 ; Init sprite stuffs
     lda #$B0
@@ -698,7 +699,7 @@ ReflectP1:
     SEG Bank1
     ORG $0400
     RORG $F000
-    INCLUDE "gen/PlItem_DelLUT.asm"
+    ; INCLUDE "gen/PlItem_DelLUT.asm"
 
     ;align 4
 ArrowWidth4:
@@ -734,9 +735,9 @@ PlayerItem: SUBROUTINE
     sta plItemTimer
 
     ldx #0
-    lda PlItemH,x
+    ;lda PlItemH,x
     pha
-    lda PlItemL,x
+    ;lda PlItemL,x
     pha
     rts
 

@@ -3,7 +3,12 @@ wait 1
 : "q"
 set "CHAR" to "('SS_ITEM')"
 loop start
+if "loopcount" == 30 "spr_item_rock"
 inc "$" by "SprItem&loopcount&:\n"
+goto "spr_item_continue"
+: "spr_item_rock"
+inc "$" by "SprRock0:\n"
+: "spr_item_continue"
 set "sp&sp&" to 8
 goto "#dumpchr"
 inc "$" by "$dumpchr"
@@ -176,7 +181,9 @@ set "CHAR" to "(11*256 + 8)"
 
 . "32 byte chars"
 loop start
-inc "$" by "SprGanon&loopcount&:\n"
+set "$sht" to "spr/spr_ganon_&loopcount&.asm"
+
+inc "$" by "; SprGanon&loopcount&:\n"
 inc "CHAR" 64
 set "sp&sp&" to 4
 set "yrepeat" to 0
@@ -193,11 +200,9 @@ set "yrepeat" to 0
 goto "#dumpchr"
 inc "$" by "$dumpchr"
 inc "CHAR" by 1
-loop 7
 
-set "$sht" to "spr/spr_ganon.asm"
 goto "#dumpsht"
-
+loop 7
 
 . "Manhandla Boss"
 set "CHAR" to "(12*256 + 64+64)"
@@ -251,17 +256,6 @@ inc "$" by "$dumpchr"
 inc "CHAR" by 1
 loop for 4
 set "$sht" to "spr/spr_waterfall.asm"
-goto "#dumpsht"
-
-set "CHAR" to "(74)"
-loop start
-inc "$" by "SprRock&loopcount&:\n"
-set "sp&sp&" to 8
-goto "#dumpchr"
-inc "$" by "$dumpchr"
-inc "CHAR" by 1
-loop for 0
-set "$sht" to "spr/spr_rock.asm"
 goto "#dumpsht"
 
 

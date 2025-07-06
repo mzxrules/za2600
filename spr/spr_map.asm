@@ -144,7 +144,7 @@ SprMap15:
     .byte $FF ; |XXXXXXXX|
 SprMap16:
     .byte $5A ; |.X.XX.X.|
-    .byte $FF ; |XXXXXXXX|
+    .byte $7E ; |.XXXXXX.|
     .byte $FF ; |XXXXXXXX|
     .byte $FF ; |XXXXXXXX|
     .byte $DB ; |XX.XX.XX|

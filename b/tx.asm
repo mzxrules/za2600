@@ -79,6 +79,8 @@ TextDisplayLoop:
     bne .drawText
     lda TextLoop
     beq .drawText
+; Drawing the second row of text
+; Set sign and digit chars for shops
     ; 12/15
     lda mesgChar+0      ; 3
     sta TextReg+1,x     ; 4
@@ -435,7 +437,7 @@ FinishVS
     bne .waitTimerLoop
     lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT
-    ldy #TEXT_ROOM_HEIGHT
+    ldy #ROOM_TEXT_DY_HEIGHT
     sta WSYNC ; 95
 
     jmp KERNEL_WORLD_RESUME

@@ -150,7 +150,7 @@ LoadRoom: SUBROUTINE
     sta roomDoors
 
 ; Load playfield data
-    ldy #ROOM_SPR_HEIGHT-1
+    ldy #PF_SPR_HEIGHT-1
     lda TRoomSprB
     sta BANK_SLOT
 

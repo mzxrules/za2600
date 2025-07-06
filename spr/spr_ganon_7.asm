@@ -1,0 +1,34 @@
+; SprGanon7:
+    .byte $7F ; |.XXXXXXX|
+    .byte $7F ; |.XXXXXXX|
+    .byte $3A ; |..XXX.X.|
+    .byte $DC ; |XX.XXX..|
+    .byte $E4 ; |XXX..X..|
+    .byte $F8 ; |XXXXX...|
+    .byte $FC ; |XXXXXX..|
+    .byte $F8 ; |XXXXX...|
+    .byte $F8 ; |XXXXX...|
+    .byte $F8 ; |XXXXX...|
+    .byte $78 ; |.XXXX...|
+    .byte $B0 ; |X.XX....|
+    .byte $E0 ; |XXX.....|
+    .byte $C0 ; |XX......|
+    .byte $E0 ; |XXX.....|
+    .byte $E0 ; |XXX.....|
+    .byte $E0 ; |XXX.....|
+    .byte $D8 ; |XX.XX...|
+    .byte $BC ; |X.XXXX..|
+    .byte $7E ; |.XXXXXX.|
+    .byte $FE ; |XXXXXXX.|
+    .byte $FE ; |XXXXXXX.|
+    .byte $FC ; |XXXXXX..|
+    .byte $FA ; |XXXXX.X.|
+    .byte $E6 ; |XXX..XX.|
+    .byte $1E ; |...XXXX.|
+    .byte $FC ; |XXXXXX..|
+    .byte $F0 ; |XXXX....|
+    .byte $C0 ; |XX......|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+    .byte $00 ; |........|
+

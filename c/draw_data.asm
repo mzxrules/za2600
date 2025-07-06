@@ -8,6 +8,7 @@
     .byte #<(SprP6 + 7)
 
 .RoomHeight
+; Used to convert from (room_pixels-1) to (real_pixels - 1)
     .byte 03, 07
 
 .Spr8WorldOff:
@@ -15,4 +16,4 @@
     .byte 75, 79, 83, 87
 
 .RoomWorldOff:
-    .byte (ROOM_PX_HEIGHT-1), (TEXT_ROOM_PX_HEIGHT-1), (SHOP_ROOM_PX_HEIGHT-1)
+    .byte (ROOM_PX_HEIGHT-1), (ROOM_TEXT_PX_HEIGHT-1), (ROOM_SHOP_PX_HEIGHT-1)

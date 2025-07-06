@@ -190,11 +190,12 @@ BANK_14
     INCLUDE "spr/spr_en0.asm"
     align $100
 
-    align $20
-    INCLUDE "spr/spr_pl.asm"
-    INCLUDE "spr/spr_rock.asm"
     INCLUDE "spr/spr_sh.asm"
     INCLUDE "spr/spr_waterfall.asm"
+
+    ORG $3800 + $3C0
+    RORG $F000 + $3C0
+    INCLUDE "spr/spr_pl.asm"
 
     LOG_BANK_SIZE "-BANK 14- Sprites World", BANK_14
 
@@ -211,14 +212,15 @@ BANK_15
     INCLUDE "spr/spr_en1.asm"
     align $100
 
-    align $20
-    INCLUDE "spr/spr_pl.asm"
-    INCLUDE "spr/spr_rock.asm"
     INCLUDE "spr/spr_sh.asm"
     INCLUDE "spr/spr_gohma.asm"
     INCLUDE "spr/spr_aqua.asm"
     align $20
     INCLUDE "spr/spr_manhandla.asm"
+
+    ORG $3C00 + $3C0
+    RORG $F000 + $3C0
+    INCLUDE "spr/spr_pl.asm"
 
     LOG_BANK_SIZE "-BANK 15- Sprites Dung", BANK_15
 
@@ -233,19 +235,13 @@ BANK_15
 BANK_16
     INCLUDE "spr/spr_item.asm"
     align $100
-    INCLUDE "spr/spr_en1.asm"
-    align $100
-
-    align $20
-    INCLUDE "spr/spr_pl.asm"
-    INCLUDE "spr/spr_rock.asm"
-    INCLUDE "spr/spr_sh.asm"
     INCLUDE "spr/spr_don.asm"
 
-    align $100
-    INCLUDE "spr/spr_ganon.asm"
+    ORG $4000 + $3C0
+    RORG $F000 + $3C0
+    INCLUDE "spr/spr_pl.asm"
 
-    LOG_BANK_SIZE "-BANK 16- Sprites Dung 2", BANK_16
+    LOG_BANK_SIZE "-BANK 16- Sprites Dung Boss", BANK_16
 
 
 ; ****************************************
@@ -377,6 +373,8 @@ BANK_24
 DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_PAUSE_DRAW_MENU2
     INCLUDE "c/draw_pause_world.asm"
     INCLUDE "c/draw_pause_menu.asm"
+    INCLUDE "c/draw_pause_item4_init.asm"
+    INCLUDE "c/draw_pause_item4_kernel.asm"
     LOG_BANK_SIZE "-BANK 24- Pause Draw World/Menu 1", BANK_24
 
 ; ****************************************

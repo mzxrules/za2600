@@ -2,20 +2,28 @@
 ; * Constants                            *
 ; ****************************************
 
-KERNEL_WORLD_LEN = $A9 ; World Kernel length
-KERNEL48_LEN     = $68 ; 48 pix kernel length
+KERNEL_WORLD_LEN    = $A9 ; World Kernel length
+KERNEL48_LEN        = $68 ; 48 pix kernel length
+KERNEL_ID_BASE      = 0
+KERNEL_ID_TEXT      = 1
+KERNEL_ID_SHOP      = 2
+KERNEL_ID_BOSS      = 3
 
-CV_LV_START     = #CV_END_LIST+1
-LV_MIN          = $6E ; lowest worldId value
+CV_LV_START         = #CV_END_LIST+1
+LV_MIN              = $6E ; lowest worldId value
 
-ROOM_PX_HEIGHT      = 20 ; height of room in pixels
-ROOM_SPR_HEIGHT     = 16 ; height of room sprite sheet
-ROOM_SPR_SHEET      = 16 ; width of room sprite sheet in 8 bit sprites
-ROOM_HEIGHT         = [(8*ROOM_PX_HEIGHT)/2-1] ; Screen visible height of play
-TEXT_ROOM_PX_HEIGHT = 16 ; height of room in pixels, when text is displayed
-TEXT_ROOM_HEIGHT    = [(8*TEXT_ROOM_PX_HEIGHT)/2-1] ;
-SHOP_ROOM_PX_HEIGHT = 13 ; height of room in pixels
-SHOP_ROOM_HEIGHT    = [(8*SHOP_ROOM_PX_HEIGHT)/2-1] ;
+PF_SPR_HEIGHT       = 16 ; height of room sprite sheet
+PF_SPR_SHEET        = 16 ; width of room sprite sheet in 8 bit sprites
+
+; room height in room sprite pixels
+ROOM_PX_HEIGHT      = 20 ; KernelId 0
+ROOM_TEXT_PX_HEIGHT = 16 ; when text is displayed
+ROOM_SHOP_PX_HEIGHT = 13 ; height of room in pixels
+
+; room height in 2 scanline units
+ROOM_DY_HEIGHT      = [(8*ROOM_PX_HEIGHT)/2-1]
+ROOM_TEXT_DY_HEIGHT = [(8*ROOM_TEXT_PX_HEIGHT)/2-1]
+ROOM_SHOP_DY_HEIGHT = [(8*ROOM_SHOP_PX_HEIGHT)/2-1]
 GRID_STEP           = 4 ; unit grid that the player should snap to
 MAX_LOCKS           = 16
 
@@ -54,8 +62,6 @@ BoardBreakwallSY = $13
 BoardBreakwallWX = $10
 BoardBreakwallEX = $76
 
-
-;ItemTimerSword  =  ; counts up to 0
 
 ; Color Index
 CI_EN_RED       = 0
@@ -140,14 +146,15 @@ ROOM_MAZE_2 = $61
 ; * Segment Constants                    *
 ; ****************************************
 
+; Slot registers
+BANK_SLOT_RAM   = $3E
+BANK_SLOT       = $3F
+
+; 3E+ memory segment values
 RAMSEG_F0 = $00
 RAMSEG_F4 = $40
 RAMSEG_F8 = $80
 RAMSEG_FC = $C0
-
-; Slot registers
-BANK_SLOT_RAM   = $3E
-BANK_SLOT       = $3F
 
 SLOT_FC_IDENT   = $FFFF ; not consistently used
 

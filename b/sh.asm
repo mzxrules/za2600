@@ -82,7 +82,7 @@ KERNEL_SHOP: SUBROUTINE
 .waitTimerLoop
     lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT
-    ldy #SHOP_ROOM_HEIGHT
+    ldy #ROOM_SHOP_DY_HEIGHT
     jsr PosWorldObjects
     sta WSYNC
 

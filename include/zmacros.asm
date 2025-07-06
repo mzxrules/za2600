@@ -79,6 +79,13 @@ w{1} = . - KERNEL_WORLD + wKERNEL_WORLD + 1
 .j1
     ENDM
 
+; Sleep for 6 or 9 cycles depending on
+    MACRO VSLEEP69
+    .byte $70, $00 ; bvs jumping to next instruction
+    .byte $70, $00
+    .byte $70, $00
+    ENDM
+
 ; Color definition macro
     MACRO COLOR
     IFCONST PAL60

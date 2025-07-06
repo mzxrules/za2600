@@ -8,7 +8,7 @@
 ;==============================================================================
 
 ; player draw height
-    lda .Spr8WorldOff,y ;#(ROOM_HEIGHT+8)
+    lda .Spr8WorldOff,y ;#(ROOM_DY_HEIGHT+8)
     sec
     sbc plY
     sta plDY

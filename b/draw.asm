@@ -330,7 +330,7 @@ KERNEL_HUD_LOOP:
 .kswap_KERNEL_WORLD
     sta WSYNC
 
-    ldy #ROOM_HEIGHT
+    ldy #ROOM_DY_HEIGHT
 KERNEL_WORLD_RESUME:
     lda #$FF
     sta PF0
