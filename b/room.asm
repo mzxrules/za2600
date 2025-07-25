@@ -26,7 +26,7 @@ RoomUpdate: SUBROUTINE
     sta roomPush
     sta plItemTimer
     sta plItem2Time
-    sta KernelId
+    sta wTextMode
 
     lda #SLOT_FC_HALT
     sta BANK_SLOT

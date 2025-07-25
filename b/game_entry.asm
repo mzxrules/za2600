@@ -210,6 +210,9 @@ ENTRY_START_GAME:
     sta CTRLPF
     sta VDELBL
 
+    lda #ROOM_PX_HEIGHT-1
+    sta RoomPX
+
     ; seed RNG
     ; lda INTIM
     ; sta Rand16+1

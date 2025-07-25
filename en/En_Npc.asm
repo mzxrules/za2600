@@ -23,7 +23,7 @@ En_NpcMonster: SUBROUTINE
     lda #0
     sta enType
     sta mesgId
-    sta KernelId
+    sta wTextMode
     rts
 
 .main_continue
@@ -42,7 +42,7 @@ En_NpcMonster: SUBROUTINE
 
     lda #0
     sta mesgId
-    sta KernelId
+    sta wTextMode
     sta roomRS
 
     ldy shopRoom

@@ -22,8 +22,8 @@ En_NpcGame: SUBROUTINE
     dey
     bpl .loop_seedRng2
 
-    lda #1
-    sta KernelId
+    lda #TEXT_MODE_DIALOG
+    sta wTextMode
     lda #[#NPC_INIT | #NPC_SPR_MAN]
     sta enState
     rts
@@ -117,8 +117,8 @@ En_NpcGame_PlayGame: SUBROUTINE
 
     lda #[#NPC_INIT | #NPC_ITEM_GOT | #NPC_CAVE | #NPC_SPR_MAN]
     sta enState
-    lda #2
-    sta KernelId
+    lda #TEXT_MODE_SHOP
+    sta wTextMode
     rts
 
     include "c/rng2.asm"

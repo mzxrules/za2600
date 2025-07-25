@@ -40,8 +40,9 @@ HtTask_AnimDeath: SUBROUTINE
     stx miType+1
     stx roomFlags
     stx mesgId
-    inx
-    stx KernelId
+
+    ldx #TEXT_MODE_DIALOG
+    stx wTextMode
 
     ldx #$80
     stx plY

@@ -16,7 +16,7 @@ PF_SPR_HEIGHT       = 16 ; height of room sprite sheet
 PF_SPR_SHEET        = 16 ; width of room sprite sheet in 8 bit sprites
 
 ; room height in room sprite pixels
-ROOM_PX_HEIGHT      = 20 ; KernelId 0
+ROOM_PX_HEIGHT      = 20 ; TextMode 0
 ROOM_TEXT_PX_HEIGHT = 16 ; when text is displayed
 ROOM_SHOP_PX_HEIGHT = 13 ; height of room in pixels
 
@@ -186,7 +186,6 @@ SLOT_F4_W3      = RAMSEG_F4 | 21
 SLOT_F4_W4      = RAMSEG_F4 | 22
 SLOT_F4_W5      = RAMSEG_F4 | 23
 
-SLOT_F4_PAUSE_DRAW_WORLD    = RAMSEG_F4 | 24
 SLOT_F4_PAUSE_DRAW_MENU1    = RAMSEG_F4 | 24
 SLOT_F4_PAUSE_DRAW_MENU2    = RAMSEG_F4 | 25
 SLOT_F0_PAUSE_MENU_MAP      = RAMSEG_F0 | 26
@@ -237,6 +236,9 @@ SEG_54 = RAMSEG_F4 | 54
 SEG_55 = RAMSEG_F4 | 55
 
 
+; RAM Segments
+
+; World Data
 SLOT_RW_F8_W0   = RAMSEG_F8 | 0
 SLOT_RW_F8_W1   = RAMSEG_F8 | 1
 SLOT_RW_F8_W2   = RAMSEG_F8 | 2
@@ -249,3 +251,4 @@ SLOT_RW_F8_KERNEL48 = RAMSEG_F8 | 4
 SLOT_RW_FC_KERNEL48 = RAMSEG_FC | 4
 
 SLOT_RW_F0_ROOMSCROLL = RAMSEG_F0 | 5
+SLOT_RW_F0_BOSS4_SPR  = RAMSEG_F0 | 6

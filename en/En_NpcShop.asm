@@ -16,8 +16,8 @@ En_NpcShop: SUBROUTINE
     sta npcDecRupee
 
 .init_default_shop
-    lda #2
-    sta KernelId
+    lda #TEXT_MODE_SHOP
+    sta wTextMode
 
     cpx #CV_TAKE_HEART_RUPEE
     bne .skip_MinusDisp
@@ -97,7 +97,7 @@ En_NpcShopMain: SUBROUTINE
     ora enState
     sta enState
     lda #0
-    sta KernelId
+    sta wTextMode
     lda shopItem,x
     ldx enNum
     sta cdItemType,x
@@ -124,7 +124,7 @@ En_NpcShopMain: SUBROUTINE
     ora #RF_EV_CLEAR
     sta roomFlags
     lda #0
-    sta KernelId
+    sta wTextMode
     lda #[#NPC_INIT | #NPC_ITEM_GOT | #NPC_CAVE]
     ora enState
     sta enState

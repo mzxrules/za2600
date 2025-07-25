@@ -5,13 +5,13 @@
 ;==============================================================================
 ShopKernel: BHA_BANK_FALL #SLOT_F0_SHOP
 
-TextKernel: SUBROUTINE ; Cycle 1
-    nop         ; 2 ; Scanlines 56 to 97 (3116) (TIM64T 48)
+TextKernel: SUBROUTINE ; Cycle 2
+    ; Scanlines 56 to 97 (3116) (TIM64T 48)
     lda #49 + 0 ; 2
     sta TIM64T  ; 4
 ; start
     lda #6      ; 2
-    sta NUSIZ0  ; 3
+    sta.w NUSIZ0 ; 4
     sta NUSIZ1  ; 3
     lda #COLOR_WHITE ; 2 - 19
     sta COLUP0 ; 3
@@ -74,8 +74,8 @@ TextDisplayLoop:
     bit .SetVFlag
 .ClearVFlag
 
-    lda #2
-    cmp KernelId
+    lda rTextMode
+    cmp #TEXT_MODE_SHOP
     bne .drawText
     lda TextLoop
     beq .drawText
@@ -424,8 +424,8 @@ FinishVS
     sta GRP1
     sta GRP0
 
-    ldy KernelId
-    cpy #2
+    ldy rTextMode
+    cpy #TEXT_MODE_SHOP
     bne .worldKernelReturn
     jmp ShopKernel
 .worldKernelReturn

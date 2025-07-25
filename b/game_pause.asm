@@ -6,7 +6,11 @@ PAUSE_ENTRY: SUBROUTINE
     ldx #$FF
     txs
     lda Frame
-    sta PFrame
+    sta wHaltFrame
+    stx wHudMode
+    lda rTextMode
+    and #$7F
+    sta wTextMode
     lda #0
     sta PauseState
     lda #20
@@ -74,7 +78,7 @@ PAUSE_FROM_GAME:
     sta PauseState
 
 ; Restore Frame, correcting audio timers
-    lda PFrame
+    lda rHaltFrame
     tax
     sec
     sbc Frame
@@ -91,6 +95,12 @@ PAUSE_FROM_GAME:
     sta SeqTFrame+1
     stx Frame
 
+; Restore TextMode
+    lda rTextMode
+    beq .endTextModeRestore
+    ora #TEXT_MODE_ACTIVE
+    sta wTextMode
+.endTextModeRestore
     lda #SLOT_F0_PL
     sta BANK_SLOT
     jmp MAIN_UNPAUSE
@@ -143,15 +153,19 @@ ITER    SET ITER+1
     jsr EnDraw_Del
 
 .skip_draw_en
-    lda #SLOT_F4_PAUSE_DRAW_WORLD
-    sta BANK_SLOT
     bit PauseState
     bvs .draw_menu
     lda PAnim
-    sta wHaltWorldDY
-    jsr DRAW_PAUSE_WORLD
+    sta RoomPX
+
+    lda #SLOT_F4_MAIN_DRAW
+    sta BANK_SLOT
+    jsr DRAW_HUD_WORLD
     jmp PAUSE_OVERSCAN
 .draw_menu
+
+    lda #SLOT_F4_PAUSE_DRAW_MENU1
+    sta BANK_SLOT
     jsr Pause_Menu_Input
     jsr DRAW_PAUSE_MENU
 
@@ -183,7 +197,6 @@ PAUSE_OVERSCAN_WAIT:
     jmp PAUSE_VERTICAL_SYNC
 
 Pause_Menu_Input: SUBROUTINE
-
 ; Update Fire button state flag
     lda plState
     cmp #INPT_FIRE_PREV

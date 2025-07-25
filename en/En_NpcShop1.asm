@@ -17,8 +17,8 @@ En_NpcShop1: SUBROUTINE
     ora #NPC_INIT
     sta enState
 
-    lda #1
-    sta KernelId
+    lda #TEXT_MODE_DIALOG
+    sta wTextMode
 
 .rts
     rts
@@ -60,5 +60,5 @@ En_NpcShop1: SUBROUTINE
     ora #NPC_ITEM_GOT
     sta enState
     lda #0
-    sta KernelId
+    sta wTextMode
     rts

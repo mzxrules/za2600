@@ -47,7 +47,6 @@ KERNEL_SHOP: SUBROUTINE
     sta COLUP0
 
 
-
 ; DRAW
 .draw_loop
     sta WSYNC
@@ -124,6 +123,7 @@ GiItemDel: SUBROUTINE
     pha
     lda ItemIdL,x
     pha
+GiNone:
     rts
 
 GiBomb: SUBROUTINE
@@ -305,9 +305,6 @@ GiCompass: SUBROUTINE
     lda #ITEMF_COMPASS_1
     ora ITEMV_COMPASS_1
     sta ITEMV_COMPASS_1
-    rts
-
-GiNone:
     rts
 
 ;==============================================================================

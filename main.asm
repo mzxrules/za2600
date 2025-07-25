@@ -17,9 +17,10 @@ TIA_BASE_ADDRESS = $00
     ORG $0000
     RORG $F000
 
+BANK_0
     .byte #'T, #'J, #'3, #'E
     INCLUDE "b/game_entry.asm"
-    LOG_BANK_SIZE "-BANK 0- ENTRY", ENTRY
+    LOG_BANK_SIZE "-BANK 0- ENTRY", BANK_0
 
     ORG $03FC
     RORG $FFFC
@@ -110,6 +111,7 @@ MesgData
 
 BANK_8
     INCLUDE "b/draw.asm"
+    INCLUDE "gen/world/room_colors.asm"
     LOG_BANK_SIZE "-BANK 8- Draw", BANK_8
 
 ; ****************************************
@@ -371,7 +373,6 @@ BANK_23
 
 BANK_24
 DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_PAUSE_DRAW_MENU2
-    INCLUDE "c/draw_pause_world.asm"
     INCLUDE "c/draw_pause_menu.asm"
     INCLUDE "c/draw_pause_item4_init.asm"
     INCLUDE "c/draw_pause_item4_kernel.asm"
@@ -859,7 +860,6 @@ BANK_54
 
     LOG_BANK_SIZE "-BANK 54- ", BANK_54
 
-
 ; ****************************************
 ; *               BANK 55                *
 ; ****************************************
@@ -881,6 +881,51 @@ BANK_55
     INCLUDE "ht/HtTask_IdleGameOver.asm"
 
     LOG_BANK_SIZE "-BANK 55- HtTask", BANK_55
+
+; ****************************************
+; *               BANK 56                *
+; ****************************************
+    SEG Bank54
+    ORG $E000
+    RORG $F400
+BANK_56
+
+SprGanon0:
+    ds $30
+    INCLUDE "spr/spr_ganon_0.asm"
+SprGanon1:
+    ds $30
+    INCLUDE "spr/spr_ganon_1.asm"
+    ds $30
+    align $100
+
+SprGanon2:
+    ds $30
+    INCLUDE "spr/spr_ganon_2.asm"
+    ds $30
+SprGanon3:
+    INCLUDE "spr/spr_ganon_3.asm"
+    ds $30
+    align $100
+
+SprGanon4:
+    ds $30
+    INCLUDE "spr/spr_ganon_4.asm"
+SprGanon5:
+    ds $30
+    INCLUDE "spr/spr_ganon_5.asm"
+    ds $30
+    align $100
+
+SprGanon6:
+    ds $30
+    INCLUDE "spr/spr_ganon_6.asm"
+    ds $30
+SprGanon7:
+    INCLUDE "spr/spr_ganon_7.asm"
+    ds $30
+
+    LOG_BANK_SIZE "-BANK 56- Spr Ganon", BANK_56
 
 ; End
 

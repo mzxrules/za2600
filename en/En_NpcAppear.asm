@@ -127,8 +127,8 @@ En_NpcAppear: SUBROUTINE
     lda plState
     ora #PS_LOCK_ALL
     sta plState
-    lda #1
-    sta KernelId
+    lda #TEXT_MODE_DIALOG
+    sta wTextMode
     lda enState
     ora #NPC_INIT
     sta enState

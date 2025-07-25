@@ -2,35 +2,11 @@
 ; mzxrules 2021
 ;==============================================================================
 
-DRAW_HUD_WORLD: SUBROUTINE
-;==============================================================================
-; World Draw Setup
-;==============================================================================
-
-; room draw start
-    ldy KernelId
-    lda .RoomWorldOff,y
-    sta roomDY
-    tay
-
+DRAW_WorldSetup: SUBROUTINE
     INCLUDE "c/draw_world_init.asm"
+    rts
 
-    ldx #0
-    bit rRoomColorFlags
-    bvs .dark
-    lda rRoomColorFlags
-    and #$3F
-    tax
-.dark
-    lda WorldColorsFg,x
-    sta wFgColor
-    lda WorldColorsBg,x
-    sta wBgColor
-
-;==============================================================================
-; HUD Draw Setup
-;==============================================================================
-
+DRAW_HudSetup:
 .hud_minimap_visible
     ldy worldId
     ldx .MapFlagAddr-#LV_MIN,y
@@ -66,9 +42,6 @@ DRAW_HUD_WORLD: SUBROUTINE
     ldx #%000
 .minimap_16
     stx NUSIZ1 ; double minimap size if world 0
-    lda #0
-    sta COLUBK
-    sta NUSIZ0 ; clean sword from previous frame
 
 
 .hud_rupee_init
@@ -144,6 +117,26 @@ DRAW_HUD_WORLD: SUBROUTINE
     sta THudHealthMaxH,x
     dex
     bpl .hpBarLoop
+    rts
+
+DRAW_HUD_WORLD:
+;==============================================================================
+; World Draw Setup
+;==============================================================================
+
+    jsr DRAW_WorldSetupPre
+    jsr DRAW_WorldSetup
+    lda #0
+    sta COLUBK
+    sta NUSIZ0 ; clean sword from previous frame
+
+;==============================================================================
+; HUD Draw Setup
+;==============================================================================
+
+    lda rHudMode
+    bne KERNEL_MAIN_HUD_WORLD
+    jsr DRAW_HudSetup
 
 ;===================================================
 ; Kernel Main - HUD and World
@@ -155,6 +148,20 @@ KERNEL_MAIN_HUD_WORLD:  ; 192 scanlines
     sta VBLANK
 
 KERNEL_HUD:
+    ldx RoomPX
+    cpx #ROOM_PX_HEIGHT-1
+    bpl .skipVerticalShift
+.wsyncLoop
+    ldy #7
+.wsyncLoop_inner
+    sta WSYNC
+    dey
+    bpl .wsyncLoop_inner
+    inx
+    cpx #ROOM_PX_HEIGHT-1
+    bmi .wsyncLoop
+.skipVerticalShift
+
     lda #%00000101 ; ball size 1, reflect playfield, pf priority
     sta CTRLPF
 
@@ -168,8 +175,22 @@ KERNEL_HUD:
     sta COLUP0
 
     ldy #7 ; Draw Height
-    lda #0
-    beq KERNEL_HUD_LOOP
+    lda rHudMode
+    beq KERNEL_HUD_LOOP ; jmp
+
+    ldy #16
+.hud_blackout_loop
+    sta WSYNC
+    dey
+    bne .hud_blackout_loop
+
+    sta WSYNC
+; HUD LOOP End
+    lda #85
+    sta TIM8T ; Delay 8 scanlines
+    sleep 30
+    jmp HUD_BLACKOUT_ENTRY
+
 ;=========== Scanline 1A ==============
 ; cycle 66
 .hudScanline1A
@@ -292,10 +313,11 @@ KERNEL_HUD_LOOP:
     ora SprN0_L,x       ; 4
     sta GRP0            ; 3
 
+HUD_BLACKOUT_ENTRY
     ldx #0
     ldy #COLOR_PLAYER_00
 
-    lda #%00110001 ; ball size 1, reflect playfield, pf priority
+    lda #%00110001 ; ball size 8, reflect playfield, pf priority
     sta CTRLPF
 
     lda rFgColor
@@ -305,8 +327,8 @@ KERNEL_HUD_LOOP:
     stx GRP1
     sty COLUP0
     LOG_SIZE "-HUD KERNEL-", KERNEL_HUD
-    lda KernelId
-    beq .defaultWorldKernel
+    lda rTextMode
+    bpl .defaultWorldKernel ; !#TEXT_MODE_ACTIVE
     lda #SLOT_F0_TEXT
     sta BANK_SLOT
     jmp TextKernel
@@ -327,10 +349,12 @@ KERNEL_HUD_LOOP:
 .kernel_draw_player
     jmp (rHaltKernelDraw)
 
-.kswap_KERNEL_WORLD
+KERNEL_WORLD_RESUME_PREFETCH
+    ldy roomDY
+    lda .RoomHeight,y
     sta WSYNC
 
-    ldy #ROOM_DY_HEIGHT
+    tay
 KERNEL_WORLD_RESUME:
     lda #$FF
     sta PF0
@@ -401,4 +425,32 @@ KERNEL_WORLD_RESUME:
     .byte #<SprN1_L - #<SprN0_L +7
     REPEND
 
-    INCLUDE "gen/world/room_colors.asm"
+DRAW_WorldSetupPre:
+; Room Color
+    ldx #0
+    bit rRoomColorFlags
+    bvs .dark
+    lda rRoomColorFlags
+    and #$3F
+    tax
+.dark
+    lda WorldColorsFg,x
+    sta wFgColor
+    lda WorldColorsBg,x
+    sta wBgColor
+
+; room draw start
+    ldy RoomPX
+    lda rTextMode
+    bpl .skip_textmode_view
+    cpy #ROOM_PX_HEIGHT-1
+    bne .textmode_invalid
+    and #$7F
+    tay
+    lda .RoomWorldOff,y
+    tay
+.textmode_invalid
+.skip_textmode_view
+
+    sty roomDY
+    rts

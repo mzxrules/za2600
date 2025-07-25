@@ -2,6 +2,8 @@
 ; mzxrules 2024
 ;==============================================================================
 
+; Rewrite attempt of KERNEL_SCROLL1, to try and add player sprite positioning.
+
 KERNEL_SCROLL2: SUBROUTINE  ; 192 scanlines
 
     lda #%00110000  ; ball size 8, standard playfield

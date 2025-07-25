@@ -5,7 +5,7 @@
     ORG $80
 Frame       ds 1
 Rand16      ds 2
-KernelId    ds 1
+RoomPX      ds 1 ; Height of room in room px -1
 ; Object coordinates
 plX         ds 1
 enX         ds 1
@@ -124,7 +124,6 @@ plItem2Dir  ds 1
                       ; 0000_0011 Attack Direction, most items
 PS_CATCH_WIND   = $80 ; 1000_0000 Flute, tornado in on respawn
                       ; 0000_0111 Flute selection index
-PauseState  = plItemDir
 itemRupees  ds 1
 itemKeys    ds 1 ; Sign bit = Master Key
 itemBombs   ds 1 ; 1100_0000 = bomb capacity
@@ -486,6 +485,10 @@ enManhandlaStun     ds 1
 enManhandlaInvince  ds 1
     EN_SIZE BOSS_MANHANDLA
 
+; == Ganon
+    ORG CLASS_EN_BOSS_SHOOT
+    EN_SIZE BOSS_GANON
+
 ; == Test
     ORG EN_FREE + 2
 enTestDir   ds 1
@@ -544,9 +547,9 @@ AUDVT0      ds 1
 AUDVT1      ds 1
 
     SEG.U VARS_PAUSE
+PauseState  = plItemDir
 ; Pause perms must come after VARS_AUD_ZERO temps
     ORG AUDVT1 + 1
-PFrame          ds 1
 PAnim           ds 1
 
     ORG plSpr
@@ -699,6 +702,11 @@ WORLD_EN        ds 128 ; Enemy Encounter
  RW PF1RoomL,           ds ROOM_PX_HEIGHT
  RW PF2Room,            ds ROOM_PX_HEIGHT
  RW PF1RoomR,           ds ROOM_PX_HEIGHT
+ RW TextMode,           ds 1
+TEXT_MODE_ACTIVE    = $80
+TEXT_MODE_DIALOG    = $81
+TEXT_MODE_SHOP      = $82
+ RW HudMode,            ds 1
  RW RoomColorFlags,     ds 1
 RF_WC_ROOM_BOOT = $80
 RF_WC_ROOM_DARK = $40
@@ -729,9 +737,8 @@ HALT_TYPE_ENTER_DUNG    = 6
 HALT_TYPE_ENTER_CAVE    = 7
 HALT_TYPE_GAME_OVER     = 8
  RW HaltTask,           ds 1
- RW HaltWorldDY,        ds 1
-HALT_VARS_SIZE = . - rHALT_VARS
-RW_WORLD        = .
+HALT_VARS_SIZE          = . - rHALT_VARS
+RW_WORLD                = .
 
     ORG $F900
  RW WorldRoomENCount,   ds 128

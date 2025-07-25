@@ -70,8 +70,6 @@ HALT_GAME: SUBROUTINE
     lda HtTaskScriptIndex,y
     sta wHaltTask
 
-    lda #ROOM_PX_HEIGHT-1
-    sta wHaltWorldDY
     lda rHaltVState
     bpl HALT_OVERSCAN_BLANK
     bmi HALT_VERTICAL_BLANK
@@ -154,15 +152,16 @@ Halt_Kernel_HUD_SCROLL:
     jmp DRAW_HUD_WORLD
 
 Halt_Kernel_PAUSE_WORLD:
+    ; TODO: Handle hud issues
     jsr Halt_SetKernelWorld
-    lda #SLOT_F4_PAUSE_DRAW_WORLD
+    lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT
-    jmp DRAW_PAUSE_WORLD
+    jmp DRAW_HUD_WORLD
 
 Halt_SetKernelWorld: SUBROUTINE
-    lda <[#KERNEL_WORLD_RESUME-4]
+    lda <[#KERNEL_WORLD_RESUME_PREFETCH]
     sta wHaltKernelDraw
-    lda >[#KERNEL_WORLD_RESUME-4]
+    lda >[#KERNEL_WORLD_RESUME_PREFETCH]
     sta wHaltKernelDraw+1
     rts
 

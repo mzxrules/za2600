@@ -44,7 +44,7 @@ En_NpcGiveOne: SUBROUTINE
     sta enState
 
     lda #0
-    sta KernelId
+    sta wTextMode
     lda NpcGiveOneItems-#CV_SWORD1,x
     ldx enNum
     sta cdItemType,x

@@ -27,8 +27,6 @@ enMSpr      ds 2
 enBossX     ds 1 ; real boss X pos
 enBossY     ds 1
 
-kP0         ds 1
-kP1         ds 1
 
 plColor     ds 1
 enColor     ds 1

@@ -5,8 +5,8 @@
 En_NpcPath: SUBROUTINE
     lda #MESG_PATH
     sta mesgId
-    lda #1
-    sta KernelId
+    lda #TEXT_MODE_DIALOG
+    sta wTextMode
 
     ldy plY
     cpy #$28

@@ -53,6 +53,10 @@ LOADROOM_RETURN:
 ; Pre-Position Sprites and Draw Frame
 ;==============================================================================
 
+    lda #0
+    sta wHudMode
+    lda #ROOM_PX_HEIGHT-1
+    sta RoomPX
     lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT
     jsr DRAW_HUD_WORLD
