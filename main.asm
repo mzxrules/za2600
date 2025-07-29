@@ -195,6 +195,8 @@ BANK_14
     INCLUDE "spr/spr_sh.asm"
     INCLUDE "spr/spr_waterfall.asm"
 
+    INCLUDE "gen/spr_tri.asm"
+
     ORG $3800 + $3C0
     RORG $F000 + $3C0
     INCLUDE "spr/spr_pl.asm"
@@ -362,7 +364,7 @@ BANK_23
     INCBIN "world/w5rs.bin"
     INCBIN "world/w5ex.bin"
     INCBIN "gen/world/b5en.bin"
-    LOG_BANK_SIZE "-BANK 13- Q2 Dungeon 2", BANK_23
+    LOG_BANK_SIZE "-BANK 23- Q2 Dungeon 2", BANK_23
 
 ; ****************************************
 ; *               BANK 24                *
@@ -372,11 +374,14 @@ BANK_23
     RORG $F400
 
 BANK_24
-DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_PAUSE_DRAW_MENU2
+PosMenuObject: SUBROUTINE
+    INCLUDE "c/sub_PosObject.asm"
     INCLUDE "c/draw_pause_menu.asm"
     INCLUDE "c/draw_pause_item4_init.asm"
     INCLUDE "c/draw_pause_item4_kernel.asm"
-    LOG_BANK_SIZE "-BANK 24- Pause Draw World/Menu 1", BANK_24
+    INCLUDE "c/draw_pause_menu_tri.asm"
+    INCLUDE "c/draw_pause_menu_map.asm"
+    LOG_BANK_SIZE "-BANK 24- Pause Menu Draw", BANK_24
 
 ; ****************************************
 ; *               BANK 25                *
@@ -386,8 +391,7 @@ DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_PAUSE_DRAW_MENU2
     RORG $F400
 
 BANK_25
-    INCLUDE "c/draw_pause_menu_tri.asm"
-    LOG_BANK_SIZE "-BANK 25- Pause Draw Menu 2", BANK_25
+    LOG_BANK_SIZE "-BANK 25- FREE", BANK_25
 
 ; ****************************************
 ; *               BANK 26                *
@@ -404,7 +408,7 @@ Pause_MapPlot:
     sta BANK_SLOT_RAM
     INCLUDE "gen/pause_map.asm"
     RORG [. & $3FF] + $F000
-    LOG_BANK_SIZE "-BANK 26- Pause Map generator", BANK_26
+    LOG_BANK_SIZE "-BANK 26- Pause Menu Map generator", BANK_26
 
 ; ****************************************
 ; *               BANK 27                *

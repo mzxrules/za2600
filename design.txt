@@ -976,6 +976,9 @@ Direction when colliding with projectiles is based on this algo:
 > Pause Screen - Tri Sprite
 ===============================================================================
 
+The large tri is broken up into 8 segments that light up when the corresponding
+tri piece is collected from levels 1-8
+
 /|\ 1, 2 (top)
 
 /| |\ 3, 4 (second row)
@@ -991,6 +994,12 @@ __
 |/ 7
 
 /| 8
+
+The complete 32x16 image is created using the classic alternating sprite trick
+used in 48 px kernels, splitting it into 4 sprite strips (0, 1, 2, 3).
+Enabling REFP1 reduces the number of 8x16 sprites needed to draw all 256 states
+ * strips 0 and 3 display 1 tri piece each, requiring 2 sprites.
+ * strips 2 and 1 display 3 tri piece each, requiring 8 sprites.
 
 ===============================================================================
 > Pause Screen - Dungeon Map

@@ -164,7 +164,7 @@ ITER    SET ITER+1
     jmp PAUSE_OVERSCAN
 .draw_menu
 
-    lda #SLOT_F4_PAUSE_DRAW_MENU1
+    lda #SLOT_F4_PAUSE_MENU_DRAW
     sta BANK_SLOT
     jsr Pause_Menu_Input
     jsr DRAW_PAUSE_MENU

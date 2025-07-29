@@ -1,9 +1,6 @@
 ;==============================================================================
 ; mzxrules 2022
 ;==============================================================================
-    align 16
-PosMenuObject: SUBROUTINE
-    INCLUDE "c/sub_PosObject.asm"
 
 ;   Sword, Bomb, Bow,   Candle
 ;   Flute, Wand, Meat,  Rang
@@ -227,7 +224,34 @@ KERNEL_PAUSE_MENU_MAIN: SUBROUTINE ; 192 scanlines
     jsr draw_pause_item4_init
     jsr draw_pause_item4_kernel
 
-    jmp DRAW_PAUSE_MENU_TRI
+;==============================================================================
+; Draw Extra Info
+;==============================================================================
+    lda worldId
+    bpl .draw_dungeon_map
+
+.draw_tri
+    jsr draw_pause_menu_tri
+    ldy #82
+    jmp draw_pause_menu_wsync_loop ; Finish Frame
+
+.draw_dungeon_map
+    ldy #17
+    jsr draw_pause_menu_wsync_loop
+    jsr draw_pause_menu_map
+    ldy #18
+    jmp draw_pause_menu_wsync_loop ; Finish Frame
+
+;==============================================================================
+; draw_pause_menu_wsync_loop
+;----------
+; Y = scanlines to delay by
+;==============================================================================
+draw_pause_menu_wsync_loop:
+    sta WSYNC
+    dey
+    bne draw_pause_menu_wsync_loop
+    rts
 
 draw_pause_menu_item_cursor_pos:
     .byte #$35, #$45, #$55, #$65

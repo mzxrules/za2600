@@ -1,6 +1,14 @@
 ;==============================================================================
 ; mzxrules 2023
 ;==============================================================================
+draw_pause_menu_map:
+; Reset CTRLPF
+    lda #%00110001 ; ball size 8, reflect playfield
+    sta CTRLPF
+    lda #0
+    sta COLUP0
+    sta COLUP1
+
     sta WSYNC
     lda #$03            ; +2 (2)
     sta NUSIZ0          ; +3 (5)  Three copies close for P0 and P1
@@ -66,5 +74,7 @@
 
     sta WSYNC
     sta WSYNC
+    sta PF2
     lda #COLOR_BLACK
     sta COLUPF
+    rts

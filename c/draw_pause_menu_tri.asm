@@ -1,21 +1,11 @@
 ;==============================================================================
 ; mzxrules 2022
 ;==============================================================================
-DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_PAUSE_DRAW_MENU2
-    lda worldId
-    bmi .continue_draw_tri
-    ldy #17
-.line_delay
-    sta WSYNC
-    dey
-    bpl .line_delay
-    jmp draw_pause_menu_map
 
-.continue_draw_tri
+draw_pause_menu_tri:
 ;==============================================================================
 ; Initialize Sprite
 ;==============================================================================
-
     lda #>tri_0
     sta PItemSpr0+1
     sta PItemSpr1+1
@@ -74,10 +64,10 @@ DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_PAUSE_DRAW_MENU2
 
     lda #63
     ldx #0
-    jsr PosMenuObject_2
+    jsr PosMenuObject
     lda #71
     ldx #1
-    jsr PosMenuObject_2
+    jsr PosMenuObject
     sta WSYNC
     lda #$01 ; Two copies close for P0 and P1
     sta NUSIZ0
@@ -99,7 +89,6 @@ DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_PAUSE_DRAW_MENU2
     sta GRP1            ; 3 (16)
     lda (PItemSpr2),y   ; 5 (21)
     sta GRP0            ; 3 (24)
-
     lda (PItemSpr3),y   ; 5 (29)
 
     SLEEP 16            ; MUST HIT 45
@@ -121,34 +110,4 @@ DRAW_PAUSE_MENU_TRI: BHA_BANK_FALL #SLOT_F4_PAUSE_DRAW_MENU2
     lda #0
     sta COLUP0
     sta COLUP1
-    ldy #82
-    jmp draw_pause_finish_frame
-
-;==============================================================================
-; Map Draw Test
-;==============================================================================
-draw_pause_menu_map:
-; Reset CTRLPF
-    lda #%00110001 ; ball size 8, reflect playfield
-    sta CTRLPF
-    lda #0
-    sta COLUP0
-    sta COLUP1
-    INCLUDE "c/draw_pause_menu_map.asm"
-
-;==============================================================================
-; Finish Frame
-;==============================================================================
-    ldy #17
-.dummy_end
-draw_pause_finish_frame:
-    sta WSYNC
-    dey
-    bne .dummy_end
     rts
-
-    align 256
-    INCLUDE "gen/spr_tri.asm"
-
-PosMenuObject_2: SUBROUTINE
-    INCLUDE "c/sub_PosObject.asm"
