@@ -143,12 +143,12 @@ Each world can only have a maximum of 128 rooms.
 ===============================================================================
 
 The data for each room is optimized to fit in 8 bytes per room, or $400 bytes
-total per room (exactly the size of a 1 KB bank). The following information
+across 128 rooms (exactly the size of a 1 KB bank). The following information
 is stored for each room:
 
 - Room Sprite "pointers" for PF1L, PF1R, and PF2 sprites
-- roomDoor, or Door flags, which in dungeons track whether a dungeon door should be
-  either open, locked, a shudder door, or a wall.
+- roomDoor, or Door flags, which in dungeons track whether a dungeon door 
+  should be either open, locked, a shudder door, or a wall.
 - roomWA, the room wall flags. In the overworld, these flags combined with
   the room door flags configure the pattern drawn at the wall edges of a
   room. In dungeons, they modify walls to either be bombable or false walls.
@@ -824,6 +824,21 @@ General Layout
 > World Editor
 ===============================================================================
 
+The za2600 world editor was created using MegaZeux, a game creator program.
+You can find a MegaZeux at digitalmzx.com. The editor requires at least
+MegaZeux 2.93d to run.
+
+Within MegaZeux, press L to open the Load World dialog, and navigate to the
+za2600 folder. Select atari.mzx in the menu and press enter.
+With the title board displayed, press P to start the za2600 world editor.
+
+Alternatively, you can press E to make changes to atari.mzx, but this requires
+experience with MegaZeux's world editor.
+
+===============================================================================
+> World Editor - Controls
+===============================================================================
+
 1, 2, 3, 4 - Change N/S/W/E room door
 Q, W, E - inc Room Tile  Left, Mid, Right
 A, S, D - dec Room Tile  Left, Mid, Right
@@ -840,6 +855,15 @@ Space   - place copied room
 C       - Set room colors (hex code)
 Delete  - Delete room
 
+Editing Notes:
+
+* DO NOT USE MegaZeux's built-in save game feature to save changes.
+* Certain edits to ptr.py will cause editor bindings to desync. To fix this:
+  * Return to the za2600 world editor title board
+  * Run make (this runs ptr.py and generates new editor bindings)
+  * Reload the world editor by pressing P on the title board
+  * Press P again to save the za2600 world. 
+  * Run make again.
 
 ===============================================================================
 > Systems - Atan2

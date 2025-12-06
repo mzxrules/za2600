@@ -9,7 +9,7 @@ PAUSE_ENTRY: SUBROUTINE
     sta wHaltFrame
     stx wHudMode
     lda rTextMode
-    and #$7F
+    and #~#TEXT_MODE_ACTIVE
     sta wTextMode
     lda #0
     sta PauseState
@@ -176,7 +176,7 @@ PAUSE_OVERSCAN: SUBROUTINE ; 30 scanlines
     sta VBLANK
     lda #36
     sta TIM64T ; 30 scanline timer
-    sta wHaltVState
+    sta wOSFrameState
 ; reset world kernel vars
     lda #7
     sta wENH

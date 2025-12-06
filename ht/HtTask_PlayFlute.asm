@@ -6,8 +6,8 @@
 HtTask_PlayFlute: SUBROUTINE
     lda #HALT_KERNEL_HUD_WORLD
     sta wHaltKernelId
-    lda rHaltVState
-    bpl .rts ; not #HALT_VSTATE_TOP
+    lda rOSFrameState
+    bpl .rts ; #OS_FRAME_OVERSCAN
     lda rHaltFrame
     clc
     adc #$7F

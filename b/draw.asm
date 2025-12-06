@@ -442,7 +442,7 @@ DRAW_WorldSetupPre:
 ; room draw start
     ldy RoomPX
     lda rTextMode
-    bpl .skip_textmode_view
+    bpl .skip_textmode_view ; !#TEXT_MODE_ACTIVE
     cpy #ROOM_PX_HEIGHT-1
     bne .textmode_invalid
     and #$7F

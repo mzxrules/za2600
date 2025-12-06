@@ -2,17 +2,18 @@
 ; mzxrules 2024
 ;==============================================================================
 HtTask_AnimEast: SUBROUTINE
+    jsr Halt_TaskStall_OVERSCAN
     lda #SLOT_RW_F0_ROOMSCROLL
     sta BANK_SLOT_RAM
 
     dec roomTimer
     bne .continue
-    jmp Halt_IncTask
+    jmp Halt_TaskNext
 
 .continue
     ldx #1
-    lda rHaltVState
-    bmi .skip ; #HALT_VSTATE_TOP
+    lda rOSFrameState
+    bmi .skip ; #OS_FRAME_VBLANK
     dex ; 0
 .skip
     lda RSCR_EW_IndexEnd,x
@@ -31,17 +32,18 @@ HtTask_AnimEast: SUBROUTINE
     rts
 
 HtTask_AnimWest: SUBROUTINE
+    jsr Halt_TaskStall_OVERSCAN
     lda #SLOT_RW_F0_ROOMSCROLL
     sta BANK_SLOT_RAM
 
     dec roomTimer
     bne .continue
-    jmp Halt_IncTask
+    jmp Halt_TaskNext
 
 .continue
     ldx #1
-    lda rHaltVState
-    bmi .skip ; #HALT_VSTATE_TOP
+    lda rOSFrameState
+    bmi .skip ; #OS_FRAME_VBLANK
     dex ; 0
 .skip
     lda RSCR_EW_IndexEnd,x

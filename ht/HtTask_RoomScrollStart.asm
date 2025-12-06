@@ -13,7 +13,8 @@ HtTask_RoomScrollStart: SUBROUTINE
     stx roomScrollDY
     lda .timer,y
     sta roomTimer
-    jmp Halt_IncTask
+
+    jmp Halt_TaskNext
 
 .timer
     .byte -1

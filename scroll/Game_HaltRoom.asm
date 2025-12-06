@@ -37,7 +37,7 @@ ROOMSCROLL_OVERSCAN: SUBROUTINE
     sta VBLANK
     lda #36
     sta TIM64T ; 30 scanline timer
-    sta wHaltVState
+    sta wOSFrameState
 ; reset world kernel vars
     lda #7
     sta wENH

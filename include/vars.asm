@@ -678,6 +678,12 @@ TextReg     ds 12
 
     echo "-RAM-",$80,(.)
 
+    SEG.U VARS_HALT_ZEROPAGE
+HALT_STACK_DEPTH = $FD
+    ORG $FE
+Halt_TaskTemp   ds 1 ; Set to $FF to delay task execution
+HaltFree        ds 1
+
 ; ****************************************
 ; * Level Data ROM Banks                 *
 ; ****************************************
@@ -715,15 +721,15 @@ RF_WC_ROOM_DARK = $40
  ROOM_PF2 TRIFORCE, 35
 
  RW HALT_VARS, = .
+ RW OSFrameState,       ds 1 ; negative is Vertical Blank, else Overscan
+OS_FRAME_VBLANK     = #$80
+OS_FRAME_OVERSCAN   = #$00
  RW HaltKernelDraw,     ds 2
  RW HaltKernelId,       ds 1
 HALT_KERNEL_HUD_WORLD_NOPL  = 0
 HALT_KERNEL_HUD_WORLD       = 1
 HALT_KERNEL_HUD_SCROLL      = 2
 HALT_KERNEL_PAUSE_WORLD     = 3
- RW HaltVState,         ds 1 ; negative is Vertical Blank, else Overscan
-HALT_VSTATE_TOP = #$80
-HALT_VSTATE_BOT = #$00
  RW HaltFrame,          ds 1
  RW HaltType,           ds 1
 HALT_TYPE_RSCR_NONE     = 0

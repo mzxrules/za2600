@@ -149,8 +149,8 @@ VERTICAL_SYNC: SUBROUTINE
     sta m1Y
     lda #SLOT_F0_SPR_HUD
     sta BANK_SLOT
-    lda #HALT_VSTATE_TOP | #$02
-    sta wHaltVState
+    lda #OS_FRAME_VBLANK | #$02
+    sta wOSFrameState
     ldx #49
     sta WSYNC
     sta VSYNC

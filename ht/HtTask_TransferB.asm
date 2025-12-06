@@ -14,8 +14,6 @@ UnmirrorRoomB_Blackout: SUBROUTINE
     rts
 
 HtTask_TransferB_Color: SUBROUTINE
-    ldy #ROOM_PX_HEIGHT-1
-    sty wTransferB
 .loop
     lda rFgColor
     sta wCOLUPF_B,y
@@ -23,17 +21,18 @@ HtTask_TransferB_Color: SUBROUTINE
     sta wCOLUBK_B,y
     dey
     bpl .loop
-    rts
+    jmp Halt_TaskNext
 
 HtTask_TransferB: SUBROUTINE
+    jsr Halt_TaskStall_OVERSCAN
+
     lda #SLOT_RW_F0_ROOMSCROLL
     sta BANK_SLOT_RAM
 
-    ldy rTransferB ; #ROOM_PX_HEIGHT-1 or #0
-    beq HtTask_TransferB_Color
-    lda #0
-    sta wTransferB
-    jsr Halt_IncTask
+    ldy #ROOM_PX_HEIGHT-1
+
+    lda rOSFrameState
+    bmi HtTask_TransferB_Color ; #OS_FRAME_VBLANK
 
 UnmirrorRoomB:
     bit rRoomColorFlags

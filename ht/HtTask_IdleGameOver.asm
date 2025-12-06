@@ -6,8 +6,8 @@ HtTask_IdleGameOver: SUBROUTINE
     lda #HALT_KERNEL_HUD_WORLD
     sta wHaltKernelId
 
-    lda rHaltVState
-    bmi .rts ; #HALT_VSTATE_TOP
+    lda rOSFrameState
+    bmi .rts ; #OS_FRAME_VBLANK
     lda enInputDelay
     cmp #1
     adc #0

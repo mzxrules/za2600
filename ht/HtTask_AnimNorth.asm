@@ -2,12 +2,12 @@
 ; mzxrules 2024
 ;==============================================================================
 HtTask_AnimNorth: SUBROUTINE
-    lda rHaltVState
-    bpl .rts ; not #HALT_VSTATE_TOP
+    lda rOSFrameState
+    bpl .rts ; #OS_FRAME_OVERSCAN
 
     inc roomScrollDY
     dec roomTimer
     bne .rts
-    jmp Halt_IncTask
+    jmp Halt_TaskNext
 .rts
     rts

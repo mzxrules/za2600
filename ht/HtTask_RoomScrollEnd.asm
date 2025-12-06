@@ -3,7 +3,7 @@
 ;==============================================================================
 
 HtTask_RoomScrollEnd: SUBROUTINE
-    lda rHaltVState
+    lda rOSFrameState
     bmi .continue
     rts
 .continue

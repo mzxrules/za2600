@@ -28,7 +28,7 @@ HALT_OVERSCAN: SUBROUTINE ; 30 scanlines
     sta VBLANK
     lda #36
     sta TIM64T ; 30 scanline timer
-    sta wHaltVState
+    sta wOSFrameState
 ; reset world kernel vars
     lda #7
     sta wENH
@@ -62,24 +62,23 @@ HALT_GAME: SUBROUTINE
     sty wHaltType
 
 ; Reset the stack
-    ldx #$FF
+    ldx #HALT_STACK_DEPTH
     txs
     lda Frame
     sta wHaltFrame
 
     lda HtTaskScriptIndex,y
     sta wHaltTask
+    lda #$FF
+    sta Halt_TaskTemp
 
-    lda rHaltVState
+    lda rOSFrameState
     bpl HALT_OVERSCAN_BLANK
     bmi HALT_VERTICAL_BLANK
 
 
 HtTask_LoadRoom: SUBROUTINE
-    lda rHaltVState
-    bpl .continue ; not #HALT_VSTATE_TOP
-    rts
-.continue
+    jsr Halt_TaskStall_OVERSCAN
 
     lda #HALT_KERNEL_HUD_SCROLL
     sta wHaltKernelId
@@ -114,18 +113,27 @@ HtTask_LoadRoom: SUBROUTINE
     lda WorldColorsBg,x
     sta wBgColor
 
-Halt_IncTask: SUBROUTINE
+Halt_TaskNext: SUBROUTINE
     ldx rHaltTask
     inx
     stx wHaltTask
-.rts
+    lda #$FF
+    sta Halt_TaskTemp
     rts
 
-HtTask_WaitVStateBottom:  ; SUBROUTINE
-    lda rHaltVState
-    bmi .rts ; #HALT_VSTATE_TOP
-    jsr Halt_IncTask
-    jmp HtTask_Run
+; Delays execution of task until the overscan portion of the frame
+Halt_TaskStall_OVERSCAN: SUBROUTINE
+    lda Halt_TaskTemp
+    bpl .rts
+
+    inc Halt_TaskTemp
+    lda rOSFrameState
+    bpl .rts ; #OS_FRAME_OVERSCAN
+    ; If OS_FRAME_VBLANK, return from the task function
+    pla
+    pla
+.rts
+    rts
 
 Halt_KernelMain: SUBROUTINE
     ldx rHaltKernelId

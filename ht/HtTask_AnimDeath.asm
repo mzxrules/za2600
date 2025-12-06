@@ -6,8 +6,8 @@ HtTask_AnimDeath: SUBROUTINE
     lda #HALT_KERNEL_HUD_WORLD
     sta wHaltKernelId
 
-    lda rHaltVState
-    bmi .skip_plStunAnim ; #HALT_VSTATE_TOP
+    lda rOSFrameState
+    bmi .skip_plStunAnim ; #OS_FRAME_VBLANK
 
     lda plStun
     bpl .end_plStunAnim
@@ -56,4 +56,4 @@ HtTask_AnimDeath: SUBROUTINE
     lda #-$20 ; input delay timer
     sta enInputDelay
 
-    jmp Halt_IncTask
+    jmp Halt_TaskNext

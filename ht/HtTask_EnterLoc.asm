@@ -6,8 +6,8 @@
 HtTask_EnterLoc: SUBROUTINE
     lda #HALT_KERNEL_PAUSE_WORLD
     sta wHaltKernelId
-    lda rHaltVState
-    bpl .continue ; not #HALT_VSTATE_TOP
+    lda rOSFrameState
+    bpl .continue ; #OS_FRAME_OVERSCAN
     ldx rHaltFrame
     inx
     cpx Frame
