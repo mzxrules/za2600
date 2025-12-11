@@ -172,6 +172,7 @@ ITER    SET ITER+1
 
 PAUSE_OVERSCAN: SUBROUTINE ; 30 scanlines
     sta WSYNC
+    lda INTIM ; Flush timer flag?
     lda #2
     sta VBLANK
     lda #36

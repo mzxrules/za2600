@@ -5,17 +5,21 @@
 ;==============================================================================
 ShopKernel: BHA_BANK_FALL #SLOT_F0_SHOP
 
-TextKernel: SUBROUTINE ; Cycle 2
+TextKernel: SUBROUTINE
     ; Scanlines 56 to 97 (3116) (TIM64T 48)
-    lda #49 + 0 ; 2
-    sta TIM64T  ; 4
+    ; assumes COLUP0, COLUP1 set to #COLOR_WHITE
+
+    sta WSYNC
+    sleep 10
+
+    lda Frame  ; 3
+    and #1     ; 2
+    tay        ; 2
+
 ; start
     lda #6      ; 2
-    sta.w NUSIZ0 ; 4
+    sta NUSIZ0  ; 3
     sta NUSIZ1  ; 3
-    lda #COLOR_WHITE ; 2 - 19
-    sta COLUP0 ; 3
-    sta COLUP1 ; 3
     lda #1     ; 2
     sta VDELP0 ; 3
     sta RESP0  ; 3 - 33     TIA POS #36
@@ -23,9 +27,6 @@ TextKernel: SUBROUTINE ; Cycle 2
     sta RESP1  ; 3 - 38     TIA POS #51
     sta VDELP1 ; 3 - 41
 
-    lda Frame  ; 3
-    and #1
-    tay
     lda TextSetHMP0,y
     sta HMP0 ; #32/#40
     lda TextSetHMP1,y
@@ -33,6 +34,14 @@ TextKernel: SUBROUTINE ; Cycle 2
 
     sta WSYNC ; To Scanline 59
     sta HMOVE
+
+    lda #SLOT_F4_MESG
+    sta BANK_SLOT
+    ldx mesgId
+    lda MesgAL,x
+    sta TMesgPtr
+    lda MesgAH,x
+    sta TMesgPtr+1
 
     lda #$FF
     sta TextLoop
@@ -47,19 +56,32 @@ TextDisplayLoop:
     sta WSYNC
     adc #SLOT_F4_MESG
     sta BANK_SLOT
-    ldx mesgId
-    lda MesgAL,x
-    sta TMesgPtr
-    lda MesgAH,x
-    sta TMesgPtr+1
 
     ldy #11
 .loadTextLoop
     cpy mesgDY
-    bcc .drawChar
+    bcc .drawChar0
     lda #MESG_CHAR_SPACE
     .byte $2C
-.drawChar
+.drawChar0
+    lda (TMesgPtr),y
+    sta TextReg+0,y
+    dey
+
+    cpy mesgDY
+    bcc .drawChar1
+    lda #MESG_CHAR_SPACE
+    .byte $2C
+.drawChar1
+    lda (TMesgPtr),y
+    sta TextReg+0,y
+    dey
+
+    cpy mesgDY
+    bcc .drawChar2
+    lda #MESG_CHAR_SPACE
+    .byte $2C
+.drawChar2
     lda (TMesgPtr),y
     sta TextReg+0,y
     dey
@@ -74,12 +96,15 @@ TextDisplayLoop:
     bit .SetVFlag
 .ClearVFlag
 
-    lda rTextMode
-    cmp #TEXT_MODE_SHOP
-    bne .drawText
+; Special case for drawing second row
     lda TextLoop
     beq .drawText
-; Drawing the second row of text
+    lda rTextMode
+    cmp #TEXT_MODE_SHOP
+    beq .fetchShopText
+    sta WSYNC ; add delay between letters
+    bne .drawText ; jmp
+.fetchShopText
 ; Set sign and digit chars for shops
     ; 12/15
     lda mesgChar+0      ; 3
@@ -430,17 +455,10 @@ FinishVS
     jmp ShopKernel
 .worldKernelReturn
 
-    jsr PosWorldObjects
-
-.waitTimerLoop
-    lda INTIM
-    bne .waitTimerLoop
     lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT
-    ldy #ROOM_TEXT_DY_HEIGHT
-    sta WSYNC ; 95
 
-    jmp KERNEL_WORLD_RESUME
+    jmp KERNEL_WORLD_TX_RETURN
 
 TextSetHMP0:
     .byte $40, #$C0

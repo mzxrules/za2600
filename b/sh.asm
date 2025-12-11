@@ -81,17 +81,11 @@ KERNEL_SHOP: SUBROUTINE
 .waitTimerLoop
     lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT
-    ldy #ROOM_SHOP_DY_HEIGHT
-    jsr PosWorldObjects
     sta WSYNC
+    sta WSYNC
+    sta WSYNC
+    jmp KERNEL_WORLDVIEW_START
 
-; Cycle padding to line up world kernel draw routine
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-
-    jmp KERNEL_WORLD_RESUME
 
 ;==============================================================================
 ; GET ITEM

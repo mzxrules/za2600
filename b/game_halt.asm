@@ -167,9 +167,9 @@ Halt_Kernel_PAUSE_WORLD:
     jmp DRAW_HUD_WORLD
 
 Halt_SetKernelWorld: SUBROUTINE
-    lda <[#KERNEL_WORLD_RESUME_PREFETCH]
+    lda <[#KERNEL_WORLD_RESUME]
     sta wHaltKernelDraw
-    lda >[#KERNEL_WORLD_RESUME_PREFETCH]
+    lda >[#KERNEL_WORLD_RESUME]
     sta wHaltKernelDraw+1
     rts
 

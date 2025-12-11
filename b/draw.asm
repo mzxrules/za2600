@@ -183,12 +183,10 @@ KERNEL_HUD:
     sta WSYNC
     dey
     bne .hud_blackout_loop
-
     sta WSYNC
 ; HUD LOOP End
-    lda #85
-    sta TIM8T ; Delay 8 scanlines
-    sleep 30
+    sleep 24
+    ; y = 0
     jmp HUD_BLACKOUT_ENTRY
 
 ;=========== Scanline 1A ==============
@@ -297,15 +295,10 @@ KERNEL_HUD_LOOP:
     bpl KERNEL_HUD_LOOP
     sta WSYNC
 ; HUD LOOP End
-    lda #85
-    sta TIM8T ; Delay 8 scanlines
-    lda #0
-    sta ENAM0
-    sta GRP1
-    sta ENABL
-
-    lda #COLOR_WHITE
-    sta COLUP0
+    iny ; ldy #0
+    sty ENAM0
+    sty GRP1
+    sty ENABL
 
     ldx THudDigits+5    ; 3
     lda SprN0_R,x       ; 4
@@ -313,33 +306,40 @@ KERNEL_HUD_LOOP:
     ora SprN0_L,x       ; 4
     sta GRP0            ; 3
 
-HUD_BLACKOUT_ENTRY
-    ldx #0
-    ldy #COLOR_PLAYER_00
+HUD_BLACKOUT_ENTRY:
+; Text kernel prep
+    ldx #COLOR_WHITE
+    stx COLUP0
+    stx COLUP1
 
-    lda #%00110001 ; ball size 8, reflect playfield, pf priority
-    sta CTRLPF
+    lda #SLOT_F0_TEXT
+    sta BANK_SLOT
 
-    lda rFgColor
-    sta COLUPF
+    ldx #%00110001 ; ball size 8, reflect playfield, pf priority
+    stx CTRLPF
 
-    stx GRP0
-    stx GRP1
-    sty COLUP0
+    ldx rFgColor
+    stx COLUPF
+
+    sleep 3
+
+    sty GRP0
+    sty GRP1
+    sta WSYNC
+
     LOG_SIZE "-HUD KERNEL-", KERNEL_HUD
     lda rTextMode
     bpl .defaultWorldKernel ; !#TEXT_MODE_ACTIVE
-    lda #SLOT_F0_TEXT
-    sta BANK_SLOT
     jmp TextKernel
-
 .defaultWorldKernel
+
+KERNEL_WORLDVIEW_START
+    sta WSYNC
+    sta WSYNC
+KERNEL_WORLD_TX_RETURN
 ; HMOVE setup
     jsr PosWorldObjects
 
-.waitTimerLoop
-    lda INTIM
-    bne .waitTimerLoop
     ; The miracle scanline?!
     lda rHaltKernelId
     bne .kernel_draw_player ; #HALT_KERNEL_HUD_WORLD_NOPL
@@ -349,13 +349,11 @@ HUD_BLACKOUT_ENTRY
 .kernel_draw_player
     jmp (rHaltKernelDraw)
 
-KERNEL_WORLD_RESUME_PREFETCH
+KERNEL_WORLD_RESUME:
     ldy roomDY
     lda .RoomHeight,y
     sta WSYNC
-
     tay
-KERNEL_WORLD_RESUME:
     lda #$FF
     sta PF0
     sta PF1

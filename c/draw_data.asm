@@ -19,4 +19,6 @@
     .byte 75, 79, 83, 87
 
 .RoomWorldOff:
-    .byte (ROOM_PX_HEIGHT-1), (ROOM_TEXT_PX_HEIGHT-1), (ROOM_SHOP_PX_HEIGHT-1)
+    .byte (ROOM_PX_HEIGHT-1)
+    .byte (ROOM_TEXT_PX_HEIGHT-1)
+    .byte (ROOM_SHOP_PX_HEIGHT-1)

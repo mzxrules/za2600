@@ -487,6 +487,10 @@ enManhandlaInvince  ds 1
 
 ; == Ganon
     ORG CLASS_EN_BOSS_SHOOT
+enSpr2      ds 2
+plMSpr      ds 2
+enMSpr      ds 2
+ganonKernel ds 1
     EN_SIZE BOSS_GANON
 
 ; == Test
@@ -519,10 +523,24 @@ KERNEL_TEMP ds 6
     ORG KERNEL_TEMP
 plDY        ds 1
 enDY        ds 1
+roomDY      ds 1 ; !HACK read below:
 m0DY        ds 1
 m1DY        ds 1
 blDY        ds 1
-roomDY      ds 1
+
+; !HACK kworld does a phony read on instruction
+; .byte $2C (bit opcode)
+; dec roomDY
+; this maps to address XXC6, where roomDY's zeropage
+; location creates the address.
+;
+; At the time of this writing, roomDY mapped to $EB, which meant
+; reading memory $EBC6, which interferes with the RIOT timers,
+; which happened to cause the timer to roll over when resetting
+; it at the end of the draw routine, which causes it to fail.
+;
+; To fix this, roomDY's address should map to $E8 or $E9
+; which will map to a zeropage mirror
 
 ; Context Temp Vars
 Temp0       ds 1
@@ -806,5 +824,9 @@ PAUSE_MAP_HEIGHT = 40
  RW COLUPF_B,   ds ROOM_PX_HEIGHT
  RW COLUBK_A,   ds ROOM_PX_HEIGHT
  RW COLUBK_B,   ds ROOM_PX_HEIGHT
- RW TransferA,  ds 1
- RW TransferB,  ds 1
+
+; ****************************************
+; * Extended RAM 6 - Boss4 Kernel        *
+; ****************************************
+    ORG $F000
+ RW PLSPR_MEM, ds $100
