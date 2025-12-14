@@ -225,6 +225,7 @@ ENTRY_START_GAME:
 
     lda #LV_A0
     sta worldId
+    sta wWorldIdNext
 
     ; set player stats
     lda #$18
@@ -233,6 +234,7 @@ ENTRY_START_GAME:
     IFCONST TESTPOS
     lda #LV_A0
     sta worldId
+    sta wWorldIdNext
     lda #$0
     sta roomIdNext
     lda ITEMV_SWORD1

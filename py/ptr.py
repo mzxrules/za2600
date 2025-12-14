@@ -147,6 +147,10 @@ HaltTask_Table = [
     "HtTask_EnterLoc",          "SEG_55",
     "HtTask_AnimDeath",         "SEG_55",
     "HtTask_IdleGameOver",      "SEG_55",
+    "HtTask_PauseMenuStart",    "SEG_57",
+    "HtTask_PauseMenuOpen",     "SEG_57",
+    "HtTask_PauseMenuRun",      "SEG_57",
+    "HtTask_PauseMenuClose",    "SEG_57",
     "HtTask_None",              "SEG_HA",
 ]
 

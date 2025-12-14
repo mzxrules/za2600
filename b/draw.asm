@@ -134,8 +134,8 @@ DRAW_HUD_WORLD:
 ; HUD Draw Setup
 ;==============================================================================
 
-    lda rHudMode
-    bne KERNEL_MAIN_HUD_WORLD
+    bit rHudMode
+    bvs KERNEL_MAIN_HUD_WORLD
     jsr DRAW_HudSetup
 
 ;===================================================
@@ -148,20 +148,6 @@ KERNEL_MAIN_HUD_WORLD:  ; 192 scanlines
     sta VBLANK
 
 KERNEL_HUD:
-    ldx RoomPX
-    cpx #ROOM_PX_HEIGHT-1
-    bpl .skipVerticalShift
-.wsyncLoop
-    ldy #7
-.wsyncLoop_inner
-    sta WSYNC
-    dey
-    bpl .wsyncLoop_inner
-    inx
-    cpx #ROOM_PX_HEIGHT-1
-    bmi .wsyncLoop
-.skipVerticalShift
-
     lda #%00000101 ; ball size 1, reflect playfield, pf priority
     sta CTRLPF
 
@@ -174,10 +160,18 @@ KERNEL_HUD:
     lda #COLOR_PLAYER_00
     sta COLUP0
 
-    ldy #7 ; Draw Height
-    lda rHudMode
-    beq KERNEL_HUD_LOOP ; jmp
+    bit rHudMode
+    bpl .hud_mode_fixed
+.hud_mode_slide
+    jsr KERNEL_WORLDVIEW_SKIP
+.hud_mode_fixed
 
+    bvs .hud_mode_off
+    ldy #7 ; Draw Height
+    lda #0
+    beq KERNEL_HUD_LOOP ; jmp, assume A = 0
+
+.hud_mode_off
     ldy #16
 .hud_blackout_loop
     sta WSYNC
@@ -327,6 +321,11 @@ HUD_BLACKOUT_ENTRY:
     sty GRP1
     sta WSYNC
 
+    bit rHudMode
+    bmi .skip_hud_sliding
+    jsr KERNEL_WORLDVIEW_SKIP
+.skip_hud_sliding
+
     LOG_SIZE "-HUD KERNEL-", KERNEL_HUD
     lda rTextMode
     bpl .defaultWorldKernel ; !#TEXT_MODE_ACTIVE
@@ -347,11 +346,11 @@ KERNEL_WORLD_TX_RETURN
     sta plDY
     sta m0DY
 .kernel_draw_player
-    jmp (rHaltKernelDraw)
-
-KERNEL_WORLD_RESUME:
     ldy roomDY
     lda .RoomHeight,y
+    jmp (rWorldKernelDraw)
+
+KERNEL_WORLD_RESUME:
     sta WSYNC
     tay
     lda #$FF
@@ -363,7 +362,40 @@ KERNEL_WORLD_RESUME:
 
     jmp rKERNEL_WORLD ; JUMP WORLD KERNEL
 
+KERNEL_WORLDVIEW_BLACK:
+    sta WSYNC
+    lda #COLOR_BLACK
+    sta COLUP0
+    sta COLUP1
+    sta COLUPF
+    sta COLUBK
+
+.kernel_worldview_black_loop
+    sta WSYNC
+    sta WSYNC
+    dey
+    bpl .kernel_worldview_black_loop
+    sta WSYNC
+    rts
+
+KERNEL_WORLDVIEW_SKIP:
+    ldx RoomPX
+    cpx #ROOM_PX_HEIGHT-1
+    bpl .skipVerticalShift
+.wsyncLoop
+    ldy #7
+.wsyncLoop_inner
+    sta WSYNC
+    dey
+    bpl .wsyncLoop_inner
+    inx
+    cpx #ROOM_PX_HEIGHT-1
+    bmi .wsyncLoop
+.skipVerticalShift
+    rts
+
     LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN_HUD_WORLD
+
     align $20
 
 .HUD_SPLIT_TEST:

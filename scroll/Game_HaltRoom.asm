@@ -22,9 +22,9 @@ ROOMSCROLL_VERTICAL_BLANK: SUBROUTINE
     sta BANK_SLOT_RAM
 
     lda <#KERNEL_SCROLL1
-    sta wHaltKernelDraw
+    sta wWorldKernelDraw
     lda >#KERNEL_SCROLL1
-    sta wHaltKernelDraw+1
+    sta wWorldKernelDraw+1
 
     lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT

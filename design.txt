@@ -147,7 +147,7 @@ across 128 rooms (exactly the size of a 1 KB bank). The following information
 is stored for each room:
 
 - Room Sprite "pointers" for PF1L, PF1R, and PF2 sprites
-- roomDoor, or Door flags, which in dungeons track whether a dungeon door 
+- roomDoor, or Door flags, which in dungeons track whether a dungeon door
   should be either open, locked, a shudder door, or a wall.
 - roomWA, the room wall flags. In the overworld, these flags combined with
   the room door flags configure the pattern drawn at the wall edges of a
@@ -862,7 +862,7 @@ Editing Notes:
   * Return to the za2600 world editor title board
   * Run make (this runs ptr.py and generates new editor bindings)
   * Reload the world editor by pressing P on the title board
-  * Press P again to save the za2600 world. 
+  * Press P again to save the za2600 world.
   * Run make again.
 
 ===============================================================================
@@ -1181,3 +1181,16 @@ Instead, RAM banks 1-3 store room flags
 ===============================================================================
 > Unsorted Notes
 ===============================================================================
+
+Atari quirks
+
+With 3E+ ram, you are not to cross page boundaries when writing back.
+This is due to STA triggering a phantom read.
+
+In Stella, this will trigger as trap RWP [@ memory] instruction
+
+
+renames
+
+b/pause_menu_map.asm -> Pause_PlotMap
+gen/pause_map.asm -> Pause_PlotMapRow

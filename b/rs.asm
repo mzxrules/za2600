@@ -203,7 +203,7 @@ RS_ENTER_CAVE:
     stx worldSX
     sty worldSY
     adc [#LV_MIN - #CV_LV_START -1]
-    sta worldId
+    sta wWorldIdNext
     lda roomId
     sta worldSR
     ldy #HALT_TYPE_ENTER_DUNG

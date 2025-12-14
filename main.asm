@@ -51,9 +51,7 @@ BANK_1
     RORG $FC00
 
 BANK_2
-    INCLUDE "c/always.asm"
-    INCLUDE "b/game_pause.asm"
-    LOG_BANK_SIZE_M1 "-BANK 2- Pause Game", BANK_2
+    LOG_BANK_SIZE_M1 "-BANK 2- Free", BANK_2
 
 ; ****************************************
 ; *               BANK 3                 *
@@ -403,7 +401,7 @@ BANK_25
 BANK_26
     INCLUDE "b/pause_menu_map.asm"
     RORG [. & $3FF] + $F400
-Pause_MapPlot:
+Pause_PlotMapRow:
     lda #SLOT_RW_F0_DUNG_MAP
     sta BANK_SLOT_RAM
     INCLUDE "gen/pause_map.asm"
@@ -895,41 +893,44 @@ BANK_55
 BANK_56
 
 SprGanon0:
-    ds $30
+    ds $31
     INCLUDE "spr/spr_ganon_0.asm"
-SprGanon1:
-    ds $30
-    INCLUDE "spr/spr_ganon_1.asm"
-    ds $30
+SprGanon2:
+    ds $31
+    INCLUDE "spr/spr_ganon_2.asm"
+    ds $31
     align $100
 
-SprGanon2:
-    ds $30
-    INCLUDE "spr/spr_ganon_2.asm"
+SprGanon1:
+    ds $31
+    INCLUDE "spr/spr_ganon_1.asm"
     ds $30
 SprGanon3:
     INCLUDE "spr/spr_ganon_3.asm"
     ds $30
     align $100
 
-SprGanon4:
-    ds $30
-    INCLUDE "spr/spr_ganon_4.asm"
-SprGanon5:
-    ds $30
-    INCLUDE "spr/spr_ganon_5.asm"
-    ds $30
-    align $100
-
-SprGanon6:
-    ds $30
-    INCLUDE "spr/spr_ganon_6.asm"
-    ds $30
-SprGanon7:
-    INCLUDE "spr/spr_ganon_7.asm"
-    ds $30
-
+    INCLUDE "gen/Boss4Kernel_DelLUT.asm"
+    INCLUDE "proto/boss4/kernel.asm"
     LOG_BANK_SIZE "-BANK 56- Spr Ganon", BANK_56
+
+; ****************************************
+; *               BANK 57                *
+; ****************************************
+    SEG Bank57
+    ORG $E400
+    RORG $F400
+BANK_57
+
+    INCLUDE "ht/HtTask_PauseMenuStart.asm"
+    INCLUDE "ht/HtTask_PauseMenuOpen.asm"
+    INCLUDE "ht/HtTask_PauseMenuClose.asm"
+    INCLUDE "ht/HtTask_PauseMenuRun.asm"
+
+    INCLUDE "c/pause_menu_input.asm"
+    INCLUDE "gen/PlItemPick_DelLUT.asm"
+    INCLUDE "c/pause_menu_vblank.asm"
+    LOG_BANK_SIZE "-BANK 57- ", BANK_54
 
 ; End
 

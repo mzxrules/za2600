@@ -19,9 +19,8 @@ PlayerPause: SUBROUTINE
     ldx plHealth
     dex
     bmi .skipCheckForPause
-    lda #SLOT_FC_PAUSE
-    sta BANK_SLOT
-    jmp PAUSE_ENTRY
+    ldy #HALT_TYPE_PAUSE_GAME
+    jmp HALT_GAME_FC
 .skipCheckForPause
     rts
 

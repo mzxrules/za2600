@@ -12,6 +12,9 @@ HALT_VERTICAL_BLANK: SUBROUTINE
     sta BANK_SLOT
     jsr UpdateAudio
 
+    lda rHaltKernelId
+    cmp #HALT_KERNEL_PAUSEVIEW
+    beq .skip_worldview_draw
     lda #SLOT_F4_PLDRAW
     sta BANK_SLOT
     jsr PlDraw_Item
@@ -19,6 +22,7 @@ HALT_VERTICAL_BLANK: SUBROUTINE
     lda #SLOT_F0_ENDRAW
     sta BANK_SLOT
     jsr EnDraw_Del
+.skip_worldview_draw
 
     jsr Halt_KernelMain
 
@@ -143,11 +147,17 @@ Halt_KernelMain: SUBROUTINE
     dex
     beq Halt_Kernel_HUD_SCROLL
     dex
-    beq Halt_Kernel_PAUSE_WORLD
+    beq Halt_Kernel_PAUSEVIEW
 .infinite
     bne .infinite
 
+Halt_Kernel_PAUSEVIEW:
+    lda #SLOT_F4_PAUSE_MENU_DRAW
+    sta BANK_SLOT
+    jmp DRAW_PAUSE_MENU
+
 Halt_Kernel_HUD_WORLD:
+    ; TODO: Handle hud issues when swapping worlds
     jsr Halt_SetKernelWorld
     lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT
@@ -159,23 +169,16 @@ Halt_Kernel_HUD_SCROLL:
     sta BANK_SLOT
     jmp DRAW_HUD_WORLD
 
-Halt_Kernel_PAUSE_WORLD:
-    ; TODO: Handle hud issues
-    jsr Halt_SetKernelWorld
-    lda #SLOT_F4_MAIN_DRAW
-    sta BANK_SLOT
-    jmp DRAW_HUD_WORLD
-
 Halt_SetKernelWorld: SUBROUTINE
     lda <[#KERNEL_WORLD_RESUME]
-    sta wHaltKernelDraw
+    sta wWorldKernelDraw
     lda >[#KERNEL_WORLD_RESUME]
-    sta wHaltKernelDraw+1
+    sta wWorldKernelDraw+1
     rts
 
 Halt_SetKernelRoomScroll1: SUBROUTINE
     lda <#KERNEL_SCROLL1
-    sta wHaltKernelDraw
+    sta wWorldKernelDraw
     lda >#KERNEL_SCROLL1
-    sta wHaltKernelDraw+1
+    sta wWorldKernelDraw+1
     rts

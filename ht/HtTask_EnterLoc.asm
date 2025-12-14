@@ -4,7 +4,7 @@
 
 ; Overscan routine
 HtTask_EnterLoc: SUBROUTINE
-    lda #HALT_KERNEL_PAUSE_WORLD
+    lda #HALT_KERNEL_HUD_WORLD
     sta wHaltKernelId
     lda rOSFrameState
     bpl .continue ; #OS_FRAME_OVERSCAN
@@ -95,13 +95,11 @@ HtTask_EnterLoc: SUBROUTINE
     bne .w1
     lda #$FF
     sta wWorldRoomENCount,x
-
 .w1
     lda #SLOT_RW_F8_W1
     sta BANK_SLOT_RAM
     lda #$FF
     sta wWorldRoomENCount,x
-
 .w2
     lda #SLOT_RW_F8_W2
     sta BANK_SLOT_RAM
@@ -111,10 +109,7 @@ HtTask_EnterLoc: SUBROUTINE
     dey
     bpl .mem_init_loop
 
-
     lda #SLOT_RW_F8_W0
     sta BANK_SLOT_RAM
 .rts
     rts
-
-

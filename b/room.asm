@@ -39,6 +39,15 @@ RoomUpdate: SUBROUTINE
 LoadRoom: SUBROUTINE
     ; load world bank data
     ldy worldId
+
+    lda rWorldIdNext
+    beq .skip_world_swap
+    sta worldId
+    tay
+    lda #0
+    sta wWorldIdNext
+.skip_world_swap
+
     lda .WorldData_BankOffset-#LV_MIN,y
     tay ; bank id
 

@@ -91,6 +91,7 @@ SWACNT  ds 1    ;$281    Part A data direction register (DDR)
 SWCHB   ds 1    ;$282    Port B data (console switches)
 SWBCNT  ds 1    ;$283    Port B data direction register (DDR)
 INTIM   ds 1    ;$284    Timer output
+TIMINT  ds 1    ;$285    PIA IRQ, Bit 7 is timer
         ORG      $294
 TIM1T   ds 1    ;$294    Set 1 clock interval
 TIM8T   ds 1    ;$295    Set 8 clock interval

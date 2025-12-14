@@ -446,7 +446,7 @@ RETURN_WORLD: SUBROUTINE
     lda worldId
     and #1
     ora #$80
-    sta worldId
+    sta wWorldIdNext
     lda roomFlags
     ora #RF_EV_LOAD
     sta roomFlags

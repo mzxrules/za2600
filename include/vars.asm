@@ -565,7 +565,6 @@ AUDVT0      ds 1
 AUDVT1      ds 1
 
     SEG.U VARS_PAUSE
-PauseState  = plItemDir
 ; Pause perms must come after VARS_AUD_ZERO temps
     ORG AUDVT1 + 1
 PAnim           ds 1
@@ -700,7 +699,7 @@ TextReg     ds 12
 HALT_STACK_DEPTH = $FD
     ORG $FE
 Halt_TaskTemp   ds 1 ; Set to $FF to delay task execution
-HaltFree        ds 1
+Halt_Temp0      ds 1
 
 ; ****************************************
 ; * Level Data ROM Banks                 *
@@ -731,23 +730,28 @@ TEXT_MODE_ACTIVE    = $80
 TEXT_MODE_DIALOG    = $81
 TEXT_MODE_SHOP      = $82
  RW HudMode,            ds 1
+HUD_MODE_ON         = $00
+HUD_MODE_OFF        = $40
+HUD_MODE_FIXED      = $00
+HUD_MODE_SLIDE      = $80
  RW RoomColorFlags,     ds 1
 RF_WC_ROOM_BOOT = $80
 RF_WC_ROOM_DARK = $40
  RW RoomENFlags,        ds 1
  RW RoomPF2Type,        ds 1
  ROOM_PF2 TRIFORCE, 35
+ RW WorldIdNext,        ds 1
 
  RW HALT_VARS, = .
  RW OSFrameState,       ds 1 ; negative is Vertical Blank, else Overscan
 OS_FRAME_VBLANK     = #$80
 OS_FRAME_OVERSCAN   = #$00
- RW HaltKernelDraw,     ds 2
+ RW WorldKernelDraw,    ds 2
  RW HaltKernelId,       ds 1
 HALT_KERNEL_HUD_WORLD_NOPL  = 0
 HALT_KERNEL_HUD_WORLD       = 1
 HALT_KERNEL_HUD_SCROLL      = 2
-HALT_KERNEL_PAUSE_WORLD     = 3
+HALT_KERNEL_PAUSEVIEW       = 3
  RW HaltFrame,          ds 1
  RW HaltType,           ds 1
 HALT_TYPE_RSCR_NONE     = 0
@@ -759,6 +763,7 @@ HALT_TYPE_PLAY_FLUTE    = 5
 HALT_TYPE_ENTER_DUNG    = 6
 HALT_TYPE_ENTER_CAVE    = 7
 HALT_TYPE_GAME_OVER     = 8
+HALT_TYPE_PAUSE_GAME    = 9
  RW HaltTask,           ds 1
 HALT_VARS_SIZE          = . - rHALT_VARS
 RW_WORLD                = .

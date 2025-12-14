@@ -64,6 +64,13 @@ HALT_TASK_SCRIPTS = [
         "HtTask_AnimDeath",
         "HtTask_IdleGameOver",
     ],
+    # HALT_TYPE_PAUSE_GAME
+    [
+        "HtTask_PauseMenuStart",
+        "HtTask_PauseMenuOpen",
+        "HtTask_PauseMenuRun",
+        "HtTask_PauseMenuClose",
+    ],
 ]
 
 def build_taskscript():

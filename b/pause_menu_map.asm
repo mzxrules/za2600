@@ -1,4 +1,4 @@
-Pause_Menu_Map: SUBROUTINE
+Pause_PlotMap: SUBROUTINE
     lda #SLOT_F4_SPR_HUD
     sta BANK_SLOT
 
@@ -112,7 +112,7 @@ Pause_Menu_Map: SUBROUTINE
     ldx worldId
     lda Mul8-#LV_MIN,x
     clc
-    adc Pause_Invert,y
+    adc .Invert8,y
     tax
     lda PMapRoomVisit
     and MINIMAP+0x400,x
@@ -128,11 +128,19 @@ Pause_Menu_Map: SUBROUTINE
 
 .path_up_loop_end
 
-    lda Pause_InvertMul5,y
+    lda .Invert8Mul5,y
     tay
     lda #SLOT_F4_PAUSE_MENU_MAP
     sta BANK_SLOT
-    jmp Pause_MapPlot
+    jmp Pause_PlotMapRow
 
     INCLUDE "WorldData_BankOffset.asm"
     INCLUDE "WorldData_WorldRomSlot.asm"
+
+.Invert8:
+    .byte 7, 6, 5, 4
+    .byte 3, 2, 1, 0
+
+.Invert8Mul5:
+    .byte 35, 30, 25, 20
+    .byte 15, 10,  5,  0
