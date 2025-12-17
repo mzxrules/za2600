@@ -210,9 +210,6 @@ ENTRY_START_GAME:
     sta CTRLPF
     sta VDELBL
 
-    lda #ROOM_PX_HEIGHT-1
-    sta RoomPX
-
     ; seed RNG
     ; lda INTIM
     ; sta Rand16+1
@@ -242,6 +239,8 @@ ENTRY_START_GAME:
     sta ITEMV_SWORD1
     ENDIF
 
+    ldy #HALT_TYPE_GAME_START
+    sty wHaltType
     jmp MAIN_ENTRY
 
 ENTRY_SETUP_DRAW_NOINPUT:

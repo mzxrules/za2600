@@ -401,9 +401,6 @@ RESPAWN: SUBROUTINE
     lda #$18
     sta plHealth
 SPAWN_AT_DEFAULT: SUBROUTINE
-    lda #MS_PLAY_RSEQ
-    sta SeqFlags
-SPAWN_AT_DEFAULT_PRESERVE_SEQ:
     lda #0
     sta plState
 
@@ -412,7 +409,10 @@ SPAWN_AT_DEFAULT_PRESERVE_SEQ:
     lda #$10
     sta plY
 
+    ldy rWorldIdNext
+    bne .skip
     ldy worldId
+.skip
     lda MapData_EntranceRoomId-#LV_MIN,y
     sta roomIdNext
     lda #RF_EV_LOAD

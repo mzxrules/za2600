@@ -212,9 +212,7 @@ RS_ENTER_CAVE:
     jsr ENTER_CAVE
     ldy #HALT_TYPE_ENTER_CAVE
 .halt
-    lda #SLOT_FC_HALT
-    sta BANK_SLOT
-    jmp HALT_GAME
+    jmp HALT_GAME_FC
 
 Rs_Cave:
     lda roomFlags

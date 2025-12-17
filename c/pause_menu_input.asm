@@ -18,7 +18,7 @@ Pause_Menu_Input: SUBROUTINE
     bit INPT1
     bmi .skipEndPause
 .endPause
-    lda #HALT_KERNEL_HUD_WORLD
+    lda #HALT_KERNEL_GAMEVIEW
     sta wHaltKernelId
     jmp Halt_TaskNext
 

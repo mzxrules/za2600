@@ -8,6 +8,7 @@ HALT_TASK_SCRIPTS = [
         "HtTask_RoomScrollStart",
         "HtTask_TransferA",
         "HtTask_LoadRoom",
+        "HtTask_SetGameViewScroll",
         "HtTask_TransferB",
         "HtTask_RoomScrollEnd",
     ],
@@ -16,6 +17,7 @@ HALT_TASK_SCRIPTS = [
         "HtTask_RoomScrollStart",
         "HtTask_TransferA",
         "HtTask_LoadRoom",
+        "HtTask_SetGameViewScroll",
         "HtTask_TransferB",
         "HtTask_AnimWest",
         "HtTask_RoomScrollEnd",
@@ -25,6 +27,7 @@ HALT_TASK_SCRIPTS = [
         "HtTask_RoomScrollStart",
         "HtTask_TransferA",
         "HtTask_LoadRoom",
+        "HtTask_SetGameViewScroll",
         "HtTask_TransferB",
         "HtTask_AnimEast",
         "HtTask_RoomScrollEnd",
@@ -34,6 +37,7 @@ HALT_TASK_SCRIPTS = [
         "HtTask_RoomScrollStart",
         "HtTask_TransferA",
         "HtTask_LoadRoom",
+        "HtTask_SetGameViewScroll",
         "HtTask_TransferB",
         "HtTask_AnimNorth",
         "HtTask_RoomScrollEnd",
@@ -43,6 +47,7 @@ HALT_TASK_SCRIPTS = [
         "HtTask_RoomScrollStart",
         "HtTask_TransferB",
         "HtTask_LoadRoom",
+        "HtTask_SetGameViewScroll",
         "HtTask_TransferA",
         "HtTask_AnimSouth",
         "HtTask_RoomScrollEnd",
@@ -63,6 +68,12 @@ HALT_TASK_SCRIPTS = [
     [
         "HtTask_AnimDeath",
         "HtTask_IdleGameOver",
+    ],
+    # HALT_TYPE_GAME_START
+    [
+       "HtTask_GameStart",
+       "HtTask_LoadRoom",
+       "HtTask_CurtainOpen",
     ],
     # HALT_TYPE_PAUSE_GAME
     [

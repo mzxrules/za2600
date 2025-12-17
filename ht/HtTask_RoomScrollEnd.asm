@@ -4,16 +4,14 @@
 
 HtTask_RoomScrollEnd: SUBROUTINE
     lda rOSFrameState
-    bmi .continue
+    bmi .continue ; #OS_FRAME_VBLANK
     rts
 .continue
-    lda #HALT_KERNEL_HUD_WORLD
-    sta wHaltKernelId
-    jsr Halt_SetKernelWorld
+    ldx #HALT_KERNEL_GAMEVIEW
+    stx wHaltKernelId
+    jsr Halt_UpdateGameViewKernel
     lda #%00110001
     sta CTRLPF
-    lda #ROOM_PX_HEIGHT-1
-    sta roomDY
     lda roomIdNext
     sta roomId
 

@@ -4,8 +4,6 @@
 
 ; Overscan routine
 HtTask_EnterLoc: SUBROUTINE
-    lda #HALT_KERNEL_HUD_WORLD
-    sta wHaltKernelId
     lda rOSFrameState
     bpl .continue ; #OS_FRAME_OVERSCAN
     ldx rHaltFrame
@@ -37,19 +35,20 @@ HtTask_EnterLoc: SUBROUTINE
 ; Reset the stack
     ldx #$FF
     txs
-; Push return address of OVERSCAN_WAIT
-    lda #>OVERSCAN_WAIT
-    pha
-    lda #<OVERSCAN_WAIT-1
-    pha
     lda rHaltType
     inx ; #0
     stx wHaltType
     cmp #HALT_TYPE_ENTER_CAVE
-    beq .MAIN_CAVE_ENT
-    jmp MAIN_DUNG_ENT
-.MAIN_CAVE_ENT
-    jmp MAIN_CAVE_ENT
+    beq .enter_cave
+
+.enter_dung
+    lda #SLOT_FC_MAIN
+    sta BANK_SLOT
+    jsr SPAWN_AT_DEFAULT
+    lda #HALT_TYPE_GAME_START
+    sta wHaltType
+.enter_cave
+    jmp MAIN_OVERSCAN_WAIT
 
 .enter_anim
     cmp #0

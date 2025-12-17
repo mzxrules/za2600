@@ -341,7 +341,7 @@ KERNEL_WORLD_TX_RETURN
 
     ; The miracle scanline?!
     lda rHaltKernelId
-    bne .kernel_draw_player ; #HALT_KERNEL_HUD_WORLD_NOPL
+    bne .kernel_draw_player ; #HALT_KERNEL_GAMEVIEW_NOPL
     lda #$DC
     sta plDY
     sta m0DY
@@ -371,6 +371,12 @@ KERNEL_WORLDVIEW_BLACK:
     sta COLUBK
 
 .kernel_worldview_black_loop
+    sta WSYNC
+    sta WSYNC
+    sta WSYNC
+    sta WSYNC
+    sta WSYNC
+    sta WSYNC
     sta WSYNC
     sta WSYNC
     dey

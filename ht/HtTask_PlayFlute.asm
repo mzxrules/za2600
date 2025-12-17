@@ -4,8 +4,6 @@
 
 ; Vertical Blank Routine
 HtTask_PlayFlute: SUBROUTINE
-    lda #HALT_KERNEL_HUD_WORLD
-    sta wHaltKernelId
     lda rOSFrameState
     bpl .rts ; #OS_FRAME_OVERSCAN
     lda rHaltFrame

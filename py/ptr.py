@@ -133,6 +133,14 @@ Entity_Table = [
     "En_Appear",       "SEG_45", "SEG_46", "EnDraw_Appear",
 ]
 
+# Unused
+HaltKernel_WorldView_Table = [
+    "KERNEL_WORLD_RESUME", # No Player
+    "KERNEL_WORLD_RESUME",
+    "KERNEL_WORLD_RESUME", # Ganon
+    "KERNEL_WORLDVIEW_BLACK",
+]
+
 HaltTask_Table = [
     "HtTask_RoomScrollStart",   "SEG_55",
     "HtTask_RoomScrollEnd",     "SEG_55",
@@ -151,6 +159,9 @@ HaltTask_Table = [
     "HtTask_PauseMenuOpen",     "SEG_57",
     "HtTask_PauseMenuRun",      "SEG_57",
     "HtTask_PauseMenuClose",    "SEG_57",
+    "HtTask_GameStart",         "SEG_57",
+    "HtTask_CurtainOpen",       "SEG_57",
+    "HtTask_SetGameViewScroll", "SEG_57",
     "HtTask_None",              "SEG_HA",
 ]
 

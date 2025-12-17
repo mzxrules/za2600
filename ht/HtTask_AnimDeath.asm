@@ -3,9 +3,6 @@
 ;==============================================================================
 
 HtTask_AnimDeath: SUBROUTINE
-    lda #HALT_KERNEL_HUD_WORLD
-    sta wHaltKernelId
-
     lda rOSFrameState
     bmi .skip_plStunAnim ; #OS_FRAME_VBLANK
 

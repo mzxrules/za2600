@@ -181,10 +181,8 @@ PlayerUseRang:
 PlayerUseFlute: SUBROUTINE
     lda #SFX_WARP
     sta SfxFlags
-    lda #SLOT_FC_HALT
-    sta BANK_SLOT
     ldy #HALT_TYPE_PLAY_FLUTE
-    jmp HALT_GAME
+    jmp HALT_GAME_FC
 
 PlayerUpdateFluteFx: SUBROUTINE
     lda plItem2Time

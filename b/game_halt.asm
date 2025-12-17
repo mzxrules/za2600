@@ -63,14 +63,16 @@ HALT_OVERSCAN_WAIT:
 ; Y = HaltType
 ;==============================================================================
 HALT_GAME: SUBROUTINE
-    sty wHaltType
+; Log frame to restore
+    lda Frame
+    sta wHaltFrame
 
 ; Reset the stack
     ldx #HALT_STACK_DEPTH
     txs
-    lda Frame
-    sta wHaltFrame
 
+; Reset the halt script
+    sty wHaltType
     lda HtTaskScriptIndex,y
     sta wHaltTask
     lda #$FF
@@ -84,8 +86,6 @@ HALT_GAME: SUBROUTINE
 HtTask_LoadRoom: SUBROUTINE
     jsr Halt_TaskStall_OVERSCAN
 
-    lda #HALT_KERNEL_HUD_SCROLL
-    sta wHaltKernelId
     lda #SLOT_F0_ROOM
     sta BANK_SLOT
     jsr LoadRoom
@@ -141,44 +141,40 @@ Halt_TaskStall_OVERSCAN: SUBROUTINE
 
 Halt_KernelMain: SUBROUTINE
     ldx rHaltKernelId
-    beq Halt_Kernel_HUD_WORLD
-    dex
-    beq Halt_Kernel_HUD_WORLD
-    dex
-    beq Halt_Kernel_HUD_SCROLL
-    dex
-    beq Halt_Kernel_PAUSEVIEW
+    cpx #HALT_KERNEL_PAUSEVIEW
+    bcc .kernel_game
+    beq .kernel_pause
 .infinite
     bne .infinite
 
-Halt_Kernel_PAUSEVIEW:
+.kernel_pause:
     lda #SLOT_F4_PAUSE_MENU_DRAW
     sta BANK_SLOT
     jmp DRAW_PAUSE_MENU
 
-Halt_Kernel_HUD_WORLD:
-    ; TODO: Handle hud issues when swapping worlds
-    jsr Halt_SetKernelWorld
+.kernel_game:
+    jsr Halt_UpdateGameViewKernel
     lda #SLOT_F4_MAIN_DRAW
     sta BANK_SLOT
     jmp DRAW_HUD_WORLD
 
-Halt_Kernel_HUD_SCROLL:
-    jsr Halt_SetKernelRoomScroll1
-    lda #SLOT_F4_MAIN_DRAW
-    sta BANK_SLOT
-    jmp DRAW_HUD_WORLD
-
-Halt_SetKernelWorld: SUBROUTINE
-    lda <[#KERNEL_WORLD_RESUME]
+Halt_UpdateGameViewKernel:
+    lda HaltWorldViewL,x
     sta wWorldKernelDraw
-    lda >[#KERNEL_WORLD_RESUME]
+    lda HaltWorldViewH,x
     sta wWorldKernelDraw+1
     rts
 
-Halt_SetKernelRoomScroll1: SUBROUTINE
-    lda <#KERNEL_SCROLL1
-    sta wWorldKernelDraw
-    lda >#KERNEL_SCROLL1
-    sta wWorldKernelDraw+1
-    rts
+HaltWorldViewH:
+    .byte >#KERNEL_WORLD_RESUME ; NoPl
+    .byte >#KERNEL_WORLD_RESUME
+    .byte >#KERNEL_WORLD_RESUME ; Ganon
+    .byte >#KERNEL_WORLDVIEW_BLACK
+    .byte >#KERNEL_SCROLL1
+
+HaltWorldViewL:
+    .byte <#KERNEL_WORLD_RESUME ; NoPl
+    .byte <#KERNEL_WORLD_RESUME
+    .byte <#KERNEL_WORLD_RESUME ; Ganon
+    .byte <#KERNEL_WORLDVIEW_BLACK
+    .byte <#KERNEL_SCROLL1

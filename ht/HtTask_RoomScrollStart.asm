@@ -5,7 +5,7 @@
 ROOMSCROLL_TIMER_EW = 64+1
 
 HtTask_RoomScrollStart: SUBROUTINE
-    lda #HALT_KERNEL_HUD_WORLD_NOPL
+    lda #HALT_KERNEL_GAMEVIEW_NOPL
     sta wHaltKernelId
 
     ldy rHaltType

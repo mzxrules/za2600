@@ -62,7 +62,10 @@ BANK_2
     RORG $FC00
 BANK_3
     INCLUDE "c/always.asm"
-    INCLUDE "ht/HtTask.asm"
+    INCLUDE "gen/HtTask_Scripts.asm"
+    INCLUDE "gen/HtTask_DelBankLUT.asm"
+    INCLUDE "gen/HtTask_DelLUT.asm"
+    INCLUDE "ht/HtTask_Run.asm"
     INCLUDE "scroll/kernel_scroll1.asm"
     INCLUDE "b/game_halt.asm"
     LOG_BANK_SIZE "-BANK 3- Halt Game", BANK_3
@@ -926,6 +929,9 @@ BANK_57
     INCLUDE "ht/HtTask_PauseMenuOpen.asm"
     INCLUDE "ht/HtTask_PauseMenuClose.asm"
     INCLUDE "ht/HtTask_PauseMenuRun.asm"
+    INCLUDE "ht/HtTask_GameStart.asm"
+    INCLUDE "ht/HtTask_CurtainOpen.asm"
+    INCLUDE "ht/HtTask_SetGameViewScroll.asm"
 
     INCLUDE "c/pause_menu_input.asm"
     INCLUDE "gen/PlItemPick_DelLUT.asm"

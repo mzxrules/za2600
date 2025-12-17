@@ -97,8 +97,7 @@ En_WallmasterCapture:
     bne .rts
     lda #HALT_TYPE_RSCR_SOUTH
     sta wHaltType
-
-    jmp SPAWN_AT_DEFAULT_PRESERVE_SEQ
+    jmp SPAWN_AT_DEFAULT
 
 En_Wallmaster: SUBROUTINE
     lda enState,x

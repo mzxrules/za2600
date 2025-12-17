@@ -28,10 +28,8 @@ RoomUpdate: SUBROUTINE
     sta plItem2Time
     sta wTextMode
 
-    lda #SLOT_FC_HALT
-    sta BANK_SLOT
     ldy rHaltType
-    jmp HALT_GAME
+    jmp HALT_GAME_FC
 .rts
     rts
 
