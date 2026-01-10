@@ -170,33 +170,19 @@ VERTICAL_SYNC: SUBROUTINE
     ;sta GRP0    ; blanks                           player1 if VDELP1 was on
     sta WSYNC
     sta VSYNC
+ALWAYS_RTS:
     rts
     LOG_SIZE "VERTICAL SYNC", VERTICAL_SYNC
+
+PlayerStunColors:
+    .byte #COLOR_PLAYER_00, #COLOR_PLAYER_02, #COLOR_PLAYER_01, #COLOR_EN_BLACK
+
+    align $10
+    INCLUDE "spr/spr_pl.asm"
+
 
 MAIN_LOADROOM_RETURN: BHA_BANK_JMP #SLOT_FC_MAIN, LOADROOM_RETURN
 MAIN_UNPAUSE: BHA_BANK_JMP #SLOT_FC_MAIN, PAUSE_RETURN
 HALT_GAME_FC: BHA_BANK_JMP #SLOT_FC_HALT, HALT_GAME
 MAIN_OVERSCAN_WAIT: BHA_BANK_JMP #SLOT_FC_MAIN, OVERSCAN_WAIT
-
-EnItemDraw: SUBROUTINE ; y == itemDraw
-    lda #>SprItem0
-    sta enSpr+1
-    lda GiItemColors,y
-    tax
-    cpy #GI_TRIFORCE+1
-    bpl .skipItemColor
-    lda Frame
-    and #$10
-    beq .skipItemColor
-    ldx #COLOR_EN_LIGHT_BLUE
-.skipItemColor
-    stx wEnColor
-    lda GiItemSpr,y
-    clc
-    adc #<SprItem0
-    sta enSpr
-ALWAYS_RTS:
-    rts
-
-PlayerStunColors:
-    .byte #COLOR_PLAYER_00, #COLOR_PLAYER_02, #COLOR_PLAYER_01, #COLOR_EN_BLACK
+KERNEL_BOSS4: BHX_BANK_JMP #SLOT_F4_BOSS4, KERNEL_BOSS4_START

@@ -168,13 +168,13 @@ Halt_UpdateGameViewKernel:
 HaltWorldViewH:
     .byte >#KERNEL_WORLD_RESUME ; NoPl
     .byte >#KERNEL_WORLD_RESUME
-    .byte >#KERNEL_WORLD_RESUME ; Ganon
+    .byte >#KERNEL_BOSS4 ; Ganon
     .byte >#KERNEL_WORLDVIEW_BLACK
     .byte >#KERNEL_SCROLL1
 
 HaltWorldViewL:
     .byte <#KERNEL_WORLD_RESUME ; NoPl
     .byte <#KERNEL_WORLD_RESUME
-    .byte <#KERNEL_WORLD_RESUME ; Ganon
+    .byte <#KERNEL_BOSS4 ; Ganon
     .byte <#KERNEL_WORLDVIEW_BLACK
     .byte <#KERNEL_SCROLL1

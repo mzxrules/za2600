@@ -386,7 +386,6 @@ enPolsBounceTimer   ds 2
 
 ; == Keese
     ORG CLASS_EN_ENEMY
-; enHp
 enKeeseThink    ds 2
 enKeeseTemp     = Temp0
 enKeeseHpTemp   = Temp1
@@ -411,7 +410,6 @@ enGelTemp       = Temp1
 
 ; == Peehat
     ORG CLASS_EN_ENEMY
-; enHp
 enPeehatVel         ds 2
 enPeehatSpeedFrac   ds 2
 enPeehatThink       ds 2
@@ -490,7 +488,6 @@ enManhandlaInvince  ds 1
 enSpr2      ds 2
 plMSpr      ds 2
 enMSpr      ds 2
-ganonKernel ds 1
     EN_SIZE BOSS_GANON
 
 ; == Test
@@ -518,9 +515,10 @@ enTestColorPlColor  ds 1
 
 ;==============================================================================
 
-; Kernel_World temps
+; Temp space for EnDraw and Kernel computations
 KERNEL_TEMP ds 6
     ORG KERNEL_TEMP
+; Kernel_World temps
 plDY        ds 1
 enDY        ds 1
 roomDY      ds 1 ; !HACK read below:
@@ -837,4 +835,19 @@ PAUSE_MAP_HEIGHT = 40
 ; * Extended RAM 6 - Boss4 Kernel        *
 ; ****************************************
     ORG $F000
- RW PLSPR_MEM, ds $100
+ RW PLSPR_MEM,      ds $80 ; padding
+ RW PLSPR_MEM_OFF,  =.-$78 ; + 8
+ RW PLSPR_y,        =.-$01
+
+ RW PLMSPR_MEM,     ds $80
+ RW PLMSPR_MEM_OFF, =.-$78
+ RW PLMSPR_y,       =.-$01
+
+
+ RW MISPR_MEM,      =.
+                    ds $51-8
+ RW MISPR_LOC,      ds 8
+                    ds $51-8
+; Boss Ganon Variables
+ RW GanonKernelId,  ds 1
+ RW GanonShow,      ds 1

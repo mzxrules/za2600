@@ -198,10 +198,6 @@ BANK_14
 
     INCLUDE "gen/spr_tri.asm"
 
-    ORG $3800 + $3C0
-    RORG $F000 + $3C0
-    INCLUDE "spr/spr_pl.asm"
-
     LOG_BANK_SIZE "-BANK 14- Sprites World", BANK_14
 
 ; ****************************************
@@ -223,10 +219,6 @@ BANK_15
     align $20
     INCLUDE "spr/spr_manhandla.asm"
 
-    ORG $3C00 + $3C0
-    RORG $F000 + $3C0
-    INCLUDE "spr/spr_pl.asm"
-
     LOG_BANK_SIZE "-BANK 15- Sprites Dung", BANK_15
 
 
@@ -241,10 +233,6 @@ BANK_16
     INCLUDE "spr/spr_item.asm"
     align $100
     INCLUDE "spr/spr_don.asm"
-
-    ORG $4000 + $3C0
-    RORG $F000 + $3C0
-    INCLUDE "spr/spr_pl.asm"
 
     LOG_BANK_SIZE "-BANK 16- Sprites Dung Boss", BANK_16
 
@@ -505,6 +493,8 @@ BANK_32
     INCLUDE "gen/EnDraw_DelBankLUT.asm"
     INCLUDE "gen/Ball_DelLUT.asm"
     INCLUDE "b/pushblock.asm"
+    INCLUDE "en/EnDraw_Item.asm"
+    INCLUDE "en/EnDraw_None.asm"
     LOG_BANK_SIZE "-BANK 32- EnDraw/PushSystem", BANK_32
 
 ; ****************************************
@@ -654,7 +644,6 @@ BANK_41
     RORG $F400
 
 BANK_42
-    INCLUDE "en/EnDraw_None.asm"
     INCLUDE "en/EnDraw_ClearDrop.asm"
     INCLUDE "en/EnDraw_ItemGet.asm"
     INCLUDE "en/EnDraw_Darknut.asm"
@@ -907,23 +896,23 @@ SprGanon2:
 SprGanon1:
     ds $31
     INCLUDE "spr/spr_ganon_1.asm"
-    ds $30
 SprGanon3:
+    ds $31
     INCLUDE "spr/spr_ganon_3.asm"
-    ds $30
-    align $100
+    ds $31
 
     INCLUDE "gen/Boss4Kernel_DelLUT.asm"
-    INCLUDE "proto/boss4/kernel.asm"
+    align $100
+    INCLUDE "kernel_boss4.asm"
     LOG_BANK_SIZE "-BANK 56- Spr Ganon", BANK_56
 
 ; ****************************************
-; *               BANK 57                *
+; *               BANK 58                *
 ; ****************************************
     SEG Bank57
-    ORG $E400
+    ORG $E800
     RORG $F400
-BANK_57
+BANK_58
 
     INCLUDE "ht/HtTask_PauseMenuStart.asm"
     INCLUDE "ht/HtTask_PauseMenuOpen.asm"
@@ -936,7 +925,7 @@ BANK_57
     INCLUDE "c/pause_menu_input.asm"
     INCLUDE "gen/PlItemPick_DelLUT.asm"
     INCLUDE "c/pause_menu_vblank.asm"
-    LOG_BANK_SIZE "-BANK 57- ", BANK_54
+    LOG_BANK_SIZE "-BANK 58- ", BANK_58
 
 ; End
 

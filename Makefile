@@ -14,6 +14,7 @@ zelda_dep := main.asm \
   $(wildcard spr/*.asm) \
   $(wildcard scroll/*.asm) \
   kworld.asm \
+  kernel_boss4.asm \
   gen/atan2.asm \
   gen/world/b1world.asm \
   gen/Rs_DelLUT.asm \

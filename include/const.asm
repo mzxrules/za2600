@@ -62,6 +62,8 @@ BoardBreakwallSY = $13
 BoardBreakwallWX = $10
 BoardBreakwallEX = $76
 
+; Boss4 kernel constants
+BOSS4_ROOM_DY_HEIGHT = $4F
 
 ; Color Index
 CI_EN_RED       = 0
@@ -96,6 +98,8 @@ CI_EN_BLACK     = 10
     COLOR EN_LIGHT_BLUE,$88,$D8 ; Item secondary flicker
     COLOR EN_TRIFORCE,  $2A,$2A
     COLOR EN_BROWN,     $F0,$22
+
+    COLOR EN_GANON,     $9A,$9A
 
     COLOR PF_BLACK,     $00,$00
     COLOR PF_GRAY_D,    $02,$06
@@ -166,6 +170,7 @@ SLOT_F4_MESG        = RAMSEG_F4 | 4 ; Requires bank divisible by 4
 SLOT_F4_MAIN_DRAW   = RAMSEG_F4 | 8
 SLOT_F0_TEXT        = RAMSEG_F0 | 9
 SLOT_F0_SHOP        = RAMSEG_F0 | 10
+SLOT_F4_BOSS4       = RAMSEG_F4 | 56
 
 SLOT_F0_ROOM    = RAMSEG_F0 | 11
 SLOT_F4_ROOM2   = SEG_55
@@ -234,7 +239,7 @@ SEG_53 = RAMSEG_F4 | 53
 SEG_54 = RAMSEG_F4 | 54
 SEG_55 = RAMSEG_F4 | 55
 
-SEG_57 = RAMSEG_F4 | 57
+SEG_58 = RAMSEG_F4 | 58
 
 
 ; RAM Segments
@@ -252,4 +257,4 @@ SLOT_RW_F8_KERNEL48 = RAMSEG_F8 | 4
 SLOT_RW_FC_KERNEL48 = RAMSEG_FC | 4
 
 SLOT_RW_F0_ROOMSCROLL = RAMSEG_F0 | 5
-SLOT_RW_F0_BOSS4_SPR  = RAMSEG_F0 | 6
+SLOT_RW_F0_BOSS4  = RAMSEG_F0 | 6

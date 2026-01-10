@@ -548,9 +548,6 @@ if last button == not pressed && button == pressed && ItemTimer == 0
 0000 0000  0
 
 
-
-
-
 set "p_up" "('p_up'+1*('key_pressed'=273o'key72'))"
 
 Position ALL Objects
@@ -951,6 +948,73 @@ Boomerang
 
 
 ===============================================================================
+> Systems - The World View
+===============================================================================
+
+Due to the complexities involved with positioning sprites on the Atari 2600,
+the world view coordinate system follows what fits best for rendering, over
+what one might consider to be a "sensible" way to map the screen space.
+
+As of Jan 8th, 2026 this is how the things work.
+
+The intended maximum visible world view is 160 scanlines tall, rendered on
+scanlines 66 to 225 inclusive, with overdraw on scanlines 65 and 226.
+With the world kernel being a two line kernel, the pixel precision is halved
+to 80 units maximum, a kernel iterator range of 79 to 0.
+
+The Atari 2600 outputs 160 color pixels per scanline, but there are a couple
+of things limiting how the space is used.
+
+The playfield is one factor. On the Atari 2600, PF0, PF1, PF2 are combined to
+draw 40 "playfield" pixels, with one being 4 color pixels each. Due to limits
+on computation, PF0 goes unused. This makes for a minimum play area range
+between 16 to 143.
+
+The other issue is x positioning all 5 sprites. The generic algorithm for
+x positioning takes 1 or 2 scanlines due to having to set the coarse position
+late in the scan cycle. By reducing the number of valid x positions,
+PosWorldObjects can set the positions of all 5 sprites in a fixed number
+of cycles (which is a little over 6 scanlines).
+
+===============================================================================
+> Systems - The World View - Coordinate System Variables
+===============================================================================
+
+plX, plY (player render object and position)
+enX, enY (enemy render object)
+blX, blY (ball render object and position)
+
+en0X, en0Y / en1X, en1Y (enemy 0 and 1 position)
+
+The above store the left, bottom position of the sprite.
+A position of (0, 0) would place the sprite at
+x = color pixel 12
+y = scanlines 240-241 / kernel iterator of -8
+
+
+m0X, m0Y (player missile render object and collider position)
+m1X, m1Y (enemy missile render object)
+
+The above stores left, bottom position of the sprite.
+A position of (0, 0) would place the sprite at
+x = color pixel 11
+y = scanlines 240-241* / kernel iterator of -8
+
+m1Y is drawn to scanlines 239-240
+
+m0X and m1X needs to be +1 over mi0X to properly overlap bottom left player pixel.
+m0Y does not need to be adjusted, but the missle will appear 1 scanline above.
+Kernel limitations make it impossible for sprites to align perfectly.
+
+
+mi0X, mi0Y / mi1X, mi1Y (enemy missile sprite 0 and 1 position)
+
+Stores the lower left position of an 8x8 missile sprite. This is done so
+that displacement calculations can be simplified regardless of the true size
+of the missile.
+
+
+===============================================================================
 > Systems - Enemy Missile System
 ===============================================================================
 
@@ -959,17 +1023,6 @@ miType stores missile type and damage
     types 0-7 are blocked by small shield
     types 8-F are only blocked by magic shield
  & F0 is 4-bit signed damage in quarter hp increments (only negative values are valid)
-
-mi0X,mi0Y is the lower left position of an 8x8 missile sprite. This is done so
-that displacement calculations can be simplified regardless of the true size
-of the missile.
-
-m0x,m0y is the true lower left position of the sprite when drawn by the kernel.
-
-m0x needs to be +1 over mi0X to properly overlap bottom left player pixel.
-m0y does not need to be adjusted, but the missle will appear 1 scanline above.
-Kernel limitations make it impossible for sprites to align perfectly.
-
 
 ===============================================================================
 > Systems - Player Recoil

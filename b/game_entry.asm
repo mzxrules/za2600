@@ -12,7 +12,7 @@
 ENTRY: SUBROUTINE ; Address FC00
     CLEAN_START
 ; wipe extended ram
-    ldy #5
+    ldy #6
 .wipe_rambanks_loop
     sty BANK_SLOT_RAM
 .wipeRam
@@ -36,15 +36,15 @@ ENTRY_INIT:  ; Address F000
     ldy #SLOT_FC_MAIN
     sty BANK_SLOT
 
-; initialize extended ram
-    ldy #2 ; ram banks to init
+; Initialize Extended Ram - World Data
+    ldy #2
 
 .init_ram_loop
     lda .ENTRY_RAM_BANKS,y
     sta BANK_SLOT_RAM
     txa ; set A to 0
 
-    ; kernel transfer
+; Copy kernel world into memory
     ldx #KERNEL_WORLD_LEN
 .initWorldKernMem
     lda KERNEL_WORLD-1,x
@@ -52,6 +52,7 @@ ENTRY_INIT:  ; Address F000
     dex
     bne .initWorldKernMem
 
+; Assign the default entity sprite bank for the world bank
     lda .ENTRY_SLOT_SPR,y
     sta wWorldSprBank_DEFAULT
 
@@ -65,7 +66,7 @@ ENTRY_INIT:  ; Address F000
     dey
     bpl .init_ram_loop
 
-    ; kernel48 transfer
+; Initialize Extended Ram - KERNEL48
     ldy #SLOT_RW_F4_KERNEL48
     sty BANK_SLOT_RAM
 
@@ -76,6 +77,8 @@ ENTRY_INIT:  ; Address F000
     dex
     bne .init48KernMem
 
+; Initialize Extended Ram - Boss4 Kernel
+; TODO
 
 ENTRY_KERNEL:
     ldx #$3

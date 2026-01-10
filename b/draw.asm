@@ -3,7 +3,71 @@
 ;==============================================================================
 
 DRAW_WorldSetup: SUBROUTINE
-    INCLUDE "c/draw_world_init.asm"
+    lda rHaltKernelId
+    cmp #HALT_KERNEL_GAMEVIEW_GANON
+    bne .continue
+    jmp DRAW_WorldSetup_Boss4
+.continue
+
+; player sprite
+    lda .plSpriteL,x
+    sec
+    sbc plY
+    sta plSpr
+
+    lda #>(SprP0 + 7)
+    sbc #0
+    sta plSpr+1
+
+; player draw height
+    lda .Spr8WorldOff,y ;#(ROOM_DY_HEIGHT+8)
+    sec
+    sbc plY
+    sta plDY
+
+; player missile draw height
+    lda .Spr8WorldOff,y
+    sec
+    sbc m0Y
+    sta m0DY
+
+; enemy draw height
+    lda .Spr8WorldOff,y
+    sec
+    sbc enY
+    sta enDY
+
+.enemy_sprite_setup
+    lda enSpr       ; #<(SprE0 + 7)
+    clc
+    adc #7
+    sec
+    sbc enY
+    sta enSpr
+
+    lda enSpr + 1   ; #>(SprE0 + 7)
+    sbc #0
+    sta enSpr + 1
+
+.enemy_missile_setup
+    lda .Spr8WorldOff,y
+    sec
+    sbc m1Y
+    sta m1DY
+
+.ball_sprite_setup
+; ball draw height
+    lda .Spr8WorldOff,y
+    sec
+    sbc blY
+    sta blDY
+.ball_sprite_initial_enabl
+    lda rBLH
+    dcp blDY
+    lda #1
+    adc #0
+    sta wblInitENABL
+    inc blDY
     rts
 
 DRAW_HudSetup:
@@ -166,20 +230,21 @@ KERNEL_HUD:
     jsr KERNEL_WORLDVIEW_SKIP
 .hud_mode_fixed
 
+    bit rHudMode
     bvs .hud_mode_off
     ldy #7 ; Draw Height
     lda #0
     beq KERNEL_HUD_LOOP ; jmp, assume A = 0
 
 .hud_mode_off
-    ldy #16
+    ldy #16+1
 .hud_blackout_loop
     sta WSYNC
-    dey
-    bne .hud_blackout_loop
-    sta WSYNC
+    dey ; 2
+    bne .hud_blackout_loop ; 2
+
 ; HUD LOOP End
-    sleep 24
+    sleep 20
     ; y = 0
     jmp HUD_BLACKOUT_ENTRY
 
@@ -370,6 +435,7 @@ KERNEL_WORLDVIEW_BLACK:
     sta COLUPF
     sta COLUBK
 
+    sta WSYNC
 .kernel_worldview_black_loop
     sta WSYNC
     sta WSYNC
@@ -381,31 +447,23 @@ KERNEL_WORLDVIEW_BLACK:
     sta WSYNC
     dey
     bpl .kernel_worldview_black_loop
-    sta WSYNC
+.rts
     rts
 
 KERNEL_WORLDVIEW_SKIP:
-    ldx RoomPX
-    cpx #ROOM_PX_HEIGHT-1
-    bpl .skipVerticalShift
-.wsyncLoop
-    ldy #7
-.wsyncLoop_inner
-    sta WSYNC
-    dey
-    bpl .wsyncLoop_inner
-    inx
-    cpx #ROOM_PX_HEIGHT-1
-    bmi .wsyncLoop
+    sec
+    lda #ROOM_PX_HEIGHT-1 -1
+    sbc RoomPX
+    bmi .rts
+    tay
+    bpl .kernel_worldview_black_loop ;jmp
 .skipVerticalShift
     rts
 
     LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN_HUD_WORLD
 
-    align $20
-
 .HUD_SPLIT_TEST:
-    .byte 0, 0, 1, 0, 0, 1, 0 ;, 0
+    .byte 0, 0, 1, 0, 0, 1 ;, 0 , 0
 
 .HealthPattern:
     .byte $00, $00, $00, $00, $00, $00, $00, $00
@@ -478,15 +536,51 @@ DRAW_WorldSetupPre:
 ; room draw start
     ldy RoomPX
     lda rTextMode
-    bpl .skip_textmode_view ; !#TEXT_MODE_ACTIVE
+    bpl .textmode_off ; !#TEXT_MODE_ACTIVE
     cpy #ROOM_PX_HEIGHT-1
-    bne .textmode_invalid
+    bne .textmode_off ; invalid
     and #$7F
     tay
     lda .RoomWorldOff,y
     tay
-.textmode_invalid
-.skip_textmode_view
+.textmode_off
 
     sty roomDY
+
+.player_sprite_setup
+    lda ITEMV_SHIELD
+    and #ITEMF_SHIELD
+    ora plDir
+    tax
+    bit plState2
+    bpl .loadSprP ; #PS_HOLD_ITEM
+    ldx #8
+.loadSprP
+    rts
+
+DRAW_WorldSetup_Boss4:
+    lda #SLOT_RW_F0_BOSS4
+    sta BANK_SLOT_RAM
+
+    lda .plSpriteL,x
+    and #$F8
+
+    sta plSpr
+    lda #>(SprP0)
+    sta plSpr+1
+
+    ldy #0
+    ldx plY
+    cpx #BOSS4_ROOM_DY_HEIGHT + 8 + 1
+    bcs .boss_rts
+    stx wPLSPR_y
+
+.loop
+    lda (plSpr),y
+    sta wPLSPR_MEM,x
+    inx
+    iny
+    cpy #8
+    bne .loop
+.boss_rts
     rts

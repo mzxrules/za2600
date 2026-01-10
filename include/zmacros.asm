@@ -132,6 +132,12 @@ COLOR_{1} = {2}
     jmp {2}
     ENDM
 
+    MACRO BHX_BANK_JMP
+    ldx {1}
+    stx BANK_SLOT
+    jmp {2}
+    ENDM
+
 ; BANK_FALL allows fallthrough
     MACRO BHA_BANK_FALL
     lda {1}
