@@ -198,6 +198,8 @@ def PackRoomColors(mdata):
     AddFgBg(roomColorFgBg, "COLOR_PF_BLACK", "COLOR_PF_BLACK")
     # Room Colors 1
     AddFgBg(roomColorFgBg, "COLOR_PF_CHOCOLATE", "COLOR_PF_BLACK")
+    # Room Colors 2
+    AddFgBg(roomColorFgBg, "COLOR_PF_WHITE", "COLOR_PF_BLACK")
 
     for worldId in range(0, WORLD_COUNT):
         level = mdata[worldId]

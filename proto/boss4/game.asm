@@ -2,13 +2,10 @@
 ; mzxrules 2025
 ;==============================================================================
 
-
 GameStart: BHA_BANK_FALL #SEG_GAME
-
     lda #%00110001 ; ball size 8, reflect playfield
     sta CTRLPF
     sta VDELBL
-
 
     lda #$01
     sta NUSIZ1

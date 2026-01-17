@@ -1,30 +1,75 @@
 ;==============================================================================
 ; mzxrules 2024
 ;==============================================================================
+
+EN_ENEMY_MOBLIN_RED     = $0
+EN_ENEMY_MOBLIN_BLUE    = $1
+EN_ENEMY_LYNEL_RED      = $2
+EN_ENEMY_LYNEL_BLUE     = $3
+
+EN_MOBLIN_TYPE_RED = $0
+EN_MOBLIN_TYPE_BLUE = $1
+EN_MOBLIN_FIRING = $2
+
 EN_LYNEL_TYPE_RED = $0
 EN_LYNEL_TYPE_BLUE = $1
 EN_LYNEL_FIRING = #2
 
-En_LynelBlue: SUBROUTINE
-    lda #EN_LYNEL_TYPE_BLUE | #EN_LYNEL_FIRING
-    sta enState,x
-    lda #6-1
-    sta enHp,x
+En_Enemy_MiType:
+    BYTE_miType #MI_SPAWN_ARROW, -4
+    BYTE_miType #MI_SPAWN_ARROW, -4
+    BYTE_miType #MI_SPAWN_SWORD, -8
+    BYTE_miType #MI_SPAWN_SWORD, -16
+
+En_Enemy_Damage:
+    .byte -4
+    .byte -4
+    .byte -8
+    .byte -16
+
+En_Moblin: SUBROUTINE
+    ldy #EN_ENEMY_MOBLIN_RED
+    bpl .commmon_init
+
+En_MoblinBlue:
+    ldy #EN_ENEMY_MOBLIN_BLUE
+    bpl .commmon_init
+
+En_LynelBlue:
     ldy #EN_ENEMY_LYNEL_BLUE
     bpl .commmon_init
 
 En_Lynel:
-    lda #EN_LYNEL_TYPE_RED | #EN_LYNEL_FIRING
-    sta enState,x
-    lda #3-1
-    sta enHp,x
     ldy #EN_ENEMY_LYNEL_RED
 
 .commmon_init
     sty enEnemyType,x
-    lda #EN_LYNEL_MAIN
+    lda .Init_EnState,y
+    sta enState,x
+    lda .Init_Hp,y
+    sta enHp,x
+    lda .Init_EnType,y
     sta enType,x
     rts
+
+.Init_EnType:
+    .byte #EN_MOBLIN_MAIN
+    .byte #EN_MOBLIN_MAIN
+    .byte #EN_LYNEL_MAIN
+    .byte #EN_LYNEL_MAIN
+
+.Init_EnState:
+    .byte #EN_MOBLIN_TYPE_RED  | #EN_MOBLIN_FIRING
+    .byte #EN_MOBLIN_TYPE_BLUE | #EN_MOBLIN_FIRING
+    .byte #EN_LYNEL_TYPE_RED   | #EN_LYNEL_FIRING
+    .byte #EN_LYNEL_TYPE_BLUE  | #EN_LYNEL_FIRING
+
+.Init_Hp:
+    .byte #2-1
+    .byte #3-1
+    .byte #3-1
+    .byte #6-1
+
 
 En_LynelMain:
 En_MoblinMain:

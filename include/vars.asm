@@ -485,9 +485,15 @@ enManhandlaInvince  ds 1
 
 ; == Ganon
     ORG CLASS_EN_BOSS_SHOOT
-enSpr2      ds 2
-plMSpr      ds 2
-enMSpr      ds 2
+enSpr2          ds 2
+plMSpr          ds 2
+enMSpr          ds 2
+enGanonStep     = enDir+1
+enGanonStun     = enStun+1
+enGanonSpdFrac  = enHp+1
+enGanonColor    = enState+1
+enGanonShootT   = mi1Dir
+enGanonAnim     = enGanonStun
     EN_SIZE BOSS_GANON
 
 ; == Test
@@ -652,7 +658,7 @@ HB_PL_WAVE      = $10
 HB_PL_WAND      = $20
 HB_PL_SWORDFX   = $40
 HB_PL_RANG      = $80
-HbFlags2        ds 1
+HbResult        ds 1
 HB_BOX_HIT      = $80
 HbDir           ds 1
 Hb_aa_Box       ds 1
@@ -735,6 +741,7 @@ TEXT_MODE_SHOP      = $82
  RW RoomColorFlags,     ds 1
 RF_WC_ROOM_BOOT = $80
 RF_WC_ROOM_DARK = $40
+;               ; $3F = Room Color Index
  RW RoomENFlags,        ds 1
  RW RoomPF2Type,        ds 1
  ROOM_PF2 TRIFORCE, 35
@@ -847,7 +854,7 @@ PAUSE_MAP_HEIGHT = 40
  RW MISPR_MEM,      =.
                     ds $51-8
  RW MISPR_LOC,      ds 8
-                    ds $51-8
+ RW MISPR_NONE,     ds $51
 ; Boss Ganon Variables
  RW GanonKernelId,  ds 1
  RW GanonShow,      ds 1

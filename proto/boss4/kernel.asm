@@ -75,7 +75,7 @@ KERNEL_BOSS4_LOOP_39:
 
     lda (enSpr2),y      ; 5 - 26
     sleep 4
-    VSLEEP69            ;   - 36 / 39
+    VSLEEP69_bvs        ;   - 36 / 39
     sta GRP1            ; 3 - 39 / 42
 
     lda (enMSpr),y      ; 5 - 44 / 45
@@ -88,7 +88,7 @@ KERNEL_BOSS4_LOOP_39:
 
     lda (enSpr2),y      ; 5 - 26
     sleep 4
-    VSLEEP69            ;   - 36 / 39
+    VSLEEP69_bvs        ;   - 36 / 39
     sta GRP1            ; 3 - 39 / 42
 
     lda (plMSpr),y      ; 5 - 44 / 47
@@ -119,7 +119,7 @@ KERNEL_BOSS4_LOOP_45:
 
     lda (enSpr2),y      ; 5 - 26
     sleep 10
-    VSLEEP69            ;   - 42 / 45
+    VSLEEP69_bvs        ;   - 42 / 45
     sta GRP1            ; 3 - 45 / 48
 
     lda (enMSpr),y      ; 5 - 50 / 53
@@ -132,7 +132,7 @@ KERNEL_BOSS4_LOOP_45:
 
     lda (enSpr2),y      ; 5 - 26
     sleep 10
-    VSLEEP69            ;   - 42 / 45
+    VSLEEP69_bvs        ;   - 42 / 45
     sta GRP1            ; 3 - 45 / 48
 
     lda (plMSpr),y      ; 5 - 50 / 53
@@ -166,7 +166,7 @@ KERNEL_BOSS4_LOOP_51:
 
     lda (enSpr2),y      ; 5 - 26
     sleep 16
-    VSLEEP69            ;   - 42 / 45
+    VSLEEP69_bvs        ;   - 42 / 45
     sta GRP1            ; 3 - 45 / 48
 
     lda (enMSpr),y      ; 5 - 50 / 53
@@ -179,7 +179,7 @@ KERNEL_BOSS4_LOOP_51:
 
     lda (enSpr2),y      ; 5 - 26
     sleep 16
-    VSLEEP69            ;   - 42 / 45
+    VSLEEP69_bvs        ;   - 42 / 45
     sta GRP1            ; 3 - 45 / 48
 
     lda (plMSpr),y      ; 5 - 50 / 53
@@ -210,7 +210,7 @@ KERNEL_BOSS4_LOOP_57:
 
     lda (enSpr2),y      ; 5 - 26
     sleep 22
-    VSLEEP69            ;   - 42 / 45
+    VSLEEP69_bvs        ;   - 42 / 45
     sta GRP1            ; 3 - 45 / 48
 
     lda (enMSpr),y      ; 5 - 50 / 53
@@ -223,7 +223,7 @@ KERNEL_BOSS4_LOOP_57:
 
     lda (enSpr2),y      ; 5 - 26
     sleep 22
-    VSLEEP69            ;   - 42 / 45
+    VSLEEP69_bvs        ;   - 42 / 45
     sta GRP1            ; 3 - 45 / 48
 
     lda (plMSpr),y      ; 5 - 50 / 53

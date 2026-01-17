@@ -2,21 +2,25 @@
 ; mzxrules 2025
 ;==============================================================================
 
-EnItemDraw: SUBROUTINE ; y == itemDraw
+EnDraw_Item: SUBROUTINE ; y == ItemId to draw
     lda #>SprItem0
     sta enSpr+1
+    lda GiItemSpr,y
+    sta enSpr
+
     lda GiItemColors,y
     tax
-    cpy #GI_TRIFORCE+1
-    bpl .skipItemColor
     lda Frame
     and #$10
-    beq .skipItemColor
+    beq .setItemColor
+    cpy #GI_POWER
+    bne .test_two
+    ldx #COLOR_EN_RED
+    bne .setItemColor ; jmp
+.test_two
+    cpy #GI_TRIFORCE+1
+    bpl .setItemColor
     ldx #COLOR_EN_LIGHT_BLUE
-.skipItemColor
+.setItemColor
     stx wEnColor
-    lda GiItemSpr,y
-    clc
-    adc #<SprItem0
-    sta enSpr
     rts

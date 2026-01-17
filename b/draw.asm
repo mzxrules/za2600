@@ -374,7 +374,7 @@ HUD_BLACKOUT_ENTRY:
     lda #SLOT_F0_TEXT
     sta BANK_SLOT
 
-    ldx #%00110001 ; ball size 8, reflect playfield, pf priority
+    ldx #%00110001 ; ball size 8, reflect playfield
     stx CTRLPF
 
     ldx rFgColor
@@ -520,6 +520,10 @@ KERNEL_WORLDVIEW_SKIP:
     REPEND
 
 DRAW_WorldSetupPre:
+; HACK! Allow changing colors during Ganon battle
+    lda plState
+    and #PS_LOCK_ALL
+    bne .hack_skip_roomcolor_update
 ; Room Color
     ldx #0
     bit rRoomColorFlags
@@ -532,6 +536,7 @@ DRAW_WorldSetupPre:
     sta wFgColor
     lda WorldColorsBg,x
     sta wBgColor
+.hack_skip_roomcolor_update
 
 ; room draw start
     ldy RoomPX

@@ -75,7 +75,7 @@ En_ArmosMain: SUBROUTINE
     jsr HbGetPlAtt
     jsr HbPlAttCollide_EnBB
 
-    lda HbFlags2
+    lda HbResult
     bpl .checkDamaged_secondary ; not HB_BOX_HIT
 
 ; Apply damage to base entity
@@ -107,7 +107,7 @@ En_ArmosMain: SUBROUTINE
     sta Hb_bb_x
     jsr HbPlAttCollide
 
-    lda HbFlags2
+    lda HbResult
     bpl .checkDamaged_testkill ; not HB_BOX_HIT
 
 ; Apply damage to secondary entity

@@ -63,7 +63,7 @@ En_Keese: SUBROUTINE
 
 .test_001
     jsr HbPlAttCollide_EnBB
-    lda HbFlags2
+    lda HbResult
     bpl .test_010 ; not HB_BOX_HIT
     lda #%110
     sta enKeeseTemp
@@ -74,7 +74,7 @@ En_Keese: SUBROUTINE
     ror enKeeseHpTemp
     bcc .test_100
     jsr HbPlAttCollide
-    lda HbFlags2
+    lda HbResult
     bpl .test_100 ; not HB_BOX_HIT
     lda #%101
     and enKeeseTemp
@@ -86,7 +86,7 @@ En_Keese: SUBROUTINE
     ror enKeeseHpTemp
     bcc .end_checkhit
     jsr HbPlAttCollide
-    lda HbFlags2
+    lda HbResult
     bpl .end_checkhit ; not HB_BOX_HIT
     lda #%011
     and enKeeseTemp

@@ -244,6 +244,8 @@ GiTriforce:
     ora itemTri
     sta itemTri
     rts
+GiPower:
+    rts
 GiKey:
     inc itemKeys
     lda enType

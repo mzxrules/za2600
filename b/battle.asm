@@ -207,6 +207,21 @@ HbManhandla: SUBROUTINE
 .rts
     rts
 
+; Sets 24x24 enemy hitbox
+HbGanon: SUBROUTINE
+    lda Hb_aa_Box
+    beq .rts
+    clc
+    adc #HITBOX_BB_GANON
+    sta Hb_aa_Box
+
+    lda en0X
+    sta Hb_bb_x
+    lda en0Y
+    sta Hb_bb_y
+.rts
+    rts
+
 ; Sets 4x4 enemy hitbox
 HbEnSq4: SUBROUTINE
     lda Hb_aa_Box
@@ -232,7 +247,7 @@ HbPlAttCollide_EnBB:
     sta Hb_bb_y
 HbPlAttCollide: SUBROUTINE
     lda #HB_BOX_HIT
-    sta HbFlags2
+    sta HbResult
     ldy Hb_aa_Box
     beq .no_hit ; null box
 
@@ -247,7 +262,7 @@ HbPlAttCollide: SUBROUTINE
     bcc .pass_x
 .no_hit
     lda #0
-    sta HbFlags2 ; clear HB_BOX_HIT
+    sta HbResult ; clear HB_BOX_HIT
     rts
 
 .pass_x
@@ -286,7 +301,7 @@ HbPlAttCollide: SUBROUTINE
 ;==============================================================================
 HbPlAttCollide_Invisible: SUBROUTINE
     lda #HB_BOX_HIT
-    sta HbFlags2
+    sta HbResult
     ldy Hb_aa_Box
     beq .no_hit ; null box
 
@@ -301,7 +316,7 @@ HbPlAttCollide_Invisible: SUBROUTINE
     bcc .pass_x
 .no_hit
     lda #0
-    sta HbFlags2 ; clear HB_BOX_HIT
+    sta HbResult ; clear HB_BOX_HIT
     rts
 
 .pass_x
@@ -343,7 +358,7 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
     jsr HbPlAttCollide_EnBB
 
 ; If no hit
-    lda HbFlags2
+    lda HbResult
     bpl .rts ; not HB_BOX_HIT
 
 ; Handle Darknuts specially
@@ -400,4 +415,36 @@ HbCheckDamaged_CommonRecoil: SUBROUTINE
     lda #SFX_EN_DEF
     sta SfxFlags
 .rts
+    rts
+
+;==============================================================================
+; HbPlBodyCollide_Ganon
+; HbPlBodyCollide ; Not properly implemented
+;----------
+; Tests if the player body has collided with EnBB
+; returns c = 0 if hit
+; Y = HITBOX_AA + HITBOX_BB
+;==============================================================================
+HbPlBodyCollide_Ganon: SUBROUTINE
+    ldy #HITBOX_AA_SQ8 + #HITBOX_BB_GANON
+HbPlBodyCollide:
+    lda plX ; Hb_aa_x
+    sec ; Requires +1 bc missile sprite positioning. revert to clc if fixed
+    adc hitbox_aa_ox,y
+
+    sec
+    sbc en0X ; Hb_bb_x
+    cmp hitbox_aa_w_plus_bb_w,y
+    bcs .no_hit
+
+    lda plY ; Hb_aa_y
+    clc
+    adc hitbox_aa_oy,y
+
+    sec
+    sbc en0Y ; Hb_bb_y
+    cmp hitbox_aa_h_plus_bb_h,y
+    bcs .no_hit
+.no_hit ; return c = 1
+.hit    ; return c = 0
     rts

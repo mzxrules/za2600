@@ -11,7 +11,7 @@ EnDraw_NpcGiveOne: SUBROUTINE
     ldy roomEX
     lda NpcGiveOneItems,y
     tay
-    jsr EnItemDraw
+    jsr EnDraw_Item
 
     lda #$40
     sta enX

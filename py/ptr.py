@@ -53,7 +53,7 @@ class GameEnum:
 
 Entity_Table = [
     "EnNone",          "SEG_NA", "SEG_42", "EnDraw_None",
-    "EnItem",          "SEG_53", "SEG_42", "EnDraw_Item",
+    "EnItem",          "SEG_53", "SEG_42", "EnDraw_ItemDrop",
     "EnStairs",        "SEG_53", "SEG_42", "EnDraw_Stairs",
     "En_ItemGet",      "SEG_44", "SEG_42", "EnDraw_ItemGet",
     "En_NpcAppear",    "SEG_48", "SEG_42", "EnDraw_Npc",
@@ -113,7 +113,7 @@ Entity_Table = [
     #"En_TestMissile",  "SEG_44", "SEG_46", "EnDraw_TestMissile",
     #"En_TestColor",    "SEG_47", "SEG_42", "EnDraw_TestColor",
 
-    "En_Armos",        "SEG_53", "SEG_53", "EnDraw_Armos",
+    "En_Armos",        "SEG_53", "SEG_42", "EnDraw_Armos",
     "En_BossGhini",    "SEG_NA", "SEG_42", "EnDraw_None",
 
     "En_BossGohma",    "SEG_44", "SEG_46", "EnDraw_BossGohma",
@@ -125,7 +125,9 @@ Entity_Table = [
     "En_BossDon",      "SEG_50", "SEG_50", "EnDraw_BossDon",
     "En_BossDig",      "SEG_NA", "SEG_42", "EnDraw_None",
     "En_BossPatra",    "SEG_NA", "SEG_42", "EnDraw_None",
-    "En_BossGanon",    "SEG_53", "SEG_46", "EnDraw_BossGanon",
+    "En_BossGanon",    "SEG_59", "SEG_46", "EnDraw_BossGanon",
+    "En_BossGanonMain","SEG_59", "SEG_46", "EnDraw_BossGanon",
+    "En_BossGanonDead","SEG_49", "SEG_46", "EnDraw_BossGanon",
     #"EnBoss_Cucco",    "SEG_NA", "SEG_42", "EnDraw_None",
 
     "En_Waterfall",    "SEG_NA", "SEG_46", "EnDraw_Waterfall",
@@ -259,6 +261,8 @@ GiValues_Table = [
 
     "GiMap",
     "GiCompass",
+    "GiPower",
+
 # below items are not real items
     "GiBowArrow",
     "GiBowArrowSilver",
@@ -649,6 +653,7 @@ tbl = [
         "KERNEL_BOSS4_LOOP_51",
         "KERNEL_BOSS4_LOOP_54",
         "KERNEL_BOSS4_LOOP_57",
+        "KERNEL_BOSS4_LOOP_60",
     ],
     bankLut=None),
 ]

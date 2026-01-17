@@ -2,13 +2,13 @@
 ; mzxrules 2022
 ;==============================================================================
 
-EnDraw_Item: SUBROUTINE
+EnDraw_ItemDrop: SUBROUTINE
     lda en0X,x
     sta enX
     lda en0Y,x
     sta enY
     ldy cdItemType,x
-    jmp EnItemDraw
+    jmp EnDraw_Item
 
 EnDraw_Stairs: SUBROUTINE
     lda en0X,x

@@ -3,7 +3,6 @@
 ;==============================================================================
 
 KERNEL_SCROLL1: SUBROUTINE  ; 192 scanlines
-
     lda #%00110000  ; ball size 8, standard playfield
     sta CTRLPF
 

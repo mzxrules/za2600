@@ -18,7 +18,7 @@ EnDraw_NpcGame:
     sta wNUSIZ1_T
 
     ldy #GI_RUPEE
-    jsr EnItemDraw
+    jsr EnDraw_Item
     jsr NpcUpdateShopMesg
 
     ldy #$28

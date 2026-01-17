@@ -64,7 +64,7 @@ En_BossDon: SUBROUTINE
     adc En_BossDon_MouthOffY,y
     sta Hb_bb_y
     jsr HbPlAttCollide_Invisible
-    lda HbFlags2
+    lda HbResult
     bpl .skip_checkDamaged_mouth ; not HB_BOX_HIT
 
 .checkDamaged_hitMouth
@@ -86,7 +86,7 @@ En_BossDon: SUBROUTINE
 
 .checkDamaged_body
     jsr HbPlAttCollide_EnBB
-    lda HbFlags2
+    lda HbResult
     bmi .checkDamaged_hitBody ; HB_BOX_HIT
 .checkDamaged_body2
     ldy enDir,x

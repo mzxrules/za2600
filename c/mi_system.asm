@@ -52,6 +52,7 @@ MiSystem: SUBROUTINE
 ;----------
 ; Processes an enemy missile
 ; A = miType
+; X = MiSysEnNum
 ;==============================================================================
 MiProcess: SUBROUTINE
     and #$0F

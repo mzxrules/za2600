@@ -79,11 +79,18 @@ w{1} = . - KERNEL_WORLD + wKERNEL_WORLD + 1
 .j1
     ENDM
 
-; Sleep for 6 or 9 cycles depending on
-    MACRO VSLEEP69
+; Sleep for 6 or 9 cycles on overflow flag set
+    MACRO VSLEEP69_bvs
     .byte $70, $00 ; bvs jumping to next instruction
     .byte $70, $00
     .byte $70, $00
+    ENDM
+
+; Sleep for 6 or 9 cycles on carry flag set
+    MACRO VSLEEP69_bcs
+    .byte $B0, $00 ; bvs jumping to next instruction
+    .byte $B0, $00
+    .byte $B0, $00
     ENDM
 
 ; Color definition macro

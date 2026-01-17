@@ -66,6 +66,14 @@ ENTRY_INIT:  ; Address F000
     dey
     bpl .init_ram_loop
 
+; Initialize Extended Ram - Boss4 Kernel
+    lda #SLOT_RW_F4_BOSS4
+    sta BANK_SLOT_RAM
+
+    ; ldy #$FF
+    sty wMISPR_LOC+4
+    sty wMISPR_LOC+5
+
 ; Initialize Extended Ram - KERNEL48
     ldy #SLOT_RW_F4_KERNEL48
     sty BANK_SLOT_RAM
@@ -76,9 +84,6 @@ ENTRY_INIT:  ; Address F000
     sta wKERNEL48-1,x
     dex
     bne .init48KernMem
-
-; Initialize Extended Ram - Boss4 Kernel
-; TODO
 
 ENTRY_KERNEL:
     ldx #$3
@@ -240,6 +245,9 @@ ENTRY_START_GAME:
     lda ITEMV_SWORD1
     ora #ITEMF_SWORD1
     sta ITEMV_SWORD1
+    lda #$30
+    sta plHealth
+    sta plHealthMax
     ENDIF
 
     ldy #HALT_TYPE_GAME_START

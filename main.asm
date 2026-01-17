@@ -218,6 +218,7 @@ BANK_15
     INCLUDE "spr/spr_aqua.asm"
     align $20
     INCLUDE "spr/spr_manhandla.asm"
+    INCLUDE "spr/spr_tripow.asm"
 
     LOG_BANK_SIZE "-BANK 15- Sprites Dung", BANK_15
 
@@ -665,6 +666,7 @@ BANK_42
     INCLUDE "en/Endraw_Gel.asm"
     INCLUDE "en/EnDraw_Lynel.asm"
     INCLUDE "en/EnDraw_Pols.asm"
+    INCLUDE "en/EnDraw_Armos.asm"
 
     INCLUDE "gen/mesg_digits.asm"
     INCLUDE "en/EnDraw_Npc.asm"
@@ -784,6 +786,7 @@ BANK_49
     INCLUDE "en/En_Vire.asm"
     INCLUDE "en/En_Wizrobe.asm"
     INCLUDE "en/En_Zol.asm"
+    INCLUDE "en/En_BossGanonDead.asm"
     LOG_BANK_SIZE "-BANK 49-", BANK_49
 
 ; ****************************************
@@ -822,7 +825,6 @@ BANK_51
 
 BANK_52
     INCLUDE "en/En_Lynel.asm"
-    INCLUDE "en/En_Moblin.asm"
     INCLUDE "en/En_Leever.asm"
     LOG_BANK_SIZE "-BANK 52-", BANK_52
 
@@ -835,10 +837,8 @@ BANK_52
 
 BANK_53
     INCLUDE "en/En_Armos.asm"
-    INCLUDE "en/EnDraw_Armos.asm"
     INCLUDE "en/En_Stairs.asm"
     INCLUDE "en/En_Item.asm"
-    INCLUDE "en/En_BossGanon.asm"
     LOG_BANK_SIZE "-BANK 53-", BANK_53
 
 ; ****************************************
@@ -885,21 +885,21 @@ BANK_55
 BANK_56
 
 SprGanon0:
-    ds $31
+    ds $30
     INCLUDE "spr/spr_ganon_0.asm"
 SprGanon2:
-    ds $31
+    ds $30
     INCLUDE "spr/spr_ganon_2.asm"
-    ds $31
+    ds $30
     align $100
 
 SprGanon1:
-    ds $31
+    ds $30
     INCLUDE "spr/spr_ganon_1.asm"
 SprGanon3:
-    ds $31
+    ds $30
     INCLUDE "spr/spr_ganon_3.asm"
-    ds $31
+    ds $30
 
     INCLUDE "gen/Boss4Kernel_DelLUT.asm"
     align $100
@@ -907,9 +907,39 @@ SprGanon3:
     LOG_BANK_SIZE "-BANK 56- Spr Ganon", BANK_56
 
 ; ****************************************
+; *               BANK 57                *
+; ****************************************
+    SEG Bank54
+    ORG $E400
+    RORG $F400
+BANK_57
+
+SprGanon0:
+    ds $30
+    INCLUDE "spr/spr_ganon_4.asm"
+SprGanon2:
+    ds $30
+    INCLUDE "spr/spr_ganon_6.asm"
+    ds $30
+    align $100
+
+SprGanon1:
+    ds $30
+    INCLUDE "spr/spr_ganon_5.asm"
+SprGanon3:
+    ds $30
+    INCLUDE "spr/spr_ganon_7.asm"
+    ds $30
+
+    INCLUDE "gen/Boss4Kernel_DelLUT.asm"
+    align $100
+    INCLUDE "kernel_boss4.asm"
+    LOG_BANK_SIZE "-BANK 57- Spr Ganon", BANK_56
+
+; ****************************************
 ; *               BANK 58                *
 ; ****************************************
-    SEG Bank57
+    SEG Bank58
     ORG $E800
     RORG $F400
 BANK_58
@@ -926,6 +956,18 @@ BANK_58
     INCLUDE "gen/PlItemPick_DelLUT.asm"
     INCLUDE "c/pause_menu_vblank.asm"
     LOG_BANK_SIZE "-BANK 58- ", BANK_58
+
+
+; ****************************************
+; *               BANK 59                *
+; ****************************************
+    SEG Bank59
+    ORG $EC00
+    RORG $F400
+BANK_59
+
+    INCLUDE "en/En_BossGanon.asm"
+    LOG_BANK_SIZE "-BANK_59- ", BANK_59
 
 ; End
 

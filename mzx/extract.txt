@@ -106,6 +106,19 @@ loop for 31
 set "$sht" to "spr/spr_en1.asm"
 goto "#dumpsht"
 
+set "CHAR" to "('SS_TRIPOW')"
+inc "$" by "SprTriPowDust:\n"
+set "yl_" to 8
+set "sp&sp&" to 13
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+inc "$" by "SprTriPow:\n"
+set "sp&sp&" to 8
+goto "#dumpchr"
+inc "$" by "$dumpchr"
+set "$sht" to "spr/spr_tripow.asm"
+goto "#dumpsht"
+
 . "No Controller"
 set "CHAR" to "(256*14+22)"
 loop start

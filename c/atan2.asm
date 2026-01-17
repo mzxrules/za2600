@@ -3,7 +3,7 @@
 ;----------
 ; X = Delta X
 ; Y = Delta Y
-; Returns bitpacked value:
+; A Returns bitpacked value:
 ; & $80 = Delta X Sign
 ; & $40 = Delta Y Sign
 ; & $3F = index to Atan2 tables

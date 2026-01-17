@@ -65,6 +65,7 @@ HITBOX_EN_BODY_INFO = [
     (8, 8, 0, 0),       # HITBOX_BB_8x8
     (4, 4, 2, 2),       # HITBOX_BB_4x4
     (12, 12, -2, -2),   # HITBOX_BB_MANHANDLA
+    (24, 24, -8, -8),   # HITBOX_BB_GANON
 ]
 
 HITBOX2_PL_BODY_INFO = [
@@ -90,13 +91,21 @@ HITBOX2_EN_WEAP_INFO = [
 ]
 
 HITBOX_INFO_CONST = [
-    ("HITBOX_AA_NONE", 0),
+    # HITBOX_PL_WEAP_INFO constants
+    ("HITBOX_AA_NONE",  0),
     ("HITBOX_AA_SWORD", 1),
-    ("HITBOX_AA_SQ4", 5),
-    ("HITBOX_AA_SQ8", 6),
-    ("HITBOX_BB_4x4", len(HITBOX_PL_WEAP_INFO) * 1),
-    ("HITBOX_BB_MANHANDLA", len(HITBOX_PL_WEAP_INFO) * 2),
+    ("HITBOX_AA_SQ4",   5),
+    ("HITBOX_AA_SQ8",   6),
 
+    # HITBOX_EN_BODY_INFO table start constants.
+    #"HITBOX_BB_8x8",       len(HITBOX_PL_WEAP_INFO) * 0),
+    ("HITBOX_BB_4x4",       len(HITBOX_PL_WEAP_INFO) * 1),
+    ("HITBOX_BB_MANHANDLA", len(HITBOX_PL_WEAP_INFO) * 2),
+    ("HITBOX_BB_GANON",     len(HITBOX_PL_WEAP_INFO) * 3),
+
+    # HITBOX2_PL_BODY_INFO doesn't require constants
+
+    # HITBOX2_EN_WEAP_INFO constants
     ("HITBOX2_BB_MISSILE", len(HITBOX2_PL_BODY_INFO) * 0),
     ("HITBOX2_BB_ARROW_L", len(HITBOX2_PL_BODY_INFO) * 1),
     ("HITBOX2_BB_ARROW_R", len(HITBOX2_PL_BODY_INFO) * 2),
@@ -113,7 +122,7 @@ def get_hitbox_info():
     for bb_w, bb_h, bb_xshift, bb_yshift in HITBOX_EN_BODY_INFO:
         for aa_w, aa_h, aa_xshift, aa_yshift in HITBOX_PL_WEAP_INFO:
 
-            aa_ox.append(aa_w-1+aa_xshift-bb_xshift-1)
+            aa_ox.append(aa_w-1+aa_xshift-bb_xshift-1) # An extra -1 is taken to account for missile position!
             aa_oy.append(aa_h-1+aa_yshift-bb_yshift)
             aa_w_PLUS_bb_w.append(aa_w + bb_w -1)
             aa_h_PLUS_bb_h.append(aa_h + bb_h -1)

@@ -11,4 +11,4 @@ EnDraw_ItemGet:
     sta enY
 
     ldy cdItemType,x
-    jmp EnItemDraw
+    jmp EnDraw_Item

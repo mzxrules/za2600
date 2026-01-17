@@ -2,7 +2,6 @@
 ; mzxrules 2023
 ;==============================================================================
 draw_pause_menu_map:
-; Reset CTRLPF
     lda #%00110001 ; ball size 8, reflect playfield
     sta CTRLPF
     lda #0

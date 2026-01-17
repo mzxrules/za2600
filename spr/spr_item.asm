@@ -260,14 +260,14 @@ SprItem28:
     .byte $78 ; |.XXXX...|
     .byte $00 ; |........|
 SprItem29:
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
-    .byte $00 ; |........|
+    .byte $18 ; |...XX...|
+    .byte $18 ; |...XX...|
+    .byte $3C ; |..XXXX..|
+    .byte $3C ; |..XXXX..|
+    .byte $7E ; |.XXXXXX.|
+    .byte $7E ; |.XXXXXX.|
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
 SprRock0:
     .byte $76 ; |.XXX.XX.|
     .byte $5F ; |.X.XXXXX|
