@@ -26,6 +26,11 @@ EnDraw_NpcGame:
     sty enY
     rts
 
+EnDraw_NpcLevel:
+    ldy #$F0
+    sty enY
+    jmp NpcUpdateShopMesg
+
 NpcRupeeX:
     .byte $20 ; draw 3
     .byte $20 ; draw 3

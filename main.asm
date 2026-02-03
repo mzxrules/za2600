@@ -514,6 +514,7 @@ BANK_33
     INCLUDE "rs/RsInit_BlockDiamondStairs.asm"
     INCLUDE "rs/RsInit_BlockSpiral.asm"
     INCLUDE "rs/RsInit_BlockPathStairs.asm"
+    INCLUDE "rs/RsInit_BlockArrowStairs.asm"
     INCLUDE "rs/RsInit_FairyFountain.asm"
     INCLUDE "rs/RsInit_EntCaveLake.asm"
     INCLUDE "rs/RsInit_Waterfall.asm"
@@ -949,6 +950,7 @@ BANK_58
     INCLUDE "ht/HtTask_PauseMenuClose.asm"
     INCLUDE "ht/HtTask_PauseMenuRun.asm"
     INCLUDE "ht/HtTask_GameStart.asm"
+    INCLUDE "ht/HtTask_DisplayLevel.asm"
     INCLUDE "ht/HtTask_CurtainOpen.asm"
     INCLUDE "ht/HtTask_SetGameViewScroll.asm"
 

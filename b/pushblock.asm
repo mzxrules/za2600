@@ -31,7 +31,7 @@ UpdateRoomPush: SUBROUTINE ; CRITICAL, execute in 1 scanline
 
 .push                   ;       34 33
     lda roomPush        ; 3     37 36
-    cmp #$78            ; 2     39 38
+    cmp #[30<<2]        ; 2     39 38
     bpl .end_push       ; 2/3   41 40 / 42 41
     clc                 ; 2     43
     adc #4              ; 2     45
@@ -120,6 +120,7 @@ BlPushBlockDiamondTop: SUBROUTINE
     sta blType
     rts
 
+BlPushBlockArrow:
 BlPushBlock: ; SUBROUTINE
     ldx roomENCount
     bne .rts
@@ -137,6 +138,13 @@ BlPushBlock: ; SUBROUTINE
     cmp plDir
     bne .rts
 
+    ldx blType
+    cpx #BL_PUSH_BLOCK_ARROW
+    bne .start_sliding
+    cmp #PL_DIR_R
+    bne .rts
+
+.start_sliding
     sta blDir
     lda #-16 -1 ; Will decrement 1
     sta roomPush
@@ -181,10 +189,10 @@ BlPushBlockWaterfall: SUBROUTINE
     jmp BallDel
 
 BlPushEnd:
-    lda roomFlags
-    and #RF_EV_CLEAR
+    lda #RF_EV_CLEAR
+    bit roomFlags
     bne .rts
-    ora #RF_EV_CLEAR
+    ora roomFlags
     sta roomFlags
     lda #BL_NONE
     sta blType

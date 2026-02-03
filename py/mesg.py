@@ -151,6 +151,10 @@ mesg_table = [
         "   PATRA HAS THE MAP.   ",
         "                        ",
         ],
+    "MesgLevel", [
+        "          LEVEL         ",
+        "            9           ",
+        ],
 ]
 
 mesg_ids = mesg_table[::2]

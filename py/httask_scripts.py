@@ -73,6 +73,7 @@ HALT_TASK_SCRIPTS = [
     [
        "HtTask_GameStart",
        "HtTask_LoadRoom",
+       "HtTask_DisplayLevel",
        "HtTask_CurtainOpen",
     ],
     # HALT_TYPE_PAUSE_GAME

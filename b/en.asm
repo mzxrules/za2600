@@ -41,9 +41,9 @@ EnSystem: SUBROUTINE
 
 .runEncounter
     ; toggle off enemy clear event
-    lda #~#RF_EV_ENCLEAR
-    and roomFlags
-    sta roomFlags
+    ; lda #~#RF_EV_ENCLEAR
+    ; and roomFlags
+    ; sta roomFlags
 
     ; test if the player is being positioned in the room
     lda #PS_LOCK_ALL
@@ -101,9 +101,9 @@ EnSys_KillEnemyA: SUBROUTINE
     dec roomENCount
     bne EnSysDelete
     ; Set room clear flag
-    lda #RF_EV_ENCLEAR
-    ora roomFlags
-    sta roomFlags
+    ; lda #RF_EV_ENCLEAR
+    ; ora roomFlags
+    ; sta roomFlags
     jmp EnSysDelete
 
 ;==============================================================================
@@ -114,11 +114,11 @@ EnSys_KillEnemyA: SUBROUTINE
 ;==============================================================================
 EnSys_KillEnemyB: SUBROUTINE
     dec roomENCount
-    bne .tryDropItem
+    ; bne .tryDropItem
     ; Set room clear flag
-    lda #RF_EV_ENCLEAR
-    ora roomFlags
-    sta roomFlags
+    ; lda #RF_EV_ENCLEAR
+    ; ora roomFlags
+    ; sta roomFlags
 .tryDropItem
 
     jsr Random

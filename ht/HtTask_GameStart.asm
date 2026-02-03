@@ -9,6 +9,6 @@ HtTask_GameStart: SUBROUTINE
     sta wHudMode
     lda #ROOM_PX_HEIGHT-1
     sta RoomPX
-    lda #$FF
+    lda #-64
     sta Halt_Temp0
     jmp Halt_TaskNext

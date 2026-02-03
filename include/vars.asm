@@ -59,11 +59,11 @@ roomTimer   ds 1 ; Dungeon Shutter / Room animation timer
 roomFlags   ds 1
 RF_EV_LOAD      = $80 ; 1000_0000 Force Load Room
 RF_EV_LOADED    = $40 ; 0100_0000 Room Load happened this frame
-RF_EV_ENCLEAR   = $20 ; 0010_0000 Enemy Clear event
+;RF_EV_ENCLEAR  = $20 ; 0010_0000 Enemy Clear event
 RF_NO_ENCLEAR   = $10 ; 0001_0000 Blocks Enemy Cleared from setting Room Cleared
 RF_EV_CLEAR     = $08 ; 0000_1000 Room Cleared (Enemies dead, or puzzle solved)
 RF_PF_IGNORE    = $04 ; 0000_0100 Room PF ignored in center room
-RF_PF_AXIS      = $02 ; 0000_0010 Room PF triggers axis only movement
+RF_PF_AXIS      = $02 ; 0000_0010 Room PF collision triggers axis only movement
 RF_USED_CANDLE  = $01 ; 0000_0001 Candle was used this room
 roomDoors   ds 1
     ; xxxx_xx11 N
@@ -76,7 +76,12 @@ roomENCount ds 1 ; num enemies left in encounter
 roomEX      ds 1
 roomWA      ds 1
 blType      ds 1 ;
-roomPush    ds 1 ; Room ball state
+roomPush    ds 1 ; Pushable object state (walls and blocks)
+;                ; 0xxx_xxxx Pushing Object
+;                ; 0111_11xx Push Count
+;                ; 0xxx_xx11 Push Direction
+;                ; 1xxx_xxxx Sliding Block
+;                ; 1111_1111 Anim Timer
 blDir       ds 1
 plState     ds 1 ; ---------------
 INPT_FIRE_PREV  = $80 ; 1000_0000 Fire Pressed Last Frame
@@ -787,10 +792,10 @@ WRF_SV_ENKILL   = $08 ; xxxx_1xxx Enemy Cleared
     ; overworld only
 WRF_SV_DESTROY  = $40 ; x1xx_xxxx
     ; dungeons only
-WRF_SV_OPEN_N    = $01 ; xxxx_xxx1 N open
-WRF_SV_OPEN_S    = $04 ; xxxx_x1xx S open
-WRF_SV_OPEN_E    = $10 ; xxx1_xxxx E open
-WRF_SV_OPEN_W    = $40 ; x1xx_xxxx W open
+WRF_SV_OPEN_N   = $01 ; xxxx_xxx1 N open
+WRF_SV_OPEN_S   = $04 ; xxxx_x1xx S open
+WRF_SV_OPEN_E   = $10 ; xxx1_xxxx E open
+WRF_SV_OPEN_W   = $40 ; x1xx_xxxx W open
 
 ; ****************************************
 ; * Extended RAM - Pause Bank 3          *

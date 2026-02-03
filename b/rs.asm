@@ -299,7 +299,7 @@ Rs_ItemCheckAppear: SUBROUTINE
     bmi .NoLoad
 
     lda roomFlags
-    and #RF_EV_ENCLEAR | #RF_EV_CLEAR
+    and #RF_EV_CLEAR ; | #RF_EV_ENCLEAR
     beq .rts
 
     jsr Rs_SpawnPermItem
@@ -390,6 +390,7 @@ Rs_Stairs: ;SUBROUTINE
     ldy #STAIR_POS_P402C
     bpl PlaceStairs ; jmp
 
+Rs_BlockArrowStairs:
 Rs_BlockLeftStairs: ; SUBROUTINE
     lda roomFlags
     and #RF_EV_CLEAR
@@ -487,7 +488,7 @@ Rs_EntCaveBushBlocked_P6C18:
 ; Tests if a bush was destroyed by fire.
 ;----------
 ; Room scripts that call SET_BUSH_DESTROY_XY push a RsInit_Bush_PXXYY
-; pointer onto the stack, then jumps here. If the check passes, the
+; pointer onto the stack, then jump here. If the check passes, the
 ; RsInit_Bush routine is called, which removes the bush from the playfield.
 ;==============================================================================
 Rs_EntCaveBushBlocked

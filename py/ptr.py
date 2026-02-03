@@ -67,6 +67,7 @@ Entity_Table = [
     "En_NpcDoorRepair","SEG_48", "SEG_42", "EnDraw_Npc",
     "En_NpcPath",      "SEG_44", "SEG_42", "EnDraw_NpcPath",
     "En_GreatFairy",   "SEG_44", "SEG_46", "EnDraw_GreatFairy",
+    "En_NpcLevel",     "SEG_NA", "SEG_42", "EnDraw_NpcLevel",
 
     "En_Octorok",      "SEG_43", "SEG_42", "EnDraw_Octorok",
     "En_OctorokBlue",  "SEG_43", "SEG_42", "EnDraw_Octorok",
@@ -132,6 +133,7 @@ Entity_Table = [
 
     "En_Waterfall",    "SEG_NA", "SEG_46", "EnDraw_Waterfall",
     "En_RollingRock",  "SEG_45", "SEG_46", "EnDraw_RollingRock",
+    "En_ArrowStairs",  "SEG_45", "SEG_42", "EnDraw_None",
     "En_Appear",       "SEG_45", "SEG_46", "EnDraw_Appear",
 ]
 
@@ -162,6 +164,7 @@ HaltTask_Table = [
     "HtTask_PauseMenuRun",      "SEG_58",
     "HtTask_PauseMenuClose",    "SEG_58",
     "HtTask_GameStart",         "SEG_58",
+    "HtTask_DisplayLevel",      "SEG_58",
     "HtTask_CurtainOpen",       "SEG_58",
     "HtTask_SetGameViewScroll", "SEG_58",
     "HtTask_None",              "SEG_HA",
@@ -174,6 +177,7 @@ RoomScript_Table = [
     "Rs_BlockDiamondStairs",        "RsInit_BlockDiamondStairs",
     "Rs_BlockSpiralStairs",         "RsInit_BlockSpiral",
     "Rs_BlockPathStairs",           "RsInit_BlockPathStairs",
+    "Rs_BlockArrowStairs",          "RsInit_BlockArrowStairs",
     "Rs_MidRightStairs",            "RsInit_None",
     "Rs_MidRightStairsCenterKey",   "RsInit_None",
     "Rs_BAD_HIDDEN_CAVE",           "RsInit_None",
@@ -331,6 +335,7 @@ tbl = [
         "BlPushBlockLeft",
         "BlPathPushBlock",
         "BlPushBlockWaterfall",
+        "BlPushBlockArrow",
     ],
     bankLut=None
     ),

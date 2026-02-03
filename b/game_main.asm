@@ -159,7 +159,7 @@ PFCollision: SUBROUTINE
 
     ; Check RF_PF_IGNORE
     lda roomFlags
-    and #[RF_PF_IGNORE + RF_PF_AXIS]
+    and #[#RF_PF_IGNORE + #RF_PF_AXIS]
     beq .collisionPosReset
     ldx plX
     cpx #EnBoardXL
@@ -246,7 +246,7 @@ endPFCollision
 
 ; Update Room Clear
     bit roomFlags
-    bpl .end_roomclear_update
+    bpl .end_roomclear_update ; not RF_EV_LOAD
     ldy roomId
     bmi .end_roomclear_update
     lda roomENCount
@@ -488,9 +488,10 @@ Rs_Del:
     pha
     lda RsL,x
     pha
+En_NpcLevel:
+En_ArrowStairs:
 Rs_None:
 Rs_BlockCenter:
 Rs_FairyFountain:
-Rs_BAD_CAVE:
 Rs_BAD_HIDDEN_CAVE:
     rts

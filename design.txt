@@ -3,15 +3,14 @@
 ===============================================================================
 
 Bosses:
-    Ganon - needs custom kernel, have some sprites
     Patra
     Ghini
     Glock - Need Design, have sprites
     Dig
+    Ganon - Death animation, unlock room on TriPow, delay launch missiles
 
 Enemies:
     Wizrobes - have sprites, need custom room collision routine
-    Goryia - Boomerang
     Gel - Fix overtime budget (See EnMove_Card_WallCheck)
     Armos - Make stairs/item appear
     Blue Leevers - need behavior
@@ -32,6 +31,7 @@ Systems:
     EnMove_Card_WallCheck
         * Find optimizations
     Enemy Spawns - Second Implementation
+    Bracelet check
     Status Hud - Complete
     Door Unlock System - Complete
     Raft System - Complete
@@ -39,7 +39,6 @@ Systems:
 HIDDEN_CAVE TODO:
     1C - Armos entry
     21 - Grave magic sword
-    34 - Armos entry
     3D - Armos entry
     4B - Bush
     4E - Armos Entry

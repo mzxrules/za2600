@@ -402,8 +402,12 @@ set "world/w&loopcount&rsex.txt" "fwrite_open"
 set "d1" "$w&loopcount&rs.&l&"
 set "d2" "$w&loopcount&ex.&l&"
 if "d1" >= "RsCount" "#write_rsex_default"
+set "$_" "$x2_&l&"
+inc "$_" ">"
+set "$_" "fwrite3"
 set "$" "$Rs&d1&"
 set "$" "fwrite"
+set "$_" "fwrite3"
 set "exjump" 0
 . "KEEP SYNCED WITH editor_ex.txt"
 if "$" === "Rs_Item" "#write_ex_Rs_Item"
@@ -413,6 +417,7 @@ if "$" === "Rs_NpcMonster" "#write_ex_Npc_Mesg"
 if "$" === "Rs_BAD_HIDDEN_CAVE" "#write_ex_Cv_Type"
 if "$" === "Rs_BAD_CAVE" "#write_ex_Cv_Type"
 if "$" === "Rs_BlockPathStairs" "#write_ex_Cv_Type"
+if "$" === "Rs_BlockArrowStairs" "#write_ex_Cv_Type"
 if "$" === "Rs_EntCaveWallLeft" "#write_ex_Cv_Type"
 if "$" === "Rs_EntCaveWallLeftBlocked" "#write_ex_Cv_Type"
 if "$" === "Rs_EntCaveWallCenter" "#write_ex_Cv_Type"
@@ -494,14 +499,25 @@ set "world/w&loopcount&rsex.txt" to "fread_open"
 set "l" 0
 : "load_rsex_loop"
 set "$" to "fread"
+goto "#load_rsex_formatcheck"
 goto "#load_rsex_rscheck"
 set "$w&loopcount&rs.&l&" ('&$&')
 set "$" to "fread"
+goto "#load_rsex_formatcheck"
 set "$w&loopcount&ex.&l&" ('&$&')
 inc "l" 1
 if "l" < 128 "load_rsex_loop"
 set "" to "fread_open"
 goto "#return"
+
+: "#load_rsex_formatcheck"
+if "$.2" != '>' "load_rsex_formatcheck_fail"
+set "$" to "$+3"
+goto "#return"
+
+: "load_rsex_formatcheck_fail"
+* "~f&$& IS MALFORMED"
+die
 
 : "#load_rsex_rscheck"
 set "l1" 0

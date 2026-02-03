@@ -211,6 +211,7 @@ En_BossGanonMain: SUBROUTINE
     ; A = 0
     bit enHp
     bpl .skip_reset_hp
+    lda #15-1
     sta enHp
 .skip_reset_hp
 
@@ -218,7 +219,7 @@ En_BossGanonMain: SUBROUTINE
     sta enState
 
 ; Check player hit
-    lda enStun,x
+    lda enStun
     bmi .endCheckPlayerHit
     bit plStun
     bmi .endCheckPlayerHit
@@ -232,7 +233,7 @@ En_BossGanonMain: SUBROUTINE
     lda #8
     sta enGanonStep
 
-    lda #-1 ; TODO: Real damage
+    lda #-16
     jsr UPDATE_PL_HEALTH
     jsr En_BossGanon_UpdateStunDir
 .endCheckPlayerHit
