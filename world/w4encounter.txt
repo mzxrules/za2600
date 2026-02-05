@@ -11,7 +11,7 @@
 0A>
 0B>
 0C>
-0D>
+0D>EN_NONE
 0E>
 0F>
 10>
@@ -27,7 +27,7 @@
 1A>
 1B>EN_NONE
 1C>
-1D>
+1D>EN_KEESE
 1E>
 1F>
 20>EN_NONE
@@ -43,9 +43,9 @@
 2A>
 2B>
 2C>
-2D>
+2D>EN_NONE
 2E>
-2F>
+2F>EN_BOSS_DON, EN_BOSS_DON
 30>
 31>
 32>EN_BOSS_MANHANDLA
@@ -76,7 +76,7 @@
 4B>
 4C>
 4D>
-4E>
+4E>EN_NONE
 4F>
 50>
 51>
@@ -91,9 +91,9 @@
 5A>
 5B>
 5C>
-5D>
+5D>EN_BOSS_AQUA
 5E>
-5F>
+5F>EN_BOSS_DIG
 60>
 61>
 62>
@@ -107,7 +107,7 @@
 6A>
 6B>
 6C>
-6D>
+6D>EN_BOSS_DIG
 6E>
 6F>
 70>EN_KEESE, EN_KEESE

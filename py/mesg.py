@@ -24,7 +24,7 @@ mesg_table = [
         "       OLD WOMAN        ",
         ],
     "MesgShopCheap", [
-        " BUY SOMETHING WILL YA? ",
+        " BUY SOMETHIN' WILL YA? ",
         "                        ", #"   99      99      99   ", # 34, 12, 9A
         ],
     "MesgShopExpensive", [
@@ -123,7 +123,7 @@ mesg_table = [
         " YOU'D HAVE MORE BOMBS. ",
         "          -40           ",
         ],
-    "MesgHintWaterfall", [
+    "MesgHintSwordWaterfall", [
         " DID YOU GET THE SWORD  ",
         " FROM TOP OF WATERFALL? ",
         ],
@@ -131,7 +131,7 @@ mesg_table = [
         "    DIGDOGGER HATES     ",
         " CERTAIN KIND OF SOUND. ",
         ],
-    "MesgHintArrow", [
+    "MesgHintSecretPowerArrow", [
         "  SECRET POWER IS SAID  ",
         "   TO BE IN THE ARROW.  ",
         ],
@@ -149,6 +149,18 @@ mesg_table = [
         ],
     "MesgHintPatraHasMap", [
         "   PATRA HAS THE MAP.   ",
+        "                        ",
+        ],
+    "MesgHintDirectionOfArrow", [
+        "    IF YOU GO IN THE    ",
+        " DIRECTION OF THE ARROW ",
+        ],
+    "MesgHintSouthOfArrow", [
+        "  SOUTH OF ARROW MARK   ",
+        "     HIDES A SECRET     ",
+        ],
+    "MesgHintTenthEnemy", [
+        "10TH ENEMY HAS THE BOMB ",
         "                        ",
         ],
     "MesgLevel", [

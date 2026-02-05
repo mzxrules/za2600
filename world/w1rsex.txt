@@ -41,7 +41,7 @@
 14>Rs_Item
 14>GiTriforce
 15>Rs_Npc
-15>MesgHintArrow
+15>MesgHintSecretPowerArrow
 16>Rs_Item
 16>GiKey
 17>Rs_Npc
@@ -85,7 +85,7 @@
 2A>Rs_Item
 2A>GiKey
 2B>Rs_Npc
-2B>MesgHintWaterfall
+2B>MesgHintSwordWaterfall
 2C>Rs_None
 2C>zz0
 2D>Rs_None
