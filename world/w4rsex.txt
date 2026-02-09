@@ -67,7 +67,7 @@
 21>Rs_None
 21>zz0
 22>Rs_BlockSpiralStairs
-22>zz17
+22>Sw_11
 23>Rs_None
 23>zz0
 24>Rs_None
@@ -207,7 +207,7 @@
 67>Rs_None
 67>zz0
 68>Rs_BlockDiamondStairs
-68>zz24
+68>Sw_18
 69>Rs_None
 69>zz0
 6A>Rs_None

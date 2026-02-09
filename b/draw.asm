@@ -154,11 +154,15 @@ DRAW_HudSetup:
 
 .hud_pl_pos_y:
     lda roomId
+    and #$F0
+    bit worldId
+    bpl .hud_pl_pos_y_dungeon
+    and #$70
+.hud_pl_pos_y_dungeon
     lsr
     lsr
     lsr
     lsr
-    and #$7
     tax
     lda .MapDotENA,x
     sta THudMapPosY
@@ -437,13 +441,12 @@ KERNEL_WORLDVIEW_BLACK:
 
     sta WSYNC
 .kernel_worldview_black_loop
+; WSYNC 8 times per iteration
+    ldx #6
+.kernel_worldview_black_inner_loop
     sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
-    sta WSYNC
+    dex
+    bpl .kernel_worldview_black_inner_loop
     sta WSYNC
     dey
     bpl .kernel_worldview_black_loop
@@ -462,8 +465,9 @@ KERNEL_WORLDVIEW_SKIP:
 
     LOG_SIZE "-KERNEL MAIN-", KERNEL_MAIN_HUD_WORLD
 
-.HUD_SPLIT_TEST:
-    .byte 0, 0, 1, 0, 0, 1 ;, 0 , 0
+.MapDotENA
+    .byte $02, $04, $08, $10, $20, $40, $80, $01
+   ;.byte $00, $00, $00, $00, $00, $00, $00, $00 ; valid data
 
 .HealthPattern:
     .byte $00, $00, $00, $00, $00, $00, $00, $00
@@ -487,9 +491,6 @@ KERNEL_WORLDVIEW_SKIP:
     .byte 0x10, 0x10, 0x20, 0x20, 0x40, 0x40, 0x80, 0x80
     .byte #$FF, #$FF
 
-.MapDotENA
-    .byte 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x01
-
 .CompassFlagAddr
     .byte #<ITEMV_COMPASS_1, #<ITEMV_COMPASS_1
     .byte #<itemCompass, #<itemCompass, #<itemCompass, #<itemCompass
@@ -500,9 +501,12 @@ KERNEL_WORLDVIEW_SKIP:
 
 .CompassFlagMask
     .byte #ITEMF_COMPASS_1, #ITEMF_COMPASS_1
-    .byte 0x01, 0x01, 0x02, 0x02, 0x04, 0x04, 0x08, 0x08
-    .byte 0x10, 0x10, 0x20, 0x20, 0x40, 0x40, 0x80, 0x80
-    .byte #0, #0
+    .byte $01, $01, $02, $02, $04, $04, $08, $08
+    .byte $10, $10, $20, $20, $40, $40, $80, $80
+   ;.byte #0, #0 ; Valid data
+
+.HUD_SPLIT_TEST:
+    .byte 0, 0, 1, 0, 0, 1, 0, 0
 
 .MapData_CompassDotENA
     INCLUDE "gen/world/mapdata_compass_dotENA.asm"

@@ -5,7 +5,6 @@ EN_STAIRS_DEFAULT = #0
 EN_STAIRS_HIDE_IF_OBSCURED = #1
 EN_STAIRS_DISPLAY_ONLY = #2
 
-
 EnStairs: SUBROUTINE
     lda cdStairType,x
     cmp #EN_STAIRS_HIDE_IF_OBSCURED
@@ -13,33 +12,14 @@ EnStairs: SUBROUTINE
     cmp #EN_STAIRS_DISPLAY_ONLY
     beq .rts
     lda en0X,x
+    ldy en0Y,x
     cmp plX
     bne .rts
-    lda en0Y,x
-    cmp plY
+    cpy plY
     bne .rts
-    lda worldId
-    bpl .dungeonStairs
-.worldStairs
-    ldy en0Y,x
-    lda en0X,x
     tax
-    jsr ENTER_CAVE
-    ldx #$40
-    ldy #$10
-    stx plX
-    sty plY
-    rts
-.dungeonStairs
-    lda #$40
-    sta plX
-    lda #$2C
-    sta plY
-    lda roomEX
-    sta roomIdNext
-    lda roomFlags
-    ora #RF_EV_LOAD
-    sta roomFlags
+    lda #HALT_TYPE_EXIT_TO_STAIRS
+    jmp EXIT_TO_SUBWORLD
 .rts
     rts
 
@@ -72,12 +52,16 @@ EnStairs_Position: SUBROUTINE
 
 
 StairPosX:
-    .byte #$40, #$18, #$74, #$74, #$28
+    .byte #$40, #$18, #$74, #$74
+    .byte #$28
 StairBushPosX:
 StairDungPosX:
-    .byte #$40, #$34, #$40, #$58, #$64, #$64, #$6C
+    .byte #$40, #$34, #$40, #$58
+    .byte #$64, #$64, #$6C
 StairPosY:
-    .byte #$2C, #$34, #$48, #$2C, #$28
+    .byte #$2C, #$34, #$48, #$2C
+    .byte #$28
 StairBushPosY:
 StairDungPosY:
-    .byte #$1C, #$28, #$2C, #$20, #$20, #$38, #$18
+    .byte #$1C, #$28, #$2C, #$20
+    .byte #$20, #$38, #$18

@@ -9,7 +9,7 @@
 04>Rs_Item
 04>GiBomb
 05>Rs_BlockDiamondStairs
-05>zz33
+05>Sw_21
 06>Rs_Item
 06>GiBomb
 07>Rs_None
@@ -21,11 +21,11 @@
 0A>Rs_Npc
 0A>MesgEyesOfSkull
 0B>Rs_BlockDiamondStairs
-0B>zz90
+0B>Sw_5A
 0C>Rs_BlockDiamondStairs
-0C>zz56
+0C>Sw_38
 0D>Rs_BlockLeftStairs
-0D>zz107
+0D>Sw_6B
 0E>Rs_Npc
 0E>MesgGoNextRoom
 0F>Rs_Item
@@ -55,7 +55,7 @@
 1B>Rs_None
 1B>zz0
 1C>Rs_BlockSpiralStairs
-1C>zz93
+1C>Sw_5D
 1D>Rs_Item
 1D>GiRupee5
 1E>Rs_Item
@@ -65,7 +65,7 @@
 20>Rs_Npc
 20>MesgGrumbleGrumble
 21>Rs_BlockDiamondStairs
-21>zz5
+21>Sw_05
 22>Rs_Item
 22>GiHeart
 23>Rs_Item
@@ -79,7 +79,7 @@
 27>Rs_None
 27>zz0
 28>Rs_BlockDiamondStairs
-28>zz105
+28>Sw_69
 29>Rs_None
 29>zz0
 2A>Rs_None
@@ -109,9 +109,9 @@
 36>Rs_None
 36>zz0
 37>Rs_BlockDiamondStairs
-37>zz68
+37>Sw_44
 38>Rs_BlockLeftStairs
-38>zz12
+38>Sw_0C
 39>Rs_None
 39>zz0
 3A>Rs_None
@@ -135,7 +135,7 @@
 43>Rs_Item
 43>GiNone
 44>Rs_BlockSpiralStairs
-44>zz55
+44>Sw_37
 45>Rs_None
 45>zz0
 46>Rs_Item
@@ -185,7 +185,7 @@
 5C>Rs_Item
 5C>GiKey
 5D>Rs_BlockDiamondStairs
-5D>zz28
+5D>Sw_1C
 5E>Rs_Item
 5E>GiKey
 5F>Rs_Item
@@ -209,7 +209,7 @@
 68>Rs_None
 68>zz0
 69>Rs_BlockDiamondStairs
-69>zz40
+69>Sw_28
 6A>Rs_Item
 6A>GiRupee5
 6B>Rs_Stairs
@@ -229,7 +229,7 @@
 72>Rs_None
 72>zz0
 73>Rs_BlockDiamondStairs
-73>zz0
+73>Sw_00
 74>Rs_Item
 74>GiBook
 75>Rs_Item
@@ -247,7 +247,7 @@
 7B>Rs_None
 7B>zz0
 7C>Rs_BlockDiamondStairs
-7C>zz0
+7C>Sw_00
 7D>Rs_None
 7D>zz0
 7E>Rs_ExitDung

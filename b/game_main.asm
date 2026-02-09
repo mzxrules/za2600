@@ -420,19 +420,26 @@ SPAWN_AT_DEFAULT: SUBROUTINE
     rts
 
 ; X, Y is return world X/Y
-ENTER_CAVE:
+; A is HALT_TYPE
+EXIT_TO_SUBWORLD:
+    pha
     lda roomId
+    bit worldId
+    bpl .skip_save_worldpos
     sta worldSR
-    ora #$80
-    sta roomIdNext
-
     stx worldSX
     sty worldSY
+
+.skip_save_worldpos
+    ora #$80
+    sta roomIdNext
 
     lda roomFlags
     ora #RF_EV_LOAD
     sta roomFlags
-    rts
+    pla
+    tay
+    jmp HALT_GAME_FC
 
 ; A = SeqFlags
 RETURN_WORLD: SUBROUTINE

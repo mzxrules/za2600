@@ -167,7 +167,8 @@ SLOT_FC_PAUSE   = RAMSEG_FC | 2
 SLOT_FC_HALT    = RAMSEG_FC | 3
 
 SLOT_F4_MESG        = RAMSEG_F4 | 4 ; Requires bank divisible by 4
-SLOT_F4_MAIN_DRAW   = RAMSEG_F4 | 8
+SLOT_F4_MAIN_DRAW   = RAMSEG_F4 | 8 ; Mapped location
+SLOT_F0_MAIN_DRAW   = RAMSEG_F0 | 8 ;
 SLOT_F0_TEXT        = RAMSEG_F0 | 9
 SLOT_F0_SHOP        = RAMSEG_F0 | 10
 SLOT_F4_BOSS4       = RAMSEG_F4 | 56

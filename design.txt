@@ -49,6 +49,11 @@ HIDDEN_CAVE TODO:
 Glitches:
     The hitboxes for player missiles are skewed because m0X is used
 
+Level Issues:
+    Q2 Level 6 room $14, left room intended to only be accessible with ladder,
+    while north part of room is inaccessible with ladder. Fortunately, left
+    room is a non-critical path
+
 ===============================================================================
 > The Game
 ===============================================================================
@@ -335,6 +340,20 @@ RsInit configures room for first frame. Remember to always position ball
     Pri = 0, Slot0 = Thing, Slot1 = Glob           -> Pri = 0
     Pri = 1, Slot0 = Thing, Slot1 = Glob           -> Pri = 1
 
+===============================================================================
+> Systems - Npcs
+===============================================================================
+
+All speaking Npcs are coupled to the cave system.
+
+The typical initialization chain is this:
+    * enType set to EN_NPC_APPEAR
+    * npcType set to the enType for the actor
+    * enState is set to NPC_SPR_* and possibly NPC_CAVE
+
+The NPC_CAVE affects how the roomEX flag will be interpreted.
+When set, roomEX is expected to contain the CV_* enum
+When not set, roomEX contains a MESG_* enum
 
 ===============================================================================
 > Systems - ItemGet (SUBROUTINE)

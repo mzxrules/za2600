@@ -1,0 +1,91 @@
+the room code audit
+
+RS_TRY_ENTER_CAVE
+; 6 callers + 1 fallthrough
+; Rs_EntCaveWallLeft <- Rs_EntCaveWallLeftBlocked
+; Rs_EntCaveWallRight <- Rs_EntCaveWallRightBlocked
+; Rs_EntCaveWallCenter <- Rs_EntCaveWallCenterBlocked
+; Rs_EntCaveWall_P2820 <- Rs_EntCaveWallBlocked_P2820
+; Rs_EntCaveWall_P4820 <- Rs_EntCaveWallBlocked_P4820
+; Rs_Waterfall
+; Rs_EntCaveMid <- Rs_EntCaveMidSecretNorth
+
+DO: test if condition to trigger cave enter is met.
+
+
+RS_ENTER_CAVE
+; Fallthrough from RS_TRY_ENTER_CAVE
+; 0 callers (it's a roomscript helper, not routine)
+; x,y is new worldSX,worldSY
+
+DO:
+* assumes roomEX stores cv index
+if cv >= CV_LV_START:
+    set worldSR to roomId
+    set worldSX, worldSY (reg x,y)
+    set worldIdNext
+    GOTO HALT with y = #HALT_TYPE_ENTER_DUNG
+else:
+    jsr ENTER_CAVE
+    GOTO HALT with y = #HALT_TYPE_ENTER_CAVE
+
+ENTER_CAVE
+; 3 callers
+; RS_ENTER_CAVE
+; Rs_EntDungStairs
+; EnStairs
+
+DO:
+set worldSR to roomId
+set worldSX, worldSY (reg x,y)
+set roomIdNext = roomId | $80 (subworld)
+set roomFlags |= #RF_EV_LOAD
+
+
+The two problems:
+
+Exiting the current room via "cave" or "stairs" isn't standardized.
+The roomEX behavior for exits is dependent on script
+
+New plan:
+
+An "ENTER_SUBWORLD" routine within the halt system? that handles both cases.
+
+if overworld
+* roomEX will be a Cv enum
+* worldSX, worldSY will be stair x, y for all stairs
+
+if dungeon
+* positive roomEX will be a roomId
+* negative roomEX will be remapped to GetItem
+* next x,y will be $34,$10; edge case $74,$48
+
+
+Stair situation in dungeons:
+
+Q1 Level 8 $   > spiral room with hidden stairs and a small key on room clear
+Q2 Level 1 $   > stair entrance with small key on room clear
+Q2 Level 3 $   > reverse C room with hidden stairs and a compass (insta appear, center)
+Q2 Level 3 $   > stair entrance with small key insta appear
+Q2 Level 6 $   > free standing rupee in top right hidden stair
+Q2 Level 7 $   > middle pushblock with top right hidden stair, and compass (insta appear)
+Q2 Level 7 $   > middle pushblock with top right hidden stair, and key (insta appear?)
+Q2 Level 7 $   > c reverse c pushblock with top right hidden stair, and key (insta?)
+Q2 Level 8 $02 > middle pushblock with top right hidden stair, and key
+
+
+Room Shape for rooms with stairs
+
+* Diamond (spawn outside ring in bottom middle)
+* Stair entrance always available on right screen
+* Stairs appear in top right corner, different pushblock options
+- Q2 Level 7, room $21 is triple horizontal walls (center merged)
+- Q2 Level 7, room $45 is triple horizontal walls
+- Q2 level 7, room $57 is diagonal lines of blocks
+- Q2 level 7, room $41 is reverse C
+
+Q2 Level 7, 8, 9 begin throwing in trap stairs
+
+Q2 Level 8, $11 -> $47 puts you below "lava" but dungeon ent requires ladder anyway
+Q2 Level 8, $37 -> $61 puts you above a horizontal walled "hallway"  (set spawn top right)
+Q2 Level 9, $09 -> $1D puts you right of a vertical walled "hallway", (set spawn top right)>

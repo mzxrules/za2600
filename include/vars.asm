@@ -267,13 +267,13 @@ enInputDelay ds 1
 ; == En_NpcGiveOne
     ORG CLASS_EN_NPC
 ; enState
-NPC_INIT        = $80 ; 1xxx_xxxx Init
-NPC_ITEM_GOT    = $40 ; x1xx_xxxx Item Bought
-NPC_CAVE        = $20 ; xx1x_xxxx Determines roomEX and item fanfare
-GI_EVENT_CD     = $10 ; xxx1_xxxx
-GI_EVENT_TRI    = $08 ; xxxx_1xxx
-GI_EVENT_INIT   = $04 ; xxxx_x1xx
-GI_EVENT_RESERVED = $3C
+NPC_INIT            = $80 ; 1xxx_xxxx Init
+NPC_ITEM_GOT        = $40 ; x1xx_xxxx Item Bought
+NPC_CAVE            = $20 ; xx1x_xxxx Determines roomEX and item fanfare
+;GI_EVENT_CD        = $10 ; xxx1_xxxx
+GI_EVENT_TRI        = $08 ; xxxx_1xxx Sets up collecting triforce animation
+;GI_EVENT_INIT      = $04 ; xxxx_x1xx
+GI_EVENT_RESERVED   = $3C
 NPC_SPR_MAN     = 0   ; xxxx_xx11 Sprite
 NPC_SPR_WOMAN   = 1
 NPC_SPR_SHOP    = 2
@@ -751,6 +751,8 @@ RF_WC_ROOM_DARK = $40
  RW RoomPF2Type,        ds 1
  ROOM_PF2 TRIFORCE, 35
  RW WorldIdNext,        ds 1
+ RW SubRoomIdL,         ds 1
+ Rw SubRoomIdR,         ds 1
 
  RW HALT_VARS, = .
  RW OSFrameState,       ds 1 ; negative is Vertical Blank, else Overscan
@@ -766,17 +768,18 @@ HALT_KERNEL_GAMEVIEW_SCROLL = 4
 HALT_KERNEL_PAUSEVIEW       = 5
  RW HaltFrame,          ds 1
  RW HaltType,           ds 1
-HALT_TYPE_RSCR_NONE     = 0
-HALT_TYPE_RSCR_WEST     = 1
-HALT_TYPE_RSCR_EAST     = 2
-HALT_TYPE_RSCR_NORTH    = 3
-HALT_TYPE_RSCR_SOUTH    = 4
-HALT_TYPE_PLAY_FLUTE    = 5
-HALT_TYPE_ENTER_DUNG    = 6
-HALT_TYPE_ENTER_CAVE    = 7
-HALT_TYPE_GAME_OVER     = 8
-HALT_TYPE_GAME_START    = 9
-HALT_TYPE_PAUSE_GAME    = 10
+HALT_TYPE_RSCR_NONE         = 0
+HALT_TYPE_RSCR_WEST         = 1
+HALT_TYPE_RSCR_EAST         = 2
+HALT_TYPE_RSCR_NORTH        = 3
+HALT_TYPE_RSCR_SOUTH        = 4
+HALT_TYPE_RSCR_STAIRS       = 5
+HALT_TYPE_PLAY_FLUTE        = 6
+HALT_TYPE_EXIT_TO_STAIRS    = 7
+HALT_TYPE_EXIT_TO_CAVE      = 8
+HALT_TYPE_GAME_OVER         = 9
+HALT_TYPE_GAME_START        = 10
+HALT_TYPE_PAUSE_GAME        = 11
  RW HaltTask,           ds 1
 HALT_VARS_SIZE          = . - rHALT_VARS
 RW_WORLD                = .

@@ -35,7 +35,7 @@
 11>Rs_None
 11>zz0
 12>Rs_BlockDiamondStairs
-12>zz116
+12>Sw_74
 13>Rs_None
 13>zz0
 14>Rs_Item
@@ -99,7 +99,7 @@
 31>Rs_Item
 31>GiMap
 32>Rs_BlockLeftStairs
-32>zz112
+32>Sw_70
 33>Rs_TakeHeartRupee
 33>zz0
 34>Rs_None

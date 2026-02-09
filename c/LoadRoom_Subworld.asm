@@ -3,7 +3,20 @@
 ;==============================================================================
 
 LoadRoom_Subworld: SUBROUTINE
-    sty roomId
+    lda worldId
+    bpl .subworld_stairwell
+    jmp LoadRoom_Cave
+.subworld_stairwell
+
+    ldy #$7F
+    lda roomIdNext
+    cmp #SW_STAIRWELL
+    bne .subworld_stairwell_item
+    jmp LoadRoom_Stairwell
+
+.subworld_stairwell_item
+    ldy #$0F
+    jmp LoadRoom_Stairwell
 
 LoadRoom_Cave: SUBROUTINE
     ; Don't overwrite room vars

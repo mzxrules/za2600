@@ -134,7 +134,6 @@ Pause_PlotMap: SUBROUTINE
     sta BANK_SLOT
     jmp Pause_PlotMapRow
 
-    INCLUDE "WorldData_BankOffset.asm"
     INCLUDE "WorldData_WorldRomSlot.asm"
 
 .Invert8:

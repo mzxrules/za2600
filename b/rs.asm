@@ -195,24 +195,8 @@ RS_TRY_ENTER_CAVE:
     cmp plY
     bne .rts
 
-RS_ENTER_CAVE:
-    lda roomEX
-    cmp #CV_LV_START
-    bcc .overworld_cave
-; enter dungeon
-    stx worldSX
-    sty worldSY
-    adc [#LV_MIN - #CV_LV_START -1]
-    sta wWorldIdNext
-    lda roomId
-    sta worldSR
-    ldy #HALT_TYPE_ENTER_DUNG
-    bpl .halt ; jmp
-.overworld_cave
-    jsr ENTER_CAVE
-    ldy #HALT_TYPE_ENTER_CAVE
-.halt
-    jmp HALT_GAME_FC
+    lda #HALT_TYPE_EXIT_TO_CAVE
+    jmp EXIT_TO_SUBWORLD
 
 Rs_Cave:
     lda roomFlags
@@ -330,14 +314,15 @@ Rs_EntDungBush: SUBROUTINE
 
 Rs_EntDungStairs: SUBROUTINE
     ldx #$40
+    ldy #$1C
     cpx plX
     bne .rts
-    ldy #$1C
     cpy plY
     bne .rts
 
     ldx #$48
-    jmp ENTER_CAVE
+    lda #HALT_TYPE_EXIT_TO_STAIRS
+    jmp EXIT_TO_SUBWORLD
 
 Rs_ExitDung: ; SUBROUTINE
     bit roomFlags
@@ -531,6 +516,59 @@ Rs_EntCaveBushStairs:
     tay
     jmp PlaceStairs
 
+Rs_StairwellItem: SUBROUTINE
+    lda rSubRoomIdL
+    and #$7F
+    tax
+    lda rWorldRoomFlags,x
+    bmi .NoLoad
+
+    lda rSubRoomIdR
+    and #$7F
+    sta RsSpawnItem
+    lda #$87
+    sta RsSpawnItemExPos
+    jsr Rs_SpawnPermItem
+
+.NoLoad
+    lda #RS_STAIRWELL
+    sta roomRS
+
+Rs_Stairwell: SUBROUTINE
+    lda plY
+    cmp #$48
+    beq .leave_stairwell
+
+; Check if the player is in the item chamber, and clamp Y pos
+    cmp #$30
+    ; $24 to $5C
+    bcc .rts
+
+    lda plX
+    cmp #$24
+    bcc .rts
+    cmp #$5C+1
+    bcs .rts
+    lda #$30
+    sta plY
+.rts
+    rts
+
+.leave_stairwell
+    lda rSubRoomIdL
+    ldx plX
+    cpx #$40
+    bcc .leave_stairwell_setroom
+    lda rSubRoomIdR
+
+.leave_stairwell_setroom
+    sta roomIdNext
+    lda #HALT_TYPE_RSCR_STAIRS
+    sta wHaltType
+    lda #RF_EV_LOAD
+    ora roomFlags
+    sta roomFlags
+    rts
 
 Rs_EntCaveLake: SUBROUTINE
     ldy roomId

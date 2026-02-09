@@ -17,6 +17,9 @@ if "$$" === "Rs_ShoreItem" then "Rs_Item"
 if "$$" === "Rs_Npc" then "Npc_Mesg"
 if "$$" === "Rs_NpcMonster" then "Npc_Mesg"
 if "$$" === "Rs_Maze" then "Rs_Maze"
+if "$$" === "Rs_BlockLeftStairs" then "Sw_Type"
+if "$$" === "Rs_BlockDiamondStairs" then "Sw_Type"
+if "$$" === "Rs_BlockSpiralStairs" then "Sw_Type"
 if "$$" === "Rs_BAD_HIDDEN_CAVE" then "Cv_Type"
 if "$$" === "Rs_BAD_CAVE" then "Cv_Type"
 if "$$" === "Rs_BlockPathStairs" then "Cv_Type"
@@ -48,6 +51,12 @@ goto "q"
 loop start
 put c0f CustomBlock "$Gi&local2&.&loopcount&" at "('thisx'+4+'loopcount')" "thisy"
 loop for "('$Gi&local2&.length'-1)"
+goto "q"
+
+: "Sw_Type"
+loop start
+put c0f CustomBlock "$Sw&local2&.&loopcount&" at "('thisx'+4+'loopcount')" "thisy"
+loop for "('$Sw&local2&.length'-1)"
 goto "q"
 
 : "Cv_Type"

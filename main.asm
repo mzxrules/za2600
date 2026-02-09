@@ -858,7 +858,7 @@ BANK_54
 ; ****************************************
 ; *               BANK 55                *
 ; ****************************************
-    SEG Bank54
+    SEG Bank55
     ORG $DC00
     RORG $F400
 BANK_55
@@ -867,20 +867,20 @@ BANK_55
     INCLUDE "ht/HtTask_AnimEast.asm"
     INCLUDE "ht/HtTask_AnimNorth.asm"
     INCLUDE "ht/HtTask_AnimSouth.asm"
-    INCLUDE "ht/HtTask_EnterLoc.asm"
     INCLUDE "ht/HtTask_PlayFlute.asm"
     INCLUDE "ht/HtTask_RoomScrollStart.asm"
     INCLUDE "ht/HtTask_RoomScrollEnd.asm"
     INCLUDE "c/LoadRoom_Subworld.asm"
     INCLUDE "ht/HtTask_AnimDeath.asm"
     INCLUDE "ht/HtTask_IdleGameOver.asm"
+    INCLUDE "ht/HtTask_StairwellSetPlPos.asm"
 
     LOG_BANK_SIZE "-BANK 55- HtTask", BANK_55
 
 ; ****************************************
 ; *               BANK 56                *
 ; ****************************************
-    SEG Bank54
+    SEG Bank56
     ORG $E000
     RORG $F400
 BANK_56
@@ -910,7 +910,7 @@ SprGanon3:
 ; ****************************************
 ; *               BANK 57                *
 ; ****************************************
-    SEG Bank54
+    SEG Bank57
     ORG $E400
     RORG $F400
 BANK_57
@@ -953,6 +953,9 @@ BANK_58
     INCLUDE "ht/HtTask_DisplayLevel.asm"
     INCLUDE "ht/HtTask_CurtainOpen.asm"
     INCLUDE "ht/HtTask_SetGameViewScroll.asm"
+    INCLUDE "ht/HtTask_EnterSubworldCave.asm"
+    INCLUDE "ht/HtTask_EnterSubworldStairs.asm"
+    INCLUDE "ht/HtTask_FadeOut.asm"
 
     INCLUDE "c/pause_menu_input.asm"
     INCLUDE "gen/PlItemPick_DelLUT.asm"
@@ -969,6 +972,7 @@ BANK_58
 BANK_59
 
     INCLUDE "en/En_BossGanon.asm"
+    INCLUDE "ht/HtTask_FadeIn.asm"
     LOG_BANK_SIZE "-BANK_59- ", BANK_59
 
 ; End

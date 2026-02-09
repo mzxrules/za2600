@@ -11,7 +11,7 @@
 05>Rs_Item
 05>GiFlute
 06>Rs_BlockDiamondStairs
-06>zz100
+06>Sw_64
 07>Rs_None
 07>zz0
 08>Rs_None
@@ -28,7 +28,7 @@
 0D>GiTriforce
 0E>Rs_Item
 0E>GiHeart
-0F>Rs_None
+0F>Rs_StairwellItem
 0F>zz0
 10>Rs_None
 10>zz0
@@ -66,8 +66,8 @@
 20>zz0
 21>Rs_Item
 21>GiMap
-22>Rs_Item
-22>GiBow
+22>Rs_BlockDiamondStairs
+22>Sw_GiBow
 23>Rs_ItemKey
 23>zz184
 24>Rs_Item
@@ -199,7 +199,7 @@
 63>Rs_None
 63>zz0
 64>Rs_BlockDiamondStairs
-64>zz6
+64>Sw_06
 65>Rs_None
 65>zz0
 66>Rs_ItemKey
@@ -252,5 +252,5 @@
 7D>zz0
 7E>Rs_Item
 7E>GiKey
-7F>Rs_None
+7F>Rs_Stairwell
 7F>zz0

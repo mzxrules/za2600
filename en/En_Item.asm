@@ -80,6 +80,12 @@ EnItem: SUBROUTINE
 
 .collide_perm_drop
     lda roomId
+    bpl .collide_perm_drop_have_room ; normal room
+    bit worldId
+    bpl .collide_perm_drop_have_room ; overworld
+; We're in the stairwell, grab the base room id
+    lda rSubRoomIdL
+.collide_perm_drop_have_room
     and #$7F
     tay
     lda rWorldRoomFlags,y

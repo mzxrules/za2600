@@ -414,6 +414,9 @@ if "$" === "Rs_Item" "#write_ex_Rs_Item"
 if "$" === "Rs_ShoreItem" "#write_ex_Rs_Item"
 if "$" === "Rs_Npc" "#write_ex_Npc_Mesg"
 if "$" === "Rs_NpcMonster" "#write_ex_Npc_Mesg"
+if "$" === "Rs_BlockLeftStairs" "#write_ex_Sw_Type"
+if "$" === "Rs_BlockDiamondStairs" "#write_ex_Sw_Type"
+if "$" === "Rs_BlockSpiralStairs" "#write_ex_Sw_Type"
 if "$" === "Rs_BAD_HIDDEN_CAVE" "#write_ex_Cv_Type"
 if "$" === "Rs_BAD_CAVE" "#write_ex_Cv_Type"
 if "$" === "Rs_BlockPathStairs" "#write_ex_Cv_Type"
@@ -459,6 +462,20 @@ set "$" "fwrite"
 goto "#return"
 : "write_ex_Rs_Item_c"
 if "ex" < "GiCount" "write_ex_Rs_Item_l"
+set "exjump" 0
+goto "#return"
+
+: "#write_ex_Sw_Type"
+set "exjump" 1
+set "ex" -1
+: "write_ex_Sw_Type_l"
+inc "ex" 1
+if "zz&d2&" != "('&$Sw('ex')&')" "write_ex_Sw_Type_c"
+set "$" "&$Sw('ex')&"
+set "$" "fwrite"
+goto "#return"
+: "write_ex_Sw_Type_c"
+if "ex" < "SwCount" "write_ex_Sw_Type_l"
 set "exjump" 0
 goto "#return"
 

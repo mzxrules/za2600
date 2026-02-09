@@ -156,7 +156,8 @@ HaltTask_Table = [
     "HtTask_AnimNorth",         "SEG_55",
     "HtTask_AnimSouth",         "SEG_55",
     "HtTask_PlayFlute",         "SEG_55",
-    "HtTask_EnterLoc",          "SEG_55",
+    "HtTask_EnterSubworldCave", "SEG_58",
+    "HtTask_EnterSubworldStairs","SEG_58",
     "HtTask_AnimDeath",         "SEG_55",
     "HtTask_IdleGameOver",      "SEG_55",
     "HtTask_PauseMenuStart",    "SEG_58",
@@ -167,6 +168,9 @@ HaltTask_Table = [
     "HtTask_DisplayLevel",      "SEG_58",
     "HtTask_CurtainOpen",       "SEG_58",
     "HtTask_SetGameViewScroll", "SEG_58",
+    "HtTask_FadeOut",           "SEG_58",
+    "HtTask_FadeIn",            "SEG_59",
+    "HtTask_StairwellSetPlPos", "SEG_55",
     "HtTask_None",              "SEG_HA",
 ]
 
@@ -217,6 +221,8 @@ RoomScript_Table = [
     "Rs_ShoreItem",                 "RsInit_None",
     "Rs_Shore",                     "RsInit_None",
     "Rs_Stairs",                    "RsInit_None",
+    "Rs_Stairwell",                 "RsInit_None",
+    "Rs_StairwellItem",             "RsInit_None",
     "Rs_Cave",                      "RsInit_None",
     "Rs_Waterfall",                 "RsInit_Waterfall",
 ]
@@ -272,6 +278,11 @@ GiValues_Table = [
     "GiBowArrowSilver",
     "GiWandBook",
 ]
+
+Stairwell_Destination_Table = \
+    [ f'Sw_{x:02X}' for x in range(0, 0x80) ] + \
+    [ f'Sw_{x}' for x in GiValues_Table[:-4]] + \
+    ["Sw_Stairwell"]
 
 Level_Table = [
     "Lv_A1", "Lv_B1",
@@ -508,6 +519,12 @@ tbl = [
         "Cv_EndList", # Terminator for room script
     ] + Cave_Level_Table,
     bankLut=None),
+    GameEnum("StairwellType", "Sw",
+    genEditorBindings=True,
+    genPtrTable=False,
+    genConstants=False,
+    vals=Stairwell_Destination_Table,
+    bankLut=None),
     GameEnum("PlItem", "PlItem",
     genEditorBindings=False,
     genPtrTable=False,
@@ -685,6 +702,11 @@ def DumpEditorBindings():
 def DumpConstants():
     const = []
     constLen = 0
+
+    # One-off constants
+    idx = Stairwell_Destination_Table.index("Sw_Stairwell")
+    const.append((ToSnakeCase("Sw_Stairwell"), "Underworld", idx))
+
     for e in tbl:
         idx = 0
         for item in e.vals:

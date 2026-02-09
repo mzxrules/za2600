@@ -52,17 +52,24 @@ HALT_TASK_SCRIPTS = [
         "HtTask_AnimSouth",
         "HtTask_RoomScrollEnd",
     ],
+    # HALT_TYPE_RSCR_STAIRS
+    [
+        "HtTask_FadeOut",
+        "HtTask_StairwellSetPlPos",
+        "HtTask_LoadRoom",
+        "HtTask_FadeIn",
+    ],
     # HALT_TYPE_PLAY_FLUTE
     [
         "HtTask_PlayFlute"
     ],
-    # HALT_TYPE_ENTER_DUNG
+    # HALT_TYPE_EXIT_TO_STAIRS
     [
-        "HtTask_EnterLoc"
+        "HtTask_EnterSubworldStairs",
     ],
-    # HALT_TYPE_ENTER_CAVE
+    # HALT_TYPE_EXIT_TO_CAVE
     [
-        "HtTask_EnterLoc"
+        "HtTask_EnterSubworldCave"
     ],
     # HALT_TYPE_GAME_OVER
     [

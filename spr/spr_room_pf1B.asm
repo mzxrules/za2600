@@ -509,16 +509,16 @@ PF1Room29:
     .byte $C0 ; |XX......|
     .byte $C0 ; |XX......|
 PF1Room30:
-    .byte $E0 ; |XXX.....|
-    .byte $E0 ; |XXX.....|
-    .byte $E7 ; |XXX..XXX|
-    .byte $E7 ; |XXX..XXX|
-    .byte $E7 ; |XXX..XXX|
-    .byte $E7 ; |XXX..XXX|
-    .byte $E7 ; |XXX..XXX|
-    .byte $E0 ; |XXX.....|
-    .byte $E0 ; |XXX.....|
     .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
+    .byte $E0 ; |XXX.....|
+    .byte $E0 ; |XXX.....|
+    .byte $E7 ; |XXX..XXX|
+    .byte $E7 ; |XXX..XXX|
+    .byte $E7 ; |XXX..XXX|
+    .byte $E7 ; |XXX..XXX|
+    .byte $E0 ; |XXX.....|
+    .byte $E0 ; |XXX.....|
     .byte $FF ; |XXXXXXXX|
     .byte $FF ; |XXXXXXXX|
     .byte $FF ; |XXXXXXXX|
@@ -526,10 +526,10 @@ PF1Room30:
     .byte $FF ; |XXXXXXXX|
     .byte $FF ; |XXXXXXXX|
 PF1Room31:
+    .byte $FF ; |XXXXXXXX|
+    .byte $FF ; |XXXXXXXX|
     .byte $E0 ; |XXX.....|
     .byte $E0 ; |XXX.....|
-    .byte $E7 ; |XXX..XXX|
-    .byte $E7 ; |XXX..XXX|
     .byte $E7 ; |XXX..XXX|
     .byte $E7 ; |XXX..XXX|
     .byte $E7 ; |XXX..XXX|

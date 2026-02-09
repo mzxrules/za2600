@@ -33,6 +33,17 @@ RoomUpdate: SUBROUTINE
 .rts
     rts
 
+;==============================================================================
+; LoadRoom_Stairwell
+;----------
+; Tests if player position would enter a cave
+;----------
+; Y = W1 room to load
+;==============================================================================
+LoadRoom_Stairwell: SUBROUTINE
+    lda #SLOT_F4_W1
+    sta BANK_SLOT
+    jmp LoadRoom_NO_BANK_LOGIC
 
 LoadRoom: SUBROUTINE
     ; load world bank data
@@ -77,8 +88,10 @@ LoadRoom: SUBROUTINE
     bpl .skipCaveRoom
     lda #SLOT_F4_ROOM2
     sta BANK_SLOT
-    jmp LoadRoom_Cave
+    jmp LoadRoom_Subworld
 .skipCaveRoom
+
+LoadRoom_NO_BANK_LOGIC
     sty roomId
     lda WORLD_RS,y
     sta roomRS
@@ -247,7 +260,6 @@ LoadRoom: SUBROUTINE
 .rts
     rts
 
-    INCLUDE "WorldData_BankOffset.asm"
     INCLUDE "WorldData_WorldRomSlot.asm"
 
 UpdateWorldDoors: SUBROUTINE
