@@ -518,6 +518,7 @@ BANK_33
     INCLUDE "rs/RsInit_FairyFountain.asm"
     INCLUDE "rs/RsInit_EntCaveLake.asm"
     INCLUDE "rs/RsInit_Waterfall.asm"
+    INCLUDE "rs/RsInit_StairsEast.asm"
 
     LOG_BANK_SIZE "-BANK 33- RoomScriptInit", BANK_33
 

@@ -6,16 +6,14 @@ LoadRoom_Subworld: SUBROUTINE
     lda worldId
     bpl .subworld_stairwell
     jmp LoadRoom_Cave
-.subworld_stairwell
 
-    ldy #$7F
+.subworld_stairwell
+    ldy #$0F ; Rs_StairwellItem room
     lda roomIdNext
     cmp #SW_STAIRWELL
-    bne .subworld_stairwell_item
-    jmp LoadRoom_Stairwell
-
-.subworld_stairwell_item
-    ldy #$0F
+    bcc .subworld_stairwell_room
+    ldy #$7F ; Rs_Stairwell room
+.subworld_stairwell_room
     jmp LoadRoom_Stairwell
 
 LoadRoom_Cave: SUBROUTINE

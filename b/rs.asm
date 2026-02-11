@@ -265,7 +265,7 @@ Rs_ItemKey: ; SUBROUTINE
     sta RsSpawnItemExPos
     lda #GI_KEY
     sta RsSpawnItem
-    bne Rs_ItemCheckAppear
+    bne Rs_ItemCheckAppear ; jmp
 
 Rs_Item: SUBROUTINE
     lda roomEX
@@ -337,7 +337,7 @@ Rs_ExitDung2:
 STAIR_POS_P402C = 0
 STAIR_POS_P1834 = 1
 STAIR_POS_P7448 = 2
-STAIR_POS_P742C = 3
+STAIR_POS_P742C = 3 ; Unused
 STAIR_POS_P2828 = 4
 
 ; Y = Stair Position LUT index
@@ -390,23 +390,32 @@ Rs_BlockSpiralStairs: ; SUBROUTINE
     ldy #STAIR_POS_P2828
     bpl PlaceStairs ; jmp
 
-Rs_MidRightStairs: ; SUBROUTINE
-    lda roomFlags
-    and #RF_EV_CLEAR
-    beq .rts
-    ldy #STAIR_POS_P742C
-    bpl PlaceStairs ; jmp
+Rs_StairsEast: ; SUBROUTINE
+Rs_StairsEastCenterKey: ; SUBROUTINE
+    lda rHaltType
+    cmp #HALT_TYPE_RSCR_EAST
+    bne .do_key
+    lda #BoardXR+1
+    sta plX
+    sta plXL
 
-Rs_MidRightStairsCenterKey: ; SUBROUTINE
+    lda #HALT_TYPE_EXIT_TO_STAIRS
+    jmp EXIT_TO_SUBWORLD
+
+    lda roomRS
+    cmp #RS_STAIRS_EAST
+    beq .rts
+
     lda roomFlags
     and #RF_EV_CLEAR
     beq .rts
-    lda #RS_NONE
+
+.do_key
+    jsr Rs_ItemKey_Center
+    ; This part might not be necessary if roomRS isn't forced to RS_NONE
+    lda #RS_STAIRS_EAST
     sta roomRS
-
-    ldy #STAIR_POS_P742C
-    jsr PlaceStairs
-    jmp Rs_ItemKey_Center
+    rts
 
 Rs_EntCaveWallCenterBlocked: SUBROUTINE
     SET_WALL_DESTROY_XY 40, 38

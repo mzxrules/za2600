@@ -1,5 +1,5 @@
-00>Rs_None
-00>zz0
+00>Rs_BlockDiamondStairs
+00>Sw_50
 01>Rs_Item
 01>GiKey
 02>Rs_None
@@ -30,8 +30,8 @@
 0E>zz0
 0F>Rs_None
 0F>zz0
-10>Rs_None
-10>zz0
+10>Rs_BlockDiamondStairs
+10>Sw_67
 11>Rs_None
 11>zz0
 12>Rs_BlockDiamondStairs
@@ -158,8 +158,8 @@
 4E>zz0
 4F>Rs_None
 4F>zz0
-50>Rs_None
-50>zz0
+50>Rs_BlockDiamondStairs
+50>Sw_00
 51>Rs_BlockCenter
 51>zz0
 52>Rs_None

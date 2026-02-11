@@ -56,8 +56,8 @@
 1B>zz0
 1C>Rs_Item
 1C>GiHeart
-1D>Rs_Stairs
-1D>zz58
+1D>Rs_StairsEast
+1D>Sw_3A
 1E>Rs_None
 1E>zz0
 1F>Rs_Npc
@@ -208,8 +208,8 @@
 67>MesgHintDigdogger
 68>Rs_Item
 68>GiCompass
-69>Rs_Item
-69>GiRaft
+69>Rs_StairsEast
+69>Sw_GiRaft
 6A>Rs_Npc
 6A>MesgHintEyesOfGohma
 6B>Rs_Item

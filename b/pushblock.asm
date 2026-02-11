@@ -105,23 +105,8 @@ BlPushBlockLeft: SUBROUTINE
 .rts
     rts
 
-BlPushBlockDiamondTop: SUBROUTINE
-    ldx roomENCount
-    bne .rts
-    lda #0
-    sta wPF2Room + 13
-    sta wPF2Room + 14
-
-    ldx #$40
-    stx blX
-    lda #$3C
-    sta blY
-    lda #BL_PUSH_BLOCK
-    sta blType
-    rts
-
 BlPushBlockArrow:
-BlPushBlock: ; SUBROUTINE
+BlPushBlock: SUBROUTINE
     ldx roomENCount
     bne .rts
 

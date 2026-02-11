@@ -6,7 +6,7 @@ HtTask_StairwellSetPlPos: SUBROUTINE
     lda #PL_DIR_D
     sta plDir
 
-    lda roomId
+    ldy roomId
     bpl .enter_stairwell
 .exit_stairwell
 ; TODO: implement more positions
@@ -20,35 +20,31 @@ HtTask_StairwellSetPlPos: SUBROUTINE
     lda #$44
     sta plY
 
+; compare current roomId to roomEX the lower will be set to the
+; left exit, while the higher will be set to the right.
+;
+; This handles both the stairwell and item cases. Then we just set
+; roomIdNext to $FF if the roomEX is positive
     lda roomEX
-    bmi .enter_stairwell_item_stairs
-.enter_stairwell_stairwell
     cmp roomId
     bcs .enter_stairwell_left
 
 .enter_stairwell_right
+    sty wSubRoomIdR
     sta wSubRoomIdL
-    lda roomId
-    sta wSubRoomIdR
+    ldx #$70
+    bpl .subworld_return_stairs ; jmp
 
-    lda #$70
-    sta plX
-
-    lda #$FF
-    sta roomIdNext
-    jmp .subworld_return_stairs
-
-.enter_stairwell_item_stairs
 .enter_stairwell_left
+    sty wSubRoomIdL
     sta wSubRoomIdR
-    lda roomId
-    sta wSubRoomIdL
-
-    lda #$10
-    sta plX
-
-    lda #$FF
-    sta roomIdNext
+    ldx #$10
 
 .subworld_return_stairs
+    stx plX
+    bit roomEX
+    bmi .set_Gi
+    lda #$FF
+.set_Gi
+    sta roomIdNext
     jmp Halt_TaskNext

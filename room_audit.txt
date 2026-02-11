@@ -64,8 +64,12 @@ if dungeon
 Stair situation in dungeons:
 
 Q1 Level 8 $   > spiral room with hidden stairs and a small key on room clear
+Q1 Level 8 $37 > stair east with bomb drop
+Q1 Level 9 $69 > diamond staircase with small key on room clear
 Q2 Level 1 $   > stair entrance with small key on room clear
-Q2 Level 3 $   > reverse C room with hidden stairs and a compass (insta appear, center)
+Q2 Level 2 $3B > stair east with bomb drop
+Q2 Level 2 $7B > stair east with rupee 5 drop
+Q2 Level 3 $76 > reverse C room with hidden stairs and a compass (insta appear, center)
 Q2 Level 3 $   > stair entrance with small key insta appear
 Q2 Level 6 $   > free standing rupee in top right hidden stair
 Q2 Level 7 $   > middle pushblock with top right hidden stair, and compass (insta appear)

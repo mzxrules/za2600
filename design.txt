@@ -23,20 +23,20 @@ Systems:
     Second Quest
         * Quest Select at game start
     Dungeon Underground
-        * Underground Passage
-        * Underground Item
+        * Spawn Keese
     Random Drops
         * TypeB and TypeC drop tables?
         * 8th enemy has the bomb mechanics?
     EnMove_Card_WallCheck
         * Find optimizations
     Enemy Spawns - Second Implementation
+        * Re-add spawn reset routine
     Bracelet check
     Status Hud - Complete
     Door Unlock System - Complete
     Raft System - Complete
 
-HIDDEN_CAVE TODO:
+HIDDEN_CAVE Q1 TODO:
     1C - Armos entry
     21 - Grave magic sword
     3D - Armos entry
@@ -50,6 +50,8 @@ Glitches:
     The hitboxes for player missiles are skewed because m0X is used
 
 Level Issues:
+    Q1 Level 3 room $69, has bomb drop and stairs east to raft.
+    Q1 Level 8 room $37, has bomb drop and stairs east.
     Q2 Level 6 room $14, left room intended to only be accessible with ladder,
     while north part of room is inaccessible with ladder. Fortunately, left
     room is a non-critical path
@@ -126,13 +128,12 @@ There are two different meanings for the term world.
 In game, the worldId variable more accurately tracks the current level the
 player is in.
     * Bit 0 of the value stores quest type:
-        * 0 - First quest, Q1, or A
-        * 1 - Second quest, Q2, or B
+        * 0 - Q1, A: First quest
+        * 1 - Q2, B: Second quest
     * LV_A0, LV_B0 represents the overworld. These are negative in value
     * LV_A1-LV_A9, LV_B1-LV_B9 are dungeons 1-9. These are positive in value
 
-Each world has 128 main rooms, and 128 sub-rooms. Currently, sub-rooms are only
-used for caves.
+The second definition of world is linked to rom and ram bank data.
 
 In the level data, there are only three worlds per quest.
     * World 0 stores Q1 Overworld
@@ -142,8 +143,20 @@ In the level data, there are only three worlds per quest.
     * World 4 stores Q2 Levels 1 thru 6
     * World 5 stores Q2 Levels 7 thru 9
 
-Each world can only have a maximum of 128 rooms.
+Each world stores data for 128 main rooms, which is discussed in detail below.
+In game, the roomId variable tracks what room the player is in.
+    * $00-$7F map to the main 128 rooms defined in the world
+    * $80-$FF are reserved for subworld rooms.
 
+Subworld rooms are locations secondary to a main room.
+The two base types of subworld rooms are caves and stairwells.
+
+Caves can only exist in the overworld. Main rooms $00-$7F can transport the
+player to a cave room assigned to roomId + $80. This allows caves to have a
+"location", and permanent events are stored with the main room's flags.
+
+Stairwells can only exist in dungeons. Unlike caves, stairwell rooms are not
+uniquely mapped to roomIds.
 
 ===============================================================================
 > The World Format
@@ -228,6 +241,7 @@ The behavior of door and wall flags differ depending on if the world
 is an overworld or a dungeon.
 
 Overworld flags:
+(E = editor enum, D = roomDoors, W = roomWA)
 
 E   D   W   Wall Type
 0  00   0 = None
@@ -242,6 +256,7 @@ E   D   W   Wall Type
 Dungeon flags:
 The door flags have been optimized for dungeons, and directly correspond to how
 the wall openings will be drawn.
+(E = editor enum, W = roomWA, D = roomDoors)
 
 E   W   D
 0  00  00 = open
@@ -253,25 +268,77 @@ E   W   D
 
 
 ===============================================================================
-> Rooms
+> Rooms - States and Flags
 ===============================================================================
 
-Room Events:
+Room Events: (roomFlags)
     RF_EV_LOAD      ; Triggers Room Load event
     RF_EV_LOADED    ; If set, a new room has been loaded
-    RF_EV_ENCLEAR   ; Enemies Cleared event
+    RF_EV_ENCLEAR   ; (DELETED) Enemies Cleared event
     RF_NO_ENCLEAR   ; Blocks Enemy Cleared from setting Room Cleared
     RF_EV_CLEAR     ; Room Cleared
 
-Room Special:
+Room Special: (roomFlags)
     RF_PF_IGNORE    ; disables playfield collision within room center
 ;                   ; Enabled in all rooms with PF2 Triforce design
     RF_PF_AXIS      ; allows the player to walk over playfield with boots
 ;                   ; Enabled in dungeon rooms with RED or WATER colors
+    RF_USED_CANDLE  ; stops the blue candle from being used more than once
 
-RsInit configures room for first frame. Remember to always position ball
+===============================================================================
+> Rooms - RoomScripts
+===============================================================================
 
+The complete table of scripts is defined in the RoomScript_Table in ptr.py
 
+RoomScripts (prefix Rs_) are routines used to give behaviors to a room.
+Each script has an associated RsInit routine that runs once prior to the room
+being drawn. All RsInit routines are required to specify an initial ball
+position, even if the element is unused by the main room script.
+
+The roomEX variable is a RoomScript's configurable parameter.
+
+===============================================================================
+> RoomScripts - Caves
+===============================================================================
+
+On the overworld, there are a number of RoomScripts that define cave openings,
+destroyable walls, burnable bushes, warp whistle secrets, etc., all of which
+define a custom exit point to a new location using the roomEX value.
+
+The CaveType or CV_* enum actually provides two lists of destinations.
+    * The cave subworld room, where the roomEX then configures type
+    * A dungeon's first room
+
+As the name suggests, the CaveType enum originally only contained
+
+The cave subworld room is reached by adding/or'ing $80 to the current roomId
+which makes it negative, then calling LoadRoom. This room defaults to the
+Rs_Cave RoomScript, and further uses roomEX as configured by the main room.
+
+More information about Rs_Cave can be found in Systems - Npcs
+The CaveType enum is defined in ptr.py
+
+===============================================================================
+> RoomScripts - Stairwells
+===============================================================================
+
+In dungeons, RoomScripts that spawn a staircase use roomEX to send you into one
+of two stairwell subworld rooms:
+    * W1 Room $7F - Rs_Stairwell - a path connecting two rooms together
+    * W1 Room $0F - Rs_StairwellItem - a path leading to an item
+
+The StairwellType enum provides definitions for the roomEX values.
+
+For values $00-$7F, you will enter Rs_Stairwell, where one side will take you
+to the roomId matching the roomEX value, while the other will take you back
+to the current roomId. The two roomIds are compared, and the lower index will
+be assigned the left side, while the higher index assiged to the right side,
+and the player will be placed nearest the one taking them back to the original
+roomId.
+
+For values $80+, you will enter Rs_StairwellItem. roomEX - $80 stores the item
+received.
 
 ===============================================================================
 > Systems
@@ -762,14 +829,9 @@ should be 4 or 6 cycles long. A branch takes 2 cycles to execute, 3 if the
 branch is taken, and so a pair of bvs is enough to implement a variable cycle
 delay of 4/6 cycles.
 
-
 ===============================================================================
-> Systems - Caves
+> Unsorted Notes - Cave Info
 ===============================================================================
-
-Entering an overworld room with a negative id sends you to a cave.
-The cave properties are determined by roomEX, which is not clobbered
-on entering the cave.
 
 money making game
 
@@ -807,7 +869,9 @@ Shops
     Shield, Key,    Candle
 
 
-E7 -> 3E conversion
+===============================================================================
+> Unsorted Notes - Memory Mapping (E7 -> 3E+ conversion)
+===============================================================================
 
 Ram
 
